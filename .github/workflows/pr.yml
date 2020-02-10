@@ -1,0 +1,235 @@
+name: xKylee - CI (PR)
+
+on:
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize']
+
+jobs:
+  pr-lint:
+    name: PR title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: PR title lint
+        if: github.event_name == 'pull_request'
+        uses: seferov/pr-lint-action@v1.0.3
+        with:
+          title-regex: '^([\w-/]+): \w+'
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: actions/checkout@v1
+
+      - uses: actions/checkout@v1
+        with:
+          repository: xKylee/runelite
+          ref: master
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable (client)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Assembling client
+        run: ./gradlew assemble --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Building client
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Upload client artifacts to local maven
+        run: ./gradlew publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+
+      - name: Assembling plugins
+        run: ./gradlew assemble --console=plain
+
+      - name: Building plugins
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+
+
+  checkstyleMain:
+    runs-on: ubuntu-latest
+    name: Checkstyle main
+
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: actions/checkout@v1
+
+      - uses: actions/checkout@v1
+        with:
+          repository: xKylee/runelite
+          ref: master
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable (client)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Assembling client
+        run: ./gradlew assemble --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Building client
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Upload client artifacts to local maven
+        run: ./gradlew publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+
+      - name: Assembling plugins
+        run: ./gradlew assemble --console=plain
+
+      - name: Checking plugins code conventions (Main)
+        run: ./gradlew checkstyleMain --console=plain
+
+  checkstyleTest:
+    runs-on: ubuntu-latest
+    name: Checkstyle test
+
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: actions/checkout@v1
+
+      - uses: actions/checkout@v1
+        with:
+          repository: xKylee/runelite
+          ref: master
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable (client)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Assembling client
+        run: ./gradlew assemble --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Building client
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Upload client artifacts to local maven
+        run: ./gradlew publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins/runelite
+
+      - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+
+      - name: Assembling plugins
+        run: ./gradlew assemble --console=plain
+
+      - name: Checking plugins code conventions (Test)
+        run: ./gradlew checkstyleTest --console=plain
+
+  bump:
+    name: Check version numbers
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract actor repo
+        shell: bash
+        run: echo "##[set-output name=repo;]$(echo $(jq --raw-output .pull_request.head.repo.full_name "$GITHUB_EVENT_PATH"))"
+        id: extract_actor_repo
+
+      - name: Extract actor repo branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo $(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH"))"
+        id: extract_actor_repo_branch
+
+      - id: changedFiles
+        name: Changed files exporter
+        uses: futuratrepadeira/changed-files@v3.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: actions/checkout@v1
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Bump version numbers
+        id: bumpNewChanged
+        if: steps.changedFiles.outputs.files_created != '' && steps.changedFiles.outputs.files_updated != ''
+        run: |
+          ./gradlew bumpVersion --newFiles="${{ steps.changedFiles.outputs.files_created }}" --changedFiles="${{ steps.changedFiles.outputs.files_updated }}" --console=plain
+
+      - name: Bump version numbers
+        id: bumpChanged
+        if: steps.changedFiles.outputs.files_created == '' && steps.changedFiles.outputs.files_updated != ''
+        run: |
+          ./gradlew bumpVersion --changedFiles="${{ steps.changedFiles.outputs.files_updated }}" --console=plain
+
+      - name: Bump version numbers
+        id: bumpNew
+        if: steps.changedFiles.outputs.files_created != '' && steps.changedFiles.outputs.files_updated == ''
+        run: |
+          ./gradlew bumpVersion --newFiles="${{ steps.changedFiles.outputs.files_created }}" --console=plain
+
+      - name: Detect changes
+        id: detectChanges
+        run: |
+          git update-index --skip-worktree gradlew
+
+          if ! git diff-index --quiet HEAD --; then
+              exit 1
+          fi
+
+  approve:
+    name: Approve
+    needs: [build, checkstyleMain, checkstyleTest, bump]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Approve pull request
+        if: github.event_name == 'pull_request' && github.actor == 'OpenOSRS'
+        uses: hmarr/auto-approve-action@v2.0.0
+        with:
+          github-token: ${{ secrets.Owain }}
