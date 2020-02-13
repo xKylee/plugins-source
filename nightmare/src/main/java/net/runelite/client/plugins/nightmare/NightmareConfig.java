@@ -28,7 +28,7 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 
-@ConfigGroup("betterNightmare")
+@ConfigGroup("nightmareOfAshihama")
 public interface NightmareConfig extends Config
 {
 	@ConfigSection(

@@ -26,6 +26,7 @@ class NightmareOverlay extends Overlay
 	private static final int NIGHTMARE_REGION_ID = 15256;
 	private final Client client;
 	private final NightmarePlugin plugin;
+	private final NightmareConfig config;
 
 	// Nightmare's NPC IDs
 	private static final int NIGHTMARE_PHASE1 = 9425;
@@ -53,10 +54,11 @@ class NightmareOverlay extends Overlay
 
 
 	@Inject
-	private NightmareOverlay(final Client client, final NightmarePlugin plugin)
+	private NightmareOverlay(final Client client, final NightmarePlugin plugin, final NightmareConfig config)
 	{
 		this.client = client;
 		this.plugin = plugin;
+		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPriority(OverlayPriority.LOW);
@@ -93,7 +95,7 @@ class NightmareOverlay extends Overlay
 		}
 
 		int ticksUntilNext = plugin.getTicksUntilNextAttack();
-		if (plugin.isTickCounter() && ticksUntilNext > 0 && plugin.getNm() != null)
+		if (config.ticksCounter() && ticksUntilNext > 0 && plugin.getNm() != null)
 		{
 			String str = Integer.toString(ticksUntilNext);
 
@@ -111,7 +113,7 @@ class NightmareOverlay extends Overlay
 			renderTextLocation(graphics, str, 20, Font.BOLD, tickColor, point);
 		}
 
-		if (plugin.isHighlightTotems())
+		if (config.highlightTotems())
 		{
 			for (MemorizedTotem totem : plugin.getTotems().values())
 			{

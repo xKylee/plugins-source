@@ -21,7 +21,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -91,15 +90,6 @@ public class NightmarePlugin extends Plugin
 	private int attacksSinceCurse;
 
 	@Getter(AccessLevel.PACKAGE)
-	private boolean prayerHelper;
-
-	@Getter(AccessLevel.PACKAGE)
-	private boolean tickCounter;
-
-	@Getter(AccessLevel.PACKAGE)
-	private boolean highlightTotems;
-
-	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAttack = 0;
 
 	public NightmarePlugin()
@@ -119,7 +109,6 @@ public class NightmarePlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		updateConfig();
 		overlayManager.add(overlay);
 		overlayManager.add(prayerOverlay);
 		reset();
@@ -162,16 +151,6 @@ public class NightmarePlugin extends Plugin
 			cursed = false;
 		}
 
-	}
-
-	@Subscribe
-	private void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("betterNightmare"))
-		{
-			return;
-		}
-		this.updateConfig();
 	}
 
 	@Subscribe
@@ -287,12 +266,5 @@ public class NightmarePlugin extends Plugin
 	private boolean isNightmareNpc(int id)
 	{
 		return id >= 9425 && id <= 9433;
-	}
-
-	private void updateConfig()
-	{
-		this.prayerHelper = config.prayerHelper();
-		this.tickCounter = config.ticksCounter();
-		this.highlightTotems = config.highlightTotems();
 	}
 }
