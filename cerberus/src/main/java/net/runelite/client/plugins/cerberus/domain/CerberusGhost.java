@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018, Tomas Slusny <slusnucky@gmail.com>
+ * Copyright (c) 2019 Im2be <https://github.com/Im2be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,9 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.cerberus;
+
+
+package net.runelite.client.plugins.cerberus.domain;
 
 import com.google.common.collect.ImmutableMap;
+import java.awt.Color;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
@@ -34,16 +38,13 @@ import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Skill;
 
-@Getter(AccessLevel.PACKAGE)
+@Getter(AccessLevel.PUBLIC)
 @RequiredArgsConstructor
 public enum CerberusGhost
 {
-	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED),
-	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC),
-	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK);
-
-	private final int npcId;
-	private final Skill type;
+	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED, Color.GREEN),
+	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC, Color.BLUE),
+	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK, Color.RED);
 
 	private static final Map<Integer, CerberusGhost> MAP;
 
@@ -58,6 +59,10 @@ public enum CerberusGhost
 
 		MAP = builder.build();
 	}
+
+	private final int npcId;
+	private final Skill type;
+	private final Color color;
 
 	/**
 	 * Try to identify if NPC is ghost

@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.2"
+version = "0.0.3"
 
 project.extra["PluginName"] = "Cerberus"
-project.extra["PluginDescription"] = "Show what to pray against the summoned souls"
+project.extra["PluginDescription"] = "Helps you pray against Cerberus (à la Guitar Hero)"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -36,6 +36,7 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
+    compileOnly("com.openosrs:http-api:$rlVersion")
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.javax)
@@ -44,6 +45,7 @@ dependencies {
 
     testImplementation("com.openosrs:runelite-api:$rlVersion")
     testImplementation("com.openosrs:runelite-client:$rlVersion")
+    testImplementation("com.openosrs:http-api:$rlVersion")
 
     testImplementation(Libraries.pf4j)
     testImplementation(Libraries.guiceTestlib)
