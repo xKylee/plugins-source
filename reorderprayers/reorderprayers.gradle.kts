@@ -37,7 +37,7 @@ dependencies {
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    compileOnly(project(":xptracker"))
+    compileOnly("com.openosrs.externals:xptracker:0.0.+")
 
     compileOnly(Libraries.annotations)
     compileOnly(Libraries.guice)
@@ -47,7 +47,7 @@ dependencies {
     testImplementation("com.openosrs:runelite-api:$rlVersion")
     testImplementation("com.openosrs:runelite-client:$rlVersion")
 
-    testImplementation(project(":xptracker"))
+    testImplementation("com.openosrs.externals:xptracker:0.0.+")
 
     testImplementation(Libraries.annotations)
     testImplementation(Libraries.pf4j)
