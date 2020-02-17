@@ -37,7 +37,7 @@ dependencies {
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    compileOnly(project(":clanchat"))
+    compileOnly("com.openosrs.externals:clanchat:0.0.+")
 
     compileOnly(Libraries.apacheCommonsLang)
     compileOnly(Libraries.guice)

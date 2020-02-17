@@ -30,7 +30,12 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: open-osrs/plugins
           ref: master
 
       - uses: actions/cache@v1
@@ -42,21 +47,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
         run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -80,7 +101,12 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: open-osrs/plugins
           ref: master
 
       - uses: actions/cache@v1
@@ -92,21 +118,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
         run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -129,7 +171,12 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: open-osrs/plugins
           ref: master
 
       - uses: actions/cache@v1
@@ -141,21 +188,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
         run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -219,6 +282,8 @@ jobs:
           git update-index --skip-worktree gradlew
 
           if ! git diff-index --quiet HEAD --; then
+              git diff-index --name-only HEAD --
+
               exit 1
           fi
 
@@ -232,4 +297,4 @@ jobs:
         if: github.event_name == 'pull_request' && github.actor == 'OpenOSRS'
         uses: hmarr/auto-approve-action@v2.0.0
         with:
-          github-token: ${{ secrets.Owain }}
+          github-token: ${{ secrets.xKylee }}
