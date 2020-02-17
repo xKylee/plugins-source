@@ -34,14 +34,12 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
-import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.client.ui.overlay.components.BackgroundComponent;
 import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
 import net.runelite.client.ui.overlay.components.TextComponent;
 
-@Singleton
 @Setter
 public class ImagePanelComponent implements LayoutableRenderableEntity
 {
@@ -67,7 +65,7 @@ public class ImagePanelComponent implements LayoutableRenderableEntity
 		final Dimension dimension = new Dimension();
 		final FontMetrics metrics = graphics.getFontMetrics();
 		int height = TOP_BORDER + (Strings.isNullOrEmpty(title) ? 0 : metrics.getHeight())
-				+ SEPARATOR + image.getHeight() + BOTTOM_BORDER;
+			+ SEPARATOR + image.getHeight() + BOTTOM_BORDER;
 		int width = Math.max(Strings.isNullOrEmpty(title) ? 0 : metrics.stringWidth(title), image.getWidth()) + SIDE_BORDER * 2;
 		dimension.setSize(85, 70);
 
