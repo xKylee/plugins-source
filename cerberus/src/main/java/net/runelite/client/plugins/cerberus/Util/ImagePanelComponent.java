@@ -67,7 +67,7 @@ public class ImagePanelComponent implements LayoutableRenderableEntity
 		final Dimension dimension = new Dimension();
 		final FontMetrics metrics = graphics.getFontMetrics();
 		int height = TOP_BORDER + (Strings.isNullOrEmpty(title) ? 0 : metrics.getHeight())
-				+ SEPARATOR + image.getHeight() + BOTTOM_BORDER;
+			+ SEPARATOR + image.getHeight() + BOTTOM_BORDER;
 		int width = Math.max(Strings.isNullOrEmpty(title) ? 0 : metrics.stringWidth(title), image.getWidth()) + SIDE_BORDER * 2;
 		dimension.setSize(85, 70);
 

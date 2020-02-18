@@ -90,9 +90,13 @@ public class CerberusPhaseOverlay extends Overlay
 		{
 			final int attack;
 			if (plugin.getConfig().reverseUpcomingAttacks() ^ !plugin.getConfig().horizontalUpcomingAttacks())
+			{
 				attack = amountOfAttacks - i;
+			}
 			else
+			{
 				attack = i + 1;
+			}
 			panel.setOrientation(plugin.getConfig().horizontalUpcomingAttacks() ? ComponentOrientation.HORIZONTAL : ComponentOrientation.VERTICAL);
 
 			final int cerbHp = plugin.getCerberus().getHealth();
@@ -109,9 +113,13 @@ public class CerberusPhaseOverlay extends Overlay
 				int y = -1;
 
 				if (plugin.getConfig().horizontalUpcomingAttacks() && plugin.getConfig().reverseUpcomingAttacks())
+				{
 					x += (85 + gap.getX()) * (amountOfAttacks - 1);
+				}
 				else if (!plugin.getConfig().horizontalUpcomingAttacks() && !plugin.getConfig().reverseUpcomingAttacks())
+				{
 					y += (70 + gap.getY()) * (amountOfAttacks - 1);
+				}
 
 				Rectangle outsideStroke = new Rectangle();
 				outsideStroke.setLocation(x, y);
@@ -122,7 +130,9 @@ public class CerberusPhaseOverlay extends Overlay
 
 			image = CerberusImageManager.getCerberusPhaseBufferedImage(phase, plugin.getPrayer());
 			if (image == null)
+			{
 				continue;
+			}
 			switch (phase)
 			{
 				case AUTO:
@@ -160,7 +170,9 @@ public class CerberusPhaseOverlay extends Overlay
 				imagePanelComponent.setNextPhase(nextThresholdPhase.name().substring(0, Math.min(3, nextThresholdPhase.name().length())));
 			}
 			if (backgroundColor != null)
+			{
 				imagePanelComponent.setBackgroundColor(backgroundColor);
+			}
 			imagePanelComponent.setImage(image);
 
 			panel.getChildren().add(imagePanelComponent);

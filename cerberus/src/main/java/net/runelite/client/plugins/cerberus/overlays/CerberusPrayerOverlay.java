@@ -78,29 +78,39 @@ public class CerberusPrayerOverlay extends Overlay
 			var attack = plugin.getUpcomingAttacks().get(0);
 			final Prayer prayer;
 			if (attack.getAttack() == CerberusNPC.Attack.AUTO)
+			{
 				prayer = plugin.getPrayer();
+			}
 			else
+			{
 				prayer = attack.getAttack().getPrayer();
+			}
 
 			BufferedImage prayerImage = CerberusImageManager.getCerberusPrayerBufferedImage(prayer);
 			final StringBuilder sbTitle = new StringBuilder();
 			if (!client.isPrayerActive(prayer))
+			{
 				sbTitle.append("Switch!");
+			}
 			else
+			{
 				sbTitle.append("Prayer");
+			}
 
 			if (plugin.getConfig().showPrayerTimer())
 			{
-				sbTitle.append (" (");
-				var timeUntilAttack = Math.max((double)((attack.getTick() - plugin.getGameTick()) * 600 - (System.currentTimeMillis() - plugin.getLastTick())) / 1000, 0);
+				sbTitle.append(" (");
+				var timeUntilAttack = Math.max((double) ((attack.getTick() - plugin.getGameTick()) * 600 - (System.currentTimeMillis() - plugin.getLastTick())) / 1000, 0);
 				sbTitle.append(String.format("%.1f", timeUntilAttack));
-				sbTitle.append (")");
+				sbTitle.append(")");
 			}
 
 			imagePanelComponent.setTitle(sbTitle.toString());
 			imagePanelComponent.setImage(prayerImage);
 			if (!client.isPrayerActive(prayer))
+			{
 				imagePanelComponent.setBackgroundColor(new Color(150, 0, 0, 128));
+			}
 		}
 		else
 		{
