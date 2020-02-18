@@ -134,7 +134,7 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
@@ -204,7 +204,7 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
@@ -289,7 +289,7 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
