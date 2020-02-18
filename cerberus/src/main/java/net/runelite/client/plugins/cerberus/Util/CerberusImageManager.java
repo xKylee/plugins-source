@@ -29,12 +29,15 @@ package net.runelite.client.plugins.cerberus.Util;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Prayer;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.domain.CerberusPhase;
 import net.runelite.client.util.ImageUtil;
 
-public class CerberusImageManager
+@Slf4j
+public
+class CerberusImageManager
 {
 	private static final BufferedImage[] bufferedImages = new BufferedImage[6];
 	//private static final BufferedImage[] largeBufferedImages = new BufferedImage[6];

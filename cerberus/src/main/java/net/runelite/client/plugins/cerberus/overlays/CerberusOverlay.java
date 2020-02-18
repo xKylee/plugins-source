@@ -105,16 +105,12 @@ public class CerberusOverlay extends Overlay
 		final Widget magicPrayerWidget = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MAGIC);
 
 		if (plugin.getConfig().drawDescendingBoxes() && meleePrayerWidget != null && !meleePrayerWidget.isHidden()
-			&& rangePrayerWidget != null && !rangePrayerWidget.isHidden()
-			&& magicPrayerWidget != null && !magicPrayerWidget.isHidden())
-		{
+				&& rangePrayerWidget != null && !rangePrayerWidget.isHidden()
+				&& magicPrayerWidget != null && !magicPrayerWidget.isHidden())
 			renderDescendingBoxes(graphics);
-		}
 
 		if (plugin.getConfig().drawGhostTiles() && plugin.getCerberus().getLastGhostYellTick() != 0 && plugin.getGameTick() - plugin.getCerberus().getLastGhostYellTick() < 17)
-		{
 			renderGhostTiles(graphics);
-		}
 
 		return null;
 	}
@@ -134,13 +130,9 @@ public class CerberusOverlay extends Overlay
 
 			final Color fillColor;
 			if (plugin.getGhosts().size() >= i + 1)
-			{
 				fillColor = CerberusGhost.fromNPC(plugin.getGhosts().get(i)).get().getColor();
-			}
 			else
-			{
 				fillColor = Color.WHITE;
-			}
 			OverlayUtil.drawTiles(graphics, client, ghostLocation, playerLocation, fillColor, 2, 255, 20);
 			if (ghostLocation.distanceTo(playerLocation) < 32)
 			{
@@ -157,13 +149,9 @@ public class CerberusOverlay extends Overlay
 						final double ghostActionTime = Math.max((double) ((lastGhostsTime + 600 * (13 + i * 2)) - System.currentTimeMillis()) / 1000, 0);
 						final Color textColor;
 						if (ghostActionTime <= 2)
-						{
 							textColor = Color.RED;
-						}
 						else
-						{
 							textColor = Color.WHITE;
-						}
 
 						final String value = String.format("%.1f", ghostActionTime);
 						int fontSize = 12;
@@ -174,7 +162,7 @@ public class CerberusOverlay extends Overlay
 						var newPoint = new Point(centerPoint.getX() - (metrics.stringWidth(value) / 2), centerPoint.getY() + (metrics.getHeight() / 2));
 
 						OverlayUtil.renderTextLocation(graphics, value, 12,
-							Font.PLAIN, textColor, newPoint, true, 0);
+								Font.PLAIN, textColor, newPoint, true, 0);
 					}
 				}
 			}
@@ -192,9 +180,7 @@ public class CerberusOverlay extends Overlay
 		{
 			final int tick = attack.getTick() - gameTick;
 			if (tick > Math.min(Math.max(plugin.getConfig().amountOfDescendingBoxes(), 0), 10))
-			{
 				continue;
-			}
 
 			final Widget prayerWidget = client.getWidget(attack.getAttack().getPrayer().getWidgetInfo());
 
@@ -206,9 +192,7 @@ public class CerberusOverlay extends Overlay
 			baseY += TICK_PIXEL_SIZE - ((lastTick + 600 - System.currentTimeMillis()) / 600.0 * TICK_PIXEL_SIZE);
 
 			if (baseY > (int) prayerWidget.getBounds().getY() - BOX_HEIGHT)
-			{
 				continue;
-			}
 
 			if (System.currentTimeMillis() - lastTick > 600)
 			{
@@ -222,9 +206,7 @@ public class CerberusOverlay extends Overlay
 					lastBoxBaseYMap.put(prayerWidget, baseY);
 				}
 				else
-				{
 					lastBoxBaseYMap.remove(prayerWidget);
-				}
 			}
 
 			final Rectangle boxRectangle = new Rectangle(BOX_WIDTH, BOX_HEIGHT);

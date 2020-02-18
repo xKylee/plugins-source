@@ -91,9 +91,7 @@ public class CerberusNPC
 	{
 		var calcualtedHp = CerberusUtil.getExactHp(cerberus.getHealthRatio(), cerberus.getHealth(), 600);
 		if (calcualtedHp != -1)
-		{
 			hp = calcualtedHp;
-		}
 		return hp;
 	}
 
@@ -102,24 +100,16 @@ public class CerberusNPC
 	{
 		var nextAttack = this.phaseCount + i;
 		if (nextAttack == 0)
-		{
 			return CerberusPhase.SPAWNING;
-		}
 
 		if ((nextAttack - 1) % 10 == 0)
-		{
 			return CerberusPhase.TRIPLE;
-		}
 
 		if (nextAttack % 7 == 0 && hp <= 400)
-		{
 			return CerberusPhase.GHOSTS;
-		}
 
 		if (nextAttack % 5 == 0 && hp <= 200)
-		{
 			return CerberusPhase.LAVA;
-		}
 
 		return CerberusPhase.AUTO;
 	}

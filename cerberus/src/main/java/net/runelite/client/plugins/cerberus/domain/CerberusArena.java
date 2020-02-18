@@ -46,10 +46,8 @@ public enum CerberusArena
 		for (var arena : CerberusArena.values())
 		{
 			if (wp.getX() >= arena.getX1() && wp.getX() <= arena.getX2() &&
-				wp.getY() >= arena.getY1() && wp.getY() <= arena.getY2())
-			{
+					wp.getY() >= arena.getY1() && wp.getY() <= arena.getY2())
 				return arena;
-			}
 		}
 
 		return null;

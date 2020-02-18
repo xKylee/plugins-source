@@ -27,19 +27,24 @@
 
 package net.runelite.client.plugins.cerberus;
 
+import net.runelite.client.config.Button;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.plugins.cerberus.Util.CerberusReadMeButton;
 
 @ConfigGroup("cerberus")
+
 public interface CerberusConfig extends Config
 {
+
+
 	@ConfigSection(
-		name = "General",
-		description = "Configure general settings.",
-		position = 0,
-		keyName = "generalSection"
+			name = "General",
+			description = "Configure general settings.",
+			position = 0,
+			keyName = "generalSection"
 	)
 	default boolean generalSection()
 	{
@@ -47,10 +52,10 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigSection(
-		name = "Upcoming attacks",
-		description = "Configure how the upcoming attacks are rendered. The upcoming attacks usually follow the same pattern (see http://pastebin.com/hWCvantS).",
-		position = 1,
-		keyName = "upcomingAttacksSection"
+			name = "Upcoming attacks",
+			description = "Configure how the upcoming attacks are rendered. The upcoming attacks usually follow the same pattern (see http://pastebin.com/hWCvantS).",
+			position = 1,
+			keyName = "upcomingAttacksSection"
 	)
 	default boolean upcomingAttacksSection()
 	{
@@ -58,22 +63,23 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigSection(
-		name = "'Guitar Hero'-mode",
-		description = "Configure the 'Guitar-hero'-mode.",
-		position = 2,
-		keyName = "guitarHeroSection"
+			name = "'Guitar Hero'-mode",
+			description = "Configure the 'Guitar-hero'-mode.",
+			position = 2,
+			keyName = "guitarHeroSection"
 	)
 	default boolean guitarHeroSection()
 	{
 		return true;
 	}
 
+
 	@ConfigItem(
-		keyName = "drawGhostTiles",
-		name = "Show ghost tiles",
-		description = "Check this to mark the tiles beneath the ghosts with a timer that counts down until its attack.",
-		position = 0,
-		section = "generalSection"
+			keyName = "drawGhostTiles",
+			name = "Show ghost tiles",
+			description = "Check this to mark the tiles beneath the ghosts with a timer that counts down until its attack.",
+			position = 0,
+			section = "generalSection"
 	)
 	default boolean drawGhostTiles()
 	{
@@ -81,11 +87,11 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "showPrayerTimer",
-		name = "Show prayer timer",
-		description = "Check this to show a timer on the prayer overlay until the attack hits.",
-		position = 1,
-		section = "generalSection"
+			keyName = "showPrayerTimer",
+			name = "Show prayer timer",
+			description = "Check this to show a timer on the prayer overlay until the attack hits.",
+			position = 1,
+			section = "generalSection"
 	)
 	default boolean showPrayerTimer()
 	{
@@ -94,11 +100,11 @@ public interface CerberusConfig extends Config
 
 
 	@ConfigItem(
-		keyName = "drawDescendingBoxes",
-		name = "Enable 'Guitar Hero'-mode",
-		description = "Check this to show descending boxes that show you what to pray against every upcoming attack.",
-		position = 0,
-		section = "guitarHeroSection"
+			keyName = "drawDescendingBoxes",
+			name = "Enable 'Guitar Hero'-mode",
+			description = "Check this to show descending boxes that show you what to pray against every upcoming attack.",
+			position = 0,
+			section = "guitarHeroSection"
 	)
 	default boolean drawDescendingBoxes()
 	{
@@ -106,23 +112,24 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "amountOfDescendingBoxes",
-		name = "Amount of ticks",
-		description = "Indicates how many upcoming ticks you would like to draw on the overlay. (0 - 10)",
-		position = 1,
-		section = "guitarHeroSection"
+			keyName = "amountOfDescendingBoxes",
+			name = "Amount of ticks",
+			description = "Indicates how many upcoming ticks you would like to draw on the overlay. (0 - 10)",
+			position = 1,
+			section = "guitarHeroSection"
 	)
 	default int amountOfDescendingBoxes()
 	{
 		return 4;
 	}
 
+
 	@ConfigItem(
-		keyName = "amountOfAttacksShown",
-		name = "Amount of attacks",
-		description = "Indicates how many upcoming attacks you would like to draw on the overlay. (0 - 10)",
-		position = 0,
-		section = "upcomingAttacksSection"
+			keyName = "amountOfAttacksShown",
+			name = "Amount of attacks",
+			description = "Indicates how many upcoming attacks you would like to draw on the overlay. (0 - 10)",
+			position = 0,
+			section = "upcomingAttacksSection"
 	)
 	default int amountOfAttacksShown()
 	{
@@ -130,11 +137,11 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "reverseUpcomingAttacks",
-		name = "Reverse order",
-		description = "Check this to reverse the order of the upcoming attacks shown on the overlay.",
-		position = 1,
-		section = "upcomingAttacksSection"
+			keyName = "reverseUpcomingAttacks",
+			name = "Reverse order",
+			description = "Check this to reverse the order of the upcoming attacks shown on the overlay.",
+			position = 1,
+			section = "upcomingAttacksSection"
 	)
 	default boolean reverseUpcomingAttacks()
 	{
@@ -142,11 +149,11 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "horizontalUpcomingAttacks",
-		name = "Horizontal mode",
-		description = "Check this to show the upcoming attacks horizontally.",
-		position = 2,
-		section = "upcomingAttacksSection"
+			keyName = "horizontalUpcomingAttacks",
+			name = "Horizontal mode",
+			description = "Check this to show the upcoming attacks horizontally.",
+			position = 2,
+			section = "upcomingAttacksSection"
 	)
 	default boolean horizontalUpcomingAttacks()
 	{
@@ -154,14 +161,26 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "showAttackNumber",
-		name = "Show attack number",
-		description = "Check this to show the attack number on each upcoming attack. This can be useful if you understand Cerberus' attack patterns (see http://pastebin.com/hWCvantS).",
-		position = 2,
-		section = "upcomingAttacksSection"
+			keyName = "showAttackNumber",
+			name = "Show attack number",
+			description = "Check this to show the attack number on each upcoming attack. This can be useful if you understand Cerberus' attack patterns (see http://pastebin.com/hWCvantS).",
+			position = 2,
+			section = "upcomingAttacksSection"
 	)
 	default boolean showAttackNumber()
 	{
-		return false;
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "readMeButton",
+			name = "READ ME BEFORE USING",
+			description = "Read this first if you don't know how Cerberus or the plugin works!",
+			position = 0,
+			clazz = CerberusReadMeButton.class
+	)
+	default Button readMeButton()
+	{
+		return new Button();
 	}
 }
