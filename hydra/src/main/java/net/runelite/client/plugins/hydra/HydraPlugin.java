@@ -60,6 +60,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Hydra Helper",
+	enabledByDefault = false,
 	description = "Overlays for normal Hydras.",
 	tags = {"hydra", "helper", "baby", "small", "normal", "regular"},
 	type = PluginType.PVM

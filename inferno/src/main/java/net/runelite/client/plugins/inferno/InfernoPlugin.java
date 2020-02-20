@@ -62,6 +62,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Inferno",
+	enabledByDefault = false,
 	description = "Inferno helper",
 	tags = {"combat", "overlay", "pve", "pvm"},
 	type = PluginType.PVM

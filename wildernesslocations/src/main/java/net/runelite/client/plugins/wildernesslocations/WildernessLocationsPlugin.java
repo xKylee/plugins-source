@@ -39,6 +39,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Wild Locations",
+	enabledByDefault = false,
 	description = "Indicates the players current location in the wild",
 	tags = {"Wildy", "Wilderness Location", "location", "loc", "pvp", "pklite"},
 	type = PluginType.PVP

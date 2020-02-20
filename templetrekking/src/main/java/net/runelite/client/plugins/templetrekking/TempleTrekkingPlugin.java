@@ -46,6 +46,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Temple Trekking",
+	enabledByDefault = false,
 	description = "Helpers for the Temple Trek minigame",
 	tags = {"minigame", "overlay", "temple trek"},
 	type = PluginType.MINIGAME

@@ -36,6 +36,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Runedoku Solver",
+	enabledByDefault = false,
 	description = "Show solutions for current Runedoku puzzle.",
 	tags = {"overlay", "runedoku", "sudoku", "puzzle", "solving"},
 	type = PluginType.MINIGAME

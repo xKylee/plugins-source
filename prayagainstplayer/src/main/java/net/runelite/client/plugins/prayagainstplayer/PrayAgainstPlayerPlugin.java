@@ -40,6 +40,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Pray Against Player",
+	enabledByDefault = false,
 	description = "Use plugin in PvP situations for best results!!",
 	tags = {"highlight", "pvp", "overlay", "players"},
 	type = PluginType.PVP

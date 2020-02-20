@@ -61,6 +61,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "AoE Warnings",
+	enabledByDefault = false,
 	description = "Shows the final destination for AoE Attack projectiles",
 	tags = {"bosses", "combat", "pve", "overlay"},
 	type = PluginType.PVM

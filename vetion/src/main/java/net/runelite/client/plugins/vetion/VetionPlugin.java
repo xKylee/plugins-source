@@ -43,6 +43,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Vetion Helper",
+	enabledByDefault = false,
 	description = "Tracks Vet'ion's special attacks",
 	tags = {"bosses", "combat", "pve", "overlay"},
 	type = PluginType.PVM

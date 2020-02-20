@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.1"
+version = "0.0.2"
 
 project.extra["PluginName"] = "Pile Indicators"
 project.extra["PluginDescription"] = "Highlight and count how many npcs/players are stacked on each other"

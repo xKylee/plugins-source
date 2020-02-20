@@ -61,6 +61,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Equipment Inspector",
+	enabledByDefault = false,
 	type = PluginType.PVP
 )
 public class EquipmentInspectorPlugin extends Plugin

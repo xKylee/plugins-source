@@ -61,6 +61,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Alchemical Hydra",
+	enabledByDefault = false,
 	description = "Show what to pray against hydra",
 	tags = {"Hydra", "Lazy", "4 headed asshole"},
 	type = PluginType.PVM

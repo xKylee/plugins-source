@@ -46,6 +46,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Max Hit",
+	enabledByDefault = false,
 	description = "Adds the max hit of the equipped weapon to the equipment and stats widget",
 	type = PluginType.UTILITY
 )

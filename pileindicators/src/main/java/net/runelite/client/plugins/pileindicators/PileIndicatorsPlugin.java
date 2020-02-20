@@ -45,6 +45,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Pile Indicators",
+	enabledByDefault = false,
 	description = "Highlight and count how many npcs/players are stacked on each other.",
 	tags = {"overlay", "pile", "stack", "pvp", "pvm", "pve"},
 	type = PluginType.UTILITY

@@ -18,6 +18,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Loot Assist Plugin",
+	enabledByDefault = false,
 	description = "Creates a tile overlay with a timer that counts down to when the loot will appear to you",
 	tags = {"pklite", "loot", "looting", "loot assist", "assist", "loot assist"},
 	type = PluginType.PVP

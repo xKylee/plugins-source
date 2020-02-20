@@ -49,6 +49,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Drop Party",
+	enabledByDefault = false,
 	description = "Marks where a user ran, for drop partys",
 	tags = {"Drop", "Party", "marker", "player"},
 	type = PluginType.MISCELLANEOUS
