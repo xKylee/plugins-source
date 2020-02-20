@@ -36,8 +36,7 @@ import net.runelite.client.plugins.cerberus.domain.CerberusPhase;
 import net.runelite.client.util.ImageUtil;
 
 @Slf4j
-public
-class CerberusImageManager
+public class CerberusImageManager
 {
 	private static final BufferedImage[] bufferedImages = new BufferedImage[6];
 	//private static final BufferedImage[] largeBufferedImages = new BufferedImage[6];
