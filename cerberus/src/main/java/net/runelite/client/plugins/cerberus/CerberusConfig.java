@@ -38,8 +38,6 @@ import net.runelite.client.plugins.cerberus.Util.CerberusReadMeButton;
 
 public interface CerberusConfig extends Config
 {
-
-
 	@ConfigSection(
 		name = "General",
 		description = "Configure general settings.",
