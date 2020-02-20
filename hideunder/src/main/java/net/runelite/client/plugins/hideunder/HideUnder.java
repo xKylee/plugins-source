@@ -41,6 +41,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Hide Under",
+	enabledByDefault = false,
 	description = "Hide local player when under targeted players",
 	tags = {"hide", "local", "player", "under"},
 	type = PluginType.PVP

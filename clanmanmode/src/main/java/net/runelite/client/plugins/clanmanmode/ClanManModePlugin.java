@@ -23,6 +23,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Clan Man Mode",
+	enabledByDefault = false,
 	description = "Assists in clan PVP scenarios",
 	tags = {"highlight", "minimap", "overlay", "players"},
 	type = PluginType.PVP

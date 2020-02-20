@@ -54,6 +54,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Blackjack",
+	enabledByDefault = false,
 	description = "Allows for one-click blackjacking, both knocking out and pickpocketing",
 	tags = {"blackjack", "thieving"},
 	type = PluginType.SKILLING
