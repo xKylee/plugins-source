@@ -67,6 +67,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Vorkath Helper",
+	enabledByDefault = false,
 	description = "Count vorkath attacks, indicate next phase, wooxwalk timer, indicate path through acid",
 	tags = {"combat", "overlay", "pve", "pvm"},
 	type = PluginType.PVM

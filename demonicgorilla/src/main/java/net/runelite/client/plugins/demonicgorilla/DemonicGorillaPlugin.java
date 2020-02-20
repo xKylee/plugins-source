@@ -67,6 +67,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Demonic Gorillas",
+	enabledByDefault = false,
 	description = "Count demonic gorilla attacks and display their next possible attack styles",
 	tags = {"combat", "overlay", "pve", "pvm"},
 	type = PluginType.PVM

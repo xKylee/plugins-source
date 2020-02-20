@@ -50,6 +50,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Boss Tick Timers",
+	enabledByDefault = false,
 	description = "Tick timers for bosses",
 	tags = {"pvm", "bossing"},
 	type = PluginType.PVM

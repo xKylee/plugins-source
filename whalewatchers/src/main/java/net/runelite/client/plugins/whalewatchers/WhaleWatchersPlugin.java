@@ -52,6 +52,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Whale Watchers",
+	enabledByDefault = false,
 	description = "A Plugin to save help whales in the wild",
 	tags = {"whale watchers", "whale", "protect item", "warning", "pklite", "pneck"},
 	type = PluginType.PVP

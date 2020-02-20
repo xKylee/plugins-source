@@ -69,6 +69,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "PvP Tools",
+	enabledByDefault = false,
 	description = "Enable the PvP Tools panel",
 	tags = {"panel", "pvp", "pk", "pklite", "renderself"},
 	type = PluginType.PVP

@@ -67,6 +67,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Player Scouter",
+	enabledByDefault = false,
 	description = "Scout players and output them to your discord channel!",
 	type = PluginType.PVP
 )

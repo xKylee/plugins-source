@@ -58,6 +58,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Reorder Prayers",
+	enabledByDefault = false,
 	description = "Reorder the prayers displayed on the Prayer panel",
 	type = PluginType.UTILITY
 )
