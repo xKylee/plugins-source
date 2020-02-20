@@ -33,7 +33,7 @@ import net.runelite.api.Skill;
 @RequiredArgsConstructor
 public enum CerberusPhase
 {
-	SPAWNING(null, 5), AUTO(Skill.ATTACK, 6), TRIPLE(Skill.FLETCHING, 6), GHOSTS(Skill.PRAYER, 6), LAVA(Skill.FIREMAKING, 8);
+	SPAWNING(null, 4), AUTO(Skill.ATTACK, 6), TRIPLE(Skill.FLETCHING, 6), GHOSTS(Skill.PRAYER, 6), LAVA(Skill.FIREMAKING, 8);
 
 	@Getter(AccessLevel.PUBLIC)
 	private final Skill type;

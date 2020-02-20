@@ -33,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 @Getter(AccessLevel.PUBLIC)
 public class CerberusAttack
 {
+
 	private final int tick;
 	private final CerberusNPC.Attack attack;
+
 }

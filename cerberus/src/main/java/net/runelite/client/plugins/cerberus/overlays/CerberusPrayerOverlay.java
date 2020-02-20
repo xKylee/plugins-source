@@ -32,6 +32,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Prayer;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
@@ -42,6 +44,8 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 
+@Singleton
+@Slf4j
 public class CerberusPrayerOverlay extends Overlay
 {
 	private final Client client;

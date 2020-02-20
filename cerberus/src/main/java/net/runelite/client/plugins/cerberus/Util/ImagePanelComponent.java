@@ -34,12 +34,14 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
+import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.client.ui.overlay.components.BackgroundComponent;
 import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
 import net.runelite.client.ui.overlay.components.TextComponent;
 
+@Singleton
 @Setter
 public class ImagePanelComponent implements LayoutableRenderableEntity
 {
