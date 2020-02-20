@@ -44,7 +44,7 @@ dependencies {
     testImplementation("com.openosrs:runelite-api:$rlVersion")
     testImplementation("com.openosrs:runelite-client:$rlVersion")
 
-    testImplementation(project(":attackstyles"))
+    testImplementation("com.openosrs.externals:attackstyles:0.0.+")
 
     testImplementation(Libraries.pf4j)
     testImplementation(Libraries.guiceTestlib)
