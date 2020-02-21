@@ -302,4 +302,5 @@ public class WhaleWatchersPlugin extends Plugin
 		damageTaken = 0;
 		damageDone = 0;
 	}
+	
 }

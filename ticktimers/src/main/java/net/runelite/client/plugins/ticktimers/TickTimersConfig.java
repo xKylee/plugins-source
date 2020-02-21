@@ -40,7 +40,7 @@ public interface TickTimersConfig extends Config
 	@ConfigTitleSection(
 		keyName = "mainConfig",
 		position = 0,
-		name = "Main Config",
+		name = "Features",
 		description = ""
 	)
 	default Title mainConfig()
