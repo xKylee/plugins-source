@@ -71,7 +71,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Totems",
 		description = "Highlights Totems based on their status",
 		position = 2,
-		setitleSectionction = "generalSection"
+		titleSection = "generalSection"
 	)
 	default boolean highlightTotems()
 	{
