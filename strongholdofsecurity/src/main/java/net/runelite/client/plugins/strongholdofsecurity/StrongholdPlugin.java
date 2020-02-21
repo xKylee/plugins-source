@@ -128,4 +128,5 @@ public class StrongholdPlugin extends Plugin
 		final String answerText = answerWidget.getText();
 		answerWidget.setText(ColorUtil.wrapWithColorTag(answerText, ANSWER_COLOR));
 	}
+	
 }

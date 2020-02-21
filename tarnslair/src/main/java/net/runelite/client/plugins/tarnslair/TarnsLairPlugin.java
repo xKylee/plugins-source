@@ -174,4 +174,5 @@ public class TarnsLairPlugin extends Plugin
 			floorTraps.put(newObject, tile);
 		}
 	}
+	
 }

@@ -184,4 +184,5 @@ public class WildernessLocationsPlugin extends Plugin
 		sendMessage("/World: " + client.getWorld() + " Location: " + location);
 		currentCooldown = 30;
 	}
+	
 }
