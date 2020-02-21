@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.3"
+version = "0.0.2"
 
 project.extra["PluginName"] = "Death Indicator"
 project.extra["PluginDescription"] = "Show where you last died, and on what world"

@@ -30,18 +30,33 @@ package net.runelite.client.plugins.zulrah;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.Title;
 
 @ConfigGroup("zulrah")
 
 public interface ZulrahConfig extends Config
 {
+	@ConfigTitleSection(
+		keyName = "soundsTitle",
+		position = 2,
+		name = "Sounds",
+		description = ""
+	)
+	default Title mainConfig()
+	{
+		return new Title();
+	}
+
 	@ConfigItem(
 		keyName = "sounds",
-		name = "Sounds Enabled",
-		description = "Configures whether client sounds are enabled for zulrah"
+		name = "Enable sounds",
+		description = "Configures whether client sounds are enabled for zulrah",
+		position = 3,
+		titleSection = "soundsTitle"
 	)
 	default boolean sounds()
 	{
-		return true;
+		return false;
 	}
 }

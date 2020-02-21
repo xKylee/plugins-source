@@ -29,12 +29,12 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.ConfigTitleSection;
 
 @ConfigGroup("betterHydra")
 public interface AlchemicalHydraConfig extends Config
 {
-	@ConfigSection(
+	@ConfigTitleSection(
 		keyName = "features",
 		name = "Features",
 		description = "Feathers. Jk, features",
@@ -50,7 +50,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Prayer helper",
 		description = "Basically everything this plugin is known for. Also has attacks between specs and poison overlay. Shouldn't NOT use this tbh",
 		position = 1,
-		section = "features"
+		titleSection = "features"
 	)
 	default boolean counting()
 	{
@@ -62,7 +62,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Fountain helper",
 		description = "Indicates if hydra is on a fountain",
 		position = 2,
-		section = "features"
+		titleSection = "features"
 	)
 	default boolean fountain()
 	{
@@ -74,20 +74,20 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Stun timer",
 		description = "Shows when you can walk in fire phase",
 		position = 3,
-		section = "features"
+		titleSection = "features"
 	)
 	default boolean stun()
 	{
 		return false;
 	}
 
-	@ConfigSection(
-		keyName = "colours",
-		name = "Colours",
-		description = "colours...",
+	@ConfigTitleSection(
+		keyName = "colors",
+		name = "Colors",
+		description = "colors...",
 		position = 2
 	)
-	default boolean colours()
+	default boolean colors()
 	{
 		return false;
 	}
@@ -95,10 +95,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "safeCol",
-		name = "Safe colour",
-		description = "Colour overlay will be when there's >2 attacks left",
+		name = "Safe color",
+		description = "Color overlay will be when there's >2 attacks left",
 		position = 1,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color safeCol()
 	{
@@ -108,10 +108,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "medCol",
-		name = "Medium colour",
-		description = "Colour overlay will be when a input is coming up",
+		name = "Medium color",
+		description = "Color overlay will be when a input is coming up",
 		position = 2,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color medCol()
 	{
@@ -121,10 +121,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "badCol",
-		name = "Bad colour",
-		description = "Colour overlay will be when you have to do something NOW",
+		name = "Bad color",
+		description = "Color overlay will be when you have to do something NOW",
 		position = 3,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color badCol()
 	{
@@ -134,10 +134,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "poisonBorderCol",
-		name = "Poison border colour",
-		description = "Colour the edges of the area highlighted by poison special will be",
+		name = "Poison border color",
+		description = "Color the edges of the area highlighted by poison special will be",
 		position = 4,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color poisonBorderCol()
 	{
@@ -147,10 +147,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "poisonCol",
-		name = "Poison colour",
-		description = "Colour the fill of the area highlighted by poison special will be",
+		name = "Poison color",
+		description = "Color the fill of the area highlighted by poison special will be",
 		position = 5,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color poisonCol()
 	{
@@ -160,10 +160,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "fountainColA",
-		name = "Fountain colour (not on top)",
-		description = "Fountain colour (not on top)",
+		name = "Fountain color (not on top)",
+		description = "Fountain color (not on top)",
 		position = 6,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color fountainColA()
 	{
@@ -173,10 +173,10 @@ public interface AlchemicalHydraConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "fountainColB",
-		name = "Fountain colour (on top)",
-		description = "Fountain colour (on top)",
+		name = "Fountain color (on top)",
+		description = "Fountain color (on top)",
 		position = 7,
-		section = "colours"
+		titleSection = "colors"
 	)
 	default Color fountainColB()
 	{
