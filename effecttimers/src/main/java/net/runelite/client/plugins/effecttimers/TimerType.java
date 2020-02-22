@@ -39,8 +39,9 @@ public enum TimerType
 	TELEBLOCK(100, loadImage("teleblock"), loadImage("teleblockimmune"), "teleblockTimers", new Color(0x5254ae)), // this is 60 seconds, might be wrong
 	VENG(0, loadImage("veng"), null, "vengTimers", Color.RED.brighter()),
 	SOTD(0, loadImage("sotd"), null, "sotdTimers", Color.YELLOW),
-	IMBUEDHEART(0, loadImage("imbheart"), null, "sotdTimers", Color.BLACK),
-	DFS(0, loadImage("dfs"), null, "sotdTimers", Color.WHITE);
+	IMBUEDHEART(0, loadImage("imbheart"), null, "imbHeartTimers", Color.BLACK),
+	DFS(0, loadImage("dfs"), null, "dfsTimers", Color.WHITE),
+	ANCWYVERN(0, loadImage("ancwyvern"), null, "ancWyvernTimers", Color.WHITE);
 
 	private final int immunityLength;
 	private final BufferedImage icon;

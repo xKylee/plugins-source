@@ -43,7 +43,8 @@ public enum PlayerEffect
 	VENG_OTHER("Vengeance Other", 725, 50, false, TimerType.VENG),
 	STAFF_OF_THE_DEAD("Staff of the Dead", 1228, 100, false, TimerType.SOTD),
 	IMBUED_HEART("Imbued Heart", 1316, 700, false, TimerType.IMBUEDHEART),
-	DFS("Dragon Fire Shield", 1165, 192, false, TimerType.DFS);
+	DFS("Dragon Fire Shield", 1165, 192, false, TimerType.DFS),
+	ANCIENT_WYVERN("Ancient Wyvern Shield", 1402, 192, false, TimerType.ANCWYVERN);
 
 	@Getter(AccessLevel.PACKAGE)
 	private final String name;
