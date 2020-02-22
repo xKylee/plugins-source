@@ -133,38 +133,36 @@ public interface EffectTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		name = "Show Icons",
-		keyName = "showIcons",
-		description = "Should we render the icons? Note disabling this will override all colors",
+		name = "Imbued Heart Timers",
+		keyName = "imbHeartTimers",
+		description = "Should we render staff of the imbued heart timers?",
 		position = 10
 	)
-	default boolean showIcons()
+	default boolean imbHeartTimers()
 	{
 		return true;
 	}
 
 	@ConfigItem(
-		name = "Debug Keybind",
-		keyName = "debugKeybind",
-		description = "Don't press this unless you know what it does :)",
-		position = 11,
-		hidden = true
+		name = "Dragon Fire Shield Timers",
+		keyName = "dfsTimers",
+		description = "Should we render staff of the dragon fire shield timers?",
+		position = 11
 	)
-	default Keybind debugKeybind()
+	default boolean dfsTimers()
 	{
-		return Keybind.NOT_SET;
+		return true;
 	}
 
 	@ConfigItem(
-		name = "Debug Integer",
-		keyName = "debugInteger",
-		description = "Related to the keybind in some way :)",
-		position = 12,
-		hidden = true
+		name = "Show Icons",
+		keyName = "showIcons",
+		description = "Should we render the icons? Note disabling this will override all colors",
+		position = 12
 	)
-	default int debugInteger()
+	default boolean showIcons()
 	{
-		return -1;
+		return true;
 	}
 
 	@ConfigItem(
@@ -177,4 +175,30 @@ public interface EffectTimersConfig extends Config
 	{
 		return 20;
 	}
+
+	@ConfigItem(
+		name = "Debug Keybind",
+		keyName = "debugKeybind",
+		description = "Don't press this unless you know what it does :)",
+		position = 14,
+		hidden = true
+	)
+	default Keybind debugKeybind()
+	{
+		return Keybind.NOT_SET;
+	}
+
+	@ConfigItem(
+		name = "Debug Integer",
+		keyName = "debugInteger",
+		description = "Related to the keybind in some way :)",
+		position = 15,
+		hidden = true
+	)
+	default int debugInteger()
+	{
+		return -1;
+	}
+
+
 }

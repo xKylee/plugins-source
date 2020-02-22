@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum PlayerSpellEffect
+public enum PlayerEffect
 {
 	BIND("Bind", 181, 8, false, TimerType.FREEZE),
 	SNARE("Snare", 180, 16, false, TimerType.FREEZE),
@@ -41,7 +41,9 @@ public enum PlayerSpellEffect
 	TELEBLOCK("Teleblock", 345, 500, true, TimerType.TELEBLOCK),
 	VENG("Vengeance", 726, 50, false, TimerType.VENG),
 	VENG_OTHER("Vengeance Other", 725, 50, false, TimerType.VENG),
-	STAFF_OF_THE_DEAD("Staff of the Dead", 1228, 100, false, TimerType.SOTD);
+	STAFF_OF_THE_DEAD("Staff of the Dead", 1228, 100, false, TimerType.SOTD),
+	IMBUED_HEART("Imbued Heart", 1316, 700, false, TimerType.IMBUEDHEART),
+	DFS("Dragon Fire Shield", 1165, 192, false, TimerType.DFS);
 
 	@Getter(AccessLevel.PACKAGE)
 	private final String name;
@@ -54,9 +56,9 @@ public enum PlayerSpellEffect
 	@Getter(AccessLevel.PACKAGE)
 	private final TimerType type;
 
-	static PlayerSpellEffect getFromSpotAnim(int spotAnim)
+	static PlayerEffect getFromSpotAnim(int spotAnim)
 	{
-		for (PlayerSpellEffect effect : values())
+		for (PlayerEffect effect : values())
 		{
 			if (effect.getSpotAnimId() == spotAnim)
 			{
