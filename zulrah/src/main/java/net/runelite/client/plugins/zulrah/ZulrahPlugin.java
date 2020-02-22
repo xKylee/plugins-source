@@ -65,6 +65,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Zulrah Helper",
+	enabledByDefault = false,
 	description = "Shows tiles on where to stand during the phases and what prayer to use.",
 	tags = {"zulrah", "boss", "helper"},
 	type = PluginType.PVM
@@ -270,4 +271,5 @@ public class ZulrahPlugin extends Plugin
 	{
 		return instance;
 	}
+	
 }

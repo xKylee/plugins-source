@@ -27,15 +27,29 @@ package net.runelite.client.plugins.vorkath;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.Title;
 
 @ConfigGroup("vorkath")
 public interface VorkathConfig extends Config
 {
+	@ConfigTitleSection(
+		keyName = "acidTitle",
+		position = 1,
+		name = "Acid",
+		description = ""
+	)
+	default Title acidConfig()
+	{
+		return new Title();
+	}
+
 	@ConfigItem(
 		keyName = "indicateAcidPools",
 		name = "Acid Pools",
 		description = "Indicate the acid pools",
-		position = 0
+		position = 2,
+		titleSection = "acidTitle"
 	)
 	default boolean indicateAcidPools()
 	{
@@ -46,7 +60,8 @@ public interface VorkathConfig extends Config
 		keyName = "indicateAcidFreePath",
 		name = "Acid Free Path",
 		description = "Indicate the most efficient acid free path",
-		position = 1
+		position = 3,
+		titleSection = "acidTitle"
 	)
 	default boolean indicateAcidFreePath()
 	{
@@ -57,20 +72,33 @@ public interface VorkathConfig extends Config
 		keyName = "acidFreePathMinLength",
 		name = "Minimum Length Acid Free Path",
 		description = "The minimum length of an acid free path",
-		position = 2,
+		position = 4,
 		hidden = true,
-		unhide = "indicateAcidFreePath"
+		unhide = "indicateAcidFreePath",
+		titleSection = "acidTitle"
 	)
 	default int acidFreePathLength()
 	{
 		return 5;
 	}
 
+	@ConfigTitleSection(
+		keyName = "wooxTitle",
+		position = 5,
+		name = "Woox walk",
+		description = ""
+	)
+	default Title wooxTitle()
+	{
+		return new Title();
+	}
+
 	@ConfigItem(
 		keyName = "indicateWooxWalkPath",
 		name = "WooxWalk Path",
 		description = "Indicate the closest WooxWalk path",
-		position = 3
+		position = 6,
+		titleSection = "wooxTitle"
 	)
 	default boolean indicateWooxWalkPath()
 	{
@@ -81,7 +109,8 @@ public interface VorkathConfig extends Config
 		keyName = "indicateWooxWalkTick",
 		name = "WooxWalk Tick",
 		description = "Indicate on which tile to click during each game tick",
-		position = 4
+		position = 7,
+		titleSection = "wooxTitle"
 	)
 	default boolean indicateWooxWalkTick()
 	{

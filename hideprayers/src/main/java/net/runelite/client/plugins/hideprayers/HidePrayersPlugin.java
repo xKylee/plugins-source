@@ -56,6 +56,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Show/Hide Prayers",
+	enabledByDefault = false,
 	description = "Hides specific Prayers.",
 	type = PluginType.UTILITY
 )

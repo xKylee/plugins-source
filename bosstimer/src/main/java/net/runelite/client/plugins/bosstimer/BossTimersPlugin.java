@@ -39,6 +39,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Boss Timers",
+	enabledByDefault = false,
 	description = "Show boss spawn timer overlays",
 	tags = {"combat", "pve", "overlay", "spawn"},
 	type = PluginType.PVM

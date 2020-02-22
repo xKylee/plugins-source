@@ -71,6 +71,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Cerberus",
+	enabledByDefault = false,
 	description = "Show Cerberus' attacks and what to pray against the summoned souls",
 	tags = {"bosses", "combat", "ghosts", "prayer", "pve", "overlay", "souls", "guitar", "hero"},
 	type = PluginType.PVM

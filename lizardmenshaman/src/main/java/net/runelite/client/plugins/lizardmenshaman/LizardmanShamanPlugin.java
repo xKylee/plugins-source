@@ -36,6 +36,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Lizardman Shamans",
+	enabledByDefault = false,
 	description = "Display an overlay for spawn explosion tiles",
 	tags = {"lizardman", "shaman", "lizard"},
 	type = PluginType.PVM

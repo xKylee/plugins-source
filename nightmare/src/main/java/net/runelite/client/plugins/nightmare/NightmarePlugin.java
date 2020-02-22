@@ -30,6 +30,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Nightmare of Ashihama",
+	enabledByDefault = false,
 	description = "Show what prayer to use and which tiles to avoid",
 	tags = {"bosses", "combat", "nm", "overlay", "nightmare", "pve", "pvm", "ashihama"},
 	type = PluginType.PVM

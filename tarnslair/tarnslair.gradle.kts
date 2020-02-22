@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.2"
+version = "0.0.4"
 
 project.extra["PluginName"] = "Tarn's lair"
 project.extra["PluginDescription"] = "Mark tiles and clickboxes to help traverse the maze"

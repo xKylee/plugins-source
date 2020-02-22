@@ -42,6 +42,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Stronghold",
+	enabledByDefault = false,
 	description = "Highlights the correct answer to Stronghold of Security questions",
 	tags = {"stronghold", "security", "overlay", "answer", "highlight"},
 	type = PluginType.UTILITY
@@ -127,4 +128,5 @@ public class StrongholdPlugin extends Plugin
 		final String answerText = answerWidget.getText();
 		answerWidget.setText(ColorUtil.wrapWithColorTag(answerText, ANSWER_COLOR));
 	}
+	
 }

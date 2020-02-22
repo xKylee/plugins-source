@@ -31,16 +31,14 @@ import net.runelite.client.config.Button;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.ConfigTitleSection;
 import net.runelite.client.plugins.cerberus.Util.CerberusReadMeButton;
 
 @ConfigGroup("cerberus")
 
 public interface CerberusConfig extends Config
 {
-
-
-	@ConfigSection(
+	@ConfigTitleSection(
 		name = "General",
 		description = "Configure general settings.",
 		position = 0,
@@ -51,7 +49,7 @@ public interface CerberusConfig extends Config
 		return true;
 	}
 
-	@ConfigSection(
+	@ConfigTitleSection(
 		name = "Upcoming attacks",
 		description = "Configure how the upcoming attacks are rendered. The upcoming attacks usually follow the same pattern (see http://pastebin.com/hWCvantS).",
 		position = 1,
@@ -62,7 +60,7 @@ public interface CerberusConfig extends Config
 		return true;
 	}
 
-	@ConfigSection(
+	@ConfigTitleSection(
 		name = "'Guitar Hero'-mode",
 		description = "Configure the 'Guitar-hero'-mode.",
 		position = 2,
@@ -79,7 +77,7 @@ public interface CerberusConfig extends Config
 		name = "Show ghost tiles",
 		description = "Check this to mark the tiles beneath the ghosts with a timer that counts down until its attack.",
 		position = 0,
-		section = "generalSection"
+		titleSection = "generalSection"
 	)
 	default boolean drawGhostTiles()
 	{
@@ -91,7 +89,7 @@ public interface CerberusConfig extends Config
 		name = "Show prayer timer",
 		description = "Check this to show a timer on the prayer overlay until the attack hits.",
 		position = 1,
-		section = "generalSection"
+		titleSection = "generalSection"
 	)
 	default boolean showPrayerTimer()
 	{
@@ -104,7 +102,7 @@ public interface CerberusConfig extends Config
 		name = "Enable 'Guitar Hero'-mode",
 		description = "Check this to show descending boxes that show you what to pray against every upcoming attack.",
 		position = 0,
-		section = "guitarHeroSection"
+		titleSection = "guitarHeroSection"
 	)
 	default boolean drawDescendingBoxes()
 	{
@@ -116,7 +114,7 @@ public interface CerberusConfig extends Config
 		name = "Amount of ticks",
 		description = "Indicates how many upcoming ticks you would like to draw on the overlay. (0 - 10)",
 		position = 1,
-		section = "guitarHeroSection"
+		titleSection = "guitarHeroSection"
 	)
 	default int amountOfDescendingBoxes()
 	{
@@ -129,7 +127,7 @@ public interface CerberusConfig extends Config
 		name = "Amount of attacks",
 		description = "Indicates how many upcoming attacks you would like to draw on the overlay. (0 - 10)",
 		position = 0,
-		section = "upcomingAttacksSection"
+		titleSection = "upcomingAttacksSection"
 	)
 	default int amountOfAttacksShown()
 	{
@@ -141,7 +139,7 @@ public interface CerberusConfig extends Config
 		name = "Reverse order",
 		description = "Check this to reverse the order of the upcoming attacks shown on the overlay.",
 		position = 1,
-		section = "upcomingAttacksSection"
+		titleSection = "upcomingAttacksSection"
 	)
 	default boolean reverseUpcomingAttacks()
 	{
@@ -153,7 +151,7 @@ public interface CerberusConfig extends Config
 		name = "Horizontal mode",
 		description = "Check this to show the upcoming attacks horizontally.",
 		position = 2,
-		section = "upcomingAttacksSection"
+		titleSection = "upcomingAttacksSection"
 	)
 	default boolean horizontalUpcomingAttacks()
 	{
@@ -165,7 +163,7 @@ public interface CerberusConfig extends Config
 		name = "Show attack number",
 		description = "Check this to show the attack number on each upcoming attack. This can be useful if you understand Cerberus' attack patterns (see http://pastebin.com/hWCvantS).",
 		position = 2,
-		section = "upcomingAttacksSection"
+		titleSection = "upcomingAttacksSection"
 	)
 	default boolean showAttackNumber()
 	{
