@@ -67,6 +67,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Stealing Artefacts",
+	enabledByDefault = false,
 	description = "A plugin for the Stealing Artefacts minigame.",
 	tags = {"stealing", "artefacts", "artifacts", "thieving", "minigame", "zeah"},
 	type = PluginType.MINIGAME

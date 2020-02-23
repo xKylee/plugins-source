@@ -20,7 +20,12 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: open-osrs/plugins
           ref: master
 
       - uses: actions/cache@v1
@@ -32,21 +37,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
-        run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -69,7 +90,12 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: open-osrs/plugins
           ref: master
 
       - uses: actions/cache@v1
@@ -81,21 +107,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
-        run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -118,7 +160,12 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: open-osrs/plugins
           ref: master
 
       - uses: actions/cache@v1
@@ -130,21 +177,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
-        run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -177,12 +240,17 @@ jobs:
 
       - uses: actions/checkout@v1
         with:
-          repository: xKylee/runelite
+          repository: open-osrs/runelite
           ref: master
 
       - uses: actions/checkout@v1
         with:
           repository: open-osrs/plugins
+          ref: master
+
+      - uses: actions/checkout@v1
+        with:
+          repository: xKylee/plugins-release
           ref: master
 
       - uses: actions/cache@v1
@@ -194,21 +262,37 @@ jobs:
 
       - name: Make gradlew executable (client)
         run: chmod +x ./gradlew
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Assembling client
         run: ./gradlew assemble --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Building client
         run: ./gradlew build --stacktrace -x test -x checkstyleMain --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Upload client artifacts to local maven
-        run: ./gradlew publishToMavenLocal --console=plain
-        working-directory: /home/runner/work/plugins/runelite
+        run: ./gradlew :http-api:publishToMavenLocal :runelite-api:publishToMavenLocal :runelite-client:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/runelite
 
       - name: Make gradlew executable (plugins)
+        run: chmod +x ./gradlew
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Assembling plugins
+        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Building plugins
+        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build --stacktrace -x test -x checkstyleMain --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Upload plugins artifacts to local maven
+        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal --console=plain
+        working-directory: /home/runner/work/plugins-source/plugins
+
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Assembling plugins
@@ -221,7 +305,7 @@ jobs:
         run: ./gradlew bootstrapPlugins --stacktrace --console=plain
 
       - name: Copy bootstrap
-        run: cp -af /home/runner/work/plugins/plugins/build/bootstrap/. /home/runner/work/plugins/plugin-hosting/
+        run: cp -af /home/runner/work/plugins-source/plugins-source/build/bootstrap/. /home/runner/work/plugins-source/plugins-release/
 
       - name: Commit bootstrap
         run: |
@@ -230,11 +314,11 @@ jobs:
           || git -c user.name="GitHub" -c user.email="noreply@github.com" commit \
             --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
             -m "Automatic plugin bootstrap"
-        working-directory: /home/runner/work/plugins/plugin-hosting
+        working-directory: /home/runner/work/plugins-source/plugins-release
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.Owain }}
-          directory: /home/runner/work/plugins/plugin-hosting
-          repository: open-osrs/plugin-hosting
+          github_token: ${{ secrets.xKylee }}
+          directory: /home/runner/work/plugins-source/plugins-release
+          repository: xKylee/plugins-release

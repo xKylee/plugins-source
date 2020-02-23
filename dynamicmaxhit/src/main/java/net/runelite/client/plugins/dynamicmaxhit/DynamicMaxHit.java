@@ -72,6 +72,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Dynamic Max Hit",
+	enabledByDefault = false,
 	description = "Dynamic Max Hit Calculations",
 	tags = {"broken", "op", "shit"},
 	type = PluginType.PVP

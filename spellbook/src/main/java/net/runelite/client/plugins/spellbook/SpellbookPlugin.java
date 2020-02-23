@@ -71,6 +71,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Spellbook",
+	enabledByDefault = false,
 	description = "Modifications to the spellbook",
 	tags = {"resize", "spell", "mobile", "lowers", "pvp", "skill", "level"},
 	type = PluginType.UTILITY

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 ThatGamerBlue
+ * Copyright (c) 2019 Im2be <https://github.com/Im2be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,47 +22,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.effecttimers;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package net.runelite.client.plugins.cerberus.Util;
 
-@AllArgsConstructor
-public enum PlayerSpellEffect
+public class CerberusUtil
 {
-	BIND("Bind", 181, 8, false, TimerType.FREEZE),
-	SNARE("Snare", 180, 16, false, TimerType.FREEZE),
-	ENTANGLE("Entangle", 179, 24, false, TimerType.FREEZE),
-	RUSH("Ice Rush", 361, 8, false, TimerType.FREEZE),
-	BURST("Ice Burst", 363, 16, false, TimerType.FREEZE),
-	BLITZ("Ice Blitz", 367, 24, false, TimerType.FREEZE),
-	BARRAGE("Ice Barrage", 369, 32, false, TimerType.FREEZE),
-	TELEBLOCK("Teleblock", 345, 500, true, TimerType.TELEBLOCK),
-	VENG("Vengeance", 726, 50, false, TimerType.VENG),
-	VENG_OTHER("Vengeance Other", 725, 50, false, TimerType.VENG),
-	STAFF_OF_THE_DEAD("Staff of the Dead", 1228, 100, false, TimerType.SOTD);
 
-	@Getter(AccessLevel.PACKAGE)
-	private final String name;
-	@Getter(AccessLevel.PACKAGE)
-	private final int spotAnimId;
-	@Getter(AccessLevel.PACKAGE)
-	private final int timerLengthTicks;
-	@Getter(AccessLevel.PACKAGE)
-	private boolean halvable;
-	@Getter(AccessLevel.PACKAGE)
-	private final TimerType type;
-
-	static PlayerSpellEffect getFromSpotAnim(int spotAnim)
+	public static int getExactHp(int ratio, int health, int maxHp)
 	{
-		for (PlayerSpellEffect effect : values())
+		if (ratio < 0 || health <= 0 || maxHp == -1)
 		{
-			if (effect.getSpotAnimId() == spotAnim)
-			{
-				return effect;
-			}
+			return -1;
 		}
-		return null;
+
+		int exactHealth = 0;
+
+		// This is the reverse of the calculation of healthRatio done by the server
+		// which is: healthRatio = 1 + (healthScale - 1) * health / maxHealth (if health > 0, 0 otherwise)
+		// It's able to recover the exact health if maxHealth <= healthScale.
+		if (ratio > 0)
+		{
+			int minHealth = 1;
+			int maxHealth;
+			if (health > 1)
+			{
+				if (ratio > 1)
+				{
+					// This doesn't apply if healthRatio = 1, because of the special case in the server calculation that
+					// health = 0 forces healthRatio = 0 instead of the expected healthRatio = 1
+					minHealth = (maxHp * (ratio - 1) + health - 2) / (health - 1);
+				}
+				maxHealth = (maxHp * ratio - 1) / (health - 1);
+				if (maxHealth > maxHp)
+				{
+					maxHealth = maxHp;
+				}
+			}
+			else
+			{
+				// If healthScale is 1, healthRatio will always be 1 unless health = 0
+				// so we know nothing about the upper limit except that it can't be higher than maxHealth
+				maxHealth = maxHp;
+			}
+			// Take the average of min and max possible healths
+			exactHealth = (minHealth + maxHealth + 1) / 2;
+		}
+
+		return exactHealth;
 	}
+
 }

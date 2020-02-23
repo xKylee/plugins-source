@@ -86,6 +86,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Gauntlet",
+	enabledByDefault = false,
 	description = "All-in-one plugin for the Gauntlet.",
 	tags = {"Gauntlet"},
 	type = PluginType.PVM

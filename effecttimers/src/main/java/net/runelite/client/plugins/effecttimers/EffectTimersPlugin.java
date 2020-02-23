@@ -170,7 +170,7 @@ public class EffectTimersPlugin extends Plugin
 			return;
 		}
 
-		PlayerSpellEffect effect = PlayerSpellEffect.getFromSpotAnim(spotAnim);
+		PlayerEffect effect = PlayerEffect.getFromSpotAnim(spotAnim);
 
 		if (effect == null)
 		{

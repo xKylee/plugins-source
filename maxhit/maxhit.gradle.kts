@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.1"
+version = "0.0.2"
 
 project.extra["PluginName"] = "Max Hit"
 project.extra["PluginDescription"] = "Adds the max hit of the equipped weapon to the equipment and stats widget"
@@ -44,7 +44,7 @@ dependencies {
     testImplementation("com.openosrs:runelite-api:$rlVersion")
     testImplementation("com.openosrs:runelite-client:$rlVersion")
 
-    testImplementation(project(":attackstyles"))
+    testImplementation("com.openosrs.externals:attackstyles:0.0.+")
 
     testImplementation(Libraries.pf4j)
     testImplementation(Libraries.guiceTestlib)

@@ -70,6 +70,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Death Indicator",
+	enabledByDefault = false,
 	description = "Show where you last died, and on what world",
 	tags = {"arrow", "hints", "world", "map", "overlay"},
 	type = PluginType.UTILITY

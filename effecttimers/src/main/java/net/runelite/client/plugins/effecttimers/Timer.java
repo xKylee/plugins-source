@@ -47,12 +47,12 @@ public class Timer
 	private TimerType type;
 	private boolean shutdown = false;
 
-	public Timer(EffectTimersPlugin plugin, PlayerSpellEffect effect)
+	public Timer(EffectTimersPlugin plugin, PlayerEffect effect)
 	{
 		this(plugin, effect, false);
 	}
 
-	public Timer(EffectTimersPlugin plugin, PlayerSpellEffect effect, boolean half)
+	public Timer(EffectTimersPlugin plugin, PlayerEffect effect, boolean half)
 	{
 		this.plugin = plugin;
 		this.client = plugin.getClient();

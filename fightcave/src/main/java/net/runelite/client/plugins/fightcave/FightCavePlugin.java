@@ -61,6 +61,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Fight Cave",
+	enabledByDefault = false,
 	description = "Displays current and upcoming wave monsters in the Fight Caves",
 	tags = {"bosses", "combat", "minigame", "overlay", "pve", "pvm", "jad", "fire", "cape", "wave"},
 	type = PluginType.PVM

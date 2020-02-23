@@ -26,18 +26,18 @@ package net.runelite.client.plugins.nightmare;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.ConfigTitleSection;
 
 @ConfigGroup("nightmareOfAshihama")
 public interface NightmareConfig extends Config
 {
-	@ConfigSection(
-		keyName = "features",
-		name = "Features",
-		description = "Features",
-		position = 0
+	@ConfigTitleSection(
+		name = "General",
+		description = "Configure general settings.",
+		position = 0,
+		keyName = "generalSection"
 	)
-	default boolean features()
+	default boolean generalSection()
 	{
 		return true;
 	}
@@ -48,6 +48,8 @@ public interface NightmareConfig extends Config
 		description = "Displays the correct prayer to use at various points in the fight.",
 		position = 1,
 		section = "features"
+		position = 0,
+		titleSection = "generalSection"
 	)
 	default boolean prayerHelper()
 	{
@@ -60,6 +62,8 @@ public interface NightmareConfig extends Config
 		description = "Displays the number of ticks until next attack",
 		position = 2,
 		section = "features"
+		position = 1,
+		titleSection = "generalSection"
 	)
 	default boolean ticksCounter()
 	{
@@ -72,6 +76,8 @@ public interface NightmareConfig extends Config
 		description = "Highlights Totems based on their status",
 		position = 3,
 		section = "features"
+		position = 2,
+		titleSection = "generalSection"
 	)
 	default boolean highlightTotems()
 	{

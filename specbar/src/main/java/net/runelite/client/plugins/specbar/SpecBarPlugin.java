@@ -36,6 +36,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Spec Bar",
+	enabledByDefault = false,
 	description = "Adds a spec bar to every weapon",
 	tags = {"spec bar", "special attack", "spec", "bar", "pklite"},
 	type = PluginType.PVP

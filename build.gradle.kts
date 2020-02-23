@@ -25,10 +25,31 @@ subprojects {
     project.extra["PluginLicense"] = "3-Clause BSD License"
 
     repositories {
-        jcenter()
-        mavenLocal()
-        maven(url = "https://repo.runelite.net")
-        maven(url = "https://jitpack.io")
+         jcenter {
+            content {
+                excludeGroupByRegex("com\\.openosrs.*")
+            }
+        }
+
+        exclusiveContent {
+            forRepository {
+                mavenLocal()
+            }
+            filter {
+                includeGroupByRegex("com\\.openosrs.*")
+            }
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url = uri("https://repo.runelite.net")
+                }
+            }
+            filter {
+                includeModule("net.runelite", "discord")
+            }
+        }
     }
 
     apply<JavaPlugin>()

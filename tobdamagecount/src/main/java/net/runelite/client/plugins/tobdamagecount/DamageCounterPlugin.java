@@ -55,6 +55,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "ToB Damage Counter",
+	enabledByDefault = false,
 	description = "Gives you an estimation damage on a boss and taken after the fight is done" +
 		"the damage will be posted in the chat",
 	tags = {"combat", "npcs", "tob", "damage"},

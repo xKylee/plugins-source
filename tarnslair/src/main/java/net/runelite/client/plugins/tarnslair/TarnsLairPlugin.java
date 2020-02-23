@@ -52,6 +52,7 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Tarn's Lair",
+	enabledByDefault = false,
 	description = "Mark tiles and clickboxes to help traverse the maze",
 	tags = {"agility", "maze", "minigame", "overlay"},
 	type = PluginType.MINIGAME
@@ -173,4 +174,5 @@ public class TarnsLairPlugin extends Plugin
 			floorTraps.put(newObject, tile);
 		}
 	}
+	
 }
