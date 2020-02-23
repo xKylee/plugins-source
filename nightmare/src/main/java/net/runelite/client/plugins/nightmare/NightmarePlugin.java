@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nightmare;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Provides;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,15 +13,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -135,26 +135,6 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onChatMessage(ChatMessage chatMessage)
-	{
-		if (chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
-		{
-			return;
-		}
-
-		final String message = chatMessage.getMessage();
-		if (message.contains("The Nightmare has cursed you, shuffling your prayers!"))
-		{
-			cursed = true;
-		}
-		else if (message.contains("You feel the effects of the Nightmare's curse wear off."))
-		{
-			cursed = false;
-		}
-
-	}
-
-	@Subscribe
 	public void onAnimationChanged(AnimationChanged event)
 	{
 		if (!inFight || nm == null)
@@ -243,6 +223,18 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
+	private void onGameStateChanged(GameStateChanged event)
+	{
+		GameState gamestate = event.getGameState();
+
+		//if loading happens while inFight, the user has left the area (either via death or teleporting).
+		if (gamestate == GameState.LOADING && inFight)
+		{
+			reset();
+		}
+	}
+
+	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
 		if (!inFight || nm == null)
@@ -258,7 +250,7 @@ public class NightmarePlugin extends Plugin
 
 		ticksUntilNextAttack--;
 
-		if (pendingNightmareAttack != null && ticksUntilNextAttack == 0)
+		if (pendingNightmareAttack != null && ticksUntilNextAttack <= 3)
 		{
 			pendingNightmareAttack = null;
 		}
