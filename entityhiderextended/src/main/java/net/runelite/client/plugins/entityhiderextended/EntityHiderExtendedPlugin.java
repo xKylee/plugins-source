@@ -72,15 +72,16 @@ public class EntityHiderExtendedPlugin extends Plugin
 	{
 		client.setIsHidingEntities(true);
 		client.setDeadNPCsHidden(config.hideDeadNPCs());
-		Text.fromCSV(config.hideNPCsNames()).forEach(client::addHiddenNpcName);
 		Text.fromCSV(config.hideNPCsOnDeath()).forEach(client::addHiddenNpcDeath);
 	}
 
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (event.getGroup().equals("entityhiderextended"))
+		if (!event.getGroup().equals("entityhiderextended"))
 		{
+			return;
+		}
 			client.setIsHidingEntities(true);
 			client.setDeadNPCsHidden(config.hideDeadNPCs());
 
@@ -104,19 +105,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 			{
 				return;
 			}
-
-			if (event.getKey().equals("hideNPCsNames"))
-			{
-				List<String> oldList = Text.fromCSV(event.getOldValue());
-				List<String> newList = Text.fromCSV(event.getNewValue());
-
-				List<String> removed = oldList.stream().filter(s -> !newList.contains(s)).collect(Collectors.toCollection(ArrayList::new));
-				List<String> added = newList.stream().filter(s -> !oldList.contains(s)).collect(Collectors.toCollection(ArrayList::new));
-
-				removed.forEach(client::removeHiddenNpcName);
-				added.forEach(client::addHiddenNpcName);
-			}
-
+			
 			if (event.getKey().equals("hideNPCsOnDeath"))
 			{
 				List<String> oldList = Text.fromCSV(event.getOldValue());
@@ -128,7 +117,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 				removed.forEach(client::removeHiddenNpcDeath);
 				added.forEach(client::addHiddenNpcDeath);
 			}
-		}
+		
 	}
 
 	@Subscribe
@@ -145,7 +134,6 @@ public class EntityHiderExtendedPlugin extends Plugin
 	{
 		client.setIsHidingEntities(false);
 		client.setDeadNPCsHidden(false);
-		Text.fromCSV(config.hideNPCsNames()).forEach(client::removeHiddenNpcName);
 		Text.fromCSV(config.hideNPCsOnDeath()).forEach(client::removeHiddenNpcDeath);
 	}
 }

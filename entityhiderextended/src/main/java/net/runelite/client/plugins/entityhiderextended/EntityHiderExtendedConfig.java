@@ -46,19 +46,7 @@ public interface EntityHiderExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 1,
-		keyName = "hideNPCsNames",
-		name = "Hide NPCs Names",
-		description = "Configures which NPCs to hide",
-		titleSection = "npcsTitle"
-	)
-	default String hideNPCsNames()
-	{
-		return "";
-	}
-
-	@ConfigItem(
-		position = 2,
+		position = 15,
 		keyName = "hideDeadNPCs",
 		name = "Hide Dead NPCs",
 		description = "Configures whether or not NPCs that just died are hidden",
@@ -70,7 +58,7 @@ public interface EntityHiderExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 16,
 		keyName = "hideNPCsOnDeath",
 		name = "Hide NPCs On Death",
 		description = "Configures which NPCs to hide when they die",
@@ -82,7 +70,7 @@ public interface EntityHiderExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
+		position = 17,
 		keyName = "blacklistDeadNpcs",
 		name = "Hide on Death Blacklist",
 		description = "Configures which NPCs NOT to hide when they die",
