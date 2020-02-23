@@ -67,6 +67,8 @@ public class NightmarePrayerOverlay extends Overlay
 			imagePanelComponent.setBackgroundColor(client.isPrayerActive(attack.getPrayer()) ? ComponentConstants.STANDARD_BACKGROUND_COLOR : NOT_ACTIVATED_BACKGROUND_COLOR);
 
 			imagePanelComponent.getChildren().add(new ImageComponent(prayerImage));
+
+			return imagePanelComponent.render(graphics);
 		}
 		return null;
 	}
