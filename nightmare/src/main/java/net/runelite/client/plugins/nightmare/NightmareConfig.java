@@ -46,8 +46,7 @@ public interface NightmareConfig extends Config
 		keyName = "prayerHelper",
 		name = "Prayer helper",
 		description = "Displays the correct prayer to use at various points in the fight.",
-		position = 1,
-		section = "features",
+		position = 0,
 		titleSection = "generalSection"
 	)
 	default boolean prayerHelper()
@@ -59,8 +58,7 @@ public interface NightmareConfig extends Config
 		keyName = "tickCounter",
 		name = "Show Ticks",
 		description = "Displays the number of ticks until next attack",
-		position = 2,
-		section = "features",
+		position = 1,
 		titleSection = "generalSection"
 	)
 	default boolean ticksCounter()
@@ -72,8 +70,7 @@ public interface NightmareConfig extends Config
 		keyName = "highlightTotems",
 		name = "Highlight Totems",
 		description = "Highlights Totems based on their status",
-		position = 3,
-		section = "features",
+		position = 2,
 		titleSection = "generalSection"
 	)
 	default boolean highlightTotems()
