@@ -28,9 +28,12 @@
  */
 package net.runelite.client.plugins.menuentryswapperextended;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -58,6 +61,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.menus.AbstractComparableEntry;
 import net.runelite.client.menus.EquipmentComparableEntry;
+import static net.runelite.client.menus.ComparableEntries.newBaseComparableEntry;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
@@ -87,6 +91,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
 	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
 	
+	private static final Splitter NEWLINE_SPLITTER = Splitter
+		.on("\n")
+		.omitEmptyStrings()
+		.trimResults();
+		
 	private static final AbstractComparableEntry WALK = new AbstractComparableEntry()
 	{
 		private final int hash = "WALK".hashCode() * 79 + getPriority();
