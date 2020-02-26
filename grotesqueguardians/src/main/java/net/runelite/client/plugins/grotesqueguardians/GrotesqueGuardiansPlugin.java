@@ -42,7 +42,7 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Grotesque Guardians",
 	enabledByDefault = false,
-	description = "Show various helpful utitiles during the Grotesque Gaurdians (Gargoyles) fight",
+	description = "Show various helpful utitiles during the Grotesque Guardians (Gargoyles) fight",
 	tags = {"bosses", "combat", "gargs", "overlay", "grotesque", "pve", "pvm"},
 	type = PluginType.PVM
 )
