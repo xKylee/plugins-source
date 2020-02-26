@@ -340,54 +340,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		event.setModified();
 	}
 	
-	private void loadCustomSwaps(String config, Map<AbstractComparableEntry, Integer> map)
-	{
-		final Map<AbstractComparableEntry, Integer> tmp = new HashMap<>();
-
-		if (!Strings.isNullOrEmpty(config))
-		{
-			final StringBuilder sb = new StringBuilder();
-
-			for (String str : config.split("\n"))
-			{
-				if (!str.startsWith("//"))
-				{
-					sb.append(str).append("\n");
-				}
-			}
-
-			final Map<String, String> split = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
-
-			for (Map.Entry<String, String> entry : split.entrySet())
-			{
-				final String prio = entry.getKey();
-				int priority;
-				try
-				{
-					priority = Integer.parseInt(entry.getValue().trim());
-				}
-				catch (NumberFormatException e)
-				{
-					priority = 0;
-				}
-				final String[] splitFrom = Text.standardize(prio).split(",");
-				final String optionFrom = splitFrom[0].trim();
-				final String targetFrom;
-				if (splitFrom.length == 1)
-				{
-					targetFrom = "";
-				}
-				else
-				{
-					targetFrom = splitFrom[1].trim();
-				}
-
-				final AbstractComparableEntry prioEntry = newBaseComparableEntry(optionFrom, targetFrom);
-
-				tmp.put(prioEntry, priority);
-			}
-		}
-
 	private void addSwaps()
 	{
 		final List<String> tmp = NEWLINE_SPLITTER.splitToList(config.prioEntry());
