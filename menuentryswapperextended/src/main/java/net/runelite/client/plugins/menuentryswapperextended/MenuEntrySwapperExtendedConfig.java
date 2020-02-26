@@ -59,7 +59,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
-
 	@ConfigSection(
 		name = "Teleportation",
 		description = "",
@@ -101,6 +100,17 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		keyName = "hotkeySwapping"
 	)
 	default boolean hotkeySwapping()
+	{
+		return false;
+	}
+	
+	@ConfigSection(
+		name = "Miscellaneous Swapping",
+		description = "",
+		position = 1,
+		keyName = "miscellaneousSection"
+	)
+	default boolean miscellaneousSection()
 	{
 		return false;
 	}
@@ -588,5 +598,27 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default boolean hotKeyLoot()
 	{
 		return false;
+	}
+	
+	//------------------------------------------------------------//
+	// Miscellaneous menu swaps
+	//------------------------------------------------------------//
+	
+	@ConfigItem(
+		keyName = "prioEntry",
+		name = "Prioritize Entry",
+		description = "This section is mainly for prioritizing entries. For example" +
+			"<br>ignoring attack on snakelings at zulrah." +
+			"<br>Example Syntax: walk here, snakeling" +
+			"<br>It's important to note that these will not take precedent over other swaps.",
+		position = 1,
+		section = "miscellaneousSection",
+		parse = true,
+		clazz = PrioParse.class,
+		method = "parse"
+	)
+	default String prioEntry()
+	{
+		return "";
 	}
 }
