@@ -82,6 +82,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private static final Object HOTKEY = new Object();
 	private static final Object HOTKEY_CHECK = new Object();
 
+	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of dueling");
+	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
+	
 	private static final AbstractComparableEntry WALK = new AbstractComparableEntry()
 	{
 		private final int hash = "WALK".hashCode() * 79 + getPriority();
@@ -152,7 +155,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	@Inject
 	private Client client;
-
 	@Inject
 	private ClientThread clientThread;
 
@@ -182,6 +184,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private boolean inCoxRaid = false;
 	@Setter(AccessLevel.PRIVATE)
 	private boolean hotkeyActive;
+
+	private static final int FIRE_ALTAR = 10315;
 
 	private final HotkeyListener hotkey = new HotkeyListener(() -> config.hotkeyMod())
 	{
@@ -397,6 +401,20 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		{
 			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring of wealth"));
 		}
+		
+		if (config.swapDuelRingLavas())
+		{
+			if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
+			{
+				menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
+				menuManager.removePriorityEntry(CASTLE_WARS);
+			}
+			else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
+			{
+				menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
+				menuManager.removePriorityEntry(DUEL_ARENA);
+			}
+		}
 	}
 
 	private void removeSwaps()
@@ -415,6 +433,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		menuManager.removePriorityEntry(new EquipmentComparableEntry(config.getXericsTalismanMode().toString(), "talisman"));
 		menuManager.removePriorityEntry(config.getConstructionMode().getBuild());
 		menuManager.removePriorityEntry(config.getConstructionMode().getRemove());
+		menuManager.removePriorityEntry(CASTLE_WARS);
+		menuManager.removePriorityEntry(DUEL_ARENA);
 	}
 
 	private void loadConstructionItems()
