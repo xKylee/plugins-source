@@ -84,6 +84,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of dueling");
 	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
+	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
 	
 	private static final AbstractComparableEntry WALK = new AbstractComparableEntry()
 	{
@@ -338,9 +339,73 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
 		event.setModified();
 	}
+	
+	private void loadCustomSwaps(String config, Map<AbstractComparableEntry, Integer> map)
+	{
+		final Map<AbstractComparableEntry, Integer> tmp = new HashMap<>();
+
+		if (!Strings.isNullOrEmpty(config))
+		{
+			final StringBuilder sb = new StringBuilder();
+
+			for (String str : config.split("\n"))
+			{
+				if (!str.startsWith("//"))
+				{
+					sb.append(str).append("\n");
+				}
+			}
+
+			final Map<String, String> split = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
+
+			for (Map.Entry<String, String> entry : split.entrySet())
+			{
+				final String prio = entry.getKey();
+				int priority;
+				try
+				{
+					priority = Integer.parseInt(entry.getValue().trim());
+				}
+				catch (NumberFormatException e)
+				{
+					priority = 0;
+				}
+				final String[] splitFrom = Text.standardize(prio).split(",");
+				final String optionFrom = splitFrom[0].trim();
+				final String targetFrom;
+				if (splitFrom.length == 1)
+				{
+					targetFrom = "";
+				}
+				else
+				{
+					targetFrom = splitFrom[1].trim();
+				}
+
+				final AbstractComparableEntry prioEntry = newBaseComparableEntry(optionFrom, targetFrom);
+
+				tmp.put(prioEntry, priority);
+			}
+		}
 
 	private void addSwaps()
 	{
+		final List<String> tmp = NEWLINE_SPLITTER.splitToList(config.prioEntry());
+
+		for (String str : tmp)
+		{
+			String[] strings = str.split(",");
+
+			if (strings.length <= 1)
+			{
+				continue;
+			}
+
+			final AbstractComparableEntry a = newBaseComparableEntry("", strings[1], -1, -1, false, true);
+			final AbstractComparableEntry b = newBaseComparableEntry(strings[0], "", -1, -1, false, false);
+			dePrioSwaps.put(a, b);
+			menuManager.addSwap(a, b);
+		}
 
 		if (config.swapPickpocket())
 		{
@@ -419,6 +484,12 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void removeSwaps()
 	{
+		final Iterator<Map.Entry<AbstractComparableEntry, AbstractComparableEntry>> dePrioIter = dePrioSwaps.entrySet().iterator();
+		dePrioIter.forEachRemaining((e) ->
+		{
+			menuManager.removeSwap(e.getKey(), e.getValue());
+			dePrioIter.remove();
+		});
 		menuManager.removePriorityEntry("Pickpocket");
 		menuManager.removePriorityEntry(new EquipmentComparableEntry(config.getBurningAmuletMode().toString(), "burning amulet"));
 		menuManager.removePriorityEntry(new EquipmentComparableEntry(config.getCombatBraceletMode().toString(), "combat bracelet"));
