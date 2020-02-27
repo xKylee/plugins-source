@@ -225,6 +225,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	public void startUp()
 	{
 		addSwaps();
+		rcSwaps();
 		loadConstructionItems();
 
 		if (client.getGameState() == GameState.LOGGED_IN)
@@ -264,6 +265,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		removeSwaps();
 		addSwaps();
+		rcSwaps();
 		loadConstructionItems();
 
 		switch (event.getKey())
@@ -301,6 +303,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			return;
 		}
 
+		rcSwaps();
 		loadConstructionItems();
 		keyManager.registerKeyListener(hotkey);
 	}
@@ -428,18 +431,21 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		{
 			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring of wealth"));
 		}
-		
+	}
+
+	private void rcSwaps()
+	{
 		if (config.swapDuelRingLavas())
 		{
 			if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
 			{
-				menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
 				menuManager.removePriorityEntry(CASTLE_WARS);
+				menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
 			}
 			else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
 			{
-				menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
 				menuManager.removePriorityEntry(DUEL_ARENA);
+				menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
 			}
 		}
 	}
