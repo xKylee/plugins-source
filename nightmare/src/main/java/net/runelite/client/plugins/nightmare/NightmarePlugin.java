@@ -176,7 +176,7 @@ public class NightmarePlugin extends Plugin
 			attacksSinceCurse = 0;
 		}
 
-		if (cursed || attacksSinceCurse == 5)
+		if (cursed && attacksSinceCurse == 5)
 		{
 			//curse is removed when she phases, or does 5 attacks
 			cursed = false;
