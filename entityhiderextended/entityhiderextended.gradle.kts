@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.4"
+version = "0.0.1"
 
-project.extra["PluginName"] = "Grotesque Guardians"
-project.extra["PluginDescription"] = "Show various helpful utitiles during the Grotesque Gaurdians (Gargoyles) fight"
+project.extra["PluginName"] = "Entity Hider Extended"
+project.extra["PluginDescription"] = "Hide players, NPCs, and/or projectiles"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -38,7 +38,6 @@ dependencies {
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
     compileOnly(Libraries.guice)
-    compileOnly(Libraries.gson)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
 }
