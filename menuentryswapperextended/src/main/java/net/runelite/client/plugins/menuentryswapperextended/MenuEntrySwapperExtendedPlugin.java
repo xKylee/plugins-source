@@ -297,15 +297,24 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
-		if (event.getGameState() != GameState.LOGGED_IN)
-		{
-			keyManager.unregisterKeyListener(hotkey);
-			return;
-		}
+		final GameState gameState = event.getGameState();
 
-		rcSwaps();
-		loadConstructionItems();
-		keyManager.registerKeyListener(hotkey);
+		switch (gameState)
+		{
+			case LOADING:
+			case CONNECTION_LOST:
+			case HOPPING:
+			case LOGIN_SCREEN:
+				keyManager.unregisterKeyListener(hotkey);
+				break;
+			case LOGGED_IN:
+				removeSwaps();
+				addSwaps();
+				rcSwaps();
+				loadConstructionItems();
+				keyManager.registerKeyListener(hotkey);
+				break;
+		}
 	}
 
 	@Subscribe
