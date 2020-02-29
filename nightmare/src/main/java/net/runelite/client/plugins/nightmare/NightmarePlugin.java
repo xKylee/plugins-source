@@ -13,9 +13,13 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
+import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.GameObjectDespawned;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
@@ -45,7 +49,6 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_CHARGE_1 = 8597;
 	private static final int NIGHTMARE_SHADOW_SPAWN = 8598;
 	private static final int NIGHTMARE_CURSE = 8599;
-	private static final int NIGHTMARE_MUSHROOM = 8600;
 	private static final int NIGHTMARE_QUADRANTS = 8601;
 	private static final int NIGHTMARE_SLEEP_DAMAGE = 8604;
 	private static final int NIGHTMARE_PARASITE_TOSS = 8605;
@@ -58,6 +61,9 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
 	private static final int NIGHTMARE_MAGIC_ATTACK = 8595;
+
+	private static final int NIGHTMARE_PRE_MUSHROOM = 37738;
+	private static final int NIGHTMARE_MUSHROOM = 37739;
 
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
 
@@ -83,6 +89,9 @@ public class NightmarePlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
+
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<LocalPoint, GameObject> spores = new HashMap<>();
 
 	@Getter(AccessLevel.PACKAGE)
 	private boolean inFight;
@@ -132,6 +141,39 @@ public class NightmarePlugin extends Plugin
 		attacksSinceCurse = 0;
 		ticksUntilNextAttack = 0;
 		totems.clear();
+		spores.clear();
+	}
+
+	@Subscribe
+	private void onGameObjectSpawned(GameObjectSpawned event)
+	{
+		if (!inFight)
+		{
+			return;
+		}
+
+		GameObject gameObj = event.getGameObject();
+		int id = gameObj.getId();
+		if (id == NIGHTMARE_MUSHROOM || id == NIGHTMARE_PRE_MUSHROOM)
+		{
+			spores.put(gameObj.getLocalLocation(), gameObj);
+		}
+	}
+
+	@Subscribe
+	private void onGameObjectDespawned(GameObjectDespawned event)
+	{
+		if (!inFight)
+		{
+			return;
+		}
+
+		GameObject gameObj = event.getGameObject();
+		int id = gameObj.getId();
+		if (id == NIGHTMARE_MUSHROOM || id == NIGHTMARE_PRE_MUSHROOM)
+		{
+			spores.remove(gameObj.getLocalLocation());
+		}
 	}
 
 	@Subscribe
