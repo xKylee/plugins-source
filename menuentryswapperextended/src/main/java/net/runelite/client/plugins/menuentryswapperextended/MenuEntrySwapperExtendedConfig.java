@@ -490,18 +490,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
-	@ConfigItem(
-		keyName = "hideLookup",
-		name = "Lookup",
-		description = "Hides the 'Lookup' option from the right click menu.",
-		position = 3,
-		section = "rightClickOptionsSection"
-	)
-	default boolean hideLookup()
-	{
-		return false;
-	}
-
 	//------------------------------------------------------------//
 	// PVM
 	//------------------------------------------------------------//

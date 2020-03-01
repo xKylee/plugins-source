@@ -346,11 +346,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				continue;
 			}
 
-			if (option.contains("lookup") && config.hideLookup())
-			{
-				continue;
-			}
-
 			if (option.contains("report") && config.hideReport())
 			{
 				continue;
