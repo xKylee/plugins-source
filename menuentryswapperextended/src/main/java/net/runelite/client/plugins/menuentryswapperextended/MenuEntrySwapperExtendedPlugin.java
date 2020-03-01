@@ -31,16 +31,11 @@ package net.runelite.client.plugins.menuentryswapperextended;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Setter;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import static net.runelite.api.ItemID.*;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.MenuOpcode;
 import net.runelite.api.Player;
@@ -51,7 +46,9 @@ import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOpened;
+import net.runelite.api.events.PlayerAppearanceChanged;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -60,8 +57,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.menus.AbstractComparableEntry;
-import net.runelite.client.menus.EquipmentComparableEntry;
 import static net.runelite.client.menus.ComparableEntries.newBaseComparableEntry;
+import net.runelite.client.menus.EquipmentComparableEntry;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
@@ -72,14 +69,22 @@ import net.runelite.client.plugins.pvptools.PvpToolsConfig;
 import net.runelite.client.plugins.pvptools.PvpToolsPlugin;
 import net.runelite.client.util.HotkeyListener;
 import org.pf4j.Extension;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Extension
 @PluginDescriptor(
-	name = "Menu Entry Swapper Extended",
-	enabledByDefault = false,
-	description = "Change the default option that is displayed when hovering over objects",
-	tags = {"pickpocket", "equipped items", "inventory", "items", "equip"},
-	type = PluginType.UTILITY
+		name = "Menu Entry Swapper Extended",
+		enabledByDefault = false,
+		description = "Change the default option that is displayed when hovering over objects",
+		tags = {"pickpocket", "equipped items", "inventory", "items", "equip"},
+		type = PluginType.UTILITY
 )
 @PluginDependency(PvpToolsPlugin.class)
 public class MenuEntrySwapperExtendedPlugin extends Plugin
@@ -87,15 +92,18 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private static final Object HOTKEY = new Object();
 	private static final Object HOTKEY_CHECK = new Object();
 
-	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of dueling");
-	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
+	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of" +
+			" " +
+			"dueling");
+	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of " +
+			"dueling");
 	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
-	
+
 	private static final Splitter NEWLINE_SPLITTER = Splitter
-		.on("\n")
-		.omitEmptyStrings()
-		.trimResults();
-		
+			.on("\n")
+			.omitEmptyStrings()
+			.trimResults();
+
 	private static final AbstractComparableEntry WALK = new AbstractComparableEntry()
 	{
 		private final int hash = "WALK".hashCode() * 79 + getPriority();
@@ -122,8 +130,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		public boolean matches(MenuEntry entry)
 		{
 			return
-				entry.getOpcode() == MenuOpcode.WALK.getId() ||
-					entry.getOpcode() == MenuOpcode.WALK.getId() + MenuOpcode.MENU_ACTION_DEPRIORITIZE_OFFSET;
+					entry.getOpcode() == MenuOpcode.WALK.getId() ||
+							entry.getOpcode() == MenuOpcode.WALK.getId() + MenuOpcode.MENU_ACTION_DEPRIORITIZE_OFFSET;
 		}
 	};
 
@@ -159,8 +167,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			}
 
 			return
-				opcode >= MenuOpcode.GROUND_ITEM_FIRST_OPTION.getId() &&
-					opcode <= MenuOpcode.GROUND_ITEM_FIFTH_OPTION.getId();
+					opcode >= MenuOpcode.GROUND_ITEM_FIRST_OPTION.getId() &&
+							opcode <= MenuOpcode.GROUND_ITEM_FIFTH_OPTION.getId();
 		}
 	};
 
@@ -195,6 +203,13 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private boolean inCoxRaid = false;
 	@Setter(AccessLevel.PRIVATE)
 	private boolean hotkeyActive;
+
+	private boolean ableToEnterFireAltar = false;
+	private final HashSet<Integer> maxCapeSet = new HashSet<>(Arrays.asList(MAX_CAPE, ACCUMULATOR_MAX_CAPE,
+			ARDOUGNE_MAX_CAPE, ASSEMBLER_MAX_CAPE, ASSEMBLER_MAX_CAPE_L, FIRE_MAX_CAPE, FIRE_MAX_CAPE_L,
+			GUTHIX_MAX_CAPE, IMBUED_GUTHIX_MAX_CAPE, IMBUED_GUTHIX_MAX_CAPE_L, SARADOMIN_MAX_CAPE,
+			IMBUED_SARADOMIN_MAX_CAPE, IMBUED_SARADOMIN_MAX_CAPE_L, ZAMORAK_MAX_CAPE, IMBUED_ZAMORAK_MAX_CAPE,
+			IMBUED_ZAMORAK_MAX_CAPE_L, INFERNAL_MAX_CAPE, INFERNAL_MAX_CAPE_L));
 
 	private static final int FIRE_ALTAR = 10315;
 
@@ -361,7 +376,19 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
 		event.setModified();
 	}
-	
+
+	@Subscribe
+	private void onPlayerAppearanceChanged(PlayerAppearanceChanged event)
+	{
+		if (!event.getPlayer().equals(client.getLocalPlayer()))
+		{
+			return;
+		}
+		rcSwaps();
+
+	}
+
+
 	private void addSwaps()
 	{
 		final List<String> tmp = NEWLINE_SPLITTER.splitToList(config.prioEntry());
@@ -388,22 +415,28 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.getBurningAmulet())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getBurningAmuletMode().toString(), "burning amulet"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getBurningAmuletMode().toString(),
+					"burning amulet"));
 		}
 
 		if (config.getCombatBracelet())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getCombatBraceletMode().toString(), "combat bracelet"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getCombatBraceletMode().toString(),
+					"combat bracelet"));
 		}
 
 		if (config.getGamesNecklace())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getGamesNecklaceMode().toString(), "games necklace"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getGamesNecklaceMode().toString(),
+					"games" +
+							" necklace"));
 		}
 
 		if (config.getDuelingRing())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDuelingRingMode().toString(), "ring of dueling"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDuelingRingMode().toString(), "ring " +
+					"of" +
+					" dueling"));
 		}
 
 		if (config.getGlory())
@@ -413,48 +446,69 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.getSkillsNecklace())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSkillsNecklaceMode().toString(), "skills necklace"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSkillsNecklaceMode().toString(),
+					"skills necklace"));
 		}
 
 		if (config.getNecklaceofPassage())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getNecklaceofPassageMode().toString(), "necklace of passage"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getNecklaceofPassageMode().toString(),
+					"necklace of passage"));
 		}
 
 		if (config.getDigsitePendant())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDigsitePendantMode().toString(), "digsite pendant"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDigsitePendantMode().toString(),
+					"digsite pendant"));
 		}
 
 		if (config.getSlayerRing())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSlayerRingMode().toString(), "slayer ring"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSlayerRingMode().toString(), "slayer" +
+					" " +
+					"ring"));
 		}
 
 		if (config.getXericsTalisman())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getXericsTalismanMode().toString(), "talisman"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getXericsTalismanMode().toString(),
+					"talisman"));
 		}
 
 		if (config.getRingofWealth())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring of wealth"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring" +
+					" " +
+					"of wealth"));
 		}
 	}
 
 	private void rcSwaps()
 	{
+
 		if (config.swapDuelRingLavas())
 		{
-			if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
+			ableToEnterFireAltar = checkFireAltarAccess();
+			if (ableToEnterFireAltar)
 			{
-				menuManager.removePriorityEntry(CASTLE_WARS);
-				menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
+
+
+				if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
+				{
+					menuManager.removePriorityEntry(CASTLE_WARS);
+					menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
+				}
+				else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
+				{
+					menuManager.removePriorityEntry(DUEL_ARENA);
+					menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
+				}
 			}
-			else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
+			else
 			{
 				menuManager.removePriorityEntry(DUEL_ARENA);
-				menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
+				menuManager.removePriorityEntry(CASTLE_WARS);
+
 			}
 		}
 	}
@@ -612,4 +666,23 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			}
 		});
 	}
+
+	private boolean checkFireAltarAccess()
+	{
+		if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerAppearance() == null)
+		{
+			return false;
+		}
+		return client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.HEAD) == FIRE_TIARA
+				|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPE
+				|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPET
+				|| checkIfPlayerIsWearingMaxCape(client.getLocalPlayer());
+	}
+
+	private boolean checkIfPlayerIsWearingMaxCape(Player player)
+	{
+		return maxCapeSet.contains(player.getPlayerAppearance().getEquipmentId(KitType.CAPE));
+	}
+
+
 }
