@@ -57,11 +57,9 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_CHARGE_2 = 8609;
 	private static final int NIGHTMARE_SPAWN = 8611;
 	private static final int NIGHTMARE_DEATH = 8612;
-
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
 	private static final int NIGHTMARE_MAGIC_ATTACK = 8595;
-
 	private static final int NIGHTMARE_PRE_MUSHROOM = 37738;
 	private static final int NIGHTMARE_MUSHROOM = 37739;
 
