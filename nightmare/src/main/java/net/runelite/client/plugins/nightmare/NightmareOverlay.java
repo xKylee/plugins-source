@@ -6,12 +6,16 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.geom.Area;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
+import net.runelite.api.GameObject;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
+import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.ui.overlay.Overlay;
@@ -72,25 +76,28 @@ class NightmareOverlay extends Overlay
 			return null;
 		}
 
-		for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+		if (config.highlightShadows())
 		{
-			Color color;
-
-			if (graphicsObject.getId() == NIGHTMARE_SHADOW)
+			for (GraphicsObject graphicsObject : client.getGraphicsObjects())
 			{
-				color = Color.ORANGE;
-			}
-			else
-			{
-				continue;
-			}
+				Color color;
 
-			LocalPoint lp = graphicsObject.getLocation();
-			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
+				if (graphicsObject.getId() == NIGHTMARE_SHADOW)
+				{
+					color = Color.ORANGE;
+				}
+				else
+				{
+					continue;
+				}
 
-			if (poly != null)
-			{
-				OverlayUtil.renderPolygon(graphics, poly, color);
+				LocalPoint lp = graphicsObject.getLocation();
+				Polygon poly = Perspective.getCanvasTilePoly(client, lp);
+
+				if (poly != null)
+				{
+					OverlayUtil.renderPolygon(graphics, poly, color);
+				}
 			}
 		}
 
@@ -124,6 +131,11 @@ class NightmareOverlay extends Overlay
 			}
 		}
 
+		if (config.highlightSpores())
+		{
+			drawPoisonArea(graphics, plugin.getSpores());
+		}
+
 		return null;
 	}
 
@@ -145,5 +157,32 @@ class NightmareOverlay extends Overlay
 		final Shape objectClickbox = actor.getConvexHull();
 		graphics.setColor(color);
 		graphics.draw(objectClickbox);
+	}
+
+	private void drawPoisonArea(Graphics2D graphics, Map<LocalPoint, GameObject> spores)
+	{
+		if (spores.size() < 1)
+		{
+			return;
+		}
+
+		Area poisonTiles = new Area();
+
+		for (Map.Entry<LocalPoint, GameObject> entry : spores.entrySet())
+		{
+			LocalPoint point = entry.getKey();
+			Polygon poly = getCanvasTileAreaPoly(client, point, 3);
+
+			if (poly != null)
+			{
+				poisonTiles.add(new Area(poly));
+			}
+		}
+
+		graphics.setPaintMode();
+		graphics.setColor(config.poisonBorderCol());
+		graphics.draw(poisonTiles);
+		graphics.setColor(config.poisonCol());
+		graphics.fill(poisonTiles);
 	}
 }
