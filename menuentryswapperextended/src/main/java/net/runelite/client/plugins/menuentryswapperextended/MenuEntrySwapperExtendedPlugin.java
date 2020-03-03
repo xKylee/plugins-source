@@ -201,13 +201,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Setter(AccessLevel.PRIVATE)
 	private boolean hotkeyActive;
 
-	private boolean ableToEnterFireAltar = false;
-	private final HashSet<Integer> maxCapeSet = new HashSet<>(Arrays.asList(MAX_CAPE, ACCUMULATOR_MAX_CAPE,
-		ARDOUGNE_MAX_CAPE, ASSEMBLER_MAX_CAPE, ASSEMBLER_MAX_CAPE_L, FIRE_MAX_CAPE, FIRE_MAX_CAPE_L,
-		GUTHIX_MAX_CAPE, IMBUED_GUTHIX_MAX_CAPE, IMBUED_GUTHIX_MAX_CAPE_L, SARADOMIN_MAX_CAPE,
-		IMBUED_SARADOMIN_MAX_CAPE, IMBUED_SARADOMIN_MAX_CAPE_L, ZAMORAK_MAX_CAPE, IMBUED_ZAMORAK_MAX_CAPE,
-		IMBUED_ZAMORAK_MAX_CAPE_L, INFERNAL_MAX_CAPE, INFERNAL_MAX_CAPE_L));
-
 	private static final int FIRE_ALTAR = 10315;
 
 	private final HotkeyListener hotkey = new HotkeyListener(() -> config.hotkeyMod())
@@ -653,13 +646,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		return client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.HEAD) == FIRE_TIARA
 			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPE
 			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPET
-			|| checkIfPlayerIsWearingMaxCape(client.getLocalPlayer());
+			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == MAX_CAPE;
 	}
 
-	private boolean checkIfPlayerIsWearingMaxCape(Player player)
-	{
-		return maxCapeSet.contains(player.getPlayerAppearance().getEquipmentId(KitType.CAPE));
-	}
 
 
 }
