@@ -23,6 +23,8 @@
  */
 package net.runelite.client.plugins.nightmare;
 
+import java.awt.Color;
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -76,5 +78,56 @@ public interface NightmareConfig extends Config
 	default boolean highlightTotems()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		keyName = "highlightShadows",
+		name = "Highlight Shadows",
+		description = "Highlights the Shadow Attacks",
+		position = 3,
+		titleSection = "generalSection"
+	)
+	default boolean highlightShadows()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "highlightSpores",
+		name = "Highlight Spores",
+		description = "Highlights spores that will make you yawn",
+		position = 4,
+		titleSection = "generalSection"
+	)
+	default boolean highlightSpores()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "poisonBorderCol",
+		name = "Poison border colour",
+		description = "Colour the edges of the area highlighted by poison special will be",
+		position = 5,
+		titleSection = "generalSection"
+	)
+
+	default Color poisonBorderCol()
+	{
+		return new Color(255, 0, 0, 100);
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "poisonCol",
+		name = "Poison colour",
+		description = "Colour the fill of the area highlighted by poison special will be",
+		position = 6,
+		titleSection = "generalSection"
+	)
+	default Color poisonCol()
+	{
+		return new Color(255, 0, 0, 50);
 	}
 }
