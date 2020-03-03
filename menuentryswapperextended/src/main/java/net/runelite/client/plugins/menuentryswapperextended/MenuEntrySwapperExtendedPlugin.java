@@ -65,8 +65,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.menus.AbstractComparableEntry;
-import static net.runelite.client.menus.ComparableEntries.newBaseComparableEntry;
 import net.runelite.client.menus.EquipmentComparableEntry;
+import static net.runelite.client.menus.ComparableEntries.newBaseComparableEntry;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
@@ -92,11 +92,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private static final Object HOTKEY = new Object();
 	private static final Object HOTKEY_CHECK = new Object();
 
-	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of" +
-		" " +
-		"dueling");
-	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of " +
-		"dueling");
+	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of dueling");
+	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
 	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
 
 	private static final Splitter NEWLINE_SPLITTER = Splitter
@@ -410,28 +407,22 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.getBurningAmulet())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getBurningAmuletMode().toString(),
-				"burning amulet"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getBurningAmuletMode().toString(), "burning amulet"));
 		}
 
 		if (config.getCombatBracelet())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getCombatBraceletMode().toString(),
-				"combat bracelet"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getCombatBraceletMode().toString(), "combat bracelet"));
 		}
 
 		if (config.getGamesNecklace())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getGamesNecklaceMode().toString(),
-				"games" +
-					" necklace"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getGamesNecklaceMode().toString(), "games necklace"));
 		}
 
 		if (config.getDuelingRing())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDuelingRingMode().toString(), "ring " +
-				"of" +
-				" dueling"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDuelingRingMode().toString(), "ring of dueling"));
 		}
 
 		if (config.getGlory())
@@ -441,40 +432,32 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.getSkillsNecklace())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSkillsNecklaceMode().toString(),
-				"skills necklace"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSkillsNecklaceMode().toString(), "skills necklace"));
 		}
 
 		if (config.getNecklaceofPassage())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getNecklaceofPassageMode().toString(),
-				"necklace of passage"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getNecklaceofPassageMode().toString(), "necklace of passage"));
 		}
 
 		if (config.getDigsitePendant())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDigsitePendantMode().toString(),
-				"digsite pendant"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getDigsitePendantMode().toString(), "digsite pendant"));
 		}
 
 		if (config.getSlayerRing())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSlayerRingMode().toString(), "slayer" +
-				" " +
-				"ring"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getSlayerRingMode().toString(), "slayer ring"));
 		}
 
 		if (config.getXericsTalisman())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getXericsTalismanMode().toString(),
-				"talisman"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getXericsTalismanMode().toString(), "talisman"));
 		}
 
 		if (config.getRingofWealth())
 		{
-			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring" +
-				" " +
-				"of wealth"));
+			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring of wealth"));
 		}
 	}
 
@@ -483,8 +466,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.swapDuelRingLavas())
 		{
-			ableToEnterFireAltar = checkFireAltarAccess();
-			if (ableToEnterFireAltar)
+			if (checkFireAltarAccess())
 			{
 
 
