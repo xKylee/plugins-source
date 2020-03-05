@@ -27,6 +27,7 @@
  */
 package net.runelite.client.plugins.dropparty;
 
+import com.google.inject.Provides;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -40,6 +41,7 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -48,12 +50,17 @@ import static net.runelite.client.util.ColorUtil.setAlphaComponent;
 
 public class DropPartyOverlay extends Overlay
 {
-	private static final int FILL_START_ALPHA = 25;
 	private static final int OUTLINE_START_ALPHA = 255;
 
 	private final Client client;
-	private final DropPartyPlugin plugin;
 	private final DropPartyConfig config;
+	private final DropPartyPlugin plugin;
+
+	@Provides
+	DropPartyConfig getConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(DropPartyConfig.class);
+	}
 
 	@Inject
 	public DropPartyOverlay(final Client client, final DropPartyPlugin plugin, final DropPartyConfig config)
@@ -68,7 +75,7 @@ public class DropPartyOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		int tiles = plugin.getShowAmmount();
+		int tiles = config.showAmount();
 		if (tiles == 0)
 		{
 			return null;
@@ -79,7 +86,7 @@ public class DropPartyOverlay extends Overlay
 
 		for (int i = 0; i < path.size(); i++)
 		{
-			if (i > plugin.getMAXPATHSIZE() || i > (plugin.getShowAmmount() - 1))
+			if (i > plugin.getMAXPATHSIZE() || i > (config.showAmount() - 1))
 			{
 				break;
 			}
@@ -103,11 +110,8 @@ public class DropPartyOverlay extends Overlay
 					}
 					markedTiles.add(path.get(i));
 				}
-
 			}
 		}
-
-
 		return null;
 	}
 
