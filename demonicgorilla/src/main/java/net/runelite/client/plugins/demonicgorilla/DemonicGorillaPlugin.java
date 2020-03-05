@@ -635,8 +635,8 @@ public class DemonicGorillaPlugin extends Plugin
 		{
 			DemonicGorilla gorilla = gorillas.get(event.getActor());
 			Hitsplat.HitsplatType hitsplatType = event.getHitsplat().getHitsplatType();
-			if (gorilla != null && (hitsplatType == Hitsplat.HitsplatType.BLOCK ||
-				hitsplatType == Hitsplat.HitsplatType.DAMAGE))
+			if (gorilla != null && (hitsplatType == Hitsplat.HitsplatType.BLOCK_ME ||
+				hitsplatType == Hitsplat.HitsplatType.DAMAGE_ME))
 			{
 				gorilla.setTakenDamageRecently(true);
 			}
