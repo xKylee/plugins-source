@@ -41,6 +41,7 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import static net.runelite.api.ItemID.*;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.MenuOpcode;
 import net.runelite.api.Player;
@@ -51,7 +52,9 @@ import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOpened;
+import net.runelite.api.events.PlayerAppearanceChanged;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -90,12 +93,12 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of dueling");
 	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
 	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
-	
+
 	private static final Splitter NEWLINE_SPLITTER = Splitter
 		.on("\n")
 		.omitEmptyStrings()
 		.trimResults();
-		
+
 	private static final AbstractComparableEntry WALK = new AbstractComparableEntry()
 	{
 		private final int hash = "WALK".hashCode() * 79 + getPriority();
@@ -356,7 +359,19 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
 		event.setModified();
 	}
-	
+
+	@Subscribe
+	private void onPlayerAppearanceChanged(PlayerAppearanceChanged event)
+	{
+		if (!event.getPlayer().equals(client.getLocalPlayer()))
+		{
+			return;
+		}
+		rcSwaps();
+
+	}
+
+
 	private void addSwaps()
 	{
 		final List<String> tmp = NEWLINE_SPLITTER.splitToList(config.prioEntry());
@@ -439,17 +454,29 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void rcSwaps()
 	{
+
 		if (config.swapDuelRingLavas())
 		{
-			if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
+			if (checkFireAltarAccess())
 			{
-				menuManager.removePriorityEntry(CASTLE_WARS);
-				menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
+
+
+				if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
+				{
+					menuManager.removePriorityEntry(CASTLE_WARS);
+					menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
+				}
+				else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
+				{
+					menuManager.removePriorityEntry(DUEL_ARENA);
+					menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
+				}
 			}
-			else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
+			else
 			{
 				menuManager.removePriorityEntry(DUEL_ARENA);
-				menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
+				menuManager.removePriorityEntry(CASTLE_WARS);
+
 			}
 		}
 	}
@@ -607,4 +634,19 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			}
 		});
 	}
+
+	private boolean checkFireAltarAccess()
+	{
+		if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerAppearance() == null)
+		{
+			return false;
+		}
+		return client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.HEAD) == FIRE_TIARA
+			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPE
+			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPET
+			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == MAX_CAPE;
+	}
+
+
+
 }
