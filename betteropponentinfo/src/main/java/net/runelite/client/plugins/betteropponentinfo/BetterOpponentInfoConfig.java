@@ -44,10 +44,10 @@ public interface BetterOpponentInfoConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "showOpponentsOpponent",
-			name = "Show opponent's opponent",
-			description = "Toggle showing opponent's opponent if within a multi-combat area",
-			position = 1
+		keyName = "showOpponentsOpponent",
+		name = "Show opponent's opponent",
+		description = "Toggle showing opponent's opponent if within a multi-combat area",
+		position = 1
 	)
 	default boolean showOpponentsOpponent()
 	{
