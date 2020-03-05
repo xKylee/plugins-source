@@ -1,9 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
- * Copyright (c) 2018, Kamiel
- * Copyright (c) 2019, alanbaumgartner <https://github.com/alanbaumgartner>
- * Copyright (c) 2019, Kyle <https://github.com/kyleeld>
- * Copyright (c) 2019, Lucas <https://github.com/lucwousin>
+ * Copyright (c) 2020, Kyle <https://github.com/xKylee>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +37,10 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import static net.runelite.api.ItemID.*;
+import static net.runelite.api.ItemID.FIRE_TIARA;
+import static net.runelite.api.ItemID.MAX_CAPE;
+import static net.runelite.api.ItemID.RUNECRAFT_CAPE;
+import static net.runelite.api.ItemID.RUNECRAFT_CAPET;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.MenuOpcode;
 import net.runelite.api.Player;
@@ -90,8 +89,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private static final Object HOTKEY = new Object();
 	private static final Object HOTKEY_CHECK = new Object();
 
-	private static final EquipmentComparableEntry CASTLE_WARS = new EquipmentComparableEntry("castle wars", "ring of dueling");
-	private static final EquipmentComparableEntry DUEL_ARENA = new EquipmentComparableEntry("duel arena", "ring of dueling");
 	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
 
 	private static final Splitter NEWLINE_SPLITTER = Splitter
@@ -169,6 +166,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	@Inject
 	private Client client;
+
 	@Inject
 	private ClientThread clientThread;
 
@@ -200,6 +198,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private boolean hotkeyActive;
 
 	private static final int FIRE_ALTAR = 10315;
+	private static final int CWARS = 9776;
+	private static final int CRAFT_GUILD = 11571;
 
 	private final HotkeyListener hotkey = new HotkeyListener(() -> config.hotkeyMod())
 	{
@@ -227,15 +227,15 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
+		if (client.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+		keyManager.registerKeyListener(hotkey);
+		setCastOptions(true);
 		addSwaps();
 		rcSwaps();
 		loadConstructionItems();
-
-		if (client.getGameState() == GameState.LOGGED_IN)
-		{
-			keyManager.registerKeyListener(hotkey);
-			setCastOptions(true);
-		}
 	}
 
 	@Override
@@ -371,7 +371,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	}
 
-
 	private void addSwaps()
 	{
 		final List<String> tmp = NEWLINE_SPLITTER.splitToList(config.prioEntry());
@@ -454,29 +453,44 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void rcSwaps()
 	{
-
-		if (config.swapDuelRingLavas())
+		if (client.getLocalPlayer() == null || !config.swapDuelRingLavas()
+			|| client.getLocalPlayer().getWorldLocation().getRegionID() != CWARS
+			|| client.getLocalPlayer().getWorldLocation().getRegionID() != CRAFT_GUILD
+			|| client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
 		{
-			if (checkFireAltarAccess())
+			menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
+			menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
+			menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
+			menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
+			menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
+		}
+
+		if (checkFireAltarAccess())
+		{
+			if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
 			{
-
-
-				if (client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
-				{
-					menuManager.removePriorityEntry(CASTLE_WARS);
-					menuManager.addPriorityEntry(DUEL_ARENA).setPriority(100);
-				}
-				else if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
-				{
-					menuManager.removePriorityEntry(DUEL_ARENA);
-					menuManager.addPriorityEntry(CASTLE_WARS).setPriority(100);
-				}
+				menuManager.addPriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape")).setPriority(100);
+				menuManager.addPriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)")).setPriority(100);
+				menuManager.addPriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape")).setPriority(100);
+				menuManager.addPriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling")).setPriority(100);
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
+			}
+			else if (client.getLocalPlayer().getWorldLocation().getRegionID() == CWARS
+				|| client.getLocalPlayer().getWorldLocation().getRegionID() == CRAFT_GUILD)
+			{
+				menuManager.addPriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling")).setPriority(100);
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
 			}
 			else
 			{
-				menuManager.removePriorityEntry(DUEL_ARENA);
-				menuManager.removePriorityEntry(CASTLE_WARS);
-
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
+				menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
 			}
 		}
 	}
@@ -503,8 +517,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		menuManager.removePriorityEntry(new EquipmentComparableEntry(config.getXericsTalismanMode().toString(), "talisman"));
 		menuManager.removePriorityEntry(config.getConstructionMode().getBuild());
 		menuManager.removePriorityEntry(config.getConstructionMode().getRemove());
-		menuManager.removePriorityEntry(CASTLE_WARS);
-		menuManager.removePriorityEntry(DUEL_ARENA);
+		menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
+		menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
+		menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
+		menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
+		menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
 	}
 
 	private void loadConstructionItems()
@@ -646,7 +663,4 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPET
 			|| client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.CAPE) == MAX_CAPE;
 	}
-
-
-
 }
