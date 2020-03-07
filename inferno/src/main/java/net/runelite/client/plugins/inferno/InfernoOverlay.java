@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
@@ -125,11 +126,17 @@ public class InfernoOverlay extends Overlay
 			}
 		}
 
+		var prayerWidgetHidden =
+			meleePrayerWidget == null
+				|| rangePrayerWidget == null
+				|| magicPrayerWidget == null
+				|| meleePrayerWidget.isHidden()
+				|| rangePrayerWidget.isHidden()
+				|| magicPrayerWidget.isHidden();
+
 		if ((config.prayerDisplayMode() == InfernoPrayerDisplayMode.PRAYER_TAB
 			|| config.prayerDisplayMode() == InfernoPrayerDisplayMode.BOTH)
-			&& (meleePrayerWidget != null && !meleePrayerWidget.isHidden()
-			&& rangePrayerWidget != null && !rangePrayerWidget.isHidden()
-			&& magicPrayerWidget != null && !magicPrayerWidget.isHidden()))
+			&& (!prayerWidgetHidden || config.alwaysShowPrayerHelper()))
 		{
 			renderPrayerIconOverlay(graphics);
 
