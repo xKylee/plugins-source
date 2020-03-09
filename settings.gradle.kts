@@ -68,6 +68,7 @@ include(":vorkath")
 include(":whalewatchers")
 include(":wildernesslocations")
 include(":zulrah")
+include(":zulrahnew")
 
 for (project in rootProject.children) {
     project.apply {
