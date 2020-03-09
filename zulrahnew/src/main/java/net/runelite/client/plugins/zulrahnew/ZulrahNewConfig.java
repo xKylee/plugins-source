@@ -30,7 +30,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("zulrah")
+@ConfigGroup("zulrahnew")
 public interface ZulrahNewConfig extends Config
 {
 	@ConfigItem(
