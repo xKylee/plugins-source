@@ -56,11 +56,14 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
+import org.pf4j.Extension;
 
+@Extension
 @PluginDescriptor(
-	name = "Zulrah",
-	description = "Zulrah Helper",
-	tags = {"Zulrah", "Helper"},
+	name = "Zulrah Helper - NEW",
+	enabledByDefault = false,
+	description = "Shows tiles on where to stand during the phases and what prayer to use.",
+	tags = {"zulrah", "boss", "helper"},
 	type = PluginType.PVM
 )
 
