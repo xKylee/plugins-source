@@ -1,32 +1,7 @@
-/*
- * Copyright (c) 2018, https://runelitepl.us
- * Copyright (c) 2018, https://github.com/runeliteplusplus
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package net.runelite.client.plugins.zulrahnew;
 
 import com.google.inject.Provides;
+import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
@@ -66,7 +41,7 @@ import org.pf4j.Extension;
 	tags = {"zulrah", "boss", "helper"},
 	type = PluginType.PVM
 )
-
+@Slf4j
 public class ZulrahNewPlugin extends Plugin
 {
 	private static final int[] PROTECTION_ICONS = {
@@ -98,15 +73,15 @@ public class ZulrahNewPlugin extends Plugin
 	private int lastphase;
 	private int phase;
 	int nextprayerendticks;
-	boolean phase1 = true;
-	boolean phase2 = true;
+	private boolean phase1 = true;
+	private boolean phase2 = true;
 	boolean phase3 = true;
 	boolean phase4 = true;
 	private boolean restart = false;
 	boolean prayerconserve = false;
 	int jadphase;
 	boolean jadflip = false;
-	Color nextcolor;
+	Color nztcolor;
 	LocalPoint nextzulrahtile;
 	LocalPoint nexttile;
 	LocalPoint currenttile;
@@ -135,9 +110,9 @@ public class ZulrahNewPlugin extends Plugin
 	@Inject
 	private ZulrahNewConfig config;
 	@Inject
-	private ZulrahNewOverlay zulraholdOverlay;
+	private ZulrahNewOverlay ZulrahNewOverlay;
 	@Inject
-	private ZulrahNewTileOverlay zulraholdTileOverlay;
+	private ZulrahNewTileOverlay ZulrahNewTileOverlay;
 	@Inject
 	private ZulrahNewJadOverlay ZulrahNewJadOverlay;
 	@Inject
@@ -208,37 +183,31 @@ public class ZulrahNewPlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
-		if (gameStateChanged.getGameState() != GameState.LOGGED_IN)
+		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
 		{
-			return;
+			loadProtectionIcons();
 		}
-		loadProtectionIcons();
 	}
 
 	@Override
 	protected void startUp()
 	{
-		overlayManager.add(zulraholdOverlay);
-		overlayManager.add(zulraholdTileOverlay);
+		overlayManager.add(ZulrahNewOverlay);
+		overlayManager.add(ZulrahNewTileOverlay);
 		overlayManager.add(ZulrahNewJadOverlay);
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		overlayManager.remove(zulraholdOverlay);
-		overlayManager.remove(zulraholdTileOverlay);
+		overlayManager.remove(ZulrahNewOverlay);
+		overlayManager.remove(ZulrahNewTileOverlay);
 		overlayManager.remove(ZulrahNewJadOverlay);
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (!config.EnableZulrah())
-		{
-			return;
-		}
-
 		if (phase4 && phases.size() == 11)
 		{
 			jadphase = 1;
@@ -309,7 +278,7 @@ public class ZulrahNewPlugin extends Plugin
 						phase3 = true;
 						phase4 = true;
 						nextzulrahtile = null;
-						nextcolor = null;
+						nztcolor = null;
 						nexttile = null;
 						currenttile = SWCornerTile;
 						restart = false;
@@ -328,26 +297,37 @@ public class ZulrahNewPlugin extends Plugin
 					{
 						for (int i = 0; i < phases.size(); i++)
 						{
-							if (phase1 && (!phases.get(i).equals(Phase1types.get(i)) || !locations.get(i).equals(Phase1pos.get(i))))
+							if (phase1)
 							{
-								phase1 = false;
-								not++;
+								if (!phases.get(i).equals(Phase1types.get(i)) || !locations.get(i).equals(Phase1pos.get(i)))
+								{
+									phase1 = false;
+									not++;
+								}
 							}
-							if (phase2 && (!phases.get(i).equals(Phase2types.get(i)) || !locations.get(i).equals(Phase2pos.get(i))))
+							if (phase2)
 							{
-								phase2 = false;
-								not++;
+								if (!phases.get(i).equals(Phase2types.get(i)) || !locations.get(i).equals(Phase2pos.get(i)))
+								{
+									phase2 = false;
+									not++;
+								}
 							}
-
-							if (phase3 && (!phases.get(i).equals(Phase3types.get(i)) || !locations.get(i).equals(Phase3pos.get(i))))
+							if (phase3)
 							{
-								phase3 = false;
-								not++;
+								if (!phases.get(i).equals(Phase3types.get(i)) || !locations.get(i).equals(Phase3pos.get(i)))
+								{
+									phase3 = false;
+									not++;
+								}
 							}
-							if (phase4 && (!phases.get(i).equals(Phase4types.get(i)) || !locations.get(i).equals(Phase4pos.get(i))))
+							if (phase4)
 							{
-								phase4 = false;
-								not++;
+								if (!phases.get(i).equals(Phase4types.get(i)) || !locations.get(i).equals(Phase4pos.get(i)))
+								{
+									phase4 = false;
+									not++;
+								}
 							}
 						}
 
@@ -355,7 +335,7 @@ public class ZulrahNewPlugin extends Plugin
 						{
 							if (lastphase == 2043)
 							{
-								nextcolor = Color.BLUE;
+								nztcolor = Color.BLUE;
 								nextzulrahtile = ZulrahPosCenter;
 								currenttile = SWCornerTile;
 								nexttile = SWCornerTile;
@@ -364,7 +344,7 @@ public class ZulrahNewPlugin extends Plugin
 							}
 							else if (lastphase == 2044)
 							{
-								nextcolor = Color.GREEN;
+								nztcolor = Color.GREEN;
 								nextzulrahtile = ZulrahPosNorth;
 								currenttile = SWCornerTile;
 								nexttile = EPillar;
@@ -376,7 +356,7 @@ public class ZulrahNewPlugin extends Plugin
 						{
 							if (phase1)
 							{
-								nextcolor = zulrahtype(Phase1types.get(phases.size()));
+								nztcolor = zulrahtype(Phase1types.get(phases.size()));
 								nextzulrahtile = Phase1pos.get(phases.size());
 								currenttile = Phase1tiles.get(phases.size() - 1);
 								nexttile = Phase1tiles.get(phases.size());
@@ -386,7 +366,7 @@ public class ZulrahNewPlugin extends Plugin
 							}
 							else if (phase2)
 							{
-								nextcolor = zulrahtype(Phase2types.get(phases.size()));
+								nztcolor = zulrahtype(Phase2types.get(phases.size()));
 								nextzulrahtile = Phase2pos.get(phases.size());
 								currenttile = Phase2tiles.get(phases.size() - 1);
 								nexttile = Phase2tiles.get(phases.size());
@@ -396,7 +376,7 @@ public class ZulrahNewPlugin extends Plugin
 							}
 							else if (phase3)
 							{
-								nextcolor = zulrahtype(Phase3types.get(phases.size()));
+								nztcolor = zulrahtype(Phase3types.get(phases.size()));
 								nextzulrahtile = Phase3pos.get(phases.size());
 								currenttile = Phase3tiles.get(phases.size() - 1);
 								nexttile = Phase3tiles.get(phases.size());
@@ -406,7 +386,7 @@ public class ZulrahNewPlugin extends Plugin
 							}
 							else if (phase4)
 							{
-								nextcolor = zulrahtype(Phase4types.get(phases.size()));
+								nztcolor = zulrahtype(Phase4types.get(phases.size()));
 								nextzulrahtile = Phase4pos.get(phases.size());
 								currenttile = Phase4tiles.get(phases.size() - 1);
 								nexttile = Phase4tiles.get(phases.size());
@@ -416,7 +396,7 @@ public class ZulrahNewPlugin extends Plugin
 							}
 							else
 							{
-								System.out.println("ERROR: COULD NOT IDENTIFY ZULRAH PHASE!");
+								return;
 							}
 							not = 0;
 						}
@@ -427,7 +407,7 @@ public class ZulrahNewPlugin extends Plugin
 						{
 							if (Phase1types.size() == phases.size())
 							{
-								nextcolor = null;
+								nztcolor = null;
 								nextzulrahtile = null;
 								nexttile = null;
 								restart = true;
@@ -438,11 +418,11 @@ public class ZulrahNewPlugin extends Plugin
 								nexttile = Phase1tiles.get(phases.size());
 								if (phases.size() == 8)
 								{
-									nextcolor = Color.YELLOW;
+									nztcolor = Color.YELLOW;
 								}
 								else
 								{
-									nextcolor = zulrahtype(Phase1types.get(phases.size()));
+									nztcolor = zulrahtype(Phase1types.get(phases.size()));
 								}
 							}
 							currenttile = Phase1tiles.get(phases.size() - 1);
@@ -452,7 +432,7 @@ public class ZulrahNewPlugin extends Plugin
 						{
 							if (Phase2types.size() == phases.size())
 							{
-								nextcolor = null;
+								nztcolor = null;
 								nextzulrahtile = null;
 								nexttile = null;
 								restart = true;
@@ -463,11 +443,11 @@ public class ZulrahNewPlugin extends Plugin
 								nexttile = Phase2tiles.get(phases.size());
 								if (phases.size() == 8)
 								{
-									nextcolor = Color.YELLOW;
+									nztcolor = Color.YELLOW;
 								}
 								else
 								{
-									nextcolor = zulrahtype(Phase2types.get(phases.size()));
+									nztcolor = zulrahtype(Phase2types.get(phases.size()));
 								}
 							}
 							currenttile = Phase2tiles.get(phases.size() - 1);
@@ -477,7 +457,7 @@ public class ZulrahNewPlugin extends Plugin
 						{
 							if (Phase3types.size() == phases.size())
 							{
-								nextcolor = null;
+								nztcolor = null;
 								nextzulrahtile = null;
 								nexttile = null;
 								restart = true;
@@ -488,11 +468,11 @@ public class ZulrahNewPlugin extends Plugin
 								nexttile = Phase3tiles.get(phases.size());
 								if (phases.size() == 9)
 								{
-									nextcolor = Color.YELLOW;
+									nztcolor = Color.YELLOW;
 								}
 								else
 								{
-									nextcolor = zulrahtype(Phase3types.get(phases.size()));
+									nztcolor = zulrahtype(Phase3types.get(phases.size()));
 								}
 							}
 							currenttile = Phase3tiles.get(phases.size() - 1);
@@ -502,7 +482,7 @@ public class ZulrahNewPlugin extends Plugin
 						{
 							if (Phase4types.size() == phases.size())
 							{
-								nextcolor = null;
+								nztcolor = null;
 								nextzulrahtile = null;
 								nexttile = null;
 								restart = true;
@@ -513,11 +493,11 @@ public class ZulrahNewPlugin extends Plugin
 								nexttile = Phase4tiles.get(phases.size());
 								if (phases.size() == 10)
 								{
-									nextcolor = Color.YELLOW;
+									nztcolor = Color.YELLOW;
 								}
 								else
 								{
-									nextcolor = zulrahtype(Phase4types.get(phases.size()));
+									nztcolor = zulrahtype(Phase4types.get(phases.size()));
 								}
 							}
 							currenttile = Phase4tiles.get(phases.size() - 1);
@@ -525,7 +505,7 @@ public class ZulrahNewPlugin extends Plugin
 						}
 						else
 						{
-							System.out.println("ERROR: COULD NOT IDENTIFY ZULRAH PHASE!");
+							log.debug("ERROR: COULD NOT IDENTIFY ZULRAH PHASE!");
 						}
 					}
 				}
@@ -716,7 +696,7 @@ public class ZulrahNewPlugin extends Plugin
 				phase3 = true;
 				phase4 = true;
 				nextzulrahtile = null;
-				nextcolor = null;
+				nztcolor = null;
 				nexttile = null;
 				currenttile = null;
 				restart = false;
@@ -733,20 +713,26 @@ public class ZulrahNewPlugin extends Plugin
 	@Subscribe
 	public void onAnimationChanged(AnimationChanged event)
 	{
-		Actor ZulrahActor = event.getActor();
-		if (ZulrahActor != null && ZulrahActor.getName() != null)
+		Actor Zulrhyboy = event.getActor();
+		if (Zulrhyboy != null && Zulrhyboy.getName() != null)
 		{
-			if (ZulrahActor instanceof NPC)
+			if (Zulrhyboy instanceof NPC)
 			{
-				if (ZulrahActor.equals(Zulrah) && jadphase > 0 && ZulrahActor.getAnimation() == 5069)
+				if (Zulrhyboy.equals(Zulrah))
 				{
-					jadflip = !jadflip;
+					if (jadphase > 0)
+					{
+						if (Zulrhyboy.getAnimation() == 5069)
+						{
+							jadflip = !jadflip;
+						}
+					}
 				}
 			}
 		}
 	}
 
-	private Color zulrahtype(int type)
+	public Color zulrahtype(int type)
 	{
 		switch (type)
 		{
@@ -795,7 +781,7 @@ public class ZulrahNewPlugin extends Plugin
 		}
 		else
 		{
-			System.out.println("ERROR: COULD NOT IDENTIFY ZULRAH PHASE!");
+			log.debug("ERROR: COULD NOT IDENTIFY ZULRAH PHASE!");
 		}
 
 		if (type > 0)

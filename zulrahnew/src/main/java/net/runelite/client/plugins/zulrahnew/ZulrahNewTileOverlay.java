@@ -1,29 +1,3 @@
-/*
- * Copyright (c) 2018, https://runelitepl.us
- * Copyright (c) 2018, https://github.com/runeliteplusplus
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package net.runelite.client.plugins.zulrahnew;
 
 import java.awt.Color;
@@ -46,16 +20,14 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 
 public class ZulrahNewTileOverlay extends Overlay
 {
-	private final ZulrahNewConfig config;
 	private final ZulrahNewPlugin plugin;
 
 	@Inject
 	private Client client;
 
 	@Inject
-	private ZulrahNewTileOverlay(ZulrahNewConfig config, ZulrahNewPlugin plugin)
+	private ZulrahNewTileOverlay(ZulrahNewPlugin plugin)
 	{
-		this.config = config;
 		this.plugin = plugin;
 		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPosition(OverlayPosition.DYNAMIC);
@@ -110,19 +82,19 @@ public class ZulrahNewTileOverlay extends Overlay
 			if (plugin.nextzulrahtile != null)
 			{
 				String style = "";
-				if (plugin.nextcolor.equals(Color.RED))
+				if (plugin.nztcolor.equals(Color.RED))
 				{
 					style = "MELEE";
 				}
-				else if (plugin.nextcolor.equals(Color.BLUE))
+				else if (plugin.nztcolor.equals(Color.BLUE))
 				{
 					style = "MAGE";
 				}
-				else if (plugin.nextcolor.equals(Color.GREEN))
+				else if (plugin.nztcolor.equals(Color.GREEN))
 				{
 					style = "RANGE";
 				}
-				else if (plugin.nextcolor.equals(Color.YELLOW))
+				else if (plugin.nztcolor.equals(Color.YELLOW))
 				{
 					style = "JAD";
 				}
@@ -131,7 +103,7 @@ public class ZulrahNewTileOverlay extends Overlay
 				Point textLocation = Perspective.getCanvasTextLocation(client, graphics, plugin.nextzulrahtile, style, 200);
 				if (poly != null)
 				{
-					BufferedImage clanchatImage = null;
+					BufferedImage clanchatImage;
 					if (style.equals("JAD"))
 					{
 						if (plugin.phase4 && plugin.phases.size() == 10)
@@ -160,7 +132,7 @@ public class ZulrahNewTileOverlay extends Overlay
 
 					graphics.setFont(FontManager.getRunescapeBoldFont());
 					OverlayUtil.renderTextLocation(graphics, textLocation, style, Color.WHITE);
-					OverlayUtil.renderPolygon(graphics, poly, plugin.nextcolor);
+					OverlayUtil.renderPolygon(graphics, poly, plugin.nztcolor);
 				}
 			}
 			if (plugin.MeleeTile != null)
