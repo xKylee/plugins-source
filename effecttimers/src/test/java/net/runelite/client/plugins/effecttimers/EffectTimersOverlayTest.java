@@ -3,9 +3,12 @@ package net.runelite.client.plugins.effecttimers;
 import com.google.inject.Guice;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
+import java.io.File;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
+import javax.inject.Named;
 import net.runelite.api.Client;
+import net.runelite.client.RuneLite;
 import net.runelite.client.config.OpenOSRSConfig;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -35,6 +38,10 @@ public class EffectTimersOverlayTest
 
 	@Inject
 	private EffectTimersOverlay timersOverlay;
+
+	@Bind
+	@Named("config")
+	private File configManagerConfig = RuneLite.DEFAULT_CONFIG_FILE;
 
 	@Before
 	public void before()

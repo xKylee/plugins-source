@@ -39,12 +39,10 @@ dependencies {
 
     compileOnly("com.openosrs.externals:clanchat:0.0.+")
 
-    compileOnly(Libraries.apacheCommonsLang)
+    compileOnly(Libraries.apacheCommonsText)
     compileOnly(Libraries.guice)
-    compileOnly(Libraries.javax)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
 }
 
 tasks {

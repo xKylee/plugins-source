@@ -39,7 +39,6 @@ dependencies {
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
-    compileOnly(Libraries.okhttp3)
     compileOnly(Libraries.pf4j)
 }
 
