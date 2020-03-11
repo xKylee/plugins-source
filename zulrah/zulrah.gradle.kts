@@ -40,7 +40,6 @@ dependencies {
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.okhttp3)
 }
 
 tasks {

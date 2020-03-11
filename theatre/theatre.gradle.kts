@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.3"
+version = "0.0.4"
 
 project.extra["PluginName"] = "Theatre Of Blood"
 project.extra["PluginDescription"] = "All-in-one plugin for Theatre of Blood"
@@ -38,7 +38,6 @@ dependencies {
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
     compileOnly(Libraries.guice)
-    compileOnly(Libraries.javax)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
     compileOnly(Libraries.rxjava)
