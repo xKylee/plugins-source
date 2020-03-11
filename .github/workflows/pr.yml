@@ -16,9 +16,17 @@ jobs:
         with:
           title-regex: '^([\w-/]+): \w+'
 
-  build:
+  validate:
+    name: Validate gradle wrapper
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+
+  build:
     name: Build
+    needs: [pr-lint, validate]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Set up JDK 11
@@ -88,8 +96,9 @@ jobs:
 
 
   checkstyleMain:
-    runs-on: ubuntu-latest
     name: Checkstyle main
+    needs: [pr-lint, validate]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Set up JDK 11
@@ -158,8 +167,9 @@ jobs:
         run: ./gradlew checkstyleMain --console=plain
 
   checkstyleTest:
-    runs-on: ubuntu-latest
     name: Checkstyle test
+    needs: [pr-lint, validate]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Set up JDK 11
@@ -229,6 +239,7 @@ jobs:
 
   bump:
     name: Check version numbers
+    needs: [pr-lint, validate]
     runs-on: ubuntu-latest
 
     steps:
