@@ -40,7 +40,6 @@ subprojects {
             }
         }
 
-
         exclusiveContent {
             forRepository {
                 maven {
