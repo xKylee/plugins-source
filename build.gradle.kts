@@ -40,6 +40,7 @@ subprojects {
             }
         }
 
+
         exclusiveContent {
             forRepository {
                 maven {
@@ -48,6 +49,17 @@ subprojects {
             }
             filter {
                 includeModule("net.runelite", "discord")
+            }
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
+                }
+            }
+            filter {
+                includeModule("com.openosrs.rxrelay3", "rxrelay")
             }
         }
     }
