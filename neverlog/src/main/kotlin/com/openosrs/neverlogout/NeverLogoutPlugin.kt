@@ -29,6 +29,5 @@ class NeverLogoutPlugin : Plugin() {
             mouseIdleTicks = 0
         }
     }
-
     private fun isLoggedIn() = client.localPlayer != null
 }
