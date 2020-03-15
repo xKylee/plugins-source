@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2019, gazivodag <https://github.com/gazivodag>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +10,6 @@ import ProjectVersions.rlVersion
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,33 +22,43 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.5"
+package net.runelite.client.plugins.prayagainstplayer;
 
-project.extra["PluginName"] = "Pray Against Player"
-project.extra["PluginDescription"] = "Use plugin in PvP situations for best results"
+import net.runelite.api.Player;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+/**
+ * Contains a player object
+ * When they attacked me
+ * And (in milliseconds) when to expire the overlay around them
+ */
+public class PlayerContainer
+{
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+	private final Player player;
+	private final long whenTheyAttackedMe;
+	private final int millisToExpireHighlight;
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-}
+	PlayerContainer(final Player player, final long whenTheyAttackedMe, final int millisToExpireHighlight)
+	{
+		this.player = player;
+		this.whenTheyAttackedMe = whenTheyAttackedMe;
+		this.millisToExpireHighlight = millisToExpireHighlight;
+	}
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	//getters
+	public Player getPlayer()
+	{
+		return player;
+	}
+
+	long getWhenTheyAttackedMe()
+	{
+		return whenTheyAttackedMe;
+	}
+
+	int getMillisToExpireHighlight()
+	{
+		return millisToExpireHighlight;
+	}
+
 }
