@@ -24,34 +24,51 @@
 package net.runelite.client.plugins.playerscouter;
 
 import com.google.inject.Provides;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.ItemDefinition;
+import net.runelite.api.NPC;
+import net.runelite.api.Player;
 import net.runelite.api.Varbits;
 import net.runelite.api.WorldType;
+import net.runelite.api.coords.WorldArea;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.PlayerDespawned;
+import net.runelite.api.events.PlayerSpawned;
+import net.runelite.api.kit.KitType;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.game.PlayerContainer;
-import net.runelite.client.game.PlayerManager;
+import net.runelite.client.game.ItemMapping;
+import net.runelite.client.game.ItemReclaimCost;
 import net.runelite.client.game.WorldLocation;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.util.PvPUtil;
 import net.runelite.client.util.QuantityFormatter;
 import net.runelite.http.api.discord.DiscordClient;
 import net.runelite.http.api.discord.DiscordEmbed;
@@ -60,6 +77,8 @@ import net.runelite.http.api.discord.embed.AuthorEmbed;
 import net.runelite.http.api.discord.embed.FieldEmbed;
 import net.runelite.http.api.discord.embed.FooterEmbed;
 import net.runelite.http.api.discord.embed.ThumbnailEmbed;
+import net.runelite.http.api.hiscore.HiscoreClient;
+import net.runelite.http.api.hiscore.HiscoreResult;
 import net.runelite.http.api.item.ItemStats;
 import okhttp3.HttpUrl;
 import org.pf4j.Extension;
@@ -67,14 +86,16 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Player Scouter",
-	enabledByDefault = false,
 	description = "Scout players and output them to your discord channel!",
-	type = PluginType.PVP
+	type = PluginType.PVP,
+	enabledByDefault = false
 )
 @Slf4j
 public class PlayerScouter extends Plugin
 {
+	private static final HiscoreClient HISCORE_CLIENT = new HiscoreClient();
 	private static final DiscordClient DISCORD_CLIENT = new DiscordClient();
+	private static final Map<WorldArea, String> WILD_LOCS = WorldLocation.getLOCATION_MAP();
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("MMM dd h:mm a z");
 	private static final String ICON_URL = "https://www.osrsbox.com/osrsbox-db/items-icons/"; // Add item id + ".png"
 
@@ -87,11 +108,10 @@ public class PlayerScouter extends Plugin
 	@Inject
 	private PlayerScouterConfig config;
 
-	@Inject
-	private PlayerManager playerManager;
-
+	private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+	private final Set<PlayerContainer> playerContainer = new HashSet<>();
+	private final Map<String, HiscoreResult> resultCache = new HashMap<>();
 	private final Map<String, Integer> blacklist = new HashMap<>();
-	private HttpUrl webhook;
 
 	@Provides
 	PlayerScouterConfig provideConfig(ConfigManager configManager)
@@ -103,8 +123,20 @@ public class PlayerScouter extends Plugin
 	protected void startUp()
 	{
 		blacklist.clear();
+		if (client.getGameState() == GameState.LOGGED_IN)
+		{
+			for (Player player : client.getPlayers())
+			{
+				addPlayer(player);
+			}
+		}
+	}
 
-		this.webhook = HttpUrl.parse(config.webhook());
+	@Override
+	protected void shutDown()
+	{
+		playerContainer.clear();
+		blacklist.clear();
 	}
 
 	@Subscribe
@@ -114,17 +146,8 @@ public class PlayerScouter extends Plugin
 		{
 			return;
 		}
-
-		this.webhook = HttpUrl.parse(config.webhook());
 	}
 
-	@Override
-	protected void shutDown()
-	{
-		blacklist.clear();
-	}
-
-	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
 		if (event.getGameState() == GameState.LOGGED_IN)
@@ -135,68 +158,48 @@ public class PlayerScouter extends Plugin
 		blacklist.clear();
 	}
 
-	@Subscribe
 	private void onGameTick(GameTick event)
 	{
+
 		resetBlacklist();
 
-		if (!checkWildy() || this.webhook == null)
+		if (!checkWildy() || playerContainer.isEmpty() || config.webhook() == null)
 		{
 			return;
 		}
 
-		final List<PlayerContainer> players = new ArrayList<>();
-
-		for (PlayerContainer player : playerManager.getPlayerContainers())
+		playerContainer.forEach(player ->
 		{
-			if (player.isScouted())
+			update(player);
+			if (player.getPlayer().getCombatLevel() < config.minimumCombat()
+				|| player.getPlayer().getCombatLevel() > config.maximumCombat())
 			{
-				player.setScoutTimer(player.getScoutTimer() - 1);
-				if (player.getScoutTimer() <= 0)
-				{
-					player.setScouted(false);
-					player.setScoutTimer(500);
-				}
-				continue;
+				return;
 			}
-
-			if (player.getPlayer().getCombatLevel() < config.minimumCombat() || player.getPlayer().getCombatLevel() > config.maximumCombat())
+			if ((player.getPlayer().getCombatLevel() >= config.minimumCombat()
+				&& player.getPlayer().getCombatLevel() <= config.maximumCombat()) && player.getRisk() > config.minimumRisk())
 			{
-				continue;
+				scoutPlayer(player);
 			}
-
-			if ((player.getPlayer().getCombatLevel() >= config.minimumCombat() &&
-				player.getPlayer().getCombatLevel() <= config.maximumCombat()) &&
-				player.getRisk() > config.minimumRisk())
-			{
-				if (player.getSkills() == null)
-				{
-					if (player.isHttpRetry())
-					{
-						continue;
-					}
-					playerManager.updateStats(player.getPlayer());
-					continue;
-				}
-				if (config.mini())
-				{
-					players.add(player);
-					continue;
-				}
-				addPlayer(player);
-			}
-		}
-
-		if (config.mini())
-		{
-			players.sort(Comparator.comparingInt(PlayerContainer::getRisk).reversed());
-			scoutMini(players);
-		}
+		});
 	}
 
-	private void addPlayer(PlayerContainer player)
+	private void onPlayerDespawned(PlayerDespawned event)
 	{
-		if (player.getPlayer() == client.getLocalPlayer()
+		final Player player = event.getPlayer();
+
+		playerContainer.removeIf(p -> p.getPlayer() == player);
+	}
+
+	private void onPlayerSpawned(PlayerSpawned event)
+	{
+		final Player player = event.getPlayer();
+		addPlayer(player);
+	}
+
+	private void addPlayer(Player player)
+	{
+		if (player == client.getLocalPlayer()
 			|| (!blacklist.isEmpty() && blacklist.containsKey(player.getName()))
 			|| (!config.scoutFriends() && client.isFriended(player.getName(), false)
 			|| (!config.scoutClan() && client.isClanMember(player.getName()))))
@@ -205,8 +208,8 @@ public class PlayerScouter extends Plugin
 			return;
 		}
 
+		playerContainer.add(new PlayerContainer(player));
 		blacklist.put(player.getName(), client.getTickCount() + config.timeout());
-		scoutPlayer(player);
 	}
 
 	private void resetBlacklist()
@@ -237,79 +240,203 @@ public class PlayerScouter extends Plugin
 		return client.getVar(Varbits.IN_WILDERNESS) == 1 || WorldType.isPvpWorld(client.getWorldType());
 	}
 
-	private void scoutMini(List<PlayerContainer> players)
+	private void update(PlayerContainer player)
 	{
-		if (client.getLocalPlayer() == null)
+		if (player.isScouted())
+		{
+			player.setScoutTimer(player.getScoutTimer() - 1);
+			if (player.getScoutTimer() <= 0)
+			{
+				player.setScouted(false);
+				player.setScoutTimer(500);
+			}
+			return;
+		}
+		player.setRisk(0);
+		updatePlayerGear(player);
+		updateStats(player);
+		player.setLocation(location(player));
+		player.setWildyLevel(PvPUtil.getWildernessLevelFrom(player.getPlayer().getWorldLocation()));
+		player.setTargetString(targetStringBuilder(player));
+		log.debug(player.toString());
+	}
+
+	private void updateStats(PlayerContainer player)
+	{
+		if (player.isHttpRetry() || player.getSkills() != null)
 		{
 			return;
 		}
 
-		final List<FieldEmbed> fieldList = new ArrayList<>();
-		final String location = WorldLocation.location(client.getLocalPlayer().getWorldLocation());
-		final int cap = Math.min(players.size(), 25);
-
-		int highestValue = 0;
-		int id = 0;
-		int risk = 0;
-		for (int i = 0; i < cap; i++)
+		executorService.submit(() ->
 		{
-			final PlayerContainer player = players.get(i);
-			final Map.Entry entry = getEntry(player.getGear());
-			risk += player.getRisk();
-			if (entry != null)
+			player.setHttpRetry(true);
+			HiscoreResult result;
+			if (resultCache.containsKey(player.getName()))
 			{
-				final int mostValued = (int) entry.getValue();
-				final int mostValuedId = (int) entry.getKey();
-
-				if (mostValued > highestValue)
+				result = resultCache.get(player.getName());
+			}
+			else
+			{
+				try
 				{
-					highestValue = mostValued;
-					id = mostValuedId;
+					result = HISCORE_CLIENT.lookup(player.getName());
+				}
+				catch (IOException ex)
+				{
+					log.warn("Error fetching Hiscore data " + ex.getMessage());
+					player.setHttpRetry(false);
+					return;
 				}
 			}
-
-			String name = "☠️ " + player.getName() + " ☠️";
-
-			if (player.getPlayer().getSkullIcon() == null)
+			if (result == null)
 			{
-				name = player.getName();
+				player.setHttpRetry(false);
+				return;
+			}
+			resultCache.put(player.getName(), result);
+			player.setSkills(result);
+			player.setPrayer(player.getSkills().getPrayer().getLevel());
+		});
+	}
+
+	private void updatePlayerGear(PlayerContainer player)
+	{
+		Map<Integer, Integer> prices = new HashMap<>();
+
+		if (player.getPlayer().getPlayerAppearance() == null)
+		{
+			return;
+		}
+
+		for (KitType kitType : KitType.values())
+		{
+			if (kitType.equals(KitType.RING) || kitType.equals(KitType.AMMUNITION))
+			{
+				continue;
 			}
 
-			fieldList.add(FieldEmbed.builder()
-				.name(name)
-				.value(QuantityFormatter.quantityToRSDecimalStack(player.getRisk()))
-				.inline(true)
-				.build());
+			final int id = player.getPlayer().getPlayerAppearance().getEquipmentId(kitType);
 
-			player.setScouted(true);
+			if (id == -1)
+			{
+				continue;
+			}
+
+			if (kitType.equals(KitType.WEAPON))
+			{
+				player.setWeapon(id);
+			}
+
+			final ItemStats item = itemManager.getItemStats(id, false);
+			final ItemDefinition itemDefinition = itemManager.getItemDefinition(id);
+
+			if (item == null)
+			{
+				log.debug("Item is null: {}", id);
+				continue;
+			}
+
+			if (ItemReclaimCost.breaksOnDeath(id))
+			{
+				prices.put(id, itemManager.getRepairValue(id));
+				log.debug("Item has a broken value: Id {}, Value {}", id, itemManager.getRepairValue(id));
+				continue;
+			}
+
+			if (!itemDefinition.isTradeable() && !ItemMapping.isMapped(id))
+			{
+				prices.put(id, itemDefinition.getPrice());
+			}
+			else if (itemDefinition.isTradeable())
+			{
+				prices.put(id, itemManager.getItemPrice(id, false));
+			}
 		}
+		updateGear(player, prices);
+	}
 
-		String iconId = String.valueOf(id);
-		String icon = ICON_URL + iconId + ".png";
+	private void updateGear(PlayerContainer player, Map<Integer, Integer> prices)
+	{
+		player.setGear(prices.entrySet()
+			.stream()
+			.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new))
+		);
 
-		ThumbnailEmbed image = ThumbnailEmbed.builder()
-			.url(ICON_URL + iconId + ".png")
-			.build();
+		player.setRiskedGear(prices.entrySet()
+			.stream()
+			.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new))
+		);
 
-		String color = "8388352";
-
-		if (risk < 1000000 && risk > 150000)
+		if (player.getPlayer().getSkullIcon() == null)
 		{
-			//blue
-			color = "32767";
+			removeEntries(player.getRiskedGear(), player.getPrayer() <= 25 ? 3 : 4);
 		}
-		else if (risk > 1000000)
+		else
 		{
-			//orange
-			color = "16744448";
+			removeEntries(player.getRiskedGear(), player.getPrayer() <= 25 ? 0 : 1);
 		}
 
-		message(location, icon, image, fieldList, color);
+		player.getRiskedGear().values().forEach(price -> player.setRisk(player.getRisk() + price));
+		prices.clear();
+	}
+
+	private static void removeEntries(LinkedHashMap<Integer, Integer> map, int quantity)
+	{
+		if (map.size() < quantity)
+		{
+			log.debug("Size is lower than removal quantity.");
+		}
+		for (int i = 0; i < quantity; i++)
+		{
+			if (!map.entrySet().iterator().hasNext())
+			{
+				log.debug("Attempted to remove entries, but there was not enough to remove.");
+				return;
+			}
+			log.debug("Entry Removed: " + map.entrySet().iterator().next());
+			map.entrySet().remove(map.entrySet().iterator().next());
+		}
+	}
+
+	private static Map.Entry getEntry(LinkedHashMap<Integer, Integer> map)
+	{
+		if (!map.isEmpty())
+		{
+			Iterator<Map.Entry<Integer, Integer>> entry = map.entrySet().iterator();
+
+			for (int i = 0; i < 1; i++)
+			{
+				entry.next();
+			}
+
+			return entry.next();
+		}
+		return null;
+	}
+
+	private String targetStringBuilder(PlayerContainer player)
+	{
+		if (player.getPlayer().getInteracting() != null)
+		{
+			Actor actor = player.getPlayer().getInteracting();
+			if (actor instanceof Player)
+			{
+				return "(Player) " + actor.getName();
+			}
+			else if (actor instanceof NPC)
+			{
+				return "(NPC) " + actor.getName();
+			}
+		}
+		return "No Target Detected";
 	}
 
 	private void scoutPlayer(PlayerContainer player)
 	{
-		if (player.isScouted())
+		if (player.isScouted() || player.getSkills() == null)
 		{
 			return;
 		}
@@ -350,7 +477,6 @@ public class PlayerScouter extends Plugin
 			.value(Integer.toString(player.getPlayer().getCombatLevel()))
 			.inline(true)
 			.build());
-
 		if (client.getVar(Varbits.IN_WILDERNESS) == 1)
 		{
 			fieldList.add(FieldEmbed.builder()
@@ -417,10 +543,7 @@ public class PlayerScouter extends Plugin
 			}
 		}
 
-
-		Map.Entry entry = getEntry(player.getGear());
-		String iconId = entry == null ? String.valueOf(1) : String.valueOf(entry.getKey());
-		String icon = ICON_URL + iconId + ".png";
+		String icon = ICON_URL + Objects.requireNonNull(getEntry(player.getGear())).getKey() + ".png";
 		String name = "☠️ " + player.getName() + " ☠️";
 
 		if (player.getPlayer().getSkullIcon() == null)
@@ -439,7 +562,7 @@ public class PlayerScouter extends Plugin
 
 		if (name.isEmpty() || fields.isEmpty())
 		{
-			log.debug("Discord message will fail with a missing name/description/field");
+			log.error("Discord message will fail with a missing name/description/field");
 			return;
 		}
 
@@ -462,15 +585,53 @@ public class PlayerScouter extends Plugin
 
 		DiscordMessage discordMessage = discordEmbed.toDiscordMessage("Gabon Scouter", " ", "https://i.imgur.com/2A6dr7q.png");
 
-		DISCORD_CLIENT.message(this.webhook, discordMessage);
+		DISCORD_CLIENT.message(HttpUrl.parse(config.webhook()), discordMessage);
 	}
 
-	private static Map.Entry getEntry(LinkedHashMap<Integer, Integer> map)
+	private String location(PlayerContainer player)
 	{
-		if (!map.isEmpty())
+		final WorldPoint wl = player.getPlayer().getWorldLocation();
+		int dist = 10000;
+		String s = "";
+		WorldArea closestArea = null;
+		for (Map.Entry<WorldArea, String> entry : WILD_LOCS.entrySet())
 		{
-			return map.entrySet().iterator().next();
+			WorldArea worldArea = entry.getKey();
+
+			if (worldArea.toWorldPointList().contains(wl))
+			{
+				s = entry.getValue();
+				return s;
+			}
+			int distTo = worldArea.distanceTo(wl);
+			if (distTo < dist)
+			{
+				dist = distTo;
+				closestArea = worldArea;
+			}
 		}
-		return null;
+		if (wl.getY() > (Objects.requireNonNull(closestArea).toWorldPoint().getY() + closestArea.getHeight()))
+		{
+			s = s + "N";
+		}
+		if (wl.getY() < closestArea.toWorldPoint().getY())
+		{
+			s = s + "S";
+		}
+		if (wl.getX() < closestArea.toWorldPoint().getX())
+		{
+			s = s + "W";
+		}
+		if (wl.getX() > (closestArea.toWorldPoint().getX() + closestArea.getWidth()))
+		{
+			s = s + "E";
+		}
+		s = s + " of ";
+		s = s + WILD_LOCS.get(closestArea);
+		if (s.startsWith(" of "))
+		{
+			s = s.substring(3);
+		}
+		return s;
 	}
 }
