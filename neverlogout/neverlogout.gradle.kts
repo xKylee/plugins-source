@@ -2,44 +2,36 @@ import ProjectVersions.rlVersion
 
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.70"
+    id("org.jetbrains.kotlin.jvm") version "1.3.61"
+    kotlin("kapt") version "1.3.61"
 }
 
-version = "0.0.1"
+version = "0.0.2"
 
 project.extra["PluginName"] = "Never Logout"
 project.extra["PluginDescription"] = "Remove 5 minute idle logout timer."
-project.extra["PluginLicense"] = "GNU GPLv3 https://www.gnu.org/licenses/gpl-3.0.md"
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
-    implementation("com.openosrs:runelite-api:$rlVersion")
-    implementation("com.openosrs:runelite-client:$rlVersion")
+    kapt(Libraries.pf4j)
 
-    implementation(Libraries.guice)
-    implementation(Libraries.lombok)
-    implementation(Libraries.pf4j)
+    compileOnly("com.openosrs:runelite-api:$rlVersion")
+    compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    implementation(kotlin("stdlib-jdk8"))
-
+    compileOnly(Libraries.guice)
+    compileOnly(Libraries.pf4j)
 }
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions {
+            jvmTarget = "11"
+            freeCompilerArgs = listOf("-Xjvm-default=enable")
+        }
+        sourceCompatibility = "11"
     }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-}
 
-tasks {
     jar {
         manifest {
             attributes(mapOf(
