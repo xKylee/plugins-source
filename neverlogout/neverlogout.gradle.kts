@@ -5,9 +5,9 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.3.70"
 }
 
-version = "0.0.3"
+version = "0.0.1"
 
-project.extra["PluginName"] = "Never Log"
+project.extra["PluginName"] = "Never Logout"
 project.extra["PluginDescription"] = "Remove 5 minute idle logout timer."
 project.extra["PluginLicense"] = "GNU GPLv3 https://www.gnu.org/licenses/gpl-3.0.md"
 
