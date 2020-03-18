@@ -2,18 +2,16 @@ import ProjectVersions.rlVersion
 
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.61"
-    kotlin("kapt") version "1.3.61"
+    kotlin("jvm") version ProjectVersions.kotlinVersion
+    kotlin("kapt") version ProjectVersions.kotlinVersion
 }
 
-version = "0.0.2"
+version = "0.0.3"
 
 project.extra["PluginName"] = "Never Logout"
 project.extra["PluginDescription"] = "Remove 5 minute idle logout timer."
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
-
     kapt(Libraries.pf4j)
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
@@ -21,6 +19,8 @@ dependencies {
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.pf4j)
+    
+    compileOnly(kotlin("stdlib"))
 }
 
 tasks {
