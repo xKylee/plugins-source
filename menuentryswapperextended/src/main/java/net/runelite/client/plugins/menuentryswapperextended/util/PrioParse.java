@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2018, https://openosrs.com
- * Copyright (c) 2018, Kyle <https://github.com/kyleeld>
+ * Copyright (c) 2019, Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,25 +24,54 @@
  */
 package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum SkillsNecklaceMode
+import com.google.common.base.Splitter;
+import java.util.List;
+import javax.inject.Singleton;
+
+@Singleton
+public class PrioParse
 {
-	FISHING_GUILD("Fishing Guild"),
-	MINING_GUILD("Mining Guild"),
-	CRAFTING_GUILD("Crafting Guild"),
-	COOKING_GUILD("Cooking Guild"),
-	WOODCUTTING_GUILD("Woodcutting Guild"),
-	FARMING_GUILD("Farming Guild");
-
-	private final String name;
-
-	SkillsNecklaceMode(String name)
+	public static boolean parse(String value)
 	{
-		this.name = name;
-	}
+		if (value.equals(""))
+		{
+			return true;
+		}
 
-	@Override
-	public String toString()
-	{
-		return name;
+		try
+		{
+			final StringBuilder sb = new StringBuilder();
+
+			for (String str : value.split("\n"))
+			{
+				if (!str.startsWith("//"))
+				{
+					sb.append(str).append("\n");
+				}
+			}
+
+			final Splitter NEWLINE_SPLITTER = Splitter
+				.on("\n")
+				.omitEmptyStrings()
+				.trimResults();
+
+			final List<String> tmp = NEWLINE_SPLITTER.splitToList(sb);
+
+			for (String s : tmp)
+			{
+				final String[] strings = s.split(",");
+
+				if (strings.length <= 1)
+				{
+					return false;
+				}
+			}
+
+			return tmp.size() > 0;
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
 	}
 }
