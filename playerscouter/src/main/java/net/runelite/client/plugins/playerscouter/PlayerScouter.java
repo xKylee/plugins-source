@@ -110,7 +110,7 @@ public class PlayerScouter extends Plugin
 	@Subscribe
 	private void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals("playerscouter"))
+		if (!event.getGroup().equals("playerscout"))
 		{
 			return;
 		}
