@@ -26,7 +26,7 @@ public class MESAbstractComparables
 		@Override
 		public int getPriority()
 		{
-			return 99;
+			return 90;
 		}
 
 		@Override
@@ -94,7 +94,7 @@ public class MESAbstractComparables
 		@Override
 		public int getPriority()
 		{
-			return 99;
+			return 90;
 		}
 
 		@Override

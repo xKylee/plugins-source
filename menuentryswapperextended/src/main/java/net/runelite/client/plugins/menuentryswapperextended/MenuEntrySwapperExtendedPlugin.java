@@ -125,7 +125,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private PvpToolsConfig pvpToolsConfig;
 
 	private boolean buildingMode;
-	private boolean wildernessMode;
 	private boolean inTobRaid = false;
 	private boolean inCoxRaid = false;
 	@Setter(AccessLevel.PRIVATE)
@@ -252,8 +251,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private void onVarbitChanged(VarbitChanged event)
 	{
 		buildingMode = client.getVar(BUILDING_MODE) == 1;
-		wildernessMode = client.getVar(IN_WILDERNESS) ==1;
-
 		setCastOptions(false);
 		leftClickTrade();
 	}
@@ -387,7 +384,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void leftClickTrade()
 	{
-		if (wildernessMode || WorldType.isAllPvpWorld(client.getWorldType()))
+		if (client.getVar(IN_WILDERNESS) == 1 || WorldType.isAllPvpWorld(client.getWorldType()))
 		{
 			return;
 		}
