@@ -615,6 +615,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		name = "Left Click Follow",
 		description = "Left Click Follow people outside of the wilderness",
 		position = 0,
+		disabledBy  = "leftClickTrade",
 		section =  "leftClickSection"
 	)
 	default boolean leftClickFollow()
@@ -627,6 +628,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		name = "Left Click Trade",
 		description = "Left Click trade people outside of the wilderness",
 		position = 1,
+		disabledBy  = "leftClickFollow",
 		section =  "leftClickSection"
 	)
 	default boolean leftClickTrade()
