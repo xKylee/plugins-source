@@ -23,17 +23,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util;
+package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
 
-public enum NecklaceOfPassageMode
+public enum SlayerRingMode
 {
-	WIZARDS_TOWER("Wizards' Tower"),
-	THE_OUTPOST("The Outpost"),
-	EAGLES_EYRIE("Eagles' Eyrie");
+	CHECK("Check"),
+	TELEPORT("Teleport"),
+	MASTER("Master"),
+	PARTNER("Partner"),
+	LOG("Log");
 
 	private final String name;
 
-	NecklaceOfPassageMode(String name)
+	SlayerRingMode(String name)
 	{
 		this.name = name;
 	}

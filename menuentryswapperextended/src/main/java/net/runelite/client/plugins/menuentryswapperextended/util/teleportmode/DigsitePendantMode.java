@@ -23,18 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util;
+package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
 
-public enum CombatBraceletMode
+public enum DigsitePendantMode
 {
-	WARRIORS_GUILD("Warriors' Guild"),
-	CHAMPIONS_GUILD("Champions' Guild"),
-	EDGEVILLE_MONASTERY("Edgeville Monstery"),
-	RANGING_GUILD("Ranging Guild");
+	DIGSITE("Digsite"),
+	FOSSIL_ISLAND("Fossil Island"),
+	LITHKREN("Lithkren Dungeon");
 
 	private final String name;
 
-	CombatBraceletMode(String name)
+	DigsitePendantMode(String name)
 	{
 		this.name = name;
 	}

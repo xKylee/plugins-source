@@ -23,19 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util;
+package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
 
-public enum SlayerRingMode
+public enum CombatBraceletMode
 {
-	CHECK("Check"),
-	TELEPORT("Teleport"),
-	MASTER("Master"),
-	PARTNER("Partner"),
-	LOG("Log");
+	WARRIORS_GUILD("Warriors' Guild"),
+	CHAMPIONS_GUILD("Champions' Guild"),
+	EDGEVILLE_MONASTERY("Edgeville Monstery"),
+	RANGING_GUILD("Ranging Guild");
 
 	private final String name;
 
-	SlayerRingMode(String name)
+	CombatBraceletMode(String name)
 	{
 		this.name = name;
 	}
