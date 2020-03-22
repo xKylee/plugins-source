@@ -130,4 +130,16 @@ public interface NightmareConfig extends Config
 	{
 		return new Color(255, 0, 0, 50);
 	}
+
+	@ConfigItem(
+		keyName = "showTicksUntilParasite",
+		name = "Indicate Parasites",
+		description = "Displays a red tick timer on you showing if/when a parasite will emerge",
+		position = 7,
+		titleSection = "generalSection"
+	)
+	default boolean showTicksUntilParasite()
+	{
+		return true;
+	}
 }
