@@ -21,6 +21,8 @@ import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.client.config.ConfigManager;
@@ -100,6 +102,9 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAttack = 0;
 
+	@Getter(AccessLevel.PACKAGE)
+	private int ticksUntilParasite = 0;
+
 	public NightmarePlugin()
 	{
 		inFight = false;
@@ -138,6 +143,7 @@ public class NightmarePlugin extends Plugin
 		cursed = false;
 		attacksSinceCurse = 0;
 		ticksUntilNextAttack = 0;
+		ticksUntilParasite = 0;
 		totems.clear();
 		spores.clear();
 	}
@@ -225,6 +231,21 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
+	private void onChatMessage(ChatMessage chatMessage)
+	{
+		if (!inFight || chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+
+		final String message = chatMessage.getMessage();
+		if (message.contains("The Nightmare has impregnated you with a deadly parasite!"))
+		{
+			ticksUntilParasite = 22;
+		}
+	}
+
+	@Subscribe
 	public void onNpcDefinitionChanged(NpcDefinitionChanged event)
 	{
 		final NPC npc = event.getNpc();
@@ -289,6 +310,11 @@ public class NightmarePlugin extends Plugin
 		}
 
 		ticksUntilNextAttack--;
+
+		if (ticksUntilParasite > 0)
+		{
+			ticksUntilParasite--;
+		}
 
 		if (pendingNightmareAttack != null && ticksUntilNextAttack <= 3)
 		{
