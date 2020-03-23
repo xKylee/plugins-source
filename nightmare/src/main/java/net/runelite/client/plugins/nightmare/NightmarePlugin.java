@@ -12,11 +12,17 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.GameObject;
+import net.runelite.api.GameState;
 import net.runelite.api.NPC;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.GameObjectDespawned;
+import net.runelite.api.events.GameObjectSpawned;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.client.config.ConfigManager;
@@ -45,7 +51,6 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_CHARGE_1 = 8597;
 	private static final int NIGHTMARE_SHADOW_SPAWN = 8598;
 	private static final int NIGHTMARE_CURSE = 8599;
-	private static final int NIGHTMARE_MUSHROOM = 8600;
 	private static final int NIGHTMARE_QUADRANTS = 8601;
 	private static final int NIGHTMARE_SLEEP_DAMAGE = 8604;
 	private static final int NIGHTMARE_PARASITE_TOSS = 8605;
@@ -54,10 +59,11 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_CHARGE_2 = 8609;
 	private static final int NIGHTMARE_SPAWN = 8611;
 	private static final int NIGHTMARE_DEATH = 8612;
-
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
 	private static final int NIGHTMARE_MAGIC_ATTACK = 8595;
+	private static final int NIGHTMARE_PRE_MUSHROOM = 37738;
+	private static final int NIGHTMARE_MUSHROOM = 37739;
 
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
 
@@ -85,6 +91,9 @@ public class NightmarePlugin extends Plugin
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
 
 	@Getter(AccessLevel.PACKAGE)
+	private final Map<LocalPoint, GameObject> spores = new HashMap<>();
+
+	@Getter(AccessLevel.PACKAGE)
 	private boolean inFight;
 
 	private boolean cursed;
@@ -92,6 +101,9 @@ public class NightmarePlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAttack = 0;
+
+	@Getter(AccessLevel.PACKAGE)
+	private int ticksUntilParasite = 0;
 
 	public NightmarePlugin()
 	{
@@ -131,27 +143,41 @@ public class NightmarePlugin extends Plugin
 		cursed = false;
 		attacksSinceCurse = 0;
 		ticksUntilNextAttack = 0;
+		ticksUntilParasite = 0;
 		totems.clear();
+		spores.clear();
 	}
 
 	@Subscribe
-	private void onChatMessage(ChatMessage chatMessage)
+	private void onGameObjectSpawned(GameObjectSpawned event)
 	{
-		if (chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
+		if (!inFight)
 		{
 			return;
 		}
 
-		final String message = chatMessage.getMessage();
-		if (message.contains("The Nightmare has cursed you, shuffling your prayers!"))
+		GameObject gameObj = event.getGameObject();
+		int id = gameObj.getId();
+		if (id == NIGHTMARE_MUSHROOM || id == NIGHTMARE_PRE_MUSHROOM)
 		{
-			cursed = true;
+			spores.put(gameObj.getLocalLocation(), gameObj);
 		}
-		else if (message.contains("You feel the effects of the Nightmare's curse wear off."))
+	}
+
+	@Subscribe
+	private void onGameObjectDespawned(GameObjectDespawned event)
+	{
+		if (!inFight)
 		{
-			cursed = false;
+			return;
 		}
 
+		GameObject gameObj = event.getGameObject();
+		int id = gameObj.getId();
+		if (id == NIGHTMARE_MUSHROOM || id == NIGHTMARE_PRE_MUSHROOM)
+		{
+			spores.remove(gameObj.getLocalLocation());
+		}
 	}
 
 	@Subscribe
@@ -205,6 +231,21 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
+	private void onChatMessage(ChatMessage chatMessage)
+	{
+		if (!inFight || chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+
+		final String message = chatMessage.getMessage();
+		if (message.contains("The Nightmare has impregnated you with a deadly parasite!"))
+		{
+			ticksUntilParasite = 22;
+		}
+	}
+
+	@Subscribe
 	public void onNpcDefinitionChanged(NpcDefinitionChanged event)
 	{
 		final NPC npc = event.getNpc();
@@ -243,6 +284,18 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
+	private void onGameStateChanged(GameStateChanged event)
+	{
+		GameState gamestate = event.getGameState();
+
+		//if loading happens while inFight, the user has left the area (either via death or teleporting).
+		if (gamestate == GameState.LOADING && inFight)
+		{
+			reset();
+		}
+	}
+
+	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
 		if (!inFight || nm == null)
@@ -258,7 +311,12 @@ public class NightmarePlugin extends Plugin
 
 		ticksUntilNextAttack--;
 
-		if (pendingNightmareAttack != null && ticksUntilNextAttack == 0)
+		if (ticksUntilParasite > 0)
+		{
+			ticksUntilParasite--;
+		}
+
+		if (pendingNightmareAttack != null && ticksUntilNextAttack <= 3)
 		{
 			pendingNightmareAttack = null;
 		}

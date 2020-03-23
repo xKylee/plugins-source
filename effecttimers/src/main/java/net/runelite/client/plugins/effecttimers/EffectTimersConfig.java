@@ -133,10 +133,43 @@ public interface EffectTimersConfig extends Config
 	}
 
 	@ConfigItem(
+		name = "Imbued Heart Timers",
+		keyName = "imbHeartTimers",
+		description = "Should we render staff of the imbued heart timers?",
+		position = 10
+	)
+	default boolean imbHeartTimers()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		name = "DFS/DFW Timers",
+		keyName = "dfsTimers",
+		description = "Should we render staff of the dragon fire shield and Dragonfire Ward timers?",
+		position = 11
+	)
+	default boolean dfsTimers()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		name = "Ancient Wyvern Shield Timers",
+		keyName = "ancWyvernTimers",
+		description = "Should we render staff of the Ancient Wyvern shield timers?",
+		position = 12
+	)
+	default boolean ancWyvernTimers()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		name = "Show Icons",
 		keyName = "showIcons",
 		description = "Should we render the icons? Note disabling this will override all colors",
-		position = 10
+		position = 13
 	)
 	default boolean showIcons()
 	{
@@ -144,10 +177,21 @@ public interface EffectTimersConfig extends Config
 	}
 
 	@ConfigItem(
+		name = "X Offset",
+		keyName = "xOffset",
+		description = "X Offset for overlay rendering",
+		position = 14
+	)
+	default int xOffset()
+	{
+		return 20;
+	}
+
+	@ConfigItem(
 		name = "Debug Keybind",
 		keyName = "debugKeybind",
 		description = "Don't press this unless you know what it does :)",
-		position = 11,
+		position = 15,
 		hidden = true
 	)
 	default Keybind debugKeybind()
@@ -159,7 +203,7 @@ public interface EffectTimersConfig extends Config
 		name = "Debug Integer",
 		keyName = "debugInteger",
 		description = "Related to the keybind in some way :)",
-		position = 12,
+		position = 16,
 		hidden = true
 	)
 	default int debugInteger()
@@ -167,14 +211,5 @@ public interface EffectTimersConfig extends Config
 		return -1;
 	}
 
-	@ConfigItem(
-		name = "X Offset",
-		keyName = "xOffset",
-		description = "X Offset for overlay rendering",
-		position = 13
-	)
-	default int xOffset()
-	{
-		return 20;
-	}
+
 }

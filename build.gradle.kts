@@ -20,8 +20,8 @@ allprojects {
 subprojects {
     group = "com.openosrs.externals"
 
-    project.extra["PluginProvider"] = "OpenOSRS"
-    project.extra["ProjectUrl"] = "https://discord.gg/OpenOSRS"
+    project.extra["PluginProvider"] = "xKylee"
+    project.extra["ProjectUrl"] = "https://discord.gg/ARcwsJr"
     project.extra["PluginLicense"] = "3-Clause BSD License"
 
     repositories {
@@ -48,6 +48,17 @@ subprojects {
             }
             filter {
                 includeModule("net.runelite", "discord")
+            }
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
+                }
+            }
+            filter {
+                includeModule("com.openosrs.rxrelay3", "rxrelay")
             }
         }
     }

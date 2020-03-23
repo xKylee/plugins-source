@@ -10,7 +10,7 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
 
-@ConfigGroup("drop")
+@ConfigGroup("dropparty")
 public interface DropPartyConfig extends Config
 {
 	@ConfigItem(
@@ -26,15 +26,15 @@ public interface DropPartyConfig extends Config
 
 	@Range(
 		min = 1,
-		max = 40
+		max = 60
 	)
 	@ConfigItem(
-		keyName = "showAmmount",
+		keyName = "showAmount",
 		name = "Trail length",
-		description = "Shows the legnth of the droppers trail",
+		description = "Shows the length of the droppers trail",
 		position = 1
 	)
-	default int showAmmount()
+	default int showAmount()
 	{
 		return 10;
 	}

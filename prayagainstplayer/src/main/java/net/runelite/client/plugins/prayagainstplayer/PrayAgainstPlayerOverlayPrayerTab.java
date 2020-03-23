@@ -29,15 +29,13 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.util.ConcurrentModificationException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
-import net.runelite.api.VarClientInt;
-import net.runelite.api.vars.InterfaceTab;
+import net.runelite.api.Player;
 import net.runelite.api.widgets.Widget;
-import net.runelite.client.game.AttackStyle;
-import net.runelite.client.game.PlayerContainer;
-import net.runelite.client.game.PlayerManager;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -48,20 +46,17 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 {
 
+	private final PrayAgainstPlayerPlugin plugin;
 	private final PrayAgainstPlayerConfig config;
-	private final PlayerManager playerManager;
 	private final Client client;
 
 	@Inject
-	private PrayAgainstPlayerOverlayPrayerTab(
-		final PrayAgainstPlayerConfig config,
-		final PlayerManager playerManager,
-		final Client client
-	)
+	private PrayAgainstPlayerOverlayPrayerTab(final PrayAgainstPlayerPlugin plugin, final PrayAgainstPlayerConfig config, final Client client)
 	{
-		this.client = client;
+		this.plugin = plugin;
 		this.config = config;
-		this.playerManager = playerManager;
+		this.client = client;
+
 		setPosition(OverlayPosition.DETACHED);
 		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		setPriority(OverlayPriority.MED);
@@ -71,33 +66,53 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!config.drawTargetPrayAgainstPrayerTab())
+		if (plugin.getPlayersAttackingMe() == null || !plugin.getPlayersAttackingMe().isEmpty())
 		{
-			return null;
-		}
-
-		for (PlayerContainer player : playerManager.getAllAttackers())
-		{
-			if (player.getAttackStyle() == AttackStyle.UNKNOWN)
+			try
 			{
-				continue;
+				if (plugin.getPlayersAttackingMe() != null)
+				{
+					for (PlayerContainer container : plugin.getPlayersAttackingMe())
+					{
+						if (plugin.getPlayersAttackingMe() != null && plugin.getPlayersAttackingMe().size() == 1 &&
+							config.drawTargetPrayAgainstPrayerTab())
+						{
+							renderPrayerToClick(graphics, container.getPlayer());
+						}
+					}
+				}
 			}
-
-			final Widget widget = client.getWidget(player.getAttackStyle().getPrayer().getWidgetInfo());
-
-			if (widget == null)
+			catch (ConcurrentModificationException ignored)
 			{
-				continue;
-			}
-
-			if (client.getVar(VarClientInt.INTERFACE_TAB) == InterfaceTab.PRAYER.getId() &&
-				!client.isPrayerActive(player.getAttackStyle().getPrayer()))
-			{
-				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(widget.getBounds()), Color.RED);
-				break;
 			}
 		}
 		return null;
+	}
+
+	private void renderPrayerToClick(Graphics2D graphics, Player player)
+	{
+		Widget PROTECT_FROM_MAGIC = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MAGIC);
+		Widget PROTECT_FROM_RANGED = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MISSILES);
+		Widget PROTECT_FROM_MELEE = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MELEE);
+		Color color = Color.RED;
+		if (PROTECT_FROM_MELEE.isHidden())
+		{
+			return;
+		}
+		switch (WeaponType.checkWeaponOnPlayer(client, player))
+		{
+			case WEAPON_MAGIC:
+				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(PROTECT_FROM_MAGIC.getBounds()), color);
+				break;
+			case WEAPON_MELEE:
+				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(PROTECT_FROM_MELEE.getBounds()), color);
+				break;
+			case WEAPON_RANGED:
+				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(PROTECT_FROM_RANGED.getBounds()), color);
+				break;
+			default:
+				break;
+		}
 	}
 
 	private static Polygon rectangleToPolygon(Rectangle rect)
@@ -107,4 +122,5 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 
 		return new Polygon(xpoints, ypoints, 4);
 	}
+
 }

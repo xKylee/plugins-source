@@ -49,13 +49,22 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Drop Party",
-	enabledByDefault = false,
 	description = "Marks where a user ran, for drop partys",
 	tags = {"Drop", "Party", "marker", "player"},
-	type = PluginType.MISCELLANEOUS
+	type = PluginType.MISCELLANEOUS,
+	enabledByDefault = false
 )
+
 public class DropPartyPlugin extends Plugin
 {
+	@Inject
+	private DropPartyConfig config;
+	@Getter(AccessLevel.PACKAGE)
+	private List<WorldPoint> playerPath = new ArrayList<>();
+	@Getter(AccessLevel.PACKAGE)
+	private int MAXPATHSIZE = 100;
+	private Player runningPlayer;
+
 	@Inject
 	private OverlayManager overlayManager;
 
@@ -64,16 +73,6 @@ public class DropPartyPlugin extends Plugin
 
 	@Inject
 	private Client client;
-
-	@Getter(AccessLevel.PACKAGE)
-	private List<WorldPoint> playerPath = new ArrayList<>();
-	@Getter(AccessLevel.PACKAGE)
-	private String playerName = "";
-	@Getter(AccessLevel.PACKAGE)
-	private int showAmmount = 0;
-	@Getter(AccessLevel.PACKAGE)
-	private int MAXPATHSIZE = 100;
-	private Player runningPlayer;
 
 	@Provides
 	DropPartyConfig getConfig(ConfigManager configManager)
@@ -99,7 +98,7 @@ public class DropPartyPlugin extends Plugin
 	private void onGameTick(GameTick event)
 	{
 		shuffleList();
-		if (playerName.equalsIgnoreCase(""))
+		if (config.playerName().equalsIgnoreCase(""))
 		{
 			return;
 		}
@@ -112,7 +111,7 @@ public class DropPartyPlugin extends Plugin
 			{
 				continue;
 			}
-			if (Text.standardize(player.getName()).equalsIgnoreCase(playerName))
+			if (Text.standardize(player.getName()).equalsIgnoreCase(config.playerName()))
 			{
 				runningPlayer = player;
 				break;
@@ -151,13 +150,11 @@ public class DropPartyPlugin extends Plugin
 				break;
 			}
 			playerPath.add(null);
-
 		}
 	}
 
 	private void reset()
 	{
 		playerPath.clear();
-
 	}
 }

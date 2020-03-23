@@ -247,6 +247,18 @@ public interface InfernoConfig extends Config
 
 	@ConfigItem(
 		position = 4,
+		keyName = "alwaysShowPrayerHelper",
+		name = "Always Show Prayer Helper",
+		description = "Render prayer helper at all time, even when other inventory tabs are open.",
+		section = "PrayerSection"
+	)
+	default boolean alwaysShowPrayerHelper()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 4,
 		keyName = "safespotDisplayMode",
 		name = "Tile Safespots",
 		description = "Indicate safespots on the ground: safespot (white), pray melee (red), pray range (green), pray magic (blue) and combinations of those",

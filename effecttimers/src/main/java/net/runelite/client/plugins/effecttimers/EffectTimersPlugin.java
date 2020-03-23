@@ -55,7 +55,6 @@ import org.pf4j.Extension;
 @Extension
 @PluginDescriptor(
 	name = "Effect Timers",
-	enabledByDefault = false,
 	description = "Effect timer overlay on players",
 	tags = {"freeze", "timers", "barrage", "teleblock", "pklite"},
 	type = PluginType.PVP
@@ -171,7 +170,7 @@ public class EffectTimersPlugin extends Plugin
 			return;
 		}
 
-		PlayerSpellEffect effect = PlayerSpellEffect.getFromSpotAnim(spotAnim);
+		PlayerEffect effect = PlayerEffect.getFromSpotAnim(spotAnim);
 
 		if (effect == null)
 		{

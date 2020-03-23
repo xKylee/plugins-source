@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
-import net.runelite.api.NPC;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -33,7 +32,6 @@ public class NightmarePrayerOverlay extends Overlay
 	{
 		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPriority(OverlayPriority.HIGH);
-		setPosition(OverlayPosition.DYNAMIC);
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		this.client = client;
 		this.plugin = plugin;
@@ -45,19 +43,29 @@ public class NightmarePrayerOverlay extends Overlay
 	{
 		imagePanelComponent.getChildren().clear();
 
+		if (!plugin.isInFight() || plugin.getNm() == null)
+		{
+			return null;
+		}
+
+		NightmareAttack attack = plugin.getPendingNightmareAttack();
+
+		if (attack == null)
+		{
+			return null;
+		}
+
 		if (!config.prayerHelper())
 		{
 			return null;
 		}
 
-		if (plugin.isInFight() && plugin.getPendingNightmareAttack() != null && plugin.getNm() != null)
+		if (config.prayerHelper())
 		{
-			NightmareAttack attack = plugin.getPendingNightmareAttack();
 			BufferedImage prayerImage;
 			prayerImage = getPrayerImage(attack);
 			imagePanelComponent.setBackgroundColor(client.isPrayerActive(attack.getPrayer()) ? ComponentConstants.STANDARD_BACKGROUND_COLOR : NOT_ACTIVATED_BACKGROUND_COLOR);
 
-			NPC nm = plugin.getNm();
 			imagePanelComponent.getChildren().add(new ImageComponent(prayerImage));
 
 			return imagePanelComponent.render(graphics);
