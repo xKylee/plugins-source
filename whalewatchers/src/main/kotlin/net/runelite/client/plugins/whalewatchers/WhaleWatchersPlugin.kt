@@ -4,7 +4,6 @@ import com.google.inject.Provides
 import net.runelite.api.*
 import net.runelite.api.events.*
 import net.runelite.api.events.player.headicon.PlayerSkullChanged
-import net.runelite.api.kit.KitType
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.ConfigChanged
@@ -16,7 +15,6 @@ import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.plugins.PluginType
 import net.runelite.client.ui.overlay.OverlayManager
 import net.runelite.client.util.PvPUtil
-import org.apache.commons.lang3.ObjectUtils
 import org.pf4j.Extension
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -94,7 +92,9 @@ class WhaleWatchersPlugin : Plugin() {
 
     @Subscribe
     private fun onGameStateChanged(event: GameStateChanged) {
-        if (event.gameState != GameState.LOGGED_IN && !config.protectItemWarning()) return
+        if (event.gameState != GameState.LOGGED_IN && !config.protectItemWarning()) {
+            return
+        }
         if (shouldProtItem() && PvPUtil.getWildernessLevelFrom(client.localPlayer?.worldLocation) > 0) {
             protectItemOverlay = true
         }
@@ -102,17 +102,11 @@ class WhaleWatchersPlugin : Plugin() {
 
     @Subscribe
     private fun onConfigChanged(event: ConfigChanged) {
-        if (event.group != "WhaleWatchers") {
-            return
-        }
-        if (!config.protectItemWarning()) {
-            protectItemOverlay = false
-        }
-        if (!config.gloryWarning()) {
-            displayGloryOverlay = false
-        }
-        if (!config.smiteableWarning()) {
-            displaySmiteOverlay = false
+        if (event.group != "WhaleWatchers") return
+        when {
+            !config.protectItemWarning() -> protectItemOverlay = false
+            !config.gloryWarning() -> displayGloryOverlay = false
+            !config.smiteableWarning() -> displaySmiteOverlay = false
         }
     }
 
@@ -125,40 +119,28 @@ class WhaleWatchersPlugin : Plugin() {
 
     @Subscribe
     private fun onHitsplatApplied(event: HitsplatApplied) {
-        if (config.showDamageCounter()) {
-            if (!(event.actor === client.localPlayer ||
-                            event.actor === client.localPlayer!!.interacting)) {
-                return
-            }
-            if (isAttackingPlayer || inCombat) {
-                inCombat = true
-                if (event.actor === client.localPlayer) {
-                    damageTaken += event.hitsplat.amount
-                }
-                if (event.actor === client.localPlayer!!.interacting) {
-                    damageDone += event.hitsplat.amount
-                }
-            }
+        if (!config.showDamageCounter()) return
+        if (!shouldCountHitsplat(event) || !(isAttackingPlayer() || inCombat)) return
+        when {
+            event.actor === client.localPlayer -> damageTaken += event.hitsplat.amount
+            event.actor === client.localPlayer!!.interacting -> damageDone += event.hitsplat.amount
         }
+        inCombat = true
     }
+
+    private fun shouldCountHitsplat(event: HitsplatApplied) = event.actor === client.localPlayer ||
+            event.actor === client.localPlayer!!.interacting
 
     @Subscribe
     private fun onItemContainerChanged(event: ItemContainerChanged) {
-        displayGloryOverlay = if (config.gloryWarning() && event.itemContainer
-                === client.getItemContainer(InventoryID.EQUIPMENT)) {
-            val amuletID = ObjectUtils.defaultIfNull(client.localPlayer
-                    ?.playerAppearance!!.getEquipmentId(KitType.AMULET), 0)
-            amuletID == ItemID.AMULET_OF_GLORY
-        } else {
-            false
-        }
+        displayGloryOverlay =
+                config.gloryWarning() && event.itemContainer === client.getItemContainer(InventoryID.EQUIPMENT)
     }
 
     @Subscribe
     private fun onMenuOptionClicked(event: MenuOptionClicked) {
-        if (config.showDamageCounter() && event.menuOpcode == MenuOpcode.SPELL_CAST_ON_PLAYER) {
-            inCombat = true
-        }
+        if (!config.showDamageCounter() || event.menuOpcode != MenuOpcode.SPELL_CAST_ON_PLAYER) return
+        inCombat = true
     }
 
     @Subscribe
@@ -174,30 +156,30 @@ class WhaleWatchersPlugin : Plugin() {
         if (config.showDamageCounter() && client.getVar(VarPlayer.ATTACKING_PLAYER) == -1 && inCombat) {
             tickCountdown = 10
         }
-        if (config.protectItemWarning()) {
-            val worldTypes = client.worldType
-            if (!isSkulled() || WorldType.isHighRiskWorld(worldTypes)) {
-                protectItemOverlay = false
-                return
-            }
-            val skullIcon = client.localPlayer!!.skullIcon
-            if (skullIcon == SkullIcon.SKULL) {
-                protectItemOverlay = if (WorldType.isPvpWorld(worldTypes) || WorldType.isDeadmanWorld(worldTypes) ||
-                        client.getVar(Varbits.IN_WILDERNESS) == 1) {
-                    shouldProtItem()
-                } else {
-                    false
-                }
+        if (!config.protectItemWarning() || client.localPlayer?.skullIcon == null) {
+            protectItemOverlay = false
+            return
+        }
+        if (!isSkulled() || WorldType.isHighRiskWorld(client.worldType)) {
+            protectItemOverlay = false
+            return
+        }
+        val skullIcon = client.localPlayer!!.skullIcon
+        if (skullIcon == SkullIcon.SKULL) {
+            protectItemOverlay = if (b()) {
+                shouldProtItem()
+            } else {
+                false
             }
         }
     }
 
-    private fun shouldProtItem() = client.getRealSkillLevel(Skill.PRAYER) > 25 &&
-            isSkulled()
+    private fun b() = WorldType.isPvpWorld(client.worldType) || WorldType.isDeadmanWorld(client.worldType) ||
+            client.getVar(Varbits.IN_WILDERNESS) == 1
 
-    private fun isSkulled(): Boolean {
-        return client.localPlayer?.skullIcon != null
-    }
+    private fun shouldProtItem() = client.getRealSkillLevel(Skill.PRAYER) > 25 && isSkulled()
+
+    private fun isSkulled(): Boolean = client.localPlayer?.skullIcon != null
 
     @Subscribe
     private fun onGameTick(event: GameTick) {
@@ -212,9 +194,8 @@ class WhaleWatchersPlugin : Plugin() {
         displaySmiteOverlay = if (config.smiteableWarning() && (client.getVar(Varbits.IN_WILDERNESS) == 1
                         || WorldType.isPvpWorld(client.worldType))) {
             if (client.localPlayer!!.skullIcon != null && client.localPlayer!!.skullIcon == SkullIcon.SKULL) {
-                val currentHealth = client.localPlayer!!.health
                 val currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER)
-                currentPrayer <= ceil(currentHealth / 4.toDouble())
+                currentPrayer <= ceil(client.getBoostedSkillLevel(Skill.PRAYER) / 4.toDouble())
             } else {
                 false
             }
@@ -223,19 +204,8 @@ class WhaleWatchersPlugin : Plugin() {
         }
     }
 
-    /**
-     * Checks to see if client is attacking another player
-     *
-     * @return returns true if they are, false otherwise
-     */
-    private val isAttackingPlayer: Boolean
-        get() {
-            if (client.getVar(Varbits.IN_WILDERNESS) == 1 && client.localPlayer!!.interacting != null) {
-                return true
-            }
-            val varp = client.getVar(VarPlayer.ATTACKING_PLAYER)
-            return varp != -1
-        }
+    private fun isAttackingPlayer(): Boolean = (client.getVar(Varbits.IN_WILDERNESS) == 1 &&
+            client.localPlayer!!.interacting != null) && client.getVar(VarPlayer.ATTACKING_PLAYER) != -1
 
     private fun resetDamageCounter() {
         damageTaken = 0
