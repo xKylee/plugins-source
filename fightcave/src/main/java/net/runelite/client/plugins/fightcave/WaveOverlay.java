@@ -77,7 +77,7 @@ class WaveOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!plugin.isValidRegion() || plugin.getCurrentWave() < 0)
+		if (!plugin.isValidRegion() || plugin.getCurrentWave() < 0 || config.waveDisplay() == WaveDisplayMode.NONE)
 		{
 			return null;
 		}
