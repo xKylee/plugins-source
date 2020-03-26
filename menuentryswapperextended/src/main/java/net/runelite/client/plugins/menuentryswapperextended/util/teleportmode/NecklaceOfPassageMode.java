@@ -23,19 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util;
+package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
 
-public enum XericsTalismanMode
+public enum NecklaceOfPassageMode
 {
-	XERICS_LOOKOUT("Xeric's Look-out"),
-	XERICS_GLADE("Xeric's Glade"),
-	XERICS_INFERNO("Xeric's Inferno"),
-	XERICS_HEART("Xeric's Heart"),
-	XERICS_HONOUR("Xeric's Honour");
+	WIZARDS_TOWER("Wizards' Tower"),
+	THE_OUTPOST("The Outpost"),
+	EAGLES_EYRIE("Eagles' Eyrie");
 
 	private final String name;
 
-	XericsTalismanMode(String name)
+	NecklaceOfPassageMode(String name)
 	{
 		this.name = name;
 	}

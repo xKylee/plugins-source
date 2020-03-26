@@ -23,17 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util;
+package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
 
-public enum DigsitePendantMode
+public enum RingOfWealthMode
 {
-	DIGSITE("Digsite"),
-	FOSSIL_ISLAND("Fossil Island"),
-	LITHKREN("Lithkren Dungeon");
+	MISCELLANIA("Miscellania"),
+	GRAND_EXCHANGE("Grand Exchange"),
+	FALADOR("Falador"),
+	DONDAKAN("Dondakan");
 
 	private final String name;
 
-	DigsitePendantMode(String name)
+	RingOfWealthMode(String name)
 	{
 		this.name = name;
 	}

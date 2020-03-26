@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.menuentryswapperextended.util;
+package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

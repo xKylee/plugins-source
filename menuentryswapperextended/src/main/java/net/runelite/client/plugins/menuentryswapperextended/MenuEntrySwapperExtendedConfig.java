@@ -32,18 +32,19 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Keybind;
-import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.SlayerRingMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.BurningAmuletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.CombatBraceletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.ConstructionMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.DigsitePendantMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.DuelingRingMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.GamesNecklaceMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.GloryMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.NecklaceOfPassageMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.PrioParse;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.RingOfWealthMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.SkillsNecklaceMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.SlayerRingMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.XericsTalismanMode;
 
 @ConfigGroup("menuentryswapperextended")
 public interface MenuEntrySwapperExtendedConfig extends Config
@@ -111,6 +112,17 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		keyName = "miscellaneousSection"
 	)
 	default boolean miscellaneousSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Left Click Options",
+		description = "",
+		position = 1,
+		keyName = "leftClickSection"
+	)
+	default boolean leftClickSection()
 	{
 		return false;
 	}
@@ -478,18 +490,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
-	@ConfigItem(
-		keyName = "hideReport",
-		name = "Report",
-		description = "Hides the 'Report' option from the right click menu.",
-		position = 2,
-		section = "rightClickOptionsSection"
-	)
-	default boolean hideReport()
-	{
-		return false;
-	}
-
 	//------------------------------------------------------------//
 	// PVM
 	//------------------------------------------------------------//
@@ -608,5 +608,31 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default String prioEntry()
 	{
 		return "";
+	}
+
+	@ConfigItem(
+		keyName = "leftClickFollow",
+		name = "Left Click Follow",
+		description = "Left Click Follow people outside of the wilderness",
+		position = 0,
+		disabledBy  = "leftClickTrade",
+		section =  "leftClickSection"
+	)
+	default boolean leftClickFollow()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "leftClickTrade",
+		name = "Left Click Trade",
+		description = "Left Click trade people outside of the wilderness",
+		position = 1,
+		disabledBy  = "leftClickFollow",
+		section =  "leftClickSection"
+	)
+	default boolean leftClickTrade()
+	{
+		return false;
 	}
 }

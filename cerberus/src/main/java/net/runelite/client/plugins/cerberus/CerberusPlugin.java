@@ -197,10 +197,8 @@ public class CerberusPlugin extends Plugin
 		final int health = cerberus.getHealth();
 		final CerberusPhase expectedPhase = cerberus.getNextAttackPhase(1, health);
 
-		//The following line of code is not always 100% correct.
-		//This might return a lava phase or ghost phase while it was actually something different cuz the hp might have changed.
-		//But I'm too tired of this plugin to fix it right now:
-		final CerberusPhase lastCerberusPhase = cerberus.getNextAttackPhase(0, health);
+
+		final CerberusPhase lastCerberusPhase = cerberus.getLastAttackPhase();
 
 		int tickDelay = 0;
 		if (lastCerberusPhase != null)
@@ -210,7 +208,7 @@ public class CerberusPlugin extends Plugin
 
 		for (int tick = gameTick + 1; tick <= gameTick + 10; ++tick)
 		{
-			if (!ghosts.isEmpty())
+			if (ghosts.size() == 3)
 			{
 				final Optional<CerberusGhost> ghost;
 				if (cerberus.getLastGhostYellTick() == tick - 13)
@@ -329,7 +327,7 @@ public class CerberusPlugin extends Plugin
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus projectile: MAGIC");
 				if (expectedAttack != CerberusPhase.TRIPLE)
 				{
-					cerberus.nextPhase();
+					cerberus.nextPhase(CerberusPhase.AUTO);
 				}
 				else
 				{
@@ -341,7 +339,7 @@ public class CerberusPlugin extends Plugin
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus projectile: RANGED");
 				if (expectedAttack != CerberusPhase.TRIPLE)
 				{
-					cerberus.nextPhase();
+					cerberus.nextPhase(CerberusPhase.AUTO);
 				}
 				else
 				{
@@ -400,17 +398,17 @@ public class CerberusPlugin extends Plugin
 			case 4491: //MELEE
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: MELEE");
 				cerberus.setLastTripleAttack(null);
-				cerberus.nextPhase();
+				cerberus.nextPhase(expectedAttack);
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.MELEE);
 				break;
 			case 4493: //LAVA
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: LAVA");
-				cerberus.nextPhase();
+				cerberus.nextPhase(CerberusPhase.LAVA);
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.LAVA);
 				break;
 			case 4494: //GHOSTS
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: GHOSTS");
-				cerberus.nextPhase();
+				cerberus.nextPhase(CerberusPhase.GHOSTS);
 				cerberus.setLastGhostYellTick(gameTick);
 				cerberus.setLastGhostYellTime(System.currentTimeMillis());
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.GHOSTS);

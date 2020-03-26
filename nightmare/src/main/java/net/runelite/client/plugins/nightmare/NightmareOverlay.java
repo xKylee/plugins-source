@@ -120,6 +120,17 @@ class NightmareOverlay extends Overlay
 			renderTextLocation(graphics, str, 20, Font.BOLD, tickColor, point);
 		}
 
+		int ticksUntilNextParasite = plugin.getTicksUntilParasite();
+		if (config.showTicksUntilParasite() && ticksUntilNextParasite > 0)
+		{
+			String str = Integer.toString(ticksUntilNextParasite);
+
+			LocalPoint lp = client.getLocalPlayer().getLocalLocation();
+			Point point = Perspective.getCanvasTextLocation(client, graphics, lp, str, 0);
+
+			renderTextLocation(graphics, str, 14, Font.BOLD, Color.RED, point);
+		}
+
 		if (config.highlightTotems())
 		{
 			for (MemorizedTotem totem : plugin.getTotems().values())

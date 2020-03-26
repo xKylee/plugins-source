@@ -42,10 +42,10 @@ import static net.runelite.api.ItemID.MAX_CAPE;
 import static net.runelite.api.ItemID.RUNECRAFT_CAPE;
 import static net.runelite.api.ItemID.RUNECRAFT_CAPET;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.MenuOpcode;
 import net.runelite.api.Player;
 import net.runelite.api.Varbits;
 import static net.runelite.api.Varbits.BUILDING_MODE;
+import static net.runelite.api.Varbits.IN_WILDERNESS;
 import net.runelite.api.WorldType;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
@@ -70,6 +70,7 @@ import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.menuentryswapperextended.util.MESAbstractComparables;
 import net.runelite.client.plugins.pvptools.PvpToolsConfig;
 import net.runelite.client.plugins.pvptools.PvpToolsPlugin;
 import net.runelite.client.util.HotkeyListener;
@@ -95,74 +96,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		.on("\n")
 		.omitEmptyStrings()
 		.trimResults();
-
-	private static final AbstractComparableEntry WALK = new AbstractComparableEntry()
-	{
-		private final int hash = "WALK".hashCode() * 79 + getPriority();
-
-		@Override
-		public int hashCode()
-		{
-			return hash;
-		}
-
-		@Override
-		public boolean equals(Object entry)
-		{
-			return entry.getClass() == this.getClass() && entry.hashCode() == this.hashCode();
-		}
-
-		@Override
-		public int getPriority()
-		{
-			return 99;
-		}
-
-		@Override
-		public boolean matches(MenuEntry entry)
-		{
-			return
-				entry.getOpcode() == MenuOpcode.WALK.getId() ||
-					entry.getOpcode() == MenuOpcode.WALK.getId() + MenuOpcode.MENU_ACTION_DEPRIORITIZE_OFFSET;
-		}
-	};
-
-	private static final AbstractComparableEntry TAKE = new AbstractComparableEntry()
-	{
-		private final int hash = "TAKE".hashCode() * 79 + getPriority();
-
-		@Override
-		public int hashCode()
-		{
-			return hash;
-		}
-
-		@Override
-		public boolean equals(Object entry)
-		{
-			return entry.getClass() == this.getClass() && entry.hashCode() == this.hashCode();
-		}
-
-		@Override
-		public int getPriority()
-		{
-			return 100;
-		}
-
-		@Override
-		public boolean matches(MenuEntry entry)
-		{
-			int opcode = entry.getOpcode();
-			if (opcode > MenuOpcode.MENU_ACTION_DEPRIORITIZE_OFFSET)
-			{
-				opcode -= MenuOpcode.MENU_ACTION_DEPRIORITIZE_OFFSET;
-			}
-
-			return
-				opcode >= MenuOpcode.GROUND_ITEM_FIRST_OPTION.getId() &&
-					opcode <= MenuOpcode.GROUND_ITEM_FIFTH_OPTION.getId();
-		}
-	};
 
 	@Inject
 	private Client client;
@@ -233,9 +166,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 		keyManager.registerKeyListener(hotkey);
 		setCastOptions(true);
-		addSwaps();
-		rcSwaps();
-		loadConstructionItems();
+		loadSwaps();
 	}
 
 	@Override
@@ -267,9 +198,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 
 		removeSwaps();
-		addSwaps();
-		rcSwaps();
-		loadConstructionItems();
+		loadSwaps();
 
 		switch (event.getKey())
 		{
@@ -312,9 +241,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				break;
 			case LOGGED_IN:
 				removeSwaps();
-				addSwaps();
-				rcSwaps();
-				loadConstructionItems();
+				loadSwaps();
 				keyManager.registerKeyListener(hotkey);
 				break;
 		}
@@ -324,8 +251,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private void onVarbitChanged(VarbitChanged event)
 	{
 		buildingMode = client.getVar(BUILDING_MODE) == 1;
-
 		setCastOptions(false);
+		leftClickTrade();
 	}
 
 	@Subscribe
@@ -349,11 +276,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				continue;
 			}
 
-			if (option.contains("report") && config.hideReport())
-			{
-				continue;
-			}
-
 			menu_entries.add(entry);
 		}
 		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
@@ -369,6 +291,14 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 		rcSwaps();
 
+	}
+
+	private void loadSwaps()
+	{
+		addSwaps();
+		leftClickTrade();
+		rcSwaps();
+		loadConstructionItems();
 	}
 
 	private void addSwaps()
@@ -449,6 +379,25 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		{
 			menuManager.addPriorityEntry(new EquipmentComparableEntry(config.getRingofWealthMode().toString(), "ring of wealth"));
 		}
+
+	}
+
+	private void leftClickTrade()
+	{
+		if (client.getVar(IN_WILDERNESS) == 1 || WorldType.isAllPvpWorld(client.getWorldType()))
+		{
+			return;
+		}
+
+		if (config.leftClickTrade())
+		{
+			menuManager.addPriorityEntry(MESAbstractComparables.TRADE);
+		}
+
+		if (config.leftClickFollow())
+		{
+			menuManager.addPriorityEntry(MESAbstractComparables.FOLLOW);
+		}
 	}
 
 	private void rcSwaps()
@@ -522,6 +471,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
 		menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
 		menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
+		menuManager.removePriorityEntry(MESAbstractComparables.TRADE);
+		menuManager.removePriorityEntry(MESAbstractComparables.FOLLOW);
 	}
 
 	private void loadConstructionItems()
@@ -555,11 +506,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		if (config.hotKeyLoot())
 		{
-			menuManager.addPriorityEntry(TAKE);
+			menuManager.addPriorityEntry(MESAbstractComparables.TAKE);
 		}
 		if (config.hotKeyWalk())
 		{
-			menuManager.addPriorityEntry(WALK);
+			menuManager.addPriorityEntry(MESAbstractComparables.WALK);
 		}
 
 		eventBus.unregister(HOTKEY);
@@ -572,8 +523,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void removeHotkey(ClientTick event)
 	{
-		menuManager.removePriorityEntry(TAKE);
-		menuManager.removePriorityEntry(WALK);
+		menuManager.removePriorityEntry(MESAbstractComparables.TAKE);
+		menuManager.removePriorityEntry(MESAbstractComparables.WALK);
 
 		eventBus.unregister(HOTKEY);
 	}
