@@ -11,10 +11,8 @@ import net.runelite.client.ui.overlay.components.ComponentOrientation
 import net.runelite.client.ui.overlay.components.ImageComponent
 import net.runelite.client.ui.overlay.components.PanelComponent
 import net.runelite.client.ui.overlay.components.TitleComponent
-import net.runelite.client.util.AsyncBufferedImage
 import net.runelite.client.util.ImageUtil
 import java.awt.*
-import java.awt.image.BufferedImage
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,7 +40,7 @@ class WhaleWatchersOverlay @Inject constructor(
     private val title: TitleComponent by lazy { damageTitle }
 
     private val damageDealt: TitleComponent by lazy {
-        titleComponent {
+        return@lazy titleComponent {
             text(damageDealt())
         }
     }
@@ -195,7 +193,6 @@ class WhaleWatchersSmiteableOverlay @Inject constructor(private val plugin: Whal
         priority = OverlayPriority.HIGH
         position = OverlayPosition.BOTTOM_RIGHT
     }
-
 }
 
 fun titleComponent(titleComponent: TitleComponent.TitleComponentBuilder.() -> Unit): TitleComponent {
@@ -205,11 +202,12 @@ fun titleComponent(titleComponent: TitleComponent.TitleComponentBuilder.() -> Un
     return builder.build()
 }
 
-val mainTitle = titleComponent {
+private val mainTitle = titleComponent {
     text("LOW PRAYER WARNING")
     color(Color.BLACK)
 }
-val subtextComponent: TitleComponent by lazy {
+
+private val subtextComponent: TitleComponent by lazy {
     titleComponent {
         text(subText)
         color(Color.BLACK)
