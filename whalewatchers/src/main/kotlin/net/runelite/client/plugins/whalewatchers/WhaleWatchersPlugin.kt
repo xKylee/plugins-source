@@ -145,7 +145,7 @@ class WhaleWatchersPlugin : Plugin() {
     @Subscribe
     private fun onPlayerSkullChanged(event: PlayerSkullChanged) {
         if (event.player != client.localPlayer || !config.protectItemWarning()) return
-        protectItemOverlay = true
+        protectItemOverlay = shouldBeProtecting()
     }
 
     @Subscribe
