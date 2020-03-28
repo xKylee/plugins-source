@@ -1,5 +1,4 @@
 import ProjectVersions.rlVersion
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 /*
  * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
@@ -27,12 +26,12 @@ import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.70"
-    kotlin("kapt") version "1.3.70"
+    id("org.jetbrains.kotlin.jvm") version "1.3.71"
+    kotlin("kapt") version "1.3.71"
 }
 
 
-version = "0.0.8"
+version = "0.0.9"
 
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"
@@ -64,7 +63,6 @@ tasks {
     compileKotlin {
         kotlinOptions {
             jvmTarget = "11"
-            freeCompilerArgs = listOf("-Xjvm-default=enable")
         }
         sourceCompatibility = "11"
     }

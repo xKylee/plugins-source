@@ -25,6 +25,9 @@ subprojects {
     project.extra["PluginLicense"] = "3-Clause BSD License"
 
     repositories {
+        maven {
+            url = uri("https://github.com/open-osrs/hosting/raw/0c2c730e45ab7efa2ff5bc0cb021c11be8a148b1/nightly/runelite-client-3.2.0.jar")
+        }
          jcenter {
             content {
                 excludeGroupByRegex("com\\.openosrs.*")

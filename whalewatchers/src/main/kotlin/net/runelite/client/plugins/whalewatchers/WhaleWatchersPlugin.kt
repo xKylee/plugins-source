@@ -145,7 +145,7 @@ class WhaleWatchersPlugin : Plugin() {
     @Subscribe
     private fun onPlayerSkullChanged(event: PlayerSkullChanged) {
         if (event.player != client.localPlayer || !config.protectItemWarning()) return
-        protectItemOverlay = true
+        protectItemOverlay = isSkulled()
     }
 
     @Subscribe
@@ -153,7 +153,7 @@ class WhaleWatchersPlugin : Plugin() {
         if (config.showDamageCounter() && client.getVar(VarPlayer.ATTACKING_PLAYER) == -1 && inCombat) {
             tickCountdown = 10
         }
-        if (!config.protectItemWarning() || !isSkulled()) {
+        if ((!config.protectItemWarning() || !config.lessObnoxiousProtWarning()) && !isSkulled()) {
             protectItemOverlay = false
             return
         }
@@ -196,7 +196,7 @@ class WhaleWatchersPlugin : Plugin() {
 
     private fun shouldBeProtecting() =
             (WorldType.isPvpWorld(client.worldType) ||
-                    WorldType.isDeadmanWorld(client.worldType) || client.getVar(Varbits.IN_WILDERNESS) == 1) &&
+                    WorldType.isDeadmanWorld(client.worldType) || client.getVar(Varbits.IN_PVP_AREA) == 1) &&
                     isSkulled() && canProtectItem() && !client.isPrayerActive(Prayer.PROTECT_ITEM)
 
     private fun canProtectItem() = client.getRealSkillLevel(Skill.PRAYER) > 25

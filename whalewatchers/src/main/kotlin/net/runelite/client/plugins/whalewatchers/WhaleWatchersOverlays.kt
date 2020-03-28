@@ -35,7 +35,7 @@ class WhaleWatchersOverlay @Inject constructor(
         OverlayMenuEntry(MenuOpcode.RUNELITE_OVERLAY,
                 "Reset", "Damage Counter")
     }
-    private val damageTitle: TitleComponent by lazy { titleComponent { "" } }
+    private val damageTitle: TitleComponent by lazy { titleComponent { } }
 
     private val title: TitleComponent by lazy { damageTitle }
 
