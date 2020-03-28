@@ -133,8 +133,10 @@ class WhaleWatchersPlugin : Plugin() {
 
     @Subscribe
     private fun onItemContainerChanged(event: ItemContainerChanged) {
-        displayGloryOverlay =
-                config.gloryWarning() && event.itemContainer === client.getItemContainer(InventoryID.EQUIPMENT)
+        if (!config.gloryWarning() || event.itemContainer !== client.getItemContainer(InventoryID.EQUIPMENT)) return
+        displayGloryOverlay = client.getItemContainer(InventoryID.EQUIPMENT)!!
+                .items
+                .map { it.id }.contains(ItemID.AMULET_OF_GLORY)
     }
 
     @Subscribe
@@ -145,10 +147,8 @@ class WhaleWatchersPlugin : Plugin() {
 
     @Subscribe
     private fun onPlayerSkullChanged(event: PlayerSkullChanged) {
-        if (event.player != client.localPlayer) return
-        if (config.protectItemWarning()) {
-            protectItemOverlay = true
-        }
+        if (event.player != client.localPlayer || !config.protectItemWarning()) return
+        protectItemOverlay = true
     }
 
     @Subscribe

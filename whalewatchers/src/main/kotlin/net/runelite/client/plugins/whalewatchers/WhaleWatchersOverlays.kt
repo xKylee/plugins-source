@@ -12,7 +12,9 @@ import net.runelite.client.ui.overlay.components.ImageComponent
 import net.runelite.client.ui.overlay.components.PanelComponent
 import net.runelite.client.ui.overlay.components.TitleComponent
 import net.runelite.client.util.AsyncBufferedImage
+import net.runelite.client.util.ImageUtil
 import java.awt.*
+import java.awt.image.BufferedImage
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -91,17 +93,18 @@ class WhaleWatchersGloryOverlay @Inject constructor(private val plugin: WhaleWat
     @Inject
     private lateinit var itemManager: ItemManager
 
-    private val gloryImage: AsyncBufferedImage by lazy {
-        itemManager.getImage(ItemID.AMULET_OF_GLORY)
+    private val gloryImage: Image by lazy {
+        val image = itemManager.getImage(ItemID.AMULET_OF_GLORY)
+        image.getScaledInstance((image.height * 1.5).toInt(), (image.width * 1.5).toInt(), Image.SCALE_DEFAULT)
     }
 
     override fun render(graphics: Graphics2D): Dimension? {
+        panelComponent.children.clear()
         if (!plugin.displayGloryOverlay) return null
-        panelComponent.setBackgroundColor(Color.lightGray)
         with(panelComponent.children) {
             clear()
             add(gloryTitleComponent)
-            add(ImageComponent(gloryImage))
+            add(ImageComponent(ImageUtil.bufferedImageFromImage(gloryImage)))
         }
         return panelComponent.render(graphics)
     }
@@ -145,6 +148,8 @@ class WhaleWatchersProtOverlay @Inject constructor(
         } else {
             graphics.stroke = biggerStroke
         }
+        OverlayUtil.renderTextLocation(graphics, Point(rectangle.centerX.toInt() - 50, font.size),
+                "Protect item prayer disabled!!!", Color.red)
         graphics.color = Color.RED
         graphics.draw(rectangle)
     }

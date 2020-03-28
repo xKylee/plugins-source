@@ -32,11 +32,17 @@ plugins {
 }
 
 
-version = "0.0.7"
+version = "0.0.8"
 
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"
 
+
+repositories {
+    maven {
+        url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
+    }
+}
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
