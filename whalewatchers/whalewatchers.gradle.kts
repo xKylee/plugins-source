@@ -26,25 +26,16 @@ import ProjectVersions.rlVersion
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.71"
-    kotlin("kapt") version "1.3.71"
+    id("org.jetbrains.kotlin.jvm") version ProjectVersions.kotlinVersion
+    kotlin("kapt") version ProjectVersions.kotlinVersion
 }
 
-
 version = "0.0.9"
-
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"
 
-
-repositories {
-    maven {
-        url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
-    }
-}
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-
     kapt(Libraries.pf4j)
 
     annotationProcessor(Libraries.lombok)
