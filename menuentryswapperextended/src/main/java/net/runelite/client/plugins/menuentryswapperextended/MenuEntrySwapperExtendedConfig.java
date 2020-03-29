@@ -480,12 +480,24 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 
 	@ConfigItem(
 		keyName = "hideTradeWith",
-		name = "Trade With",
+		name = "Hide 'Trade With'",
 		description = "Hides the 'Trade with' option from the right click menu.",
 		position = 1,
 		section = "rightClickOptionsSection"
 	)
 	default boolean hideTradeWith()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "hideEmpty",
+		name = "Hide 'Empty'",
+		description = "Hides the 'Empty' option from the right click menu for potions.",
+		position = 2,
+		section = "rightClickOptionsSection"
+	)
+	default boolean hideEmpty()
 	{
 		return false;
 	}

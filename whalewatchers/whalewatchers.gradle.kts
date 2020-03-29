@@ -1,4 +1,5 @@
 import ProjectVersions.rlVersion
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 /*
  * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
@@ -25,12 +26,28 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.4"
+plugins {
+    id("org.jetbrains.kotlin.jvm") version "1.3.70"
+    kotlin("kapt") version "1.3.70"
+}
+
+
+version = "0.0.8"
 
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"
 
+
+repositories {
+    maven {
+        url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
+    }
+}
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+
+    kapt(Libraries.pf4j)
+
     annotationProcessor(Libraries.lombok)
     annotationProcessor(Libraries.pf4j)
 
@@ -44,6 +61,13 @@ dependencies {
 }
 
 tasks {
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "11"
+            freeCompilerArgs = listOf("-Xjvm-default=enable")
+        }
+        sourceCompatibility = "11"
+    }
     jar {
         manifest {
             attributes(mapOf(
