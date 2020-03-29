@@ -123,7 +123,7 @@ class AlchemicalHydraSceneOverlay extends Overlay
 
 		LocalPoint fountainPoint = wp == null ? null : LocalPoint.fromWorld(client, wp); // trash
 
-		if (fountainPoint == null || hydra.isWeakened()) // I
+		if (fountainPoint == null || hydra.getStrength() <= 0) // I
 		{
 			return;
 		}

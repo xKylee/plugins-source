@@ -262,10 +262,10 @@ public class AlchemicalHydraPlugin extends Plugin
 
 		if (hydra.getPhase().getSpecProjectileId() != 0 && hydra.getPhase().getSpecProjectileId() == id)
 		{
-			if (hydra.getAttackCount() == hydra.getNextSpecial())
+			if (hydra.getAttackCount() >= hydra.getNextSpecial())
 			{
 				// Only add 9 to next special on the first poison projectile (whoops)
-				hydra.setNextSpecial(hydra.getNextSpecial() + 9);
+				hydra.setNextSpecial(hydra.getAttackCount() + 9);
 			}
 
 			poisonProjectiles.put(event.getPosition(), projectile);
@@ -282,7 +282,7 @@ public class AlchemicalHydraPlugin extends Plugin
 	{
 		if (event.getMessage().equals("The chemicals neutralise the Alchemical Hydra's defences!"))
 		{
-			hydra.setWeakened(true);
+			hydra.setStrength(hydra.getStrength() - 1);
 		}
 		else if (event.getMessage().equals("The Alchemical Hydra temporarily stuns you."))
 		{

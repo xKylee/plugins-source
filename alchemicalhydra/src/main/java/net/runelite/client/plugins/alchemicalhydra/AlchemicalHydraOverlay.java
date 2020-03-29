@@ -123,7 +123,7 @@ class AlchemicalHydraOverlay extends Overlay
 		final AlchemicalHydraPhase phase = hydra.getPhase();
 		final int nextSpec = hydra.getNextSpecialRelative();
 
-		if (nextSpec > 3)
+		if (nextSpec > 3 || nextSpec < 0)
 		{
 			return;
 		}

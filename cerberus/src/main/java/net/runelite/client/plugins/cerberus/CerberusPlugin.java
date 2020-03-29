@@ -85,6 +85,7 @@ public class CerberusPlugin extends Plugin
 	private final List<NPC> ghosts = new ArrayList<>();
 	@Getter(AccessLevel.PUBLIC)
 	private final List<CerberusAttack> upcomingAttacks = new ArrayList<>(10);
+	private final List<Long> tickTimestamps = new ArrayList<>(5);
 	@Getter(AccessLevel.PUBLIC)
 	private CerberusNPC cerberus;
 	@Getter(AccessLevel.PUBLIC)
@@ -92,13 +93,11 @@ public class CerberusPlugin extends Plugin
 	@Getter(AccessLevel.PUBLIC)
 	private int gameTick = 0;
 	@Getter(AccessLevel.PUBLIC)
-	private long firstTick;
-	@Getter(AccessLevel.PUBLIC)
 	private long lastTick;
 	@Inject
 	@Getter(AccessLevel.PUBLIC)
 	private Client client;
-
+	private int tickTimestampIndex;
 	@Inject
 	private OverlayManager overlayManager;
 
@@ -154,11 +153,30 @@ public class CerberusPlugin extends Plugin
 			return;
 		}
 
+		if (tickTimestamps.size() <= tickTimestampIndex)
+		{
+			tickTimestamps.add(System.currentTimeMillis());
+		}
+		else
+		{
+			tickTimestamps.set(tickTimestampIndex, System.currentTimeMillis());
+		}
+
+		long min = 0;
+		for (int i = 0; i < tickTimestamps.size(); ++i)
+		{
+			if (min == 0)
+			{
+				min = tickTimestamps.get(i) + 600 * ((tickTimestampIndex - i + 5) % 5);
+			}
+			else
+			{
+				min = Math.min(min, tickTimestamps.get(i) + 600 * ((tickTimestampIndex - i + 5) % 5));
+			}
+		}
+		tickTimestampIndex = (tickTimestampIndex + 1) % 5;
+		lastTick = min;
 		++gameTick;
-
-		lastTick = Math.min(System.currentTimeMillis(), firstTick + (gameTick * 600));
-		firstTick = Math.min(firstTick, lastTick - (gameTick * 600));
-
 
 		if (gameTick % 10 == 3)
 		{
@@ -181,6 +199,21 @@ public class CerberusPlugin extends Plugin
 			// what ghost will attack first
 			.result());
 	}
+
+
+	public String toString()
+	{
+		String toReturn = "[";
+
+		for (Long currentDog : tickTimestamps)
+		{
+			toReturn += currentDog.toString() + ", ";
+		}
+		toReturn = toReturn.substring(0, toReturn.length() - 1);
+
+		return toReturn + "]";
+	}
+
 
 	private void calculateUpcomingAttacks()
 	{
@@ -417,9 +450,10 @@ public class CerberusPlugin extends Plugin
 			case 4486: //Start of the fight (cerberus stands up)
 				cerberus = new CerberusNPC(cerberus.getNpc());
 				gameTick = 0;
-				firstTick = System.currentTimeMillis();
-				lastTick = firstTick;
+				lastTick = System.currentTimeMillis();
 				upcomingAttacks.clear();
+				tickTimestamps.clear();
+				tickTimestampIndex = 0;
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.SPAWN);
 				break;
 			case -1: //idle
@@ -478,7 +512,7 @@ public class CerberusPlugin extends Plugin
 		var cerbLoc = cerberus.getNpc().getWorldLocation();
 
 		//If you're not in melee range, disregard your stab defense
-		if (Math.abs(cerbLoc.getX() - loc.getX()) > 3 || Math.abs(cerbLoc.getY() - loc.getY()) > 3)
+		if (loc.getX() < cerbLoc.getX() - 1 || loc.getX() > cerbLoc.getX() + 5 || loc.getY() < cerbLoc.getY() - 1 || loc.getY() > cerbLoc.getY() + 5)
 		{
 			melDefenceTotal = Integer.MAX_VALUE;
 		}
@@ -510,6 +544,8 @@ public class CerberusPlugin extends Plugin
 			gameTick = 0;
 			lastTick = System.currentTimeMillis();
 			upcomingAttacks.clear();
+			tickTimestamps.clear();
+			tickTimestampIndex = 0;
 		}
 
 		if (cerberus == null)

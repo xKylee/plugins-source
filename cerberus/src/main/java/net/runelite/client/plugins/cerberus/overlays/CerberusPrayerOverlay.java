@@ -38,6 +38,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Prayer;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.Util.CerberusImageManager;
+import net.runelite.client.plugins.cerberus.Util.CerberusInfoBoxComponent;
 import net.runelite.client.plugins.cerberus.Util.ImagePanelComponent;
 import net.runelite.client.plugins.cerberus.domain.CerberusNPC;
 import net.runelite.client.ui.overlay.Overlay;
@@ -72,9 +73,9 @@ public class CerberusPrayerOverlay extends Overlay
 			return null;
 		}
 
-		final ImagePanelComponent imagePanelComponent = new ImagePanelComponent();
 		if (plugin.getUpcomingAttacks().size() > 0 && plugin.getUpcomingAttacks().get(0).getTick() <= plugin.getGameTick() + 6)
 		{
+
 			var attack = plugin.getUpcomingAttacks().get(0);
 			final Prayer prayer;
 			if (attack.getAttack() == CerberusNPC.Attack.AUTO)
@@ -87,36 +88,64 @@ public class CerberusPrayerOverlay extends Overlay
 			}
 
 			BufferedImage prayerImage = CerberusImageManager.getCerberusPrayerBufferedImage(prayer);
-			final StringBuilder sbTitle = new StringBuilder();
-			if (!client.isPrayerActive(prayer))
+
+
+			if (plugin.getConfig().useSmallBoxes())
 			{
-				sbTitle.append("Switch!");
+
+				final CerberusInfoBoxComponent infoBoxComponent = new CerberusInfoBoxComponent();
+				if (plugin.getConfig().showPrayerTimer())
+				{
+					final StringBuilder sbTitle = new StringBuilder();
+					sbTitle.append("+");
+					var timeUntilAttack = Math.max((double) ((attack.getTick() - plugin.getGameTick()) * 600 - (System.currentTimeMillis() - plugin.getLastTick())) / 1000, 0);
+					sbTitle.append(String.format("%.1f", timeUntilAttack));
+					sbTitle.append("s");
+					infoBoxComponent.setText(sbTitle.toString());
+					infoBoxComponent.setColor(Color.white);
+				}
+				infoBoxComponent.setImage(prayerImage);
+				if (!client.isPrayerActive(prayer))
+				{
+					infoBoxComponent.setBackgroundColor(new Color(150, 0, 0, 128));
+				}
+				infoBoxComponent.setPreferredSize(new Dimension(50, 50));
+
+				return infoBoxComponent.render(graphics);
 			}
 			else
 			{
-				sbTitle.append("Prayer");
-			}
+				final StringBuilder sbTitle = new StringBuilder();
+				if (!client.isPrayerActive(prayer))
+				{
+					sbTitle.append("Switch!");
+				}
+				else
+				{
+					sbTitle.append("Prayer");
+				}
 
-			if (plugin.getConfig().showPrayerTimer())
-			{
-				sbTitle.append(" (");
-				var timeUntilAttack = Math.max((double) ((attack.getTick() - plugin.getGameTick()) * 600 - (System.currentTimeMillis() - plugin.getLastTick())) / 1000, 0);
-				sbTitle.append(String.format("%.1f", timeUntilAttack));
-				sbTitle.append(")");
-			}
+				if (plugin.getConfig().showPrayerTimer())
+				{
+					sbTitle.append(" (");
+					var timeUntilAttack = Math.max((double) ((attack.getTick() - plugin.getGameTick()) * 600 - (System.currentTimeMillis() - plugin.getLastTick())) / 1000, 0);
+					sbTitle.append(String.format("%.1f", timeUntilAttack));
+					sbTitle.append(")");
+				}
 
-			imagePanelComponent.setTitle(sbTitle.toString());
-			imagePanelComponent.setImage(prayerImage);
-			if (!client.isPrayerActive(prayer))
-			{
-				imagePanelComponent.setBackgroundColor(new Color(150, 0, 0, 128));
+				final ImagePanelComponent imagePanelComponent = new ImagePanelComponent();
+				imagePanelComponent.setTitle(sbTitle.toString());
+				imagePanelComponent.setImage(prayerImage);
+				if (!client.isPrayerActive(prayer))
+				{
+					imagePanelComponent.setBackgroundColor(new Color(150, 0, 0, 128));
+				}
+
+				return imagePanelComponent.render(graphics);
 			}
 		}
-		else
-		{
-			imagePanelComponent.setTitle(" - ");
-		}
-		return imagePanelComponent.render(graphics);
+
+		return null;
 
 
 	}
