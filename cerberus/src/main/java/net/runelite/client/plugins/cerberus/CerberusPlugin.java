@@ -85,7 +85,6 @@ public class CerberusPlugin extends Plugin
 	private final List<NPC> ghosts = new ArrayList<>();
 	@Getter(AccessLevel.PUBLIC)
 	private final List<CerberusAttack> upcomingAttacks = new ArrayList<>(10);
-	private final List<Long> tickTimestamps = new ArrayList<>(5);
 	@Getter(AccessLevel.PUBLIC)
 	private CerberusNPC cerberus;
 	@Getter(AccessLevel.PUBLIC)
@@ -97,22 +96,16 @@ public class CerberusPlugin extends Plugin
 	@Inject
 	@Getter(AccessLevel.PUBLIC)
 	private Client client;
-	private int tickTimestampIndex;
 	@Inject
 	private OverlayManager overlayManager;
-
 	@Inject
 	private ItemManager itemManager;
-
 	@Inject
 	private CerberusOverlay attacksOverlay;
-
 	@Inject
 	private CerberusPhaseOverlay phaseOverlay;
-
 	@Inject
 	private CerberusPrayerOverlay prayerOverlay;
-
 	@Inject
 	@Getter(AccessLevel.PUBLIC)
 	private CerberusConfig config;
@@ -122,6 +115,10 @@ public class CerberusPlugin extends Plugin
 	{
 		return configManager.getConfig(CerberusConfig.class);
 	}
+
+
+	private int tickTimestampIndex;
+	private final List<Long> tickTimestamps = new ArrayList<>(5);
 
 	@Override
 	protected void startUp()
@@ -198,20 +195,6 @@ public class CerberusPlugin extends Plugin
 			// This will give use the current wave and order of the ghosts based on
 			// what ghost will attack first
 			.result());
-	}
-
-
-	public String toString()
-	{
-		String toReturn = "[";
-
-		for (Long currentDog : tickTimestamps)
-		{
-			toReturn += currentDog.toString() + ", ";
-		}
-		toReturn = toReturn.substring(0, toReturn.length() - 1);
-
-		return toReturn + "]";
 	}
 
 
