@@ -49,6 +49,9 @@ public class CerberusNPC
 	private int lastAttackTick;
 
 	@Getter(AccessLevel.PUBLIC)
+	private CerberusPhase lastAttackPhase = CerberusPhase.SPAWNING;
+
+	@Getter(AccessLevel.PUBLIC)
 	private Attack lastAttack;
 
 	@Getter(AccessLevel.PUBLIC)
@@ -71,9 +74,10 @@ public class CerberusNPC
 		this.attacksDone = new ArrayList<>();
 	}
 
-	public void nextPhase()
+	public void nextPhase(CerberusPhase lastAttackPhase)
 	{
 		phaseCount++;
+		this.lastAttackPhase = lastAttackPhase;
 	}
 
 	public void doProjectileOrAnimation(int gameTick, Attack attack)

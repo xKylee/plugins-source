@@ -92,28 +92,20 @@ public class CerberusPlugin extends Plugin
 	@Getter(AccessLevel.PUBLIC)
 	private int gameTick = 0;
 	@Getter(AccessLevel.PUBLIC)
-	private long firstTick;
-	@Getter(AccessLevel.PUBLIC)
 	private long lastTick;
 	@Inject
 	@Getter(AccessLevel.PUBLIC)
 	private Client client;
-
 	@Inject
 	private OverlayManager overlayManager;
-
 	@Inject
 	private ItemManager itemManager;
-
 	@Inject
 	private CerberusOverlay attacksOverlay;
-
 	@Inject
 	private CerberusPhaseOverlay phaseOverlay;
-
 	@Inject
 	private CerberusPrayerOverlay prayerOverlay;
-
 	@Inject
 	@Getter(AccessLevel.PUBLIC)
 	private CerberusConfig config;
@@ -123,6 +115,10 @@ public class CerberusPlugin extends Plugin
 	{
 		return configManager.getConfig(CerberusConfig.class);
 	}
+
+
+	private int tickTimestampIndex;
+	private final List<Long> tickTimestamps = new ArrayList<>(5);
 
 	@Override
 	protected void startUp()
@@ -154,11 +150,30 @@ public class CerberusPlugin extends Plugin
 			return;
 		}
 
+		if (tickTimestamps.size() <= tickTimestampIndex)
+		{
+			tickTimestamps.add(System.currentTimeMillis());
+		}
+		else
+		{
+			tickTimestamps.set(tickTimestampIndex, System.currentTimeMillis());
+		}
+
+		long min = 0;
+		for (int i = 0; i < tickTimestamps.size(); ++i)
+		{
+			if (min == 0)
+			{
+				min = tickTimestamps.get(i) + 600 * ((tickTimestampIndex - i + 5) % 5);
+			}
+			else
+			{
+				min = Math.min(min, tickTimestamps.get(i) + 600 * ((tickTimestampIndex - i + 5) % 5));
+			}
+		}
+		tickTimestampIndex = (tickTimestampIndex + 1) % 5;
+		lastTick = min;
 		++gameTick;
-
-		lastTick = Math.min(System.currentTimeMillis(), firstTick + (gameTick * 600));
-		firstTick = Math.min(firstTick, lastTick - (gameTick * 600));
-
 
 		if (gameTick % 10 == 3)
 		{
@@ -182,6 +197,7 @@ public class CerberusPlugin extends Plugin
 			.result());
 	}
 
+
 	private void calculateUpcomingAttacks()
 	{
 		upcomingAttacks.clear();
@@ -197,10 +213,8 @@ public class CerberusPlugin extends Plugin
 		final int health = cerberus.getHealth();
 		final CerberusPhase expectedPhase = cerberus.getNextAttackPhase(1, health);
 
-		//The following line of code is not always 100% correct.
-		//This might return a lava phase or ghost phase while it was actually something different cuz the hp might have changed.
-		//But I'm too tired of this plugin to fix it right now:
-		final CerberusPhase lastCerberusPhase = cerberus.getNextAttackPhase(0, health);
+
+		final CerberusPhase lastCerberusPhase = cerberus.getLastAttackPhase();
 
 		int tickDelay = 0;
 		if (lastCerberusPhase != null)
@@ -210,7 +224,7 @@ public class CerberusPlugin extends Plugin
 
 		for (int tick = gameTick + 1; tick <= gameTick + 10; ++tick)
 		{
-			if (!ghosts.isEmpty())
+			if (ghosts.size() == 3)
 			{
 				final Optional<CerberusGhost> ghost;
 				if (cerberus.getLastGhostYellTick() == tick - 13)
@@ -329,7 +343,7 @@ public class CerberusPlugin extends Plugin
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus projectile: MAGIC");
 				if (expectedAttack != CerberusPhase.TRIPLE)
 				{
-					cerberus.nextPhase();
+					cerberus.nextPhase(CerberusPhase.AUTO);
 				}
 				else
 				{
@@ -341,7 +355,7 @@ public class CerberusPlugin extends Plugin
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus projectile: RANGED");
 				if (expectedAttack != CerberusPhase.TRIPLE)
 				{
-					cerberus.nextPhase();
+					cerberus.nextPhase(CerberusPhase.AUTO);
 				}
 				else
 				{
@@ -400,17 +414,17 @@ public class CerberusPlugin extends Plugin
 			case 4491: //MELEE
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: MELEE");
 				cerberus.setLastTripleAttack(null);
-				cerberus.nextPhase();
+				cerberus.nextPhase(expectedAttack);
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.MELEE);
 				break;
 			case 4493: //LAVA
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: LAVA");
-				cerberus.nextPhase();
+				cerberus.nextPhase(CerberusPhase.LAVA);
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.LAVA);
 				break;
 			case 4494: //GHOSTS
 				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: GHOSTS");
-				cerberus.nextPhase();
+				cerberus.nextPhase(CerberusPhase.GHOSTS);
 				cerberus.setLastGhostYellTick(gameTick);
 				cerberus.setLastGhostYellTime(System.currentTimeMillis());
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.GHOSTS);
@@ -419,9 +433,10 @@ public class CerberusPlugin extends Plugin
 			case 4486: //Start of the fight (cerberus stands up)
 				cerberus = new CerberusNPC(cerberus.getNpc());
 				gameTick = 0;
-				firstTick = System.currentTimeMillis();
-				lastTick = firstTick;
+				lastTick = System.currentTimeMillis();
 				upcomingAttacks.clear();
+				tickTimestamps.clear();
+				tickTimestampIndex = 0;
 				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.SPAWN);
 				break;
 			case -1: //idle
@@ -480,7 +495,7 @@ public class CerberusPlugin extends Plugin
 		var cerbLoc = cerberus.getNpc().getWorldLocation();
 
 		//If you're not in melee range, disregard your stab defense
-		if (Math.abs(cerbLoc.getX() - loc.getX()) > 3 || Math.abs(cerbLoc.getY() - loc.getY()) > 3)
+		if (loc.getX() < cerbLoc.getX() - 1 || loc.getX() > cerbLoc.getX() + 5 || loc.getY() < cerbLoc.getY() - 1 || loc.getY() > cerbLoc.getY() + 5)
 		{
 			melDefenceTotal = Integer.MAX_VALUE;
 		}
@@ -512,6 +527,8 @@ public class CerberusPlugin extends Plugin
 			gameTick = 0;
 			lastTick = System.currentTimeMillis();
 			upcomingAttacks.clear();
+			tickTimestamps.clear();
+			tickTimestampIndex = 0;
 		}
 
 		if (cerberus == null)

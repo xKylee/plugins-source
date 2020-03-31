@@ -31,7 +31,8 @@ public enum WaveDisplayMode
 {
 	CURRENT("Current wave"),
 	NEXT("Next wave"),
-	BOTH("Both");
+	BOTH("Both"),
+	NONE("None");
 
 	private final String name;
 

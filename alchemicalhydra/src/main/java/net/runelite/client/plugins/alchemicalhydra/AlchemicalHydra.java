@@ -82,18 +82,18 @@ class AlchemicalHydra
 	private AttackStyle lastAttack = AttackStyle.MAGIC;
 
 	@Setter(AccessLevel.PACKAGE)
-	private boolean weakened = false;
+	private int strength = 1;
 
 	void changePhase(AlchemicalHydraPhase newPhase)
 	{
 		phase = newPhase;
 		nextSpecial = 3;
 		attackCount = 0;
-		weakened = false;
+		++strength;
 
 		if (newPhase == AlchemicalHydraPhase.FOUR)
 		{
-			weakened = true;
+			strength = 0;
 			switchStyles();
 			nextSwitch = phase.getAttacksPerSwitch();
 		}
