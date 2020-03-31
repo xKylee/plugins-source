@@ -16,15 +16,15 @@ import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
+import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -92,6 +92,9 @@ public class NightmarePlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<LocalPoint, GameObject> spores = new HashMap<>();
+
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<Integer, Player> parasiteTargets = new HashMap<>();
 
 	@Getter(AccessLevel.PACKAGE)
 	private boolean inFight;
@@ -181,6 +184,23 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
+	private void onProjectileSpawned(ProjectileSpawned event)
+	{
+		if (!inFight)
+		{
+			return;
+		}
+
+		var projectile = event.getProjectile();
+
+		if (projectile.getId() == 1770)
+		{
+			Player targetPlayer = (Player)projectile.getInteracting();
+			parasiteTargets.putIfAbsent(targetPlayer.getPlayerId(), targetPlayer);
+		}
+	}
+
+	@Subscribe
 	public void onAnimationChanged(AnimationChanged event)
 	{
 		if (!inFight || nm == null)
@@ -228,20 +248,11 @@ public class NightmarePlugin extends Plugin
 			cursed = false;
 			attacksSinceCurse = -1;
 		}
-	}
 
-	@Subscribe
-	private void onChatMessage(ChatMessage chatMessage)
-	{
-		if (!inFight || chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
+		if (animationId == NIGHTMARE_PARASITE_TOSS2)
 		{
-			return;
-		}
-
-		final String message = chatMessage.getMessage();
-		if (message.contains("The Nightmare has impregnated you with a deadly parasite!"))
-		{
-			ticksUntilParasite = 22;
+			System.out.println(ticksSinceFightStarted + ": " + animationId);
+			ticksUntilParasite = 27;
 		}
 	}
 
@@ -314,6 +325,10 @@ public class NightmarePlugin extends Plugin
 		if (ticksUntilParasite > 0)
 		{
 			ticksUntilParasite--;
+			if (ticksUntilParasite == 0)
+			{
+				parasiteTargets.clear();
+			}
 		}
 
 		if (pendingNightmareAttack != null && ticksUntilNextAttack <= 3)
