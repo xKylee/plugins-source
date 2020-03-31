@@ -28,7 +28,7 @@ import ProjectVersions.rlVersion
 version = "0.0.7"
 
 project.extra["PluginName"] = "Alchemical Hydra"
-project.extra["PluginDescription"] = "Show what to pray against hydra"
+project.extra["PluginDescription"] = "Show what to pray against Alchemical Hydra"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
