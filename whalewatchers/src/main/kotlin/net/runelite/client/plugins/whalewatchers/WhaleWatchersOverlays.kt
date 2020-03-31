@@ -2,12 +2,10 @@ package net.runelite.client.plugins.whalewatchers
 
 import net.runelite.api.Client
 import net.runelite.api.ItemID
-import net.runelite.api.MenuOpcode
 import net.runelite.api.Point
 import net.runelite.client.game.ItemManager
 import net.runelite.client.ui.FontManager
 import net.runelite.client.ui.overlay.*
-import net.runelite.client.ui.overlay.components.ComponentOrientation
 import net.runelite.client.ui.overlay.components.ImageComponent
 import net.runelite.client.ui.overlay.components.PanelComponent
 import net.runelite.client.ui.overlay.components.TitleComponent
@@ -18,62 +16,6 @@ import javax.inject.Singleton
 
 val font: Font by lazy {
     FontManager.getRunescapeBoldFont().deriveFont(Font.BOLD, 72f)
-}
-
-@Singleton
-class WhaleWatchersOverlay @Inject constructor(
-        private val client: Client,
-        private val plugin: WhaleWatchersPlugin,
-        private val config: WhaleWatchersConfig
-) : Overlay(plugin) {
-
-    private val panelComponent: PanelComponent by lazy { PanelComponent() }
-    private var lastOpponent: String = "-"
-    private fun damageDealt() = "Damage Dealt: ${plugin.damageDone}"
-
-    private val overlayMenuEntry: OverlayMenuEntry by lazy {
-        OverlayMenuEntry(MenuOpcode.RUNELITE_OVERLAY,
-                "Reset", "Damage Counter")
-    }
-    private val damageTitle: TitleComponent by lazy { titleComponent { } }
-
-    private val title: TitleComponent by lazy { damageTitle }
-
-    private val damageDealt: TitleComponent by lazy {
-        return@lazy titleComponent {
-            text(damageDealt())
-        }
-    }
-
-    private fun TitleComponent.updateText(text: String): TitleComponent {
-        setText(text)
-        return this
-    }
-
-    override fun render(graphics: Graphics2D): Dimension? {
-        panelComponent.children.clear()
-        if (!plugin.inCombat || !config.showDamageCounter()) {
-            return null
-        } else {
-            panelComponent.setOrientation(ComponentOrientation.HORIZONTAL)
-            panelComponent.setWrapping(5)
-            val target = ((client.localPlayer ?: return null).interacting ?: return null).name
-            with(panelComponent.children) {
-                add(title.updateText(target ?: lastOpponent))
-                add(damageDealt.updateText(damageDealt()))
-                add(damageDealt.updateText("Damage Taken: ${plugin.damageTaken}"))
-            }
-        }
-        return panelComponent.render(graphics)
-    }
-
-    init {
-        menuEntries.add(overlayMenuEntry)
-        layer = OverlayLayer.ABOVE_WIDGETS
-        priority = OverlayPriority.HIGHEST
-        position = OverlayPosition.TOP_LEFT
-        preferredPosition = OverlayPosition.TOP_LEFT
-    }
 }
 
 private val gloryTitleComponent by lazy {
@@ -96,13 +38,17 @@ class WhaleWatchersGloryOverlay @Inject constructor(private val plugin: WhaleWat
         image.getScaledInstance((image.height * 1.5).toInt(), (image.width * 1.5).toInt(), Image.SCALE_DEFAULT)
     }
 
+    private val gloryImageComponent: ImageComponent by lazy {
+        ImageComponent(ImageUtil.bufferedImageFromImage(gloryImage))
+    }
+
     override fun render(graphics: Graphics2D): Dimension? {
         panelComponent.children.clear()
         if (!plugin.displayGloryOverlay) return null
         with(panelComponent.children) {
             clear()
             add(gloryTitleComponent)
-            add(ImageComponent(ImageUtil.bufferedImageFromImage(gloryImage)))
+            add(gloryImageComponent)
         }
         return panelComponent.render(graphics)
     }
@@ -129,7 +75,7 @@ class WhaleWatchersProtOverlay @Inject constructor(
     }
 
     override fun render(graphics: Graphics2D): Dimension? {
-        if (!plugin.protectItemOverlay || !config.protectItemWarning()) return null
+        if (!plugin.protectItemOverlay || !config.protectItemWarning() || !config.lessObnoxiousProtWarning()) return null
         val oldStroke = graphics.stroke
         if (config.lessObnoxiousProtWarning()) {
             drawLessObnoxiousWarning(graphics)
@@ -143,6 +89,8 @@ class WhaleWatchersProtOverlay @Inject constructor(
     private fun drawProtItemWarning(graphics: Graphics2D) {
         if (config.lessObnoxiousProtWarning()) {
             graphics.stroke === smallStroke
+            drawLessObnoxiousWarning(graphics)
+            return
         } else {
             graphics.stroke = biggerStroke
         }
@@ -202,9 +150,12 @@ fun titleComponent(titleComponent: TitleComponent.TitleComponentBuilder.() -> Un
     return builder.build()
 }
 
-private val mainTitle = titleComponent {
-    text("LOW PRAYER WARNING")
-    color(Color.BLACK)
+
+private val mainTitle: TitleComponent by lazy {
+    titleComponent {
+        text(smitedTitleText)
+        color(Color.BLACK)
+    }
 }
 
 private val subtextComponent: TitleComponent by lazy {
@@ -213,6 +164,7 @@ private val subtextComponent: TitleComponent by lazy {
         color(Color.BLACK)
     }
 }
+const val smitedTitleText = "LOW PRAYER WARNING"
 const val subText = "You could be smited in 1 tick"
 val smallStroke = BasicStroke(3F)
 val biggerStroke = BasicStroke(10F)
