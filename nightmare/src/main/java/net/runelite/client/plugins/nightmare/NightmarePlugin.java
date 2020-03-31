@@ -22,8 +22,6 @@ import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.api.events.ProjectileSpawned;
@@ -151,6 +149,7 @@ public class NightmarePlugin extends Plugin
 		ticksUntilParasite = 0;
 		totems.clear();
 		spores.clear();
+		parasiteTargets.clear();
 	}
 
 	@Subscribe
@@ -254,21 +253,6 @@ public class NightmarePlugin extends Plugin
 		if (animationId == NIGHTMARE_PARASITE_TOSS2)
 		{
 			ticksUntilParasite = 27;
-		}
-	}
-
-	@Subscribe
-	private void onChatMessage(ChatMessage chatMessage)
-	{
-		if (!inFight || chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
-		{
-			return;
-		}
-
-		final String message = chatMessage.getMessage();
-		if (message.contains("The Nightmare has impregnated you with a deadly parasite!"))
-		{
-			ticksUntilParasite = 22;
 		}
 	}
 
