@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.Util.CerberusImageManager;
+import net.runelite.client.plugins.cerberus.Util.CerberusInfoBoxComponent;
 import net.runelite.client.plugins.cerberus.Util.ImagePanelComponent;
 import net.runelite.client.plugins.cerberus.domain.CerberusPhase;
 import net.runelite.client.ui.overlay.Overlay;
@@ -112,18 +113,32 @@ public class CerberusPhaseOverlay extends Overlay
 				int x = -1;
 				int y = -1;
 
+				final int dx;
+				final int dy;
+				if (plugin.getConfig().useSmallBoxes())
+				{
+					dx = 50;
+					dy = 50;
+				}
+				else
+				{
+					dx = 85;
+					dy = 70;
+				}
+
+
 				if (plugin.getConfig().horizontalUpcomingAttacks() && plugin.getConfig().reverseUpcomingAttacks())
 				{
-					x += (85 + gap.getX()) * (amountOfAttacks - 1);
+					x += (dx + gap.getX()) * (amountOfAttacks - 1);
 				}
 				else if (!plugin.getConfig().horizontalUpcomingAttacks() && !plugin.getConfig().reverseUpcomingAttacks())
 				{
-					y += (70 + gap.getY()) * (amountOfAttacks - 1);
+					y += (dy + gap.getY()) * (amountOfAttacks - 1);
 				}
 
 				Rectangle outsideStroke = new Rectangle();
 				outsideStroke.setLocation(x, y);
-				outsideStroke.setSize(86, 71);
+				outsideStroke.setSize(dx + 1, dy + 1);
 				graphics.setColor(Color.WHITE);
 				graphics.draw(outsideStroke);
 			}
@@ -133,6 +148,8 @@ public class CerberusPhaseOverlay extends Overlay
 			{
 				continue;
 			}
+
+
 			switch (phase)
 			{
 				case AUTO:
@@ -162,20 +179,45 @@ public class CerberusPhaseOverlay extends Overlay
 				sbTitle.append(")");
 			}
 
-			final ImagePanelComponent imagePanelComponent = new ImagePanelComponent();
-			imagePanelComponent.setTitle(sbTitle.toString());
-			if (!nextThresholdPhase.equals(phase))
-			{
-				imagePanelComponent.setHealthRemaining(cerbHp % 200);
-				imagePanelComponent.setNextPhase(nextThresholdPhase.name().substring(0, Math.min(3, nextThresholdPhase.name().length())));
-			}
-			if (backgroundColor != null)
-			{
-				imagePanelComponent.setBackgroundColor(backgroundColor);
-			}
-			imagePanelComponent.setImage(image);
 
-			panel.getChildren().add(imagePanelComponent);
+			if (plugin.getConfig().useSmallBoxes())
+			{
+				final CerberusInfoBoxComponent infoBoxComponent = new CerberusInfoBoxComponent();
+				infoBoxComponent.setImage(image);
+				if (!nextThresholdPhase.equals(phase))
+				{
+					final StringBuilder sbInfoBoxText = new StringBuilder(nextThresholdPhase.name().substring(0, Math.min(1, nextThresholdPhase.name().length())));
+					sbInfoBoxText.append(" +").append(cerbHp % 200);
+					infoBoxComponent.setText(sbInfoBoxText.toString()); // Insert text and pad left up to 9 characters
+					infoBoxComponent.setColor(Color.GREEN);
+				}
+				if (backgroundColor != null)
+				{
+					infoBoxComponent.setBackgroundColor(backgroundColor);
+				}
+				infoBoxComponent.setPreferredSize(new Dimension(50, 50));
+				panel.setPreferredSize(new Dimension(50, 0));
+				panel.getChildren().add(infoBoxComponent);
+			}
+			else
+			{
+				final ImagePanelComponent imagePanelComponent = new ImagePanelComponent();
+				imagePanelComponent.setTitle(sbTitle.toString());
+				if (!nextThresholdPhase.equals(phase))
+				{
+					imagePanelComponent.setHealthRemaining(cerbHp % 200);
+					imagePanelComponent.setNextPhase(nextThresholdPhase.name().substring(0, Math.min(3, nextThresholdPhase.name().length())));
+				}
+				if (backgroundColor != null)
+				{
+					imagePanelComponent.setBackgroundColor(backgroundColor);
+				}
+				imagePanelComponent.setImage(image);
+
+				panel.setPreferredSize(new Dimension(50, 0));
+				panel.getChildren().add(imagePanelComponent);
+			}
+
 		}
 		return panel.render(graphics);
 	}

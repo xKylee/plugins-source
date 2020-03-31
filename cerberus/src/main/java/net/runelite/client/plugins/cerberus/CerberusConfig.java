@@ -96,29 +96,16 @@ public interface CerberusConfig extends Config
 		return true;
 	}
 
-
 	@ConfigItem(
-		keyName = "drawDescendingBoxes",
-		name = "Enable 'Guitar Hero'-mode",
-		description = "Check this to show descending boxes that show you what to pray against every upcoming attack.",
-		position = 0,
-		titleSection = "guitarHeroSection"
+		keyName = "useSmallBoxes",
+		name = "Use small boxes",
+		description = "Display the upcoming phases using a smaller display.",
+		position = 2,
+		titleSection = "generalSection"
 	)
-	default boolean drawDescendingBoxes()
+	default boolean useSmallBoxes()
 	{
-		return true;
-	}
-
-	@ConfigItem(
-		keyName = "amountOfDescendingBoxes",
-		name = "Amount of ticks",
-		description = "Indicates how many upcoming ticks you would like to draw on the overlay. (0 - 10)",
-		position = 1,
-		titleSection = "guitarHeroSection"
-	)
-	default int amountOfDescendingBoxes()
-	{
-		return 4;
+		return false;
 	}
 
 
@@ -170,10 +157,36 @@ public interface CerberusConfig extends Config
 		return true;
 	}
 
+
+	@ConfigItem(
+		keyName = "drawDescendingBoxes",
+		name = "Enable 'Guitar Hero'-mode",
+		description = "Check this to show descending boxes that show you what to pray against every upcoming attack.",
+		position = 0,
+		titleSection = "guitarHeroSection"
+	)
+	default boolean drawDescendingBoxes()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "amountOfDescendingBoxes",
+		name = "Amount of ticks",
+		description = "Indicates how many upcoming ticks you would like to draw on the overlay. (0 - 10)",
+		position = 1,
+		titleSection = "guitarHeroSection"
+	)
+	default int amountOfDescendingBoxes()
+	{
+		return 4;
+	}
+
+
 	@ConfigItem(
 		keyName = "readMeButton",
-		name = "READ ME BEFORE USING",
-		description = "Read this first if you don't know how Cerberus or the plugin works!",
+		name = "Cerberus info",
+		description = "Read this if you don't know how Cerberus or the plugin works!",
 		position = 0,
 		clazz = CerberusReadMeButton.class
 	)
