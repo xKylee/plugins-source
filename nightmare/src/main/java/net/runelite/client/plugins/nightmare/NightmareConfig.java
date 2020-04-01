@@ -134,7 +134,7 @@ public interface NightmareConfig extends Config
 	@ConfigItem(
 		keyName = "showTicksUntilParasite",
 		name = "Indicate Parasites",
-		description = "Displays a red tick timer on you showing if/when a parasite will emerge",
+		description = "Displays a red tick timer on any impregnated players",
 		position = 7,
 		titleSection = "generalSection"
 	)

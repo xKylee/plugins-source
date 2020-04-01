@@ -16,6 +16,7 @@ import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
 import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
+import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.ui.overlay.Overlay;
@@ -125,10 +126,13 @@ class NightmareOverlay extends Overlay
 		{
 			String str = Integer.toString(ticksUntilNextParasite);
 
-			LocalPoint lp = client.getLocalPlayer().getLocalLocation();
-			Point point = Perspective.getCanvasTextLocation(client, graphics, lp, str, 0);
+			for (Player player : plugin.getParasiteTargets().values())
+			{
+				LocalPoint lp = player.getLocalLocation();
+				Point point = Perspective.getCanvasTextLocation(client, graphics, lp, str, 0);
 
-			renderTextLocation(graphics, str, 14, Font.BOLD, Color.RED, point);
+				renderTextLocation(graphics, str, 14, Font.BOLD, Color.RED, point);
+			}
 		}
 
 		if (config.highlightTotems())
