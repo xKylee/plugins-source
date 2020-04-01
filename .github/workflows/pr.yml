@@ -5,17 +5,6 @@ on:
     types: ['opened', 'edited', 'reopened', 'synchronize']
 
 jobs:
-  pr-lint:
-    name: PR title
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: PR title lint
-        if: github.event_name == 'pull_request'
-        uses: seferov/pr-lint-action@v1.0.3
-        with:
-          title-regex: '^([\w-/]+): \w+'
-
   validate:
     name: Validate gradle wrapper
     runs-on: ubuntu-latest
@@ -25,7 +14,7 @@ jobs:
 
   build:
     name: Build
-    needs: [pr-lint, validate]
+    needs: [validate]
     runs-on: ubuntu-latest
 
     steps:
@@ -96,7 +85,7 @@ jobs:
 
   test:
     name: test
-    needs: [pr-lint, validate]
+    needs: [validate]
     runs-on: ubuntu-latest
 
     steps:
@@ -167,7 +156,7 @@ jobs:
 
   checkstyleMain:
     name: Checkstyle main
-    needs: [pr-lint, validate]
+    needs: [validate]
     runs-on: ubuntu-latest
 
     steps:
@@ -238,7 +227,7 @@ jobs:
 
   checkstyleTest:
     name: Checkstyle test
-    needs: [pr-lint, validate]
+    needs: [validate]
     runs-on: ubuntu-latest
 
     steps:
@@ -309,7 +298,7 @@ jobs:
 
   bump:
     name: Check version numbers
-    needs: [pr-lint, validate]
+    needs: [validate]
     runs-on: ubuntu-latest
 
     steps:
