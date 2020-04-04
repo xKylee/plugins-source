@@ -122,6 +122,12 @@ public class InfernoPlugin extends Plugin
 	private WorldPoint zukShieldBase = null;
 	private int zukShieldCornerTicks = -2;
 
+	private int zukShieldNegativeXCoord = -1;
+	private int zukShieldPositiveXCoord = -1;
+	private int zukShieldLastNonZeroDelta = 0;
+	private int zukShieldLastDelta = 0;
+	private int zukShieldTicksLeftInCorner = -1;
+
 	@Getter(AccessLevel.PACKAGE)
 	private InfernoNPC centralNibbler = null;
 
@@ -622,41 +628,161 @@ public class InfernoPlugin extends Plugin
 		{
 			final WorldPoint zukShieldCurrentPosition = zukShield.getWorldLocation();
 
-			if (zukShieldLastPosition != null && zukShieldLastPosition.getX() != zukShieldCurrentPosition.getX()
-				&& zukShieldCornerTicks == -2)
+			if (zukShieldLastPosition != null && zukShieldLastPosition.getX() != zukShieldCurrentPosition.getX() && zukShieldCornerTicks == -2)
 			{
 				zukShieldBase = zukShieldLastPosition;
 				zukShieldCornerTicks = -1;
 			}
 
-			zukShieldLastPosition = zukShield.getWorldLocation();
+			if (zukShieldLastPosition != null)
+			{
+				int zukShieldDelta = zukShieldCurrentPosition.getX() - zukShieldLastPosition.getX();
+
+				//if zuk shield moved, update zukShieldLastNonZeroDelta to show the direction
+				if (zukShieldDelta != 0)
+				{
+					zukShieldLastNonZeroDelta = zukShieldDelta;
+				}
+
+				//reset corner ticks when the shield started to move out of the corner
+				if (zukShieldLastDelta == 0 && zukShieldDelta != 0)
+				{
+					zukShieldTicksLeftInCorner = 4;
+				}
+
+				//if zuk shield did not move, also set the negative/positive XCoords for the shield
+				if (zukShieldDelta == 0)
+				{
+					if (zukShieldLastNonZeroDelta > 0)
+					{
+						zukShieldPositiveXCoord = zukShieldCurrentPosition.getX();
+					}
+					else if (zukShieldLastNonZeroDelta < 0)
+					{
+						zukShieldNegativeXCoord = zukShieldCurrentPosition.getX();
+					}
+
+					//if zukShieldCorner Ticks > 0, decrement it
+					if (zukShieldTicksLeftInCorner > 0)
+					{
+						zukShieldTicksLeftInCorner--;
+					}
+				}
+
+				zukShieldLastDelta = zukShieldDelta;
+			}
+
+			zukShieldLastPosition = zukShieldCurrentPosition;
 
 			if (config.safespotDisplayMode() != InfernoSafespotDisplayMode.OFF)
 			{
 				if ((finalPhase && config.safespotsZukShieldAfterHealers() == InfernoZukShieldDisplayMode.LIVE)
 					|| (!finalPhase && config.safespotsZukShieldBeforeHealers() == InfernoZukShieldDisplayMode.LIVE))
 				{
-					for (int x = zukShield.getWorldLocation().getX() - 1; x <= zukShield.getWorldLocation().getX() + 3; x++)
-					{
-						for (int y = zukShield.getWorldLocation().getY() - 4; y <= zukShield.getWorldLocation().getY() - 2; y++)
-						{
-							safeSpotMap.put(new WorldPoint(x, y, client.getPlane()), 0);
-						}
-					}
+					drawZukSafespot(zukShield.getWorldLocation().getX(), zukShield.getWorldLocation().getY(), 0);
+				}
+
+				if ((finalPhase && config.safespotsZukShieldAfterHealers() == InfernoZukShieldDisplayMode.LIVEPLUSPREDICT)
+					|| (!finalPhase && config.safespotsZukShieldBeforeHealers() == InfernoZukShieldDisplayMode.LIVEPLUSPREDICT))
+				{
+					//draw the normal live safespot
+					drawZukSafespot(zukShield.getWorldLocation().getX(), zukShield.getWorldLocation().getY(), 0);
+
+					drawZukPredictedSafespot();
 				}
 				else if ((finalPhase && config.safespotsZukShieldAfterHealers() == InfernoZukShieldDisplayMode.PREDICT)
 					|| (!finalPhase && config.safespotsZukShieldBeforeHealers() == InfernoZukShieldDisplayMode.PREDICT))
 				{
-					if (zukShieldCornerTicks >= 0)
+					drawZukPredictedSafespot();
+				}
+			}
+		}
+	}
+
+	private void drawZukPredictedSafespot()
+	{
+		final WorldPoint zukShieldCurrentPosition = zukShield.getWorldLocation();
+		//only do this if both xcoords defined.
+		if (zukShieldPositiveXCoord != -1 && zukShieldNegativeXCoord != -1)
+		{
+			int nextShieldXCoord = zukShieldCurrentPosition.getX();
+
+			//calculate the next zuk shield position
+			for (InfernoNPC infernoNPC : infernoNpcs)
+			{
+				if (infernoNPC.getType() == InfernoNPC.Type.ZUK)
+				{
+					int ticksTilZukAttack = infernoNPC.getTicksTillNextAttack() - 1;
+
+					//if the ticksTilZukAttack == 0, start to render the next safespot, as it is safe to start moving there
+					if (ticksTilZukAttack < 1)
 					{
-						// TODO: Predict zuk shield safespots
-						// Calculate distance from zukShieldCurrentPosition to zukShieldBase.
-						// - If shield is not in corner: calculate next position in current direction (use
-						//   difference between current and last position to get direction)
-						// - If shield is in corner: increment zukShieldCornerTicks and predict next shield
-						//   position based on how many ticks the shield has been in the corner.
+						ticksTilZukAttack = 7;
+					}
+
+					//if zuk shield moving in positive direction
+					if (zukShieldLastNonZeroDelta > 0)
+					{
+						nextShieldXCoord += ticksTilZukAttack;
+
+						//nextShieldPosition appears to be past the rightmost spot, must adjust
+						if (nextShieldXCoord > zukShieldPositiveXCoord)
+						{
+							//reduce by number of ticks spent in corner
+							nextShieldXCoord -= zukShieldTicksLeftInCorner;
+
+							//nextShieldPosition is LT or equal to the rightmost spot
+							if (nextShieldXCoord <= zukShieldPositiveXCoord)
+							{
+								//shield should be at that spot
+								nextShieldXCoord = zukShieldPositiveXCoord;
+							}
+							else
+							{
+								//nextShieldPosition is right of the rightmost spot still
+								nextShieldXCoord = zukShieldPositiveXCoord - nextShieldXCoord + zukShieldPositiveXCoord;
+							}
+						}
+					}
+					else
+					{
+						//moving in negative direction
+						nextShieldXCoord -= ticksTilZukAttack;
+
+						//nextShieldPosition appears to be past the leftmost spot, must adjust
+						if (nextShieldXCoord < zukShieldNegativeXCoord)
+						{
+							//add by number of ticks spent in corner
+							nextShieldXCoord += zukShieldTicksLeftInCorner;
+
+							//nextShieldPosition is GT or equal to the leftmost spot
+							if (nextShieldXCoord >= zukShieldNegativeXCoord)
+							{
+								//shield should be at that spot
+								nextShieldXCoord = zukShieldNegativeXCoord;
+							}
+							else
+							{
+								//nextShieldPosition is left of the leftmost spot still
+								nextShieldXCoord = zukShieldNegativeXCoord - nextShieldXCoord + zukShieldNegativeXCoord;
+							}
+						}
 					}
 				}
+			}
+
+			//draw the predicted safespot
+			drawZukSafespot(nextShieldXCoord, zukShield.getWorldLocation().getY(), 2);
+		}
+	}
+
+	private void drawZukSafespot(int xCoord, int yCoord, int colorSafeSpotId)
+	{
+		for (int x = xCoord - 1; x <= xCoord + 3; x++)
+		{
+			for (int y = yCoord - 4; y <= yCoord - 2; y++)
+			{
+				safeSpotMap.put(new WorldPoint(x, y, client.getPlane()), colorSafeSpotId);
 			}
 		}
 	}
