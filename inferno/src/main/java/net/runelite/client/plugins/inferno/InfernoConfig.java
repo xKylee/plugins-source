@@ -941,7 +941,7 @@ public interface InfernoConfig extends Config
 	)
 	default InfernoZukShieldDisplayMode safespotsZukShieldAfterHealers()
 	{
-		return InfernoZukShieldDisplayMode.LIVEPLUSPREDICT;
+		return InfernoZukShieldDisplayMode.LIVE;
 	}
 
 	@ConfigItem(
