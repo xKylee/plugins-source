@@ -1,5 +1,4 @@
 import ProjectVersions.rlVersion
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 /*
  * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
@@ -27,37 +26,32 @@ import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.70"
-    kotlin("kapt") version "1.3.70"
+    kotlin("jvm") version ProjectVersions.kotlinVersion
+    kotlin("kapt") version ProjectVersions.kotlinVersion
 }
 
 
-version = "0.0.8"
+version = "0.0.9"
 
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"
 
 
-repositories {
-    maven {
-        url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
-    }
-}
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
-
     kapt(Libraries.pf4j)
-
-    annotationProcessor(Libraries.lombok)
+	
+	annotationProcessor(Libraries.lombok)
     annotationProcessor(Libraries.pf4j)
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
-
-    compileOnly(Libraries.apacheCommonsText)
+	
+	compileOnly(Libraries.apacheCommonsText)
     compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
+	compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    
+    compileOnly(kotlin("stdlib"))
 }
 
 tasks {
@@ -68,6 +62,7 @@ tasks {
         }
         sourceCompatibility = "11"
     }
+	
     jar {
         manifest {
             attributes(mapOf(

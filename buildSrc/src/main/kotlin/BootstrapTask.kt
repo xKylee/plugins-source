@@ -69,8 +69,8 @@ open class BootstrapTask : DefaultTask() {
                             "name" to it.project.extra.get("PluginName"),
                             "id" to nameToId(it.project.extra.get("PluginName") as String),
                             "description" to it.project.extra.get("PluginDescription"),
-                            "provider" to "OpenOSRS",
-                            "projectUrl" to "https://discord.gg/OpenOSRS",
+                            "provider" to "xKylee",
+                            "projectUrl" to "https://discord.gg/ARcwsJr",
                             "releases" to releases.toTypedArray()
                     ).jsonObject()
 
