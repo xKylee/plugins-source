@@ -7,7 +7,6 @@ import net.runelite.api.events.player.headicon.PlayerSkullChanged
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.ConfigChanged
-import net.runelite.client.events.OverlayMenuClicked
 import net.runelite.client.game.Sound
 import net.runelite.client.game.SoundManager
 import net.runelite.client.plugins.Plugin
@@ -29,18 +28,12 @@ import kotlin.math.ceil
 )
 class WhaleWatchersPlugin : Plugin() {
     var protectItemOverlay = false
-    var damageDone = 0
-    var damageTaken = 0
-    var inCombat = false
 
     @Inject
     private lateinit var client: Client
 
     @Inject
     private lateinit var config: WhaleWatchersConfig
-
-    @Inject
-    private lateinit var overlay: WhaleWatchersOverlay
 
     @Inject
     private lateinit var whaleWatchersProtOverlay: WhaleWatchersProtOverlay
@@ -57,8 +50,6 @@ class WhaleWatchersPlugin : Plugin() {
     @Inject
     private lateinit var soundManager: SoundManager
 
-    private var tickCountdown = 0
-
     var displaySmiteOverlay = false
 
     var displayGloryOverlay = false
@@ -68,26 +59,16 @@ class WhaleWatchersPlugin : Plugin() {
         return configManager.getConfig(WhaleWatchersConfig::class.java)
     }
 
-    @Subscribe
-    private fun onOverlayMenuClicked(event: OverlayMenuClicked) {
-        if (event.overlay == overlay && event.entry.option == "Reset") {
-            resetDamageCounter()
-        }
-    }
-
     override fun startUp() {
-        overlayManager.add(overlay)
         overlayManager.add(whaleWatchersProtOverlay)
         overlayManager.add(smiteableOverlay)
         overlayManager.add(whaleWatchersGloryOverlay)
     }
 
     override fun shutDown() {
-        overlayManager.remove(overlay)
         overlayManager.remove(whaleWatchersProtOverlay)
         overlayManager.remove(smiteableOverlay)
         overlayManager.remove(whaleWatchersGloryOverlay)
-        resetDamageCounter()
     }
 
     @Subscribe
@@ -118,42 +99,22 @@ class WhaleWatchersPlugin : Plugin() {
     }
 
     @Subscribe
-    private fun onHitsplatApplied(event: HitsplatApplied) {
-        if (!config.showDamageCounter()) return
-        if (!shouldCountHitsplat(event) || !(isAttackingPlayer() || inCombat)) return
-        when {
-            event.actor === client.localPlayer -> damageTaken += event.hitsplat.amount
-            event.actor === client.localPlayer!!.interacting -> damageDone += event.hitsplat.amount
-        }
-        inCombat = true
-    }
-
-    @Subscribe
     private fun onItemContainerChanged(event: ItemContainerChanged) {
-        if (!config.gloryWarning() || event.itemContainer !== client.getItemContainer(InventoryID.EQUIPMENT)) return
+        if (!config.gloryWarning() && event.itemContainer !== client.getItemContainer(InventoryID.EQUIPMENT)) return
         displayGloryOverlay = client.getItemContainer(InventoryID.EQUIPMENT)!!
                 .items
                 .map { it.id }.contains(ItemID.AMULET_OF_GLORY)
     }
 
     @Subscribe
-    private fun onMenuOptionClicked(event: MenuOptionClicked) {
-        if (!config.showDamageCounter() || event.menuOpcode != MenuOpcode.SPELL_CAST_ON_PLAYER) return
-        inCombat = true
-    }
-
-    @Subscribe
     private fun onPlayerSkullChanged(event: PlayerSkullChanged) {
         if (event.player != client.localPlayer || !config.protectItemWarning()) return
-        protectItemOverlay = true
+        protectItemOverlay = isSkulled()
     }
 
     @Subscribe
     private fun onVarbitChanged(event: VarbitChanged) {
-        if (config.showDamageCounter() && client.getVar(VarPlayer.ATTACKING_PLAYER) == -1 && inCombat) {
-            tickCountdown = 10
-        }
-        if (!config.protectItemWarning() || !isSkulled()) {
+        if ((!config.protectItemWarning() || !config.lessObnoxiousProtWarning()) && !isSkulled()) {
             protectItemOverlay = false
             return
         }
@@ -170,14 +131,6 @@ class WhaleWatchersPlugin : Plugin() {
 
     @Subscribe
     private fun onGameTick(event: GameTick) {
-        if (config.showDamageCounter() && tickCountdown > 0 && tickCountdown < 11) {
-            tickCountdown--
-            if (tickCountdown == 1) {
-                inCombat = false
-                resetDamageCounter()
-                return
-            }
-        }
         displaySmiteOverlay = if (config.smiteableWarning() && (client.getVar(Varbits.IN_WILDERNESS) == 1
                         || WorldType.isPvpWorld(client.worldType))) {
             if (client.localPlayer!!.skullIcon != null && client.localPlayer!!.skullIcon == SkullIcon.SKULL) {
@@ -191,25 +144,14 @@ class WhaleWatchersPlugin : Plugin() {
         }
     }
 
-    private fun shouldCountHitsplat(event: HitsplatApplied) = event.actor === client.localPlayer ||
-            event.actor === client.localPlayer!!.interacting
-
     private fun shouldBeProtecting() =
             (WorldType.isPvpWorld(client.worldType) ||
-                    WorldType.isDeadmanWorld(client.worldType) || client.getVar(Varbits.IN_WILDERNESS) == 1) &&
+                    WorldType.isDeadmanWorld(client.worldType) || client.getVar(Varbits.IN_PVP_AREA) == 1) &&
                     isSkulled() && canProtectItem() && !client.isPrayerActive(Prayer.PROTECT_ITEM)
 
     private fun canProtectItem() = client.getRealSkillLevel(Skill.PRAYER) > 25
 
     private fun isSkulled(): Boolean = client.localPlayer?.skullIcon != null && client.localPlayer!!.skullIcon == SkullIcon.SKULL
-
-    private fun isAttackingPlayer(): Boolean = (client.getVar(Varbits.IN_WILDERNESS) == 1 &&
-            client.localPlayer!!.interacting != null) && client.getVar(VarPlayer.ATTACKING_PLAYER) != -1
-
-    private fun resetDamageCounter() {
-        damageTaken = 0
-        damageDone = 0
-    }
 
     companion object {
         private const val BROKEN_PNECK_MESSAGE =

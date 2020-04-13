@@ -31,7 +31,7 @@ plugins {
 }
 
 
-version = "0.0.9"
+version = "0.0.10"
 
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"

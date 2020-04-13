@@ -28,16 +28,6 @@ interface WhaleWatchersConfig : Config {
 
     @ConfigItem(
             position = 3,
-            keyName = "showDamageCounter",
-            name = "Damage Counter",
-            description = "Shows damage you've done and damage your opponent has done to you while in a fight"
-    )
-    fun showDamageCounter(): Boolean {
-        return true
-    }
-
-    @ConfigItem(
-            position = 4,
             keyName = "smiteableWarning",
             name = "Smite Warning",
             description = "Displays a warning overlay when your prayer is at a smiteable level"
@@ -47,7 +37,7 @@ interface WhaleWatchersConfig : Config {
     }
 
     @ConfigItem(
-            position = 5,
+            position = 4,
             keyName = "gloryWarning",
             name = "Glory Warning",
             description = "Displays a warning box while you are wearing an uncharged glory"
