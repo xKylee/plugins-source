@@ -8,7 +8,8 @@ public enum InfernoZukShieldDisplayMode
 {
 	OFF("Off"),
 	LIVE("Live (follow shield)"),
-	PREDICT("Predict (NOT WORKING YET)");
+	PREDICT("Predict"),
+	LIVEPLUSPREDICT("Live and Predict");
 
 	final private String name;
 

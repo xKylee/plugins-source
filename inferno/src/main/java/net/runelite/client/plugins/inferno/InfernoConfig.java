@@ -924,7 +924,7 @@ public interface InfernoConfig extends Config
 		position = 1,
 		keyName = "safespotsZukShieldBeforeHealers",
 		name = "Safespots (Before Healers)",
-		description = "Indicate the zuk shield safespots. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
+		description = "Indicate the zuk shield safespots. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect. Shield must go back and forth at least 1 time before the predict option will work.",
 		section = "ZukSection"
 	)
 	default InfernoZukShieldDisplayMode safespotsZukShieldBeforeHealers()

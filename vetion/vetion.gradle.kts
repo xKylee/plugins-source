@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.4"
+version = "0.0.5"
 
 project.extra["PluginName"] = "Vet'ion"
 project.extra["PluginDescription"] = "Tracks Vet'ion's special attacks"

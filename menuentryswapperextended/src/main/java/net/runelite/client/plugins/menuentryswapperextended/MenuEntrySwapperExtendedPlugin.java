@@ -276,11 +276,23 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				continue;
 			}
 
+			if (option.contains("empty") && config.hideEmpty())
+			{
+				if (entry.getTarget().contains("potion") || entry.getTarget().contains("antidote")
+					|| entry.getTarget().contains("venom") || entry.getTarget().contains("antifire")
+					|| entry.getTarget().contains("Antipoison") || entry.getTarget().contains("Saradomin Brew")
+					|| entry.getTarget().contains("Zamorak Brew") || entry.getTarget().contains("Guthix rest"))
+				{
+					continue;
+				}
+			}
+
 			menu_entries.add(entry);
 		}
 		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
 		event.setModified();
 	}
+
 
 	@Subscribe
 	private void onPlayerAppearanceChanged(PlayerAppearanceChanged event)
