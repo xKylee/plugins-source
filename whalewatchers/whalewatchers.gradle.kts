@@ -26,37 +26,43 @@ import ProjectVersions.rlVersion
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version ProjectVersions.kotlinVersion
+    kotlin("jvm") version ProjectVersions.kotlinVersion
     kotlin("kapt") version ProjectVersions.kotlinVersion
 }
 
+
 version = "0.0.9"
+
 project.extra["PluginName"] = "Whale Watchers"
 project.extra["PluginDescription"] = "A Plugin to save help whales in the wild"
 
+
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
     kapt(Libraries.pf4j)
-
-    annotationProcessor(Libraries.lombok)
+	
+	annotationProcessor(Libraries.lombok)
     annotationProcessor(Libraries.pf4j)
-
+    
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
-
+	
     compileOnly(Libraries.apacheCommonsText)
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    
+    compileOnly(kotlin("stdlib"))
 }
 
 tasks {
     compileKotlin {
         kotlinOptions {
             jvmTarget = "11"
+            freeCompilerArgs = listOf("-Xjvm-default=enable")
         }
         sourceCompatibility = "11"
     }
+	
     jar {
         manifest {
             attributes(mapOf(
