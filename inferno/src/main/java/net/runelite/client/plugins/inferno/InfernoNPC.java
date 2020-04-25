@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import net.runelite.api.AnimationID;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
@@ -49,6 +50,7 @@ class InfernoNPC
 	@Getter(AccessLevel.PACKAGE)
 	private Attack nextAttack;
 	@Getter(AccessLevel.PACKAGE)
+	@Setter(AccessLevel.PACKAGE)
 	private int ticksTillNextAttack;
 	private int lastAnimation;
 	private boolean lastCanAttack;
