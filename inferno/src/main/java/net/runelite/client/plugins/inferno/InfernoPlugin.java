@@ -278,6 +278,15 @@ public class InfernoPlugin extends Plugin
 		{
 			log.debug("[INFERNO] Final phase detected!");
 			finalPhase = true;
+
+			//decrement ticksTilNextAttack by 3
+			for (InfernoNPC infernoNPC : infernoNpcs)
+			{
+				if (infernoNPC.getType() == InfernoNPC.Type.ZUK)
+				{
+					infernoNPC.setTicksTillNextAttack(infernoNPC.getTicksTillNextAttack() - 3);
+				}
+			}
 		}
 
 		// Blobs need to be added to the end of the list because the prayer for their detection tick will be based
@@ -713,6 +722,11 @@ public class InfernoPlugin extends Plugin
 				if (infernoNPC.getType() == InfernoNPC.Type.ZUK)
 				{
 					int ticksTilZukAttack = infernoNPC.getTicksTillNextAttack() - 1;
+
+					if (ticksTilZukAttack < 0)
+					{
+						ticksTilZukAttack = 0;
+					}
 
 					//if the ticksTilZukAttack == 0, start to render the next safespot, as it is safe to start moving there
 					if (ticksTilZukAttack < 1)
