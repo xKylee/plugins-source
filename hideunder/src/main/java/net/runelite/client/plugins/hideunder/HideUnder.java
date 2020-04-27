@@ -26,7 +26,6 @@ package net.runelite.client.plugins.hideunder;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -70,25 +69,13 @@ public class HideUnder extends Plugin
 		{
 			return;
 		}
-
 		client.setLocalPlayerHidden(false);
 
-		final WorldPoint localPlayerWp = WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation());
-		final WorldPoint lp = client.getLocalPlayer().getWorldLocation();
+		final WorldPoint localWorldPoint = client.getLocalPlayer().getWorldLocation();
 
 		for (PlayerContainer player : playerManager.getAllAttackers())
 		{
-			if (client.getVar(Varbits.LMS_IN_GAME) == 1)
-			{
-				final WorldPoint playerWp = WorldPoint.fromLocalInstance(client, player.getPlayer().getLocalLocation());
-				if (localPlayerWp != null && localPlayerWp.distanceTo(playerWp) == 0)
-				{
-					client.setLocalPlayerHidden(true);
-				}
-				continue;
-			}
-
-			if (lp != null && player.getPlayer().getWorldLocation().distanceTo(lp) == 0)
+			if (localWorldPoint != null && player.getPlayer().getWorldLocation().equals(localWorldPoint))
 			{
 				client.setLocalPlayerHidden(true);
 			}
