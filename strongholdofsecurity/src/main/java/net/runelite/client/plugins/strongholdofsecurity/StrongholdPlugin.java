@@ -24,7 +24,7 @@
  */
 package net.runelite.client.plugins.strongholdofsecurity;
 
-import java.awt.Color;
+import com.google.inject.Provides;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.events.ClientTick;
@@ -32,6 +32,7 @@ import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -49,14 +50,21 @@ import org.pf4j.Extension;
 )
 public class StrongholdPlugin extends Plugin
 {
-	private static final Color ANSWER_COLOR = new Color(230, 0, 230);
-
 	@Inject
 	private Client client;
+
+	@Inject
+	private StrongholdConfig config;
 
 	private boolean queueNPCDialogue;
 	private boolean queueNPCOption;
 	private String questionCache;
+
+	@Provides
+	StrongholdConfig getConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(StrongholdConfig.class);
+	}
 
 	@Subscribe
 	public void onWidgetLoaded(WidgetLoaded widgetLoaded)
@@ -126,7 +134,7 @@ public class StrongholdPlugin extends Plugin
 		}
 
 		final String answerText = answerWidget.getText();
-		answerWidget.setText(ColorUtil.wrapWithColorTag(answerText, ANSWER_COLOR));
+		answerWidget.setText(ColorUtil.wrapWithColorTag(answerText, config.highlightedAnswer()));
 	}
 	
 }
