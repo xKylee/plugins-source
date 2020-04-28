@@ -68,10 +68,10 @@ enum StrongholdAnswer
 	PAIR_30("respond?", "Decline the offer and report that player."),
 	PAIR_31("To pass you must answer me this: A player says that<br>Jagex prevents you from saying your password<br>backwards in game. What do you do?", "Don't type in my password backwards and report the player."),
 	PAIR_32("To pass you must answer me this: What do I do if I<br>think I have a keylogger or virus?", "Virus scan my device then change my password."),
-	PAIR_33("To pass you must answer me this: What is the best<br>security step you can take to keep your registered<br>email secure?", "Set up 2 step authentication with my email provider.");
+	PAIR_33("To pass you must answer me this: What is the best<br>security step you can take to keep your registered<br>email secure?", "Set up 2 step authentication with my email provider."),
 	PAIR_34("To pass you must answer me this: You're watching a<br>stream by someone claiming to be Jagex offering double<br>XP. What do you do?", "Report the stream as a scam. Real Jagex streams have a 'verified' mark."),
 	PAIR_35("To pass you must answer me this: A website claims that<br>they can make me a player moderator. What should I<br>do?", "Nothing, it's a fake."),
-	PAIR_36("Don't forget to setup the two-factor authentication<br>system for your account!", "Authenticator and two-step login on my registered email."),	
+	PAIR_36("Don't forget to setup the two-factor authentication<br>system for your account!", "Authenticator and two-step login on my registered email.");
 	
 	static final Map<String, String> MATCHES = new HashMap<>();
 
