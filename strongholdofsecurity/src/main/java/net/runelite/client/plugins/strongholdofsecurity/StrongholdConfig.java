@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, gazivodag <https://github.com/gazivodag>
+ * Copyright (c) 2020, xKylee <https://github.com/xKylee>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
