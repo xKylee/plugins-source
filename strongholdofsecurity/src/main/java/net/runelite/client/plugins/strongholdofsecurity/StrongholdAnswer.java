@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2019, FlaxOnEm <flax.on.em@gmail.com>
+ * Copyright (c) 2020, xKylee <https://github.com/xKylee>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
