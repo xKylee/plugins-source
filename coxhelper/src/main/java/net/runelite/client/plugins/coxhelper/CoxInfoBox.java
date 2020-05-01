@@ -115,7 +115,7 @@ public class CoxInfoBox extends Overlay
 				tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
 				for (NPCContainer npcs : plugin.getNpcContainer().values())
 				{
-					float percent = (float) npcs.getNpc().getHealthRatio() / npcs.getNpc().getHealth() * 100;
+					float percent = (float) npcs.getNpc().getHealthRatio() / npcs.getNpc().getHealthScale() * 100;
 					switch (npcs.getNpc().getId())
 					{
 						case NpcID.VANGUARD_7527:
