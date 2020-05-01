@@ -119,7 +119,7 @@ class Utils
 
 	static int getTrueHp(Player player, int hitpoints)
 	{
-		int scale = player.getHealth();
+		int scale = player.getHealthScale();
 		int ratio = player.getHealthRatio();
 
 		if (hitpoints == -1)
