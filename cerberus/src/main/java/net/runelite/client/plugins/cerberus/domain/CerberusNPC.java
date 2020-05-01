@@ -93,7 +93,7 @@ public class CerberusNPC
 
 	public int getHealth()
 	{
-		var calcualtedHp = CerberusUtil.getExactHp(cerberus.getHealthRatio(), cerberus.getHealth(), 600);
+		var calcualtedHp = CerberusUtil.getExactHp(cerberus.getHealthRatio(), cerberus.getHealthScale(), 600);
 		if (calcualtedHp != -1)
 		{
 			hp = calcualtedHp;
