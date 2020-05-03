@@ -492,8 +492,6 @@ public class VerzikHandler extends RoomHandler
 							mt.setLastPosition(mt.getCurrentPosition());
 							mt.setCurrentPosition(npcLocation);
 						}
-
-						mt.incrementAliveTicks();
 					}
 				}
 

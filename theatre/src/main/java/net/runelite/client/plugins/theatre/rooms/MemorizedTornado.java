@@ -20,16 +20,11 @@ class MemorizedTornado
 	@Setter(AccessLevel.PACKAGE)
 	private WorldPoint currentPosition;
 
-	@Getter(AccessLevel.PACKAGE)
-	@Setter(AccessLevel.PACKAGE)
-	private int aliveTicks = 0;
-
 	MemorizedTornado(final NPC npc)
 	{
 		this.npc = npc;
 		this.lastPosition = null;
 		this.currentPosition = null;
-		this.aliveTicks = 0;
 	}
 
 	public int getRelativeXDelta(WorldPoint pt)
@@ -40,11 +35,6 @@ class MemorizedTornado
 	public int getRelativeYDelta(WorldPoint pt)
 	{
 		return pt.getY() - this.currentPosition.getY() - (pt.getY() - this.lastPosition.getY());
-	}
-
-	public void incrementAliveTicks()
-	{
-		this.aliveTicks++;
 	}
 
 	public int getRelativeDelta(WorldPoint pt)
