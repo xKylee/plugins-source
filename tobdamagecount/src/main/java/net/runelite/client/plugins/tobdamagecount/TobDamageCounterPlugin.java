@@ -37,13 +37,18 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.pf4j.Extension;
 
+@Extension
 @Slf4j
 @PluginDescriptor(
 	name = "TOB Damage Counter",
 	description = "Shows personal and total damage for each room in the theatre of blood",
-	tags = {"counter", "tracker"}
+	tags = {"counter", "tracker"},
+	enabledByDefault = false,
+	type = PluginType.PVM
 )
 public class TobDamageCounterPlugin extends Plugin
 {
