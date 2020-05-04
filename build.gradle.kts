@@ -28,21 +28,13 @@ subprojects {
          jcenter {
             content {
                 excludeGroupByRegex("com\\.openosrs.*")
+                excludeGroupByRegex("com\\.runelite.*")
             }
         }
 
         exclusiveContent {
             forRepository {
-                mavenLocal()
-            }
-            filter {
-                includeGroupByRegex("com\\.openosrs.*")
-            }
-        }
-
-        exclusiveContent {
-            forRepository {
-                maven {
+                 maven {
                     url = uri("https://repo.runelite.net")
                 }
             }
@@ -59,6 +51,18 @@ subprojects {
             }
             filter {
                 includeModule("com.openosrs.rxrelay3", "rxrelay")
+            }
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url = uri("https://raw.githubusercontent.com/open-osrs/hosting/master")
+                }
+                mavenLocal()
+            }
+            filter {
+                includeGroupByRegex("com\\.openosrs.*")
             }
         }
     }
