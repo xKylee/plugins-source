@@ -85,6 +85,30 @@ public interface TickTimersConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		position = 4,
+		keyName = "ignoreNonAttacking",
+		name = "Ignore Non-Attacking",
+		description = "Ignore monsters that are not attacking you",
+		titleSection = "mainConfig"
+	)
+	default boolean ignoreNonAttacking()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 5,
+		keyName = "guitarHeroMode",
+		name = "Guitar Hero Mode",
+		description = "Render \"Guitar Hero\" style prayer helper",
+		titleSection = "mainConfig"
+	)
+	default boolean guitarHeroMode()
+	{
+		return false;
+	}
+
 	@ConfigTitleSection(
 		keyName = "bosses",
 		position = 4,
