@@ -439,6 +439,18 @@ public interface TheatreConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+		position = 33,
+		keyName = "highlightPurpleTornado",
+		name = "Show Your Purple Tornado",
+		description = "Finds the tornado that is following you and highlights it",
+		section = "verzikSection"
+	)
+	default boolean highlightPurpleTornado()
+	{
+		return true;
+	}
+
 	enum NYLOCAS
 	{
 		NONE,

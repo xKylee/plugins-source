@@ -3,6 +3,7 @@ package net.runelite.client.plugins.theatre.rooms;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -21,6 +22,7 @@ import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.plugins.theatre.RoomHandler;
@@ -28,6 +30,7 @@ import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatreConstant;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.plugins.theatre.TheatreRoom;
+import net.runelite.client.ui.overlay.OverlayUtil;
 
 public class VerzikHandler extends RoomHandler
 {
@@ -45,6 +48,9 @@ public class VerzikHandler extends RoomHandler
 	private int yellows;
 	private boolean tornados;
 	private long startTime = 0;
+	private final Map<Integer, MemorizedTornado> memorizedTornados = new HashMap<>();
+	private WorldPoint last0PlayerLocation;
+	private WorldPoint last1PlayerLocation;
 
 	public VerzikHandler(final Client client, final TheatrePlugin plugin, final TheatreConfig config)
 	{
@@ -81,6 +87,9 @@ public class VerzikHandler extends RoomHandler
 		this.lastId = -1;
 		this.tornados = false;
 		this.startTime = 0;
+		this.last0PlayerLocation = null;
+		this.last1PlayerLocation = null;
+		this.memorizedTornados.clear();
 	}
 
 	public void render(Graphics2D graphics)
@@ -195,6 +204,26 @@ public class VerzikHandler extends RoomHandler
 			}
 		}
 
+		if (config.highlightPurpleTornado() && this.tornados && this.last1PlayerLocation != null)
+		{
+			Player local = client.getLocalPlayer();
+			if (local != null)
+			{
+				for (MemorizedTornado mt : this.memorizedTornados.values())
+				{
+					NPC npc = mt.getNpc();
+					if (npc.getId() != TheatreConstant.NPC_ID_TORNADO)
+					{
+						continue;
+					}
+
+					LocalPoint lp = npc.getLocalLocation();
+
+					renderTile(graphics, lp, Color.RED);
+				}
+			}
+		}
+
 	}
 
 	public void onProjectileMoved(ProjectileMoved event)
@@ -237,6 +266,21 @@ public class VerzikHandler extends RoomHandler
 					this.attacksLeft = 9;
 				}
 			}
+		}
+
+		if (id == TheatreConstant.NPC_ID_TORNADO)
+		{
+			this.memorizedTornados.putIfAbsent(npc.getIndex(), new MemorizedTornado(npc));
+		}
+	}
+
+	public void onNpcDespawned(NpcDespawned npcDespawned)
+	{
+		final NPC npc = npcDespawned.getNpc();
+
+		if (npc.getId() == TheatreConstant.NPC_ID_TORNADO && this.memorizedTornados.containsKey(npc.getIndex()))
+		{
+			this.memorizedTornados.remove(npc.getIndex());
 		}
 	}
 
@@ -428,6 +472,42 @@ public class VerzikHandler extends RoomHandler
 				}
 			}
 
+			if (this.tornados)
+			{
+				if (this.last1PlayerLocation != null)
+				{
+					for (MemorizedTornado mt : this.memorizedTornados.values())
+					{
+						NPC mtNpc = mt.getNpc();
+
+						WorldPoint npcLocation = mtNpc.getWorldLocation();
+
+						if (mt.getCurrentPosition() == null)
+						{
+							mt.setCurrentPosition(npcLocation);
+						}
+						else
+						{
+							mt.setLastPosition(mt.getCurrentPosition());
+							mt.setCurrentPosition(npcLocation);
+						}
+					}
+				}
+
+				if (this.last1PlayerLocation == null)
+				{
+					this.last1PlayerLocation = client.getLocalPlayer().getWorldLocation();
+					this.last0PlayerLocation = this.last1PlayerLocation;
+				}
+				else
+				{
+					this.last1PlayerLocation = this.last0PlayerLocation;
+					this.last0PlayerLocation = client.getLocalPlayer().getWorldLocation();
+
+					this.memorizedTornados.entrySet().removeIf(entry -> entry.getValue().getRelativeDelta(this.last1PlayerLocation) != -1);
+				}
+			}
+
 			versikCounter--;
 
 			int animation = npc.getAnimation();
@@ -488,5 +568,22 @@ public class VerzikHandler extends RoomHandler
 					break;
 			}
 		}
+	}
+
+	private void renderTile(final Graphics2D graphics, final LocalPoint dest, final Color color)
+	{
+		if (dest == null)
+		{
+			return;
+		}
+
+		final Polygon poly = Perspective.getCanvasTilePoly(client, dest);
+
+		if (poly == null)
+		{
+			return;
+		}
+
+		OverlayUtil.renderPolygon(graphics, poly, color);
 	}
 }
