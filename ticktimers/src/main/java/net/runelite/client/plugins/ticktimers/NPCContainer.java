@@ -55,6 +55,8 @@ class NPCContainer
 	private Actor npcInteracting;
 	@Setter(AccessLevel.PACKAGE)
 	private AttackStyle attackStyle;
+	@Getter(AccessLevel.PACKAGE)
+	private final BossMonsters monsterType;
 
 	NPCContainer(final NPC npc, final int attackSpeed)
 	{
@@ -74,6 +76,7 @@ class NPCContainer
 			throw new IllegalStateException();
 		}
 
+		this.monsterType = monster;
 		this.animations = monster.animations;
 		this.attackStyle = monster.attackStyle;
 

@@ -82,6 +82,9 @@ public class TickTimersPlugin extends Plugin
 	private Set<NPCContainer> npcContainer = new HashSet<>();
 	private boolean validRegion;
 
+	@Getter(AccessLevel.PACKAGE)
+	private long lastTickTime;
+
 	@Provides
 	TickTimersConfig getConfig(ConfigManager configManager)
 	{
@@ -206,6 +209,8 @@ public class TickTimersPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick Event)
 	{
+		lastTickTime = System.currentTimeMillis();
+
 		if (!validRegion)
 		{
 			return;
