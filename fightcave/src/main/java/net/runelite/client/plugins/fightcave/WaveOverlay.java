@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
@@ -54,6 +55,7 @@ class WaveOverlay extends Overlay
 		this.config = config;
 		this.plugin = plugin;
 		setPosition(OverlayPosition.TOP_RIGHT);
+		determineLayer();
 	}
 
 	private static Collection<String> buildWaveLines(final Map<WaveMonster, Integer> wave)
@@ -126,6 +128,14 @@ class WaveOverlay extends Overlay
 		if (!tableComponent.isEmpty())
 		{
 			panelComponent.getChildren().add(tableComponent);
+		}
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }
