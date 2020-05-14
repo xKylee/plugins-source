@@ -31,9 +31,21 @@ import net.runelite.client.config.ConfigItem;
 public interface DynamicMaxHitConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "enablePrayer",
 		name = "Enable Prayer in Calculations",
-		description = ""
+		description = "",
+		position = 1
 	)
 	default boolean enablePrayer()
 	{
@@ -43,7 +55,8 @@ public interface DynamicMaxHitConfig extends Config
 	@ConfigItem(
 		keyName = "enablePotions",
 		name = "Enable Potions in Calculations",
-		description = ""
+		description = "",
+		position = 2
 	)
 	default boolean enablePotions()
 	{

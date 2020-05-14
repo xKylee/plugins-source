@@ -49,14 +49,16 @@ public class AttackerOverlay extends Overlay
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#");
 	private final Font timerFont = FontManager.getRunescapeBoldFont().deriveFont(14.0f);
 	private final DynamicMaxHit plugin;
+	private final DynamicMaxHitConfig config;
 
 	@Inject
-	public AttackerOverlay(final DynamicMaxHit plugin)
+	public AttackerOverlay(final DynamicMaxHit plugin, final DynamicMaxHitConfig config)
 	{
+		this.config = config;
 		this.plugin = plugin;
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGHEST);
-		setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		determineLayer();
 	}
 
 	@Override
@@ -122,5 +124,17 @@ public class AttackerOverlay extends Overlay
 		graphics.setStroke(new BasicStroke(1));
 		graphics.setColor(color);
 		graphics.drawString(text, x, y);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		}
 	}
 }

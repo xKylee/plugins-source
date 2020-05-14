@@ -55,6 +55,7 @@ import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
@@ -855,5 +856,21 @@ public class DynamicMaxHit extends Plugin
 		maxHit = Math.floor(maxHit);
 
 		player.setMaxHit(maxHit);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("dynamicMaxHit"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			attackerOverlay.determineLayer();
+			overlayManager.remove(attackerOverlay);
+			overlayManager.add(attackerOverlay);
+		}
 	}
 }
