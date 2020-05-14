@@ -51,6 +51,8 @@ public class HydraAttackCounterOverlay extends Overlay
 
 	private final Client client;
 
+	private final HydraConfig config;
+
 	@Setter(AccessLevel.PACKAGE)
 	private Map<Integer, Hydra> hydras;
 
@@ -58,13 +60,14 @@ public class HydraAttackCounterOverlay extends Overlay
 	private boolean isBoldAttackCounterOverlay;
 
 	@Inject
-	private HydraAttackCounterOverlay(final HydraPlugin hydraPlugin, final Client client)
+	private HydraAttackCounterOverlay(final HydraPlugin hydraPlugin, final Client client, final HydraConfig config)
 	{
 		this.hydraPlugin = hydraPlugin;
+		this.config = config;
 		this.client = client;
 		this.hydras = new HashMap<>();
 		this.isBoldAttackCounterOverlay = false;
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.MED);
 	}
@@ -166,6 +169,18 @@ public class HydraAttackCounterOverlay extends Overlay
 		if (textLocation != null)
 		{
 			OverlayUtil.renderTextLocation(graphics, textLocation, Integer.toString(attackCount), Color.WHITE);
+		}
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
 		}
 	}
 }

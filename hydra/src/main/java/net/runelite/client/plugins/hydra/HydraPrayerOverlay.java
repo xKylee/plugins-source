@@ -41,6 +41,7 @@ import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ImageComponent;
@@ -56,6 +57,8 @@ public class HydraPrayerOverlay extends Overlay
 
 	private final Client client;
 
+	private final HydraConfig config;
+
 	private final SpriteManager spriteManager;
 
 	private final PanelComponent panelComponent;
@@ -67,15 +70,17 @@ public class HydraPrayerOverlay extends Overlay
 	private BufferedImage bufferedImageMagic;
 
 	@Inject
-	private HydraPrayerOverlay(final HydraPlugin hydraPlugin, final Client client, final SpriteManager spriteManager)
+	private HydraPrayerOverlay(final HydraPlugin hydraPlugin, final Client client, final SpriteManager spriteManager, final HydraConfig config)
 	{
 		this.hydraPlugin = hydraPlugin;
 		this.client = client;
+		this.config = config;
 		this.spriteManager = spriteManager;
 		this.panelComponent = new PanelComponent();
 		this.hydras = new HashMap<>();
 		this.bufferedImageRange = null;
 		this.bufferedImageMagic = null;
+		determineLayer();
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		setPriority(OverlayPriority.HIGH);
 	}
@@ -163,5 +168,13 @@ public class HydraPrayerOverlay extends Overlay
 			: NOT_ACTIVATED_BACKGROUND_COLOR);
 
 		return panelComponent.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }
