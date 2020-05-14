@@ -244,7 +244,7 @@ public class EffectTimersPlugin extends Plugin
 
 		if (event.getKey().equals("mirrorMode"))
 		{
-			overlay.resetLayer();
+			overlay.determineLayer();
 			overlayManager.remove(overlay);
 			overlayManager.add(overlay);
 		}

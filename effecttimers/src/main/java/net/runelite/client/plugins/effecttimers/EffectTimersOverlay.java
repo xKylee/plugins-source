@@ -63,14 +63,7 @@ public class EffectTimersOverlay extends Overlay
 		super();
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.UNDER_WIDGETS);
-		}
+		determineLayer();
 	}
 
 	@Override
@@ -193,7 +186,7 @@ public class EffectTimersOverlay extends Overlay
 		return String.format("%02d", seconds);
 	}
 
-	public void resetLayer()
+	public void determineLayer()
 	{
 		if (config.mirrorMode())
 		{
