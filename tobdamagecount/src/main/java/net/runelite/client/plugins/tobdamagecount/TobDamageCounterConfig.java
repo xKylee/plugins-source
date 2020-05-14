@@ -8,6 +8,17 @@ import net.runelite.client.config.ConfigItem;
 public interface TobDamageCounterConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "healCount",
 		name = "Show Heal Count",
 		description = "Show the total amount healed to each boss on the overlay."
