@@ -34,12 +34,14 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import net.runelite.client.plugins.cerberus.CerberusConfig;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.Util.CerberusImageManager;
 import net.runelite.client.plugins.cerberus.Util.CerberusInfoBoxComponent;
 import net.runelite.client.plugins.cerberus.Util.ImagePanelComponent;
 import net.runelite.client.plugins.cerberus.domain.CerberusPhase;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ComponentOrientation;
@@ -56,10 +58,14 @@ public class CerberusPhaseOverlay extends Overlay
 	@Inject
 	private CerberusPlugin plugin;
 
+	private CerberusConfig config;
+
 	@Inject
-	public CerberusPhaseOverlay()
+	public CerberusPhaseOverlay(final CerberusConfig config)
 	{
+		this.config = config;
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
+		determineLayer();
 		setPriority(OverlayPriority.HIGH);
 
 		panel.setBackgroundColor(null);
@@ -220,5 +226,13 @@ public class CerberusPhaseOverlay extends Overlay
 
 		}
 		return panel.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

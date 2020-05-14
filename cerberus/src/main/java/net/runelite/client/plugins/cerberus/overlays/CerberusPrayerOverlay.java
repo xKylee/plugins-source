@@ -36,12 +36,14 @@ import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Prayer;
+import net.runelite.client.plugins.cerberus.CerberusConfig;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.Util.CerberusImageManager;
 import net.runelite.client.plugins.cerberus.Util.CerberusInfoBoxComponent;
 import net.runelite.client.plugins.cerberus.Util.ImagePanelComponent;
 import net.runelite.client.plugins.cerberus.domain.CerberusNPC;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 
@@ -51,14 +53,17 @@ public class CerberusPrayerOverlay extends Overlay
 {
 	private final Client client;
 	private final CerberusPlugin plugin;
+	private final CerberusConfig config;
 
 	@Inject
-	CerberusPrayerOverlay(final @Nullable Client client, final CerberusPlugin plugin)
+	CerberusPrayerOverlay(final @Nullable Client client, final CerberusPlugin plugin, final CerberusConfig config)
 	{
-		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		setPriority(OverlayPriority.MED);
 		this.client = client;
 		this.plugin = plugin;
+		this.config = config;
+		setPosition(OverlayPosition.BOTTOM_RIGHT);
+		determineLayer();
+		setPriority(OverlayPriority.MED);
 	}
 
 	@Override
@@ -144,9 +149,14 @@ public class CerberusPrayerOverlay extends Overlay
 				return imagePanelComponent.render(graphics);
 			}
 		}
-
 		return null;
+	}
 
-
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }
