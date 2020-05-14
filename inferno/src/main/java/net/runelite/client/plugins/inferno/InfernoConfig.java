@@ -42,6 +42,17 @@ import net.runelite.client.plugins.inferno.displaymodes.InfernoZukShieldDisplayM
 public interface InfernoConfig extends Config
 {
 
+	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	@ConfigSection(
 		name = "Prayer",
 		description = "Configuration options forPprayer",
