@@ -24,6 +24,7 @@
  */
 package net.runelite.client.plugins.grotesqueguardians;
 
+import com.google.inject.Provides;
 import java.util.ArrayList;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -31,7 +32,9 @@ import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import static net.runelite.api.NpcID.DUSK_7888;
 import net.runelite.api.events.GameTick;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -65,8 +68,17 @@ public class GrotesqueGuardiansPlugin extends Plugin
 	@Nullable
 	private NPC dusk;
 
+	private GrotesqueGuardiansConfig config;
+
 	private boolean inGargs;
 	private boolean needingToRun;
+
+	@Provides
+	GrotesqueGuardiansConfig provideConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(GrotesqueGuardiansConfig.class);
+	}
+
 
 	public GrotesqueGuardiansPlugin()
 	{
@@ -162,6 +174,25 @@ public class GrotesqueGuardiansPlugin extends Plugin
 	boolean isNeedingToRun()
 	{
 		return needingToRun;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("effecttimers"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			prayerOverlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.remove(prayerOverlay);
+			overlayManager.add(overlay);
+			overlayManager.add(prayerOverlay);
+		}
 	}
 
 }

@@ -52,16 +52,19 @@ public class GrotesqueGuardiansPrayerOverlay extends Overlay
 	private final GrotesqueGuardiansPlugin plugin;
 	private final SpriteManager spriteManager;
 	private final PanelComponent imagePanelComponent = new PanelComponent();
+	private final GrotesqueGuardiansConfig config;
 
 	@Inject
-	private GrotesqueGuardiansPrayerOverlay(final Client client, final GrotesqueGuardiansPlugin plugin, final SpriteManager spriteManager)
+	private GrotesqueGuardiansPrayerOverlay(final Client client, final GrotesqueGuardiansPlugin plugin, final SpriteManager spriteManager, final GrotesqueGuardiansConfig config)
 	{
-		setLayer(OverlayLayer.ABOVE_SCENE);
-		setPriority(OverlayPriority.HIGH);
-		setPosition(OverlayPosition.DYNAMIC);
 		this.client = client;
 		this.plugin = plugin;
+		this.config = config;
 		this.spriteManager = spriteManager;
+		determineLayer();
+		setPriority(OverlayPriority.HIGH);
+		setPosition(OverlayPosition.DYNAMIC);
+
 	}
 
 	public Dimension render(Graphics2D graphics)
@@ -95,5 +98,17 @@ public class GrotesqueGuardiansPrayerOverlay extends Overlay
 		int prayerSpriteID = attack == DuskAttack.MELEE ? 129 : 128;
 
 		return spriteManager.getSprite(prayerSpriteID, 0);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }
