@@ -41,6 +41,7 @@ import net.runelite.api.events.PlayerDeath;
 import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -230,6 +231,22 @@ public class EffectTimersPlugin extends Plugin
 		for (TimerType type : TimerType.values())
 		{
 			timerManager.setTimerFor(event.getPlayer(), type, new Timer(this, null));
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("effecttimers"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.resetLayer();
+			overlayManager.remove(overlay);
+			overlayManager.add(overlay);
 		}
 	}
 }

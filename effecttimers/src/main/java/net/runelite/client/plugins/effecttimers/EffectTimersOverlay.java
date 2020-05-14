@@ -58,11 +58,19 @@ public class EffectTimersOverlay extends Overlay
 	private final Font timerFont = FontManager.getRunescapeBoldFont().deriveFont(14.0f);
 
 	@Inject
-	public EffectTimersOverlay()
+	public EffectTimersOverlay(final EffectTimersConfig config)
 	{
 		super();
+		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.UNDER_WIDGETS);
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.UNDER_WIDGETS);
+		}
 	}
 
 	@Override
@@ -183,5 +191,17 @@ public class EffectTimersOverlay extends Overlay
 	private String formatSeconds(int seconds)
 	{
 		return String.format("%02d", seconds);
+	}
+
+	public void resetLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.UNDER_WIDGETS);
+		}
 	}
 }

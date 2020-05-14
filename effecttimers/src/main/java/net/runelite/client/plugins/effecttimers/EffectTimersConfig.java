@@ -34,6 +34,17 @@ import net.runelite.client.config.Keybind;
 public interface EffectTimersConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatible?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Modce?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		name = "Show NPCs",
 		keyName = "showNpcs",
 		description = "Should we show the overlay on NPCs?",
