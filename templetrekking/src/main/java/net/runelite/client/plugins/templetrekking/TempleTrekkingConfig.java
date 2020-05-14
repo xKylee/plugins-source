@@ -32,6 +32,17 @@ import net.runelite.client.config.ConfigItem;
 public interface TempleTrekkingConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "bogMapActive",
 		name = "Bog Map",
 		description = "Marks out a safe route through the bog event",
