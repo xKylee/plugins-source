@@ -40,6 +40,7 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.NPCManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -243,5 +244,24 @@ public class TickTimersPlugin extends Plugin
 		return Arrays.stream(client.getMapRegions()).anyMatch(
 			x -> x == ARMA_REGION || x == GENERAL_REGION || x == ZAMMY_REGION || x == SARA_REGION || x == WATERBITH_REGION
 		);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("TickTimers"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			if (regionCheck())
+			{
+				timersOverlay.determineLayer();
+				overlayManager.remove(timersOverlay);
+				overlayManager.add(timersOverlay);
+			}
+		}
 	}
 }
