@@ -389,6 +389,15 @@ public class PrayAgainstPlayerPlugin extends Plugin
 		{
 			return;
 		}
-	}
 
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			overlayPrayerTab.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.remove(overlayPrayerTab);
+			overlayManager.add(overlay);
+			overlayManager.add(overlayPrayerTab);
+		}
+	}
 }

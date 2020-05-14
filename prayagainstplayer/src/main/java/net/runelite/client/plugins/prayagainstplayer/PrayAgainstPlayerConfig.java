@@ -33,6 +33,17 @@ import net.runelite.client.config.ConfigItem;
 public interface PrayAgainstPlayerConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		position = 0,
 		keyName = "attackerPlayerColor",
 		name = "Attacker color",
