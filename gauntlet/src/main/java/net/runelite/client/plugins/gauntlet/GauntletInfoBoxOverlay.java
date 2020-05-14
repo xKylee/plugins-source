@@ -36,6 +36,7 @@ import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ComponentConstants;
@@ -59,6 +60,7 @@ public class GauntletInfoBoxOverlay extends Overlay
 		this.config = config;
 		this.spriteManager = spriteManager;
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
+		determineLayer();
 		setPriority(OverlayPriority.HIGH);
 	}
 
@@ -132,5 +134,13 @@ public class GauntletInfoBoxOverlay extends Overlay
 		g.drawImage(img, 0, 0, newWidth, newHeight, null);
 		g.dispose();
 		return scaledImage;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }
