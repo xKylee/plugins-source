@@ -86,7 +86,7 @@ public class LootAssistPlugin extends Plugin
 
 		if (event.getKey().equals("mirrorMode"))
 		{
-			overlay.determineLayer();
+			lootAssistOverlay.determineLayer();
 			overlayManager.remove(lootAssistOverlay);
 			overlayManager.add(lootAssistOverlay);
 		}

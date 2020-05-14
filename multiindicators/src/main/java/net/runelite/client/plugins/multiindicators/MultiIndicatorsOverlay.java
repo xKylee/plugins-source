@@ -56,10 +56,13 @@ public class MultiIndicatorsOverlay extends Overlay
 	private MultiIndicatorsConfig config;
 
 	@Inject
-	public MultiIndicatorsOverlay()
+	public MultiIndicatorsOverlay(final Client client, final MultiIndicatorsPlugin plugin, final MultiIndicatorsConfig config)
 	{
+		this.client = client;
+		this.plugin = plugin;
+		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -131,5 +134,17 @@ public class MultiIndicatorsOverlay extends Overlay
 		}
 
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }
