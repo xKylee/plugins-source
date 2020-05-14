@@ -65,11 +65,11 @@ public class DropPartyOverlay extends Overlay
 	@Inject
 	public DropPartyOverlay(final Client client, final DropPartyPlugin plugin, final DropPartyConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.UNDER_WIDGETS);
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 	}
 
 	@Override
@@ -120,5 +120,17 @@ public class DropPartyOverlay extends Overlay
 		int x = (int) (rect.getX() + rect.getWidth() / 2);
 		int y = (int) (rect.getY() + rect.getHeight() / 2);
 		return new Point(x, y);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.UNDER_WIDGETS);
+		}
 	}
 }

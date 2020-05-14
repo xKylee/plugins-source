@@ -14,6 +14,17 @@ import net.runelite.client.config.Units;
 public interface DropPartyConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "playerName",
 		name = "Dropping player",
 		description = "selects what players name to mark tiles",
