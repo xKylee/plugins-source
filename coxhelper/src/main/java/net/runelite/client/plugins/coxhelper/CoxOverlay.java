@@ -66,8 +66,8 @@ public class CoxOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -427,4 +427,17 @@ public class CoxOverlay extends Overlay
 		}
 		return big;
 	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
+	}
+
 }

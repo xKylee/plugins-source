@@ -65,6 +65,7 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -603,5 +604,24 @@ public class CoxPlugin extends Plugin
 	boolean inRaid()
 	{
 		return client.getVar(Varbits.IN_RAID) == 1;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("effecttimers"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			coxOverlay.determineLayer();
+			coxInfoBox.determineLayer();
+			overlayManager.remove(coxOverlay);
+			overlayManager.remove(coxInfoBox);
+			overlayManager.add(coxOverlay);
+			overlayManager.add(coxInfoBox);
+		}
 	}
 }
