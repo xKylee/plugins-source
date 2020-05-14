@@ -40,6 +40,7 @@ import net.runelite.api.Sprite;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.ComponentOrientation;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
@@ -70,6 +71,7 @@ class AlchemicalHydraOverlay extends Overlay
 		this.client = client;
 		this.spriteManager = spriteManager;
 		this.setPosition(OverlayPosition.BOTTOM_RIGHT);
+		determineLayer();
 		panelComponent.setOrientation(ComponentOrientation.VERTICAL);
 	}
 
@@ -214,5 +216,13 @@ class AlchemicalHydraOverlay extends Overlay
 		}
 
 		return sprites[0];
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }
