@@ -18,6 +18,17 @@ import net.runelite.client.config.Keybind;
 public interface PvpToolsConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "countPlayers",
 		name = "Count Players",
 		description = "When in PvP zones, counts the attackable players in and not in player's CC",
