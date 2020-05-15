@@ -57,6 +57,7 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -581,5 +582,34 @@ public class VorkathPlugin extends Plugin
 		Arrays.fill(wooxWalkPath, null);
 		wooxWalkTimer = -1;
 		zombifiedSpawn = null;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("vorkath"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			if (isAtVorkath())
+			{
+				overlay.determineLayer();
+				overlayManager.remove(overlay);
+				overlayManager.add(overlay);
+
+				if (acidSpots.size() != lastAcidSpotsSize)
+				{
+					if (acidSpots.size() != 0)
+					{
+						acidPathOverlay.determineLayer();
+						overlayManager.remove(acidPathOverlay);
+						overlayManager.add(acidPathOverlay);
+					}
+				}
+			}
+		}
 	}
 }
