@@ -18,6 +18,17 @@ import net.runelite.client.config.ConfigSection;
 
 public interface TheatreConfig extends Config
 {
+	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	@ConfigSection(
 		position = 0,
 		keyName = "maidenSection",

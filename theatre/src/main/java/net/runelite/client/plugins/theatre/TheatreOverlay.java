@@ -19,15 +19,16 @@ import net.runelite.client.ui.overlay.OverlayPriority;
 public class TheatreOverlay extends Overlay
 {
 	private final TheatrePlugin plugin;
+	private final TheatreConfig config;
 
 	@Inject
-	private TheatreOverlay(final TheatrePlugin plugin)
+	private TheatreOverlay(final TheatrePlugin plugin, final TheatreConfig config)
 	{
 		this.plugin = plugin;
-
+		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 	}
 
 	@Override
@@ -57,5 +58,17 @@ public class TheatreOverlay extends Overlay
 				break;
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }
