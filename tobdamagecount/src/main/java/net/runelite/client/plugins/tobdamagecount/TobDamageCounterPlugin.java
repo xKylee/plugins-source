@@ -382,7 +382,7 @@ public class TobDamageCounterPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals("effecttimers"))
+		if (!event.getGroup().equals("tobdamagecounter"))
 		{
 			return;
 		}
