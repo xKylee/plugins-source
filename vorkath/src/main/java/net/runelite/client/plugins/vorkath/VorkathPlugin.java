@@ -594,22 +594,12 @@ public class VorkathPlugin extends Plugin
 
 		if (event.getKey().equals("mirrorMode"))
 		{
-			if (isAtVorkath())
-			{
-				overlay.determineLayer();
-				overlayManager.remove(overlay);
-				overlayManager.add(overlay);
-
-				if (acidSpots.size() != lastAcidSpotsSize)
-				{
-					if (acidSpots.size() != 0)
-					{
-						acidPathOverlay.determineLayer();
-						overlayManager.remove(acidPathOverlay);
-						overlayManager.add(acidPathOverlay);
-					}
-				}
-			}
+			overlay.determineLayer();
+			acidPathOverlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.remove(acidPathOverlay);
+			overlayManager.add(overlay);
+			overlayManager.add(acidPathOverlay);
 		}
 	}
 }
