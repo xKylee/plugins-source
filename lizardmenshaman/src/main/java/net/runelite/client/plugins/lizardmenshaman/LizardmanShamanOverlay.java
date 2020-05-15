@@ -55,10 +55,10 @@ class LizardmanShamanOverlay extends Overlay
 	@Inject
 	private LizardmanShamanOverlay(final Client client, final LizardmanShamanConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
 		this.client = client;
 		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 	}
 
 	@Override
