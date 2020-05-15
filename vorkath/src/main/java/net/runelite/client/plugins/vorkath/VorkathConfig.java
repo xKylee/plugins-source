@@ -33,6 +33,17 @@ import net.runelite.client.config.Title;
 @ConfigGroup("vorkath")
 public interface VorkathConfig extends Config
 {
+	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	@ConfigTitleSection(
 		keyName = "acidTitle",
 		position = 1,

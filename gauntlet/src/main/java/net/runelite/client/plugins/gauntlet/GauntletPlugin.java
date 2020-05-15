@@ -462,6 +462,32 @@ public class GauntletPlugin extends Plugin
 			}
 		}
 
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			infoboxoverlay.determineLayer();
+			GauntletCounter.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.remove(infoboxoverlay);
+			overlayManager.remove(GauntletCounter);
+			overlayManager.add(overlay);
+			overlayManager.add(infoboxoverlay);
+			overlayManager.add(GauntletCounter);
+
+			if (config.displayTimerWidget() && !timerVisible)
+			{
+				timer.determineLayer();
+				overlayManager.remove(timer);
+				overlayManager.add(timer);
+				timerVisible = true;
+			}
+			else if (!config.displayTimerWidget() && timerVisible)
+			{
+				overlayManager.remove(timer);
+				timerVisible = false;
+			}
+		}
+
 		if (event.getKey().equals("displayResources"))
 		{
 			if (config.displayGatheredResources() && this.startedGauntlet())

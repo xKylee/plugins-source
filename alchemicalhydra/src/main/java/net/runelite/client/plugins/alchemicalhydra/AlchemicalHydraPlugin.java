@@ -50,6 +50,7 @@ import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -325,5 +326,30 @@ public class AlchemicalHydraPlugin extends Plugin
 	{
 		overlayManager.remove(overlay);
 		overlayManager.remove(sceneOverlay);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("betterHydra"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			if (config.counting() || config.stun())
+			{
+				overlay.determineLayer();
+				overlayManager.remove(overlay);
+				overlayManager.add(overlay);
+			}
+			if (config.counting() || config.stun())
+			{
+				sceneOverlay.determineLayer();
+				overlayManager.remove(sceneOverlay);
+				overlayManager.add(sceneOverlay);
+			}
+		}
 	}
 }

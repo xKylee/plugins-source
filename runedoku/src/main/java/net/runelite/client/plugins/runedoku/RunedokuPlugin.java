@@ -27,6 +27,8 @@ package net.runelite.client.plugins.runedoku;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -65,5 +67,21 @@ public class RunedokuPlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(runedokuOverlay);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("runedoku"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			runedokuOverlay.determineLayer();
+			overlayManager.remove(runedokuOverlay);
+			overlayManager.add(runedokuOverlay);
+		}
 	}
 }

@@ -77,7 +77,7 @@ public class NyloHandler extends RoomHandler
 		this.plugin.setRoom(TheatreRoom.NYLOCAS);
 		if (overlay == null && config.showNylocasAmount())
 		{
-			overlay = new NyloOverlay(client, plugin, this);
+			overlay = new NyloOverlay(client, plugin, this, config);
 			plugin.getOverlayManager().add(overlay);
 		}
 
@@ -148,13 +148,20 @@ public class NyloHandler extends RoomHandler
 
 		if (overlay == null && config.showNylocasAmount())
 		{
-			overlay = new NyloOverlay(client, plugin, this);
+			overlay = new NyloOverlay(client, plugin, this, config);
 			plugin.getOverlayManager().add(overlay);
 		}
 		else if (overlay != null && !config.showNylocasAmount())
 		{
 			plugin.getOverlayManager().remove(overlay);
 			overlay = null;
+		}
+
+		if (config.mirrorMode())
+		{
+			overlay.determineLayer();
+			plugin.getOverlayManager().remove(overlay);
+			plugin.getOverlayManager().add(overlay);
 		}
 	}
 

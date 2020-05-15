@@ -14,6 +14,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -107,6 +108,28 @@ public class ClanManModePlugin extends Plugin
 		{
 			clanmin = Collections.min(clan.values());
 			clanmax = Collections.max(clan.values());
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("clanmanmode"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			ClanManModeOverlay.determineLayer();
+			ClanManModeTileOverlay.determineLayer();
+			ClanManModeMinimapOverlay.determineLayer();
+			overlayManager.remove(ClanManModeOverlay);
+			overlayManager.remove(ClanManModeTileOverlay);
+			overlayManager.remove(ClanManModeMinimapOverlay);
+			overlayManager.add(ClanManModeOverlay);
+			overlayManager.add(ClanManModeTileOverlay);
+			overlayManager.add(ClanManModeMinimapOverlay);
 		}
 	}
 }

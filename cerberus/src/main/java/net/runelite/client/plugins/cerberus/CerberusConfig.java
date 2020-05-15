@@ -38,6 +38,17 @@ import net.runelite.client.plugins.cerberus.Util.CerberusReadMeButton;
 
 public interface CerberusConfig extends Config
 {
+	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	@ConfigTitleSection(
 		name = "General",
 		description = "Configure general settings.",

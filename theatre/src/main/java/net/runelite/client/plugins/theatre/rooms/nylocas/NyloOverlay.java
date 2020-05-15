@@ -30,9 +30,11 @@ import java.awt.Graphics2D;
 import net.runelite.api.Client;
 import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY_CONFIG;
 import net.runelite.api.NPC;
+import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.plugins.theatre.TheatreRoom;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -49,20 +51,21 @@ class NyloOverlay extends Overlay
 
 	private final TheatrePlugin plugin;
 	private final PanelComponent panelComponent = new PanelComponent();
+	private final TheatreConfig config;
 
 	private final NyloHandler nylohandler;
 
-	NyloOverlay(final Client client, final TheatrePlugin plugin, final NyloHandler nylohandler)
+	NyloOverlay(final Client client, final TheatrePlugin plugin, final NyloHandler nylohandler, final TheatreConfig config)
 	{
 		super(plugin);
-
-		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
-		setPriority(OverlayPriority.HIGH);
-
 		this.client = client;
 		this.plugin = plugin;
 		this.nylohandler = nylohandler;
+		this.config = config;
 
+		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+		setPriority(OverlayPriority.HIGH);
+		determineLayer();
 		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "Nylocas Overlay"));
 	}
 
@@ -130,5 +133,13 @@ class NyloOverlay extends Overlay
 		panelComponent.getChildren().add(tableComponent);
 
 		return panelComponent.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

@@ -10,6 +10,17 @@ import net.runelite.client.config.Units;
 public interface ClanManModeConfig extends Config
 {
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		position = 0,
 		keyName = "highlightattackable",
 		name = "Highlight attackable targets",

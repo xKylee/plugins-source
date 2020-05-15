@@ -215,6 +215,28 @@ public class InfernoPlugin extends Plugin
 				overlayManager.add(waveOverlay);
 			}
 		}
+		if (event.getKey().equals("mirrorMode"))
+		{
+			if (isInInferno())
+			{
+				infernoOverlay.determineLayer();
+				jadOverlay.determineLayer();
+				prayerOverlay.determineLayer();
+				overlayManager.remove(infernoOverlay);
+				overlayManager.remove(jadOverlay);
+				overlayManager.remove(prayerOverlay);
+				overlayManager.add(infernoOverlay);
+				overlayManager.add(jadOverlay);
+				overlayManager.add(prayerOverlay);
+
+				if (config.waveDisplay() != InfernoWaveDisplayMode.NONE)
+				{
+					waveOverlay.determineLayer();
+					overlayManager.remove(waveOverlay);
+					overlayManager.add(waveOverlay);
+				}
+			}
+		}
 	}
 
 	@Subscribe

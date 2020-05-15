@@ -52,6 +52,7 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -568,5 +569,27 @@ public class CerberusPlugin extends Plugin
 	public boolean inCerberusArena()
 	{
 		return CerberusArena.getArena(client.getLocalPlayer().getWorldLocation()) != null;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("cerberus"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			prayerOverlay.determineLayer();
+			phaseOverlay.determineLayer();
+			attacksOverlay.determineLayer();
+			overlayManager.remove(prayerOverlay);
+			overlayManager.remove(phaseOverlay);
+			overlayManager.remove(attacksOverlay);
+			overlayManager.add(prayerOverlay);
+			overlayManager.add(phaseOverlay);
+			overlayManager.add(attacksOverlay);
+		}
 	}
 }

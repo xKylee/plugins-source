@@ -40,6 +40,7 @@ import static net.runelite.client.plugins.gauntlet.GauntletTimer.RaidState.IN_BO
 import static net.runelite.client.plugins.gauntlet.GauntletTimer.RaidState.IN_RAID;
 import static net.runelite.client.plugins.gauntlet.GauntletTimer.RaidState.UNKNOWN;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -66,12 +67,13 @@ class GauntletTimer extends Overlay
 	{
 		super(plugin);
 
-		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
-		setPriority(OverlayPriority.HIGH);
-
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+
+		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+		determineLayer();
+		setPriority(OverlayPriority.HIGH);
 
 		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "Gauntlet Timer Overlay"));
 	}
@@ -311,5 +313,13 @@ class GauntletTimer extends Overlay
 	public enum RaidState
 	{
 		UNKNOWN, IN_RAID, IN_BOSS
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

@@ -40,6 +40,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.util.Text;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -156,5 +157,21 @@ public class DropPartyPlugin extends Plugin
 	private void reset()
 	{
 		playerPath.clear();
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("dropparty"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			coreOverlay.determineLayer();
+			overlayManager.remove(coreOverlay);
+			overlayManager.add(coreOverlay);
+		}
 	}
 }

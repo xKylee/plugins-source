@@ -64,7 +64,7 @@ public class GauntletOverlay extends Overlay
 	private OverlayManager overlayManager;
 
 	@Inject
-	private net.runelite.client.plugins.gauntlet.GauntletCounter GauntletCounter;
+	private GauntletCounter GauntletCounter;
 
 	private static final Color FLASH_COLOR = new Color(255, 0, 0, 70);
 	private static final int MAX_DISTANCE = 2400;
@@ -84,7 +84,7 @@ public class GauntletOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		determineLayer();
 	}
 
 	@Override
@@ -422,5 +422,17 @@ public class GauntletOverlay extends Overlay
 		int x = (int) (rect.getX() + rect.getWidth() / 2);
 		int y = (int) (rect.getY() + rect.getHeight() / 2);
 		return new Point(x, y);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		}
 	}
 }

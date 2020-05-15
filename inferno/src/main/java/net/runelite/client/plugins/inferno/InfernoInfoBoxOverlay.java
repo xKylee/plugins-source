@@ -35,6 +35,7 @@ import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoPrayerDisplayMode;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ComponentConstants;
@@ -57,12 +58,13 @@ public class InfernoInfoBoxOverlay extends Overlay
 	@Inject
 	private InfernoInfoBoxOverlay(final Client client, final InfernoPlugin plugin, final InfernoConfig config, final SpriteManager spriteManager)
 	{
-		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		setPriority(OverlayPriority.HIGH);
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
 		this.spriteManager = spriteManager;
+		determineLayer();
+		setPosition(OverlayPosition.BOTTOM_RIGHT);
+		setPriority(OverlayPriority.HIGH);
 	}
 
 	@Override
@@ -119,5 +121,13 @@ public class InfernoInfoBoxOverlay extends Overlay
 		}
 
 		return prayMagicSprite;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

@@ -27,6 +27,7 @@ import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.WorldLocation;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
@@ -184,5 +185,23 @@ public class WildernessLocationsPlugin extends Plugin
 		sendMessage("/World: " + client.getWorld() + " Location: " + location);
 		currentCooldown = 30;
 	}
-	
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("wildernesslocations"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			wildernessLocationsMapOverlay.determineLayer();
+			overlayManager.remove(wildernessLocationsMapOverlay);
+			overlayManager.remove(overlay);
+			overlayManager.add(overlay);
+			overlayManager.add(wildernessLocationsMapOverlay);
+		}
+	}
 }

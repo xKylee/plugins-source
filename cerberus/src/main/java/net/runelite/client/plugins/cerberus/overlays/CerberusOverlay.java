@@ -47,6 +47,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.SkillIconManager;
+import net.runelite.client.plugins.cerberus.CerberusConfig;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.domain.CerberusArena;
 import net.runelite.client.plugins.cerberus.domain.CerberusAttack;
@@ -72,19 +73,21 @@ public class CerberusOverlay extends Overlay
 	final Map<Widget, Integer> lastBoxBaseYMap = new HashMap<>();
 	private final Client client;
 	private final CerberusPlugin plugin;
+	private final CerberusConfig config;
 	private final SkillIconManager iconManager;
 	private final PanelComponent panelComponent = new PanelComponent();
 
 
 	@Inject
-	CerberusOverlay(final CerberusPlugin plugin, final SkillIconManager iconManager, final Client client)
+	CerberusOverlay(final CerberusPlugin plugin, final SkillIconManager iconManager, final Client client, final CerberusConfig config)
 	{
 		this.client = client;
 		this.plugin = plugin;
 		this.iconManager = iconManager;
+		this.config = config;
 
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_WIDGETS);
+		determineLayer();
 		setPriority(OverlayPriority.HIGHEST);
 	}
 
@@ -248,5 +251,17 @@ public class CerberusOverlay extends Overlay
 		int x = (int) (rect.getX() + rect.getWidth() / 2);
 		int y = (int) (rect.getY() + rect.getHeight() / 2);
 		return new Point(x, y);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_WIDGETS);
+		}
 	}
 }

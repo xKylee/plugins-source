@@ -45,11 +45,9 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 @Singleton
 class RunedokuOverlay extends Overlay
 {
-
 	private final RunedokuConfig config;
 	private final Client client;
 	private final RunedokuUtil util;
-
 
 	@Inject
 	private RunedokuOverlay(final RunedokuPlugin plugin, final RunedokuConfig config, final Client client, final RunedokuUtil util)
@@ -58,16 +56,14 @@ class RunedokuOverlay extends Overlay
 		this.config = config;
 		this.client = client;
 		this.util = util;
-
 		setPosition(OverlayPosition.DETACHED);
-		setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		determineLayer();
 		setPriority(OverlayPriority.MED);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-
 		final Widget sudokuScreen = client.getWidget(288, 131);
 
 		if (sudokuScreen != null && !sudokuScreen.isHidden())
@@ -78,7 +74,6 @@ class RunedokuOverlay extends Overlay
 			renderReferenceRunes(graphics, solved);
 			renderSolvedPuzzle(graphics, sudoku, solved);
 		}
-
 		return null;
 	}
 
@@ -147,8 +142,18 @@ class RunedokuOverlay extends Overlay
 			{
 				OverlayUtil.renderPolygon(graphics, RunedokuUtil.rectangleToPolygon(squareToHighlight.getBounds()), RED);
 			}
-
 		}
 	}
 
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		}
+	}
 }

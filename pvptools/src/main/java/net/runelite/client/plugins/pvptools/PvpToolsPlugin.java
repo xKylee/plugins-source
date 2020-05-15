@@ -332,6 +332,10 @@ public class PvpToolsPlugin extends Plugin
 			case "hideCastIgnored":
 				setCastOptions();
 				break;
+			case "mirrorMode":
+				playerCountOverlay.determineLayer();
+				overlayManager.remove(playerCountOverlay);
+				overlayManager.add(playerCountOverlay);
 			default:
 				break;
 		}

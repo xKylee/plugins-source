@@ -24,6 +24,7 @@
  */
 package net.runelite.client.plugins.tarnslair;
 
+import com.google.inject.Provides;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -42,7 +43,9 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectChanged;
 import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -78,11 +81,19 @@ public class TarnsLairPlugin extends Plugin
 	@Inject
 	private Client client;
 
+	private TarnsLairConfig config;
+
 	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
 	private TarnsLairOverlay overlay;
+
+	@Provides
+	TarnsLairConfig provideConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(TarnsLairConfig.class);
+	}
 
 	@Override
 	protected void startUp()
@@ -98,6 +109,22 @@ public class TarnsLairPlugin extends Plugin
 		wallTraps.clear();
 		floorTraps.clear();
 		inLair = false;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("tarnslair"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.add(overlay);
+		}
 	}
 
 	@Subscribe

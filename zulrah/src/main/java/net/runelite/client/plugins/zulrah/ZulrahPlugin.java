@@ -44,6 +44,7 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.Sound;
 import net.runelite.client.game.SoundManager;
 import net.runelite.client.plugins.Plugin;
@@ -271,5 +272,29 @@ public class ZulrahPlugin extends Plugin
 	{
 		return instance;
 	}
-	
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("zulrah"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			currentPhaseOverlay.determineLayer();
+			nextPhaseOverlay.determineLayer();
+			zulrahPrayerOverlay.determineLayer();
+			zulrahOverlay.determineLayer();
+			overlayManager.remove(currentPhaseOverlay);
+			overlayManager.remove(nextPhaseOverlay);
+			overlayManager.remove(zulrahPrayerOverlay);
+			overlayManager.remove(zulrahOverlay);
+			overlayManager.add(currentPhaseOverlay);
+			overlayManager.add(nextPhaseOverlay);
+			overlayManager.add(zulrahPrayerOverlay);
+			overlayManager.add(zulrahOverlay);
+		}
+	}
 }

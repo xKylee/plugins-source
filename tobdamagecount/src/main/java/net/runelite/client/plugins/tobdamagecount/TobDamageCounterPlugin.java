@@ -35,6 +35,7 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -376,6 +377,25 @@ public class TobDamageCounterPlugin extends Plugin
 
 		currentRoom = null;
 		log.warn("NPC ID not handled: " + npcID);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("tobdamagecounter"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			if (inTob)
+			{
+				tobDamageOverlay.determineLayer();
+				overlayManager.remove(tobDamageOverlay);
+				overlayManager.add(tobDamageOverlay);
+			}
+		}
 	}
 
 	private void calcInTob()

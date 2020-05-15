@@ -24,6 +24,7 @@
  */
 package net.runelite.client.plugins.vetion;
 
+import com.google.inject.Provides;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,9 @@ import lombok.Getter;
 import net.runelite.api.Actor;
 import net.runelite.api.AnimationID;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -57,8 +60,16 @@ public class VetionPlugin extends Plugin
 	@Inject
 	private VetionOverlay overlay;
 
+	private VetionConfig config;
+
 	@Getter(AccessLevel.PACKAGE)
 	private Map<Actor, Instant> vetions;
+
+	@Provides
+	VetionConfig provideConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(VetionConfig.class);
+	}
 
 	@Override
 	protected void startUp()
@@ -83,6 +94,22 @@ public class VetionPlugin extends Plugin
 			Actor vet = event.getActor();
 			vetions.remove(vet, Instant.now());
 			vetions.put(vet, Instant.now());
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("vetion"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.add(overlay);
 		}
 	}
 }

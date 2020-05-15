@@ -52,6 +52,7 @@ import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -354,6 +355,25 @@ public class AoeWarningPlugin extends Plugin
 		}
 
 		return false;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("aoe"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			bombOverlay.determineLayer();
+			coreOverlay.determineLayer();
+			overlayManager.remove(bombOverlay);
+			overlayManager.remove(coreOverlay);
+			overlayManager.add(bombOverlay);
+			overlayManager.add(coreOverlay);
+		}
 	}
 
 	private void reset()

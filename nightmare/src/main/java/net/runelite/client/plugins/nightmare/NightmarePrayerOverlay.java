@@ -30,13 +30,14 @@ public class NightmarePrayerOverlay extends Overlay
 	@Inject
 	private NightmarePrayerOverlay(final Client client, final NightmarePlugin plugin, final SpriteManager spriteManager, final NightmareConfig config)
 	{
-		setLayer(OverlayLayer.ABOVE_SCENE);
-		setPriority(OverlayPriority.HIGH);
-		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		this.client = client;
 		this.plugin = plugin;
 		this.spriteManager = spriteManager;
 		this.config = config;
+
+		determineLayer();
+		setPriority(OverlayPriority.HIGH);
+		setPosition(OverlayPosition.BOTTOM_RIGHT);
 	}
 
 	public Dimension render(Graphics2D graphics)
@@ -76,5 +77,17 @@ public class NightmarePrayerOverlay extends Overlay
 	private BufferedImage getPrayerImage(NightmareAttack attack)
 	{
 		return spriteManager.getSprite(attack.getPrayerSpriteId(), 0);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

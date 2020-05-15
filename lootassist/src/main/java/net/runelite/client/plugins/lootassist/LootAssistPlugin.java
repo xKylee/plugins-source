@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.lootassist;
 
+import com.google.inject.Provides;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import net.runelite.api.Actor;
@@ -8,7 +9,9 @@ import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -31,7 +34,16 @@ public class LootAssistPlugin extends Plugin
 	@Inject
 	private LootAssistOverlay lootAssistOverlay;
 
+	private LootAssistConfig config;
+
 	static final ConcurrentHashMap<WorldPoint, LootPile> lootPiles = new ConcurrentHashMap<>();
+
+	@Provides
+	LootAssistConfig provideConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(LootAssistConfig.class);
+	}
+
 
 	@Override
 	protected void startUp()
@@ -64,5 +76,20 @@ public class LootAssistPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("lootassist"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			lootAssistOverlay.determineLayer();
+			overlayManager.remove(lootAssistOverlay);
+			overlayManager.add(lootAssistOverlay);
+		}
+	}
 
 }
