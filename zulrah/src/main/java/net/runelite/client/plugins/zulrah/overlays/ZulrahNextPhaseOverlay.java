@@ -33,10 +33,12 @@ import java.awt.image.BufferedImage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.client.plugins.zulrah.ImagePanelComponent;
+import net.runelite.client.plugins.zulrah.ZulrahConfig;
 import net.runelite.client.plugins.zulrah.ZulrahInstance;
 import net.runelite.client.plugins.zulrah.ZulrahPlugin;
 import net.runelite.client.plugins.zulrah.phase.ZulrahPhase;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 
@@ -44,13 +46,16 @@ import net.runelite.client.ui.overlay.OverlayPriority;
 public class ZulrahNextPhaseOverlay extends Overlay
 {
 	private final ZulrahPlugin plugin;
+	private final ZulrahConfig config;
 
 	@Inject
-	ZulrahNextPhaseOverlay(final ZulrahPlugin plugin)
+	ZulrahNextPhaseOverlay(final ZulrahPlugin plugin, final ZulrahConfig config)
 	{
+		this.plugin = plugin;
+		this.config = config;
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		setPriority(OverlayPriority.HIGH);
-		this.plugin = plugin;
+		determineLayer();
 	}
 
 	@Override
@@ -76,5 +81,13 @@ public class ZulrahNextPhaseOverlay extends Overlay
 		imagePanelComponent.setBackgroundColor(backgroundColor);
 		imagePanelComponent.setImage(zulrahImage);
 		return imagePanelComponent.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }
