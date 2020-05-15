@@ -179,7 +179,7 @@ public class GrotesqueGuardiansPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals("effecttimers"))
+		if (!event.getGroup().equals("grotesqueguardians"))
 		{
 			return;
 		}
