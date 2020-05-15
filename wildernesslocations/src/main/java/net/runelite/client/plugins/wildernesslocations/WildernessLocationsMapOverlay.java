@@ -36,12 +36,12 @@ public class WildernessLocationsMapOverlay extends Overlay
 	@Inject
 	private WildernessLocationsMapOverlay(Client client, WildernessLocationsPlugin plugin, WildernessLocationsConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_MAP);
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
+		setPriority(OverlayPriority.HIGH);
 	}
 
 	@Override
@@ -227,4 +227,15 @@ public class WildernessLocationsMapOverlay extends Overlay
 		return new Point(clippedX, clippedY);
 	}
 
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_MAP);
+		}
+	}
 }
