@@ -100,7 +100,7 @@ public class TheatrePlugin extends Plugin
 		room = TheatreRoom.UNKNOWN;
 		maidenHandler = new MaidenHandler(client, this, config, modelOutline);
 		bloatHandler = new BloatHandler(client, this, config);
-		nyloHandler = new NyloHandler(client, this, config, menuManager, eventBus);
+		nyloHandler = new NyloHandler(client, this, config, eventBus);
 		sotetsegHandler = new SotetsegHandler(client, this, config);
 		xarpusHandler = new XarpusHandler(client, this, config);
 		verzikHandler = new VerzikHandler(client, this, config);
@@ -156,6 +156,11 @@ public class TheatrePlugin extends Plugin
 		if (nyloHandler != null)
 		{
 			nyloHandler.onConfigChanged();
+		}
+
+		if (xarpusHandler != null)
+		{
+			xarpusHandler.onConfigChanged();
 		}
 
 		if (event.getKey().equals("mirrorMode"))

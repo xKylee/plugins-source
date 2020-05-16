@@ -46,9 +46,7 @@ import net.runelite.client.util.ColorUtil;
 
 class NyloOverlay extends Overlay
 {
-
 	private final Client client;
-
 	private final TheatrePlugin plugin;
 	private final PanelComponent panelComponent = new PanelComponent();
 	private final TheatreConfig config;
@@ -81,7 +79,7 @@ class NyloOverlay extends Overlay
 		int toxobolos = 0;
 		int ischyros = 0;
 
-		for (NPC npc : this.client.getNpcs())
+		for (NPC npc : client.getNpcs())
 		{
 			String name = npc.getName();
 			if (name != null)

@@ -19,7 +19,7 @@ class Nylos
 	Nylos(NPC npc, SpawnLocation spawnLocation)
 	{
 		this.npc = npc;
-		this.npcIndex = npc.getIndex();
+		npcIndex = npc.getIndex();
 		this.spawnLocation = spawnLocation;
 	}
 

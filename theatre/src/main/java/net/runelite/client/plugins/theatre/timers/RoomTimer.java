@@ -7,8 +7,10 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY_CONFIG;
 import net.runelite.api.Player;
+import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -23,20 +25,21 @@ public class RoomTimer extends Overlay
 
 	private final TheatrePlugin plugin;
 
+	private final TheatreConfig config;
+
 	private final PanelComponent panelComponent = new PanelComponent();
 
 
 	@Inject
-	public RoomTimer(final Client client, final TheatrePlugin plugin)
+	public RoomTimer(final Client client, final TheatrePlugin plugin, final TheatreConfig config)
 	{
 		super(plugin);
-
-		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
-		setPriority(OverlayPriority.HIGH);
-
 		this.client = client;
 		this.plugin = plugin;
-
+		this.config = config;
+		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+		setPriority(OverlayPriority.HIGH);
+		determineLayer();
 		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "TOB Timer Overlay"));
 	}
 
@@ -75,9 +78,16 @@ public class RoomTimer extends Overlay
 			default:
 				break;
 		}
-
 		panelComponent.getChildren().add(TitleComponent.builder().text("Room Timer").color(Color.WHITE).build());
 
 		return panelComponent.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

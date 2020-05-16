@@ -58,20 +58,20 @@ public class SotetsegHandler extends RoomHandler
 	@Override
 	public void onStart()
 	{
-		if (this.plugin.getRoom() == TheatreRoom.SOTETSEG)
+		if (plugin.getRoom() == TheatreRoom.SOTETSEG)
 		{
 			return;
 		}
 
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.SOTETSEG);
+		reset();
+		plugin.setRoom(TheatreRoom.SOTETSEG);
 	}
 
 	@Override
 	public void onStop()
 	{
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.UNKNOWN);
+		reset();
+		plugin.setRoom(TheatreRoom.UNKNOWN);
 	}
 
 	private void reset()
@@ -164,7 +164,7 @@ public class SotetsegHandler extends RoomHandler
 
 		if (npc.getName() != null && npc.getName().equals("Sotetseg"))
 		{
-			this.onStart();
+			onStart();
 		}
 	}
 
@@ -177,7 +177,7 @@ public class SotetsegHandler extends RoomHandler
 			redTiles.clear();
 			if (client.getPlane() != 3)
 			{
-				this.onStop();
+				onStop();
 			}
 		}
 	}
@@ -249,7 +249,7 @@ public class SotetsegHandler extends RoomHandler
 		{
 			if (npc.getId() == NpcID.SOTETSEG_8388)
 			{
-				this.reset();
+				reset();
 				sotetsegFighting = true;
 				break;
 			}

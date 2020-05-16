@@ -77,35 +77,35 @@ public class MaidenHandler extends RoomHandler
 	@Override
 	public void onStart()
 	{
-		if (this.plugin.getRoom() == TheatreRoom.MAIDEN)
+		if (plugin.getRoom() == TheatreRoom.MAIDEN)
 		{
 			return;
 		}
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.MAIDEN);
-		this.startTime = System.currentTimeMillis();
+		reset();
+		plugin.setRoom(TheatreRoom.MAIDEN);
+		startTime = System.currentTimeMillis();
 		log.debug("Starting Maiden Room");
 	}
 
 	@Override
 	public void onStop()
 	{
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.UNKNOWN);
+		reset();
+		plugin.setRoom(TheatreRoom.UNKNOWN);
 		log.debug("Stopping Maiden Room");
 	}
 
 	private void reset()
 	{
-		this.bloodThrows.clear();
-		this.bloodSpawns.clear();
-		this.bloodSpawnLocation.clear();
-		this.bloodSpawnTarget.clear();
-		this.healers.clear();
-		this.nylos.clear();
-		this.healerCount = 0;
-		this.startTime = -1;
-		this.wave = 1;
+		bloodThrows.clear();
+		bloodSpawns.clear();
+		bloodSpawnLocation.clear();
+		bloodSpawnTarget.clear();
+		healers.clear();
+		nylos.clear();
+		healerCount = 0;
+		startTime = -1;
+		wave = 1;
 	}
 
 	public void render(Graphics2D graphics)
@@ -193,7 +193,7 @@ public class MaidenHandler extends RoomHandler
 		switch (npc.getName())
 		{
 			case "The Maiden of Sugadinti":
-				this.onStart();
+				onStart();
 				maiden = npc;
 				break;
 			case "Nylocas Matomenos":
@@ -202,7 +202,7 @@ public class MaidenHandler extends RoomHandler
 					return;
 				}
 
-				this.healers.add(npc);
+				healers.add(npc);
 
 				WorldPoint wp = WorldPoint.fromLocalInstance(client, npc.getLocalLocation());
 
@@ -285,7 +285,7 @@ public class MaidenHandler extends RoomHandler
 		switch (npc.getName())
 		{
 			case "The Maiden of Sugadinti":
-				this.onStop();
+				onStop();
 				break;
 			case "Blood Spawn":
 				bloodSpawns.remove(npc);
@@ -318,11 +318,11 @@ public class MaidenHandler extends RoomHandler
 			bloodSpawnTarget.add(spawn.getWorldLocation());
 		}
 
-		if (this.healerCount != this.healers.size())
+		if (healerCount != healers.size())
 		{
-			this.healerCount = this.healers.size();
+			healerCount = healers.size();
 
-			long elapsedTime = System.currentTimeMillis() - this.startTime;
+			long elapsedTime = System.currentTimeMillis() - startTime;
 			long seconds = elapsedTime / 1000L;
 
 			long minutes = seconds / 60L;
@@ -331,7 +331,7 @@ public class MaidenHandler extends RoomHandler
 			int percentage = 70 - (20 * ((wave++) - 1));
 			if (config.extraTimers())
 			{
-				this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Maiden of Sugadinti - " + percentage + "%' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Maiden of Sugadinti - " + percentage + "%' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
 			}
 		}
 	}

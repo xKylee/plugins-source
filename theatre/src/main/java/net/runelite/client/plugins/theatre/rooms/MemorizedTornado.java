@@ -23,34 +23,34 @@ class MemorizedTornado
 	MemorizedTornado(final NPC npc)
 	{
 		this.npc = npc;
-		this.lastPosition = null;
-		this.currentPosition = null;
+		lastPosition = null;
+		currentPosition = null;
 	}
 
 	public int getRelativeXDelta(WorldPoint pt)
 	{
-		return pt.getX() - this.currentPosition.getX() - (pt.getX() - this.lastPosition.getX());
+		return pt.getX() - currentPosition.getX() - (pt.getX() - lastPosition.getX());
 	}
 
 	public int getRelativeYDelta(WorldPoint pt)
 	{
-		return pt.getY() - this.currentPosition.getY() - (pt.getY() - this.lastPosition.getY());
+		return pt.getY() - currentPosition.getY() - (pt.getY() - lastPosition.getY());
 	}
 
 	public int getRelativeDelta(WorldPoint pt)
 	{
 		//if the tornado is newly spawned and doesn't have positions loaded, return -1
-		if (this.lastPosition == null || this.currentPosition == null)
+		if (lastPosition == null || currentPosition == null)
 		{
 			return -1;
 		}
 
 		//if the last position is equal to the current position, it didn't move yet. return -1
-		if (this.lastPosition.distanceTo(this.currentPosition) == 0)
+		if (lastPosition.distanceTo(currentPosition) == 0)
 		{
 			return -1;
 		}
 
-		return pt.distanceTo(this.currentPosition) - pt.distanceTo(this.lastPosition);
+		return pt.distanceTo(currentPosition) - pt.distanceTo(lastPosition);
 	}
 }

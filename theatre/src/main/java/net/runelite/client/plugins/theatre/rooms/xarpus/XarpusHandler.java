@@ -57,17 +57,17 @@ public class XarpusHandler extends RoomHandler
 	@Override
 	public void onStart()
 	{
-		if (this.plugin.getRoom() == TheatreRoom.XARPUS)
+		if (plugin.getRoom() == TheatreRoom.XARPUS)
 		{
 			return;
 		}
 
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.XARPUS);
+		reset();
+		plugin.setRoom(TheatreRoom.XARPUS);
 
 		if (overlay == null)
 		{
-			overlay = new XarpusCounter(plugin, this);
+			overlay = new XarpusCounter(plugin, this, config);
 			plugin.getOverlayManager().add(overlay);
 		}
 	}
@@ -75,8 +75,8 @@ public class XarpusHandler extends RoomHandler
 	@Override
 	public void onStop()
 	{
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.UNKNOWN);
+		reset();
+		plugin.setRoom(TheatreRoom.UNKNOWN);
 
 		if (overlay != null)
 		{
@@ -94,9 +94,9 @@ public class XarpusHandler extends RoomHandler
 		staring = false;
 		ticksUntilShoot = 8;
 		previousTurn = 0;
-		this.startTime = 0;
-		this.up = false;
-		this.exhumes.clear();
+		startTime = 0;
+		up = false;
+		exhumes.clear();
 	}
 
 	public void render(Graphics2D graphics)
@@ -108,19 +108,19 @@ public class XarpusHandler extends RoomHandler
 
 		if (npc.getId() == NpcID.XARPUS_8340) //&& !staring&& config.showXarpusTick())
 		{
-			if (!this.up)
+			if (!up)
 			{
-				this.up = true;
-				long elapsedTime = System.currentTimeMillis() - this.startTime;
+				up = true;
+				long elapsedTime = System.currentTimeMillis() - startTime;
 				long seconds = elapsedTime / 1000L;
 
 				long minutes = seconds / 60L;
 				seconds = seconds % 60;
 
-				this.ticksUntilShoot = 8;
+				ticksUntilShoot = 8;
 				if (config.extraTimers())
 				{
-					this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'Xarpus - Recovery' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'Xarpus - Recovery' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
 				}
 			}
 
@@ -150,6 +150,16 @@ public class XarpusHandler extends RoomHandler
 					}
 				}
 			}
+		}
+	}
+
+	public void onConfigChanged()
+	{
+		if (config.mirrorMode())
+		{
+			overlay.determineLayer();
+			plugin.getOverlayManager().remove(overlay);
+			plugin.getOverlayManager().add(overlay);
 		}
 	}
 
@@ -192,7 +202,7 @@ public class XarpusHandler extends RoomHandler
 
 		if (npc.getName() != null && npc.getName().equals("Xarpus"))
 		{
-			this.onStart();
+			onStart();
 			this.npc = npc;
 		}
 	}
@@ -203,7 +213,7 @@ public class XarpusHandler extends RoomHandler
 
 		if (npc.getName() != null && npc.getName().equals("Xarpus"))
 		{
-			this.onStop();
+			onStop();
 		}
 	}
 
@@ -217,9 +227,9 @@ public class XarpusHandler extends RoomHandler
 		GroundObject o = event.getGroundObject();
 		if (o.getId() == TheatreConstant.GROUNDOBJECT_ID_EXHUMED)
 		{
-			if (this.startTime == 0)
+			if (startTime == 0)
 			{
-				this.startTime = System.currentTimeMillis() - 2000L;
+				startTime = System.currentTimeMillis() - 2000L;
 			}
 
 //			exhumes.put(o, 18);
@@ -244,7 +254,7 @@ public class XarpusHandler extends RoomHandler
 			else
 			{
 				exhumes.remove(key);
-				this.exhumesCount--;
+				exhumesCount--;
 			}
 		}
 
@@ -254,14 +264,14 @@ public class XarpusHandler extends RoomHandler
 			{
 				staring = true;
 
-				long elapsedTime = System.currentTimeMillis() - this.startTime;
+				long elapsedTime = System.currentTimeMillis() - startTime;
 				long seconds = elapsedTime / 1000L;
 
 				long minutes = seconds / 60L;
 				seconds = seconds % 60;
 				if (config.extraTimers())
 				{
-					this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'Xarpus - Acid' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'Xarpus - Acid' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
 				}
 			}
 

@@ -1,10 +1,8 @@
 package net.runelite.client.plugins.theatre.rooms.nylocas;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,30 +18,38 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.MenuOpcode;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
+import net.runelite.api.Player;
+import net.runelite.api.PlayerAppearance;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.kit.KitType;
 import net.runelite.client.eventbus.EventBus;
-import net.runelite.client.menus.AbstractComparableEntry;
-import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.theatre.RoomHandler;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatreConstant;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.plugins.theatre.TheatreRoom;
+import net.runelite.client.util.WeaponMap;
+import net.runelite.client.util.WeaponStyle;
+import org.apache.commons.lang3.ObjectUtils;
 
 @Slf4j
 public class NyloHandler extends RoomHandler
 {
 	private static final String MESNAME = "tobmes";
+	private static final String MAGE_NYLO = "Nylocas Hagios";
+	private static final String RANGE_NYLO = "Nylocas Toxobolos";
+	private static final String MELEE_NYLO = "Nylocas Ischyros";
 	final List<NPC> waveSpawns = new ArrayList<>();
 	final List<NPC> waveAgros = new ArrayList<>();
-	private final MenuManager menuManager;
 	private final EventBus eventBus;
 	public long startTime = 0L;
 	int startTick = 0;
@@ -56,36 +62,38 @@ public class NyloHandler extends RoomHandler
 	private int wave = 0;
 	private NyloOverlay overlay = null;
 	private NyloPredictor predictor = null;
+	private WeaponStyle currentWeaponStyle;
+	private boolean skipTickCheck = false;
 
-	public NyloHandler(final Client client, final TheatrePlugin plugin, final TheatreConfig config, final MenuManager menuManager, final EventBus eventBus)
+	public NyloHandler(final Client client, final TheatrePlugin plugin, final TheatreConfig config, final EventBus eventBus)
 	{
 		super(client, plugin, config);
-		this.menuManager = menuManager;
 		this.eventBus = eventBus;
 	}
 
 	@Override
 	public void onStart()
 	{
-		if (this.plugin.getRoom() == TheatreRoom.NYLOCAS)
+		if (plugin.getRoom() == TheatreRoom.NYLOCAS)
 		{
 			return;
 		}
 
-		this.reset();
+		reset();
 
-		this.plugin.setRoom(TheatreRoom.NYLOCAS);
+		plugin.setRoom(TheatreRoom.NYLOCAS);
 		if (overlay == null && config.showNylocasAmount())
 		{
 			overlay = new NyloOverlay(client, plugin, this, config);
 			plugin.getOverlayManager().add(overlay);
 		}
 
-		this.startTime = System.currentTimeMillis();
-		this.startTick = this.client.getTickCount();
+		startTime = System.currentTimeMillis();
+		startTick = client.getTickCount();
 		if (config.nylocasMenuSwap())
 		{
 			eventBus.subscribe(MenuOptionClicked.class, MESNAME, this::onMenuOptionClicked);
+			eventBus.subscribe(MenuEntryAdded.class, MESNAME, this::onMenuEntryAdded);
 		}
 
 	}
@@ -93,9 +101,9 @@ public class NyloHandler extends RoomHandler
 	@Override
 	public void onStop()
 	{
-		this.reset();
+		reset();
 
-		this.plugin.setRoom(TheatreRoom.UNKNOWN);
+		plugin.setRoom(TheatreRoom.UNKNOWN);
 
 		if (overlay != null)
 		{
@@ -103,31 +111,30 @@ public class NyloHandler extends RoomHandler
 			overlay = null;
 		}
 
-		this.predictor = null;
+		predictor = null;
 
-		long elapsedTime = System.currentTimeMillis() - this.startTime;
+		long elapsedTime = System.currentTimeMillis() - startTime;
 		long seconds = elapsedTime / 1000L;
 
 		long minutes = seconds / 60L;
 		seconds = seconds % 60;
 
-		if (this.startTime != 0 && config.extraTimers())
+		if (startTime != 0 && config.extraTimers())
 		{
-			this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Nylocas - Waves' " +
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Nylocas - Waves' " +
 				"completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
 		}
 	}
 
 	private void reset()
 	{
-		this.pillars.clear();
-		this.spiders.clear();
-		this.wave = 0;
-		this.predictor = new NyloPredictor(client, this);
-		this.waveSpawns.clear();
-		this.waveAgros.clear();
-		this.predictor.reset();
-		menuManager.removeSwaps("Nylocas Hagios", "Nylocas Toxobolos", "Nylocas Ischyros");
+		pillars.clear();
+		spiders.clear();
+		wave = 0;
+		predictor = new NyloPredictor(client, this);
+		waveSpawns.clear();
+		waveAgros.clear();
+		predictor.reset();
 	}
 
 	public void onConfigChanged()
@@ -135,6 +142,7 @@ public class NyloHandler extends RoomHandler
 		if (config.nylocasMenuSwap())
 		{
 			eventBus.subscribe(MenuOptionClicked.class, MESNAME, this::onMenuOptionClicked);
+			eventBus.subscribe(MenuEntryAdded.class, MESNAME, this::onMenuEntryAdded);
 		}
 		else
 		{
@@ -188,7 +196,7 @@ public class NyloHandler extends RoomHandler
 				WorldPoint p = pillars.getKey().getWorldLocation();
 				LocalPoint lp = LocalPoint.fromWorld(client, p.getX() + 1, p.getY() + 1);
 
-				Color c = this.healthColorCode(health);
+				Color c = healthColorCode(health);
 				Point canvasPoint = null;
 				if (lp != null)
 				{
@@ -222,7 +230,7 @@ public class NyloHandler extends RoomHandler
 						String str = Integer.toString(ticksLeft);
 						LocalPoint lp = npc.getLocalLocation();
 						Point point = Perspective.getCanvasTextLocation(client, graphics, lp, str, 0);
-						renderTextLocation(graphics, str, 13, Font.BOLD, this.healthColorCode(ticksLeft), point);
+						renderTextLocation(graphics, str, 13, Font.BOLD, healthColorCode(ticksLeft), point);
 					}
 				}
 				break;
@@ -234,13 +242,13 @@ public class NyloHandler extends RoomHandler
 
 		if (config.highlightNyloAgros())
 		{
-			for (NPC npc : new ArrayList<>(this.waveAgros))
+			for (NPC npc : new ArrayList<>(waveAgros))
 			{
 				try
 				{
 					if (npc.getHealthRatio() == 0 || npc.isDead())
 					{
-						this.waveAgros.remove(npc);
+						waveAgros.remove(npc);
 						continue;
 					}
 
@@ -292,26 +300,26 @@ public class NyloHandler extends RoomHandler
 
 		if (id == TheatreConstant.NPC_ID_NYLOCAS_PILLAR)
 		{
-			this.onStart();
-			this.pillars.put(npc, 100);
-			this.recalculateLocal();
+			onStart();
+			pillars.put(npc, 100);
+			recalculateLocal();
 		}
-		else if (npc.getName() != null && this.plugin.getRoom() == TheatreRoom.NYLOCAS)
+		else if (npc.getName() != null && plugin.getRoom() == TheatreRoom.NYLOCAS)
 		{
 			Pattern p = Pattern.compile("Nylocas (Hagios|Toxobolos|Ischyros)");
 			Matcher m = p.matcher(npc.getName());
 			if (m.matches())
 			{
-				this.spiders.put(npc, 52);
+				spiders.put(npc, 52);
 
-				if (this.predictor != null)
+				if (predictor != null)
 				{
-					this.predictor.onNpcSpawned(event);
+					predictor.onNpcSpawned(event);
 				}
 			}
 			else if (npc.getName().equals("Nylocas Vasilias"))
 			{
-				this.onStop();
+				onStop();
 			}
 		}
 	}
@@ -321,34 +329,22 @@ public class NyloHandler extends RoomHandler
 		NPC npc = event.getNpc();
 		int id = npc.getId();
 
-		this.waveSpawns.remove(npc);
+		waveSpawns.remove(npc);
 
-		this.waveAgros.remove(npc);
+		waveAgros.remove(npc);
 
 		if (id == TheatreConstant.NPC_ID_NYLOCAS_PILLAR)
 		{
-			this.pillars.remove(npc);
+			pillars.remove(npc);
 		}
-		else if (npc.getName() != null && this.plugin.getRoom() == TheatreRoom.NYLOCAS)
+		else if (npc.getName() != null && plugin.getRoom() == TheatreRoom.NYLOCAS)
 		{
 			Pattern p = Pattern.compile("Nylocas (Hagios|Toxobolos|Ischyros)");
 			Matcher m = p.matcher(npc.getName());
 			if (m.matches())
 			{
-				this.spiders.remove(npc);
+				spiders.remove(npc);
 			}
-		}
-	}
-
-	private void renderPoly(Graphics2D graphics, Color color, Polygon polygon)
-	{
-		if (polygon != null)
-		{
-			graphics.setColor(color);
-			graphics.setStroke(new BasicStroke(2));
-			graphics.draw(polygon);
-			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
-			graphics.fill(polygon);
 		}
 	}
 
@@ -358,25 +354,42 @@ public class NyloHandler extends RoomHandler
 		{
 			return;
 		}
+		if (skipTickCheck)
+		{
+			skipTickCheck = false;
+		}
 		else
 		{
-			boolean findPillar = false;
-
-			for (NPC npc : client.getNpcs())
+			Player p = client.getLocalPlayer();
+			if (p == null)
 			{
-				if (npc.getId() == 8358)
-				{
-					findPillar = true;
-					break;
-				}
-			}
-
-			if (!findPillar)
-			{
-				this.onStop();
 				return;
 			}
+			PlayerAppearance pa = p.getPlayerAppearance();
+			if (pa == null)
+			{
+				return;
+			}
+			int weaponID = ObjectUtils.defaultIfNull(pa.getEquipmentId(KitType.WEAPON), -1);
+			currentWeaponStyle = WeaponMap.StyleMap.get(weaponID);
 		}
+		boolean findPillar = false;
+
+		for (NPC npc : client.getNpcs())
+		{
+			if (npc.getId() == 8358)
+			{
+				findPillar = true;
+				break;
+			}
+		}
+
+		if (!findPillar)
+		{
+			this.onStop();
+			return;
+		}
+
 
 		for (NPC spider : new ArrayList<>(spiders.keySet()))
 		{
@@ -404,28 +417,54 @@ public class NyloHandler extends RoomHandler
 
 	private void onMenuOptionClicked(MenuOptionClicked event)
 	{
-		final String option = event.getOption().toLowerCase();
-
-		if (!option.equals("equip") && !option.equals("wield") && !option.equals("hold"))
+		int opcode = event.getOpcode();
+		if (opcode == MenuOpcode.ITEM_SECOND_OPTION.getId())
 		{
-			return;
+			WeaponStyle newStyle = WeaponMap.StyleMap.get(event.getIdentifier());
+			if (newStyle != null)
+			{
+				skipTickCheck = true;
+				currentWeaponStyle = newStyle;
+			}
 		}
+	}
 
-		final int id = event.getIdentifier();
-		final Set<AbstractComparableEntry> entries = Weapons.getEntries(id);
-		menuManager.removeSwaps("Nylocas Hagios", "Nylocas Toxobolos", "Nylocas Ischyros");
-
-		if (entries.isEmpty())
+	private void onMenuEntryAdded(MenuEntryAdded event)
+	{
+		if (config.nylocasMenuSwap())
 		{
-			return;
+			if (event.getOpcode() == MenuOpcode.NPC_SECOND_OPTION.getId() && event.getOption().equals("Attack"))
+			{
+				String target = event.getTarget();
+				switch (currentWeaponStyle)
+				{
+					case MAGIC:
+						if (target.equals(RANGE_NYLO) || target.equals(MELEE_NYLO))
+						{
+							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+						}
+						break;
+					case RANGE:
+						if (target.contains(MAGE_NYLO) || target.contains(MELEE_NYLO))
+						{
+							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+						}
+						break;
+					case MELEE:
+						if (target.contains(MAGE_NYLO) || target.contains(RANGE_NYLO))
+						{
+							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+						}
+						break;
+					default:
+				}
+			}
 		}
-
-		entries.forEach(menuManager::addHiddenEntry);
 	}
 
 	private void recalculateLocal()
 	{
-		if (this.pillars != null && this.pillars.size() == 4)
+		if (pillars != null && pillars.size() == 4)
 		{
 			int minX = Integer.MAX_VALUE;
 			int minY = Integer.MAX_VALUE;
@@ -447,20 +486,12 @@ public class NyloHandler extends RoomHandler
 			int centerX = minX + 5;
 			int centerY = minY + 5;
 
-			if (this.predictor != null)
+			if (predictor != null)
 			{
-				this.predictor.southBound = centerY - 12;
-				this.predictor.eastBound = centerX + 13;
-				this.predictor.westBound = centerX - 12;
+				predictor.southBound = centerY - 12;
+				predictor.eastBound = centerX + 13;
+				predictor.westBound = centerX - 12;
 			}
 		}
-	}
-
-	private enum AttackStyle
-	{
-		MELEE,
-		MAGE,
-		RANGE,
-		RANGE2H
 	}
 }

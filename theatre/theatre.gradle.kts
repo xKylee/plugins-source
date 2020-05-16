@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.9"
+version = "0.0.1-"
 
 project.extra["PluginName"] = "Theatre Of Blood"
 project.extra["PluginDescription"] = "All-in-one plugin for Theatre of Blood"
@@ -41,6 +41,7 @@ dependencies {
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
     compileOnly(Libraries.rxjava)
+    compileOnly(Libraries.apacheCommonsText)
 }
 
 tasks {

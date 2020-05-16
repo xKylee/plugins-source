@@ -58,13 +58,13 @@ public class NyloPredictor
 	{
 		this.client = client;
 		this.handler = handler;
-		this.reset();
+		reset();
 	}
 
 	public void reset()
 	{
-		this.currentSpawns.clear();
-		this.currentIndex = -1;
+		currentSpawns.clear();
+		currentIndex = -1;
 	}
 
 	public void onNpcSpawned(NpcSpawned event)
@@ -114,7 +114,7 @@ public class NyloPredictor
 		}
 
 		currentSpawns.put(new Nylocas(type, spawn), npc);
-		this.checkSpawns();
+		checkSpawns();
 	}
 
 	private void checkSpawns()
@@ -153,18 +153,18 @@ public class NyloPredictor
 				{
 					Nylocas nylo = nylocas.getValue();
 
-					if (!this.handler.waveSpawns.contains(nylocas.getKey()))
+					if (!handler.waveSpawns.contains(nylocas.getKey()))
 					{
-						this.handler.waveSpawns.add(nylocas.getKey());
+						handler.waveSpawns.add(nylocas.getKey());
 					}
 
-					if (this.isAgressive(nylo.getType(), nylo.getSpawn(), currentIndex) && !this.handler.waveAgros.contains(nylocas.getKey()))
+					if (isAgressive(nylo.getType(), nylo.getSpawn(), currentIndex) && !handler.waveAgros.contains(nylocas.getKey()))
 					{
-						this.handler.waveAgros.add(nylocas.getKey());
+						handler.waveAgros.add(nylocas.getKey());
 					}
 				}
 
-				int elapsedTicks = client.getTickCount() - this.handler.startTick;
+				int elapsedTicks = client.getTickCount() - handler.startTick;
 
 				int mage_count = 0;
 				int range_count = 0;
@@ -358,75 +358,6 @@ public class NyloPredictor
 
 	}
 
-	public int getCurrentWave()
-	{
-		return this.currentIndex + 1;
-	}
-
-	public int getTotalWaves()
-	{
-		return NyloPredictor.NYLOCAS_WAVES.length;
-	}
-
-	public Wave getNextWave()
-	{
-		if ((currentIndex + 1) < NYLOCAS_WAVES.length)
-		{
-			return NYLOCAS_WAVES[currentIndex + 1];
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public String getSpawnStr(Spawn spawn, Wave wave)
-	{
-		if (wave == null || spawn == null)
-		{
-			return null;
-		}
-		else
-		{
-			StringBuilder types = new StringBuilder();
-
-			for (Nylocas nylo : wave.getSpawns())
-			{
-				if (nylo.getSpawn() == spawn)
-				{
-					if (types.length() > 0)
-					{
-						types.append(", ");
-					}
-
-					switch (nylo.getType())
-					{
-						case MAGE_162:
-							types.append("Small Mage");
-							break;
-						case MAGE_260:
-							types.append("Big Mage");
-							break;
-						case MELEE_162:
-							types.append("Small Melee");
-							break;
-						case MELEE_260:
-							types.append("Big Melee");
-							break;
-						case RANGE_162:
-							types.append("Small Range");
-							break;
-						case RANGE_260:
-							types.append("Big Range");
-							break;
-					}
-				}
-			}
-
-			return types.length() > 0 ? types.toString() : null;
-		}
-	}
-
 	public enum NylocasType
 	{
 		MELEE_162,
@@ -458,12 +389,12 @@ public class NyloPredictor
 
 		NylocasType getType()
 		{
-			return this.type;
+			return type;
 		}
 
 		Spawn getSpawn()
 		{
-			return this.spawn;
+			return spawn;
 		}
 
 		@Override
@@ -472,7 +403,7 @@ public class NyloPredictor
 			if ((object instanceof Nylocas))
 			{
 				Nylocas nylo = (Nylocas) object;
-				return nylo.getType() == this.type && nylo.getSpawn() == this.spawn;
+				return nylo.getType() == type && nylo.getSpawn() == spawn;
 			}
 
 			return false;
@@ -486,12 +417,12 @@ public class NyloPredictor
 
 		Wave(Nylocas... nylocas)
 		{
-			this.spawns = nylocas;
+			spawns = nylocas;
 		}
 
 		Nylocas[] getSpawns()
 		{
-			return this.spawns;
+			return spawns;
 		}
 	}
 }

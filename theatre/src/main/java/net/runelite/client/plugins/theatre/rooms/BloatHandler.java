@@ -41,20 +41,20 @@ public class BloatHandler extends RoomHandler
 	@Override
 	public void onStart()
 	{
-		if (this.plugin.getRoom() == TheatreRoom.BLOAT)
+		if (plugin.getRoom() == TheatreRoom.BLOAT)
 		{
 			return;
 		}
 
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.BLOAT);
+		reset();
+		plugin.setRoom(TheatreRoom.BLOAT);
 	}
 
 	@Override
 	public void onStop()
 	{
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.UNKNOWN);
+		reset();
+		plugin.setRoom(TheatreRoom.UNKNOWN);
 	}
 
 	private void reset()
@@ -145,7 +145,7 @@ public class BloatHandler extends RoomHandler
 
 		if (id == NpcID.PESTILENT_BLOAT)
 		{
-			this.onStart();
+			onStart();
 			bloatTimer = 0;
 			bloat = npc;
 		}
@@ -158,7 +158,7 @@ public class BloatHandler extends RoomHandler
 
 		if (id == NpcID.PESTILENT_BLOAT)
 		{
-			this.onStop();
+			onStop();
 			bloatTimer = 0;
 			bloat = null;
 		}
