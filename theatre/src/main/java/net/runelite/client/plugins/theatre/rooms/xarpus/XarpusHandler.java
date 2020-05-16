@@ -203,7 +203,7 @@ public class XarpusHandler extends RoomHandler
 		if (npc.getName() != null && npc.getName().equals("Xarpus"))
 		{
 			onStart();
-			npc = npc;
+			this.npc = npc;
 		}
 	}
 

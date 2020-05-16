@@ -37,12 +37,9 @@ public class RoomTimer extends Overlay
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
-
 		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
 		setPriority(OverlayPriority.HIGH);
 		determineLayer();
-
-
 		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "TOB Timer Overlay"));
 	}
 
@@ -81,7 +78,6 @@ public class RoomTimer extends Overlay
 			default:
 				break;
 		}
-
 		panelComponent.getChildren().add(TitleComponent.builder().text("Room Timer").color(Color.WHITE).build());
 
 		return panelComponent.render(graphics);

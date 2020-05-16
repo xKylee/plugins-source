@@ -1,10 +1,8 @@
 package net.runelite.client.plugins.theatre.rooms.nylocas;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +32,6 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.kit.KitType;
 import net.runelite.client.eventbus.EventBus;
-import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.theatre.RoomHandler;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatreConstant;
@@ -53,7 +50,6 @@ public class NyloHandler extends RoomHandler
 	private static final String MELEE_NYLO = "Nylocas Ischyros";
 	final List<NPC> waveSpawns = new ArrayList<>();
 	final List<NPC> waveAgros = new ArrayList<>();
-	private final MenuManager menuManager;
 	private final EventBus eventBus;
 	public long startTime = 0L;
 	int startTick = 0;
@@ -69,10 +65,9 @@ public class NyloHandler extends RoomHandler
 	private WeaponStyle currentWeaponStyle;
 	private boolean skipTickCheck = false;
 
-	public NyloHandler(final Client client, final TheatrePlugin plugin, final TheatreConfig config, final MenuManager menuManager, final EventBus eventBus)
+	public NyloHandler(final Client client, final TheatrePlugin plugin, final TheatreConfig config, final EventBus eventBus)
 	{
 		super(client, plugin, config);
-		this.menuManager = menuManager;
 		this.eventBus = eventBus;
 	}
 
@@ -350,18 +345,6 @@ public class NyloHandler extends RoomHandler
 			{
 				spiders.remove(npc);
 			}
-		}
-	}
-
-	private void renderPoly(Graphics2D graphics, Color color, Polygon polygon)
-	{
-		if (polygon != null)
-		{
-			graphics.setColor(color);
-			graphics.setStroke(new BasicStroke(1));
-			graphics.draw(polygon);
-			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
-			graphics.fill(polygon);
 		}
 	}
 
