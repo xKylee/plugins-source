@@ -33,6 +33,18 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("multiindicators")
 public interface MultiIndicatorsConfig extends Config
 {
+
+	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	@ConfigItem(
 		keyName = "multicombatZoneVisibility",
 		name = "Multicombat zones",

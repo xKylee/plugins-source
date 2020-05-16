@@ -54,11 +54,11 @@ class AlchemicalHydraSceneOverlay extends Overlay
 	@Inject
 	public AlchemicalHydraSceneOverlay(final Client client, final AlchemicalHydraPlugin plugin, final AlchemicalHydraConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.UNDER_WIDGETS);
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 	}
 
 	@Override
@@ -149,5 +149,17 @@ class AlchemicalHydraSceneOverlay extends Overlay
 		graphics.setColor(color);
 		graphics.setStroke(new BasicStroke(3));
 		graphics.draw(poly);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.UNDER_WIDGETS);
+		}
 	}
 }

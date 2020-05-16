@@ -35,6 +35,17 @@ import net.runelite.client.config.Title;
 @ConfigGroup("pileindicators")
 public interface PileIndicatorsConfig extends Config
 {
+	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	@ConfigTitleSection(
 		keyName = "playerPilesTitle",
 		name = "Player Piles",

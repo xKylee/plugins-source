@@ -47,21 +47,26 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 @Singleton
 public class HydraPoisonOverlay extends Overlay
 {
-	private static final Color poisonBorder = new Color(255, 0, 0, 100);;
-	private static final Color poisonFill = new Color(255, 0, 0, 50);;
+	private static final Color poisonBorder = new Color(255, 0, 0, 100);
+	;
+	private static final Color poisonFill = new Color(255, 0, 0, 50);
+	;
 
 	private final Client client;
+
+	private final HydraConfig config;
 
 	@Setter(AccessLevel.PACKAGE)
 	private Map<LocalPoint, Projectile> poisonProjectiles;
 
 	@Inject
-	public HydraPoisonOverlay(final Client client)
+	public HydraPoisonOverlay(final Client client, final HydraConfig config)
 	{
 		this.client = client;
+		this.config = config;
 		this.poisonProjectiles = new HashMap<>();
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.UNDER_WIDGETS);
+		determineLayer();
 	}
 
 	@Override
@@ -107,5 +112,17 @@ public class HydraPoisonOverlay extends Overlay
 		graphics.draw(poisonTiles);
 		graphics.setColor(poisonFill);
 		graphics.fill(poisonTiles);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.UNDER_WIDGETS);
+		}
 	}
 }

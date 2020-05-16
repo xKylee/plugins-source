@@ -55,10 +55,10 @@ class LizardmanShamanOverlay extends Overlay
 	@Inject
 	private LizardmanShamanOverlay(final Client client, final LizardmanShamanConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
 		this.client = client;
 		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 	}
 
 	@Override
@@ -191,5 +191,17 @@ class LizardmanShamanOverlay extends Overlay
 		final int NPC_ID_SPAWN = 6768;
 
 		return npc.getId() == NPC_ID_SPAWN;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

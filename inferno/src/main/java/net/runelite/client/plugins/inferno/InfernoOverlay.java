@@ -39,13 +39,12 @@ public class InfernoOverlay extends Overlay
 	@Inject
 	private InfernoOverlay(final Client client, final InfernoPlugin plugin, final InfernoConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_WIDGETS);
-		setPriority(OverlayPriority.HIGHEST);
-
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
+		setPriority(OverlayPriority.HIGHEST);
 	}
 
 	@Override
@@ -483,5 +482,17 @@ public class InfernoOverlay extends Overlay
 		double distanceSquared = Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2);
 
 		return distanceSquared <= toleranceSquared;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_WIDGETS);
+		}
 	}
 }

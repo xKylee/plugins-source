@@ -37,6 +37,7 @@ import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -131,4 +132,22 @@ public class TempleTrekkingPlugin extends Plugin
 		return Math.max(percentage, 0);
 	}
 
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("templetrekking"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			bogOverlay.determineLayer();
+			overlayManager.remove(bogOverlay);
+			overlayManager.remove(overlay);
+			overlayManager.add(bogOverlay);
+			overlayManager.add(overlay);
+		}
+	}
 }

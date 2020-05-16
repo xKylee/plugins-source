@@ -65,7 +65,7 @@ class NightmareOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -199,5 +199,17 @@ class NightmareOverlay extends Overlay
 		graphics.draw(poisonTiles);
 		graphics.setColor(config.poisonCol());
 		graphics.fill(poisonTiles);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

@@ -77,6 +77,7 @@ public class HydraPlugin extends Plugin
 	private static final String CONFIG_ITEM_PRAYER_OVERLAY = "prayerOverlay";
 	private static final String CONFIG_ITEM_POISON_PROJECTILE_OVERLAY = "poisonProjectileOverlay";
 	private static final String CONFIG_ITEM_BOLD_ATTACK_COUNTER_OVERLAY = "boldAttackCounterOverlay";
+	private static final String CONFIG_ITEM_MIRROR_MODE_COMPATABILITY = "mirrorMode";
 
 	private static final String NPC_NAME_HYDRA = "Hydra";
 
@@ -207,6 +208,29 @@ public class HydraPlugin extends Plugin
 			case CONFIG_ITEM_BOLD_ATTACK_COUNTER_OVERLAY:
 				hydraAttackCounterOverlay.setBoldAttackCounterOverlay(hydraConfig.isBoldAttackCounterOverlay());
 				break;
+			case CONFIG_ITEM_MIRROR_MODE_COMPATABILITY:
+				if (hydraConfig.isAttackCounterOverlay())
+				{
+					hydraAttackCounterOverlay.determineLayer();
+					overlayManager.remove(hydraAttackCounterOverlay);
+					overlayManager.add(hydraAttackCounterOverlay);
+
+				}
+				if (hydraConfig.isPrayerOverlay())
+				{
+					hydraPrayerOverlay.determineLayer();
+					hydraPrayerAttackCounterOverlay.determineLayer();
+					overlayManager.remove(hydraPrayerOverlay);
+					overlayManager.remove(hydraPrayerAttackCounterOverlay);
+					overlayManager.add(hydraPrayerOverlay);
+					overlayManager.add(hydraPrayerAttackCounterOverlay);
+				}
+				if (hydraConfig.isPoisonOverlay())
+				{
+					hydraPoisonOverlay.determineLayer();
+					overlayManager.remove(hydraPoisonOverlay);
+					overlayManager.add(hydraPoisonOverlay);
+				}
 			default:
 				break;
 		}

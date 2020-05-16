@@ -31,6 +31,7 @@ import javax.inject.Singleton;
 import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.NONE;
 import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.ONBOSS;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.PanelComponent;
@@ -53,6 +54,7 @@ public class GauntletCounter extends Overlay
 		this.config = config;
 
 		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+		determineLayer();
 		setPriority(OverlayPriority.HIGH);
 	}
 
@@ -85,5 +87,13 @@ public class GauntletCounter extends Overlay
 		tableComponent.addRow("Player Hits Left: ", pHits);
 		panelComponent.getChildren().add(tableComponent);
 		return panelComponent.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

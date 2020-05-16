@@ -354,6 +354,16 @@ public class MultiIndicatorsPlugin extends Plugin
 		{
 			findLinesInScene();
 		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			minimapOverlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.remove(minimapOverlay);
+			overlayManager.add(overlay);
+			overlayManager.add(minimapOverlay);
+		}
 	}
 
 	@Subscribe

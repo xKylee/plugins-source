@@ -62,11 +62,11 @@ public class AoeWarningOverlay extends Overlay
 	@Inject
 	public AoeWarningOverlay(final Client client, final AoeWarningPlugin plugin, final AoeWarningConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.UNDER_WIDGETS);
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 	}
 
 	@Override
@@ -182,5 +182,17 @@ public class AoeWarningOverlay extends Overlay
 		int x = (int) (rect.getX() + rect.getWidth() / 2);
 		int y = (int) (rect.getY() + rect.getHeight() / 2);
 		return new Point(x, y);
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.UNDER_WIDGETS);
+		}
 	}
 }

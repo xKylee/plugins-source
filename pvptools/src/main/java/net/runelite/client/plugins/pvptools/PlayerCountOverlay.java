@@ -34,27 +34,26 @@ public class PlayerCountOverlay extends Overlay
 {
 	private static final int[] CLAN_WARS_REGIONS = {9520, 13135, 13134, 13133, 13131, 13130, 13387, 13386};
 
-	private final PvpToolsPlugin pvpToolsPlugin;
-	private final PvpToolsConfig pvpToolsConfig;
+	private final PvpToolsPlugin plugin;
+	private final PvpToolsConfig config;
 	private final Client client;
 
-
 	@Inject
-	public PlayerCountOverlay(final PvpToolsPlugin pvpToolsPlugin, final PvpToolsConfig pvpToolsConfig, final Client client)
+	public PlayerCountOverlay(final PvpToolsPlugin plugin, final PvpToolsConfig config, final Client client)
 	{
-		this.pvpToolsPlugin = pvpToolsPlugin;
-		this.pvpToolsConfig = pvpToolsConfig;
+		this.plugin = plugin;
+		this.config = config;
 		this.client = client;
-		setLayer(OverlayLayer.ABOVE_WIDGETS);
+		determineLayer();
 		setPriority(OverlayPriority.HIGHEST);
 		setPosition(OverlayPosition.TOP_LEFT);
-		this.setPreferredPosition(OverlayPosition.TOP_LEFT);
+		setPreferredPosition(OverlayPosition.TOP_LEFT);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (pvpToolsConfig.countPlayers() &&
+		if (config.countPlayers() &&
 			(client.getVar(Varbits.IN_WILDERNESS) == 1 || WorldType.isPvpWorld(client.getWorldType())
 				|| ArrayUtils.contains(CLAN_WARS_REGIONS, client.getMapRegions()[0]) ||
 				WorldType.isDeadmanWorld(client.getWorldType())))
@@ -63,15 +62,27 @@ public class PlayerCountOverlay extends Overlay
 			TableComponent tableComponent = new TableComponent();
 			TableElement[] firstRowElements = {
 				TableElement.builder().content("Friendly").color(Color.GREEN).build(),
-				TableElement.builder().content(String.valueOf(pvpToolsPlugin.getFriendlyPlayerCount())).build()};
+				TableElement.builder().content(String.valueOf(plugin.getFriendlyPlayerCount())).build()};
 			TableRow firstRow = TableRow.builder().elements(Arrays.asList(firstRowElements)).build();
 			TableElement[] secondRowElements = {
 				TableElement.builder().content("Enemy").color(Color.RED).build(),
-				TableElement.builder().content(String.valueOf(pvpToolsPlugin.getEnemyPlayerCount())).build()};
+				TableElement.builder().content(String.valueOf(plugin.getEnemyPlayerCount())).build()};
 			TableRow secondRow = TableRow.builder().elements(Arrays.asList(secondRowElements)).build();
 			tableComponent.addRows(firstRow, secondRow);
 			return tableComponent.render(graphics);
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_WIDGETS);
+		}
 	}
 }

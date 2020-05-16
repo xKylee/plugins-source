@@ -36,6 +36,7 @@ import net.runelite.api.NpcID;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ComponentConstants;
@@ -66,6 +67,7 @@ public class CoxInfoBox extends Overlay
 		this.client = client;
 		this.spriteManager = spriteManager;
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
+		determineLayer();
 		setPriority(OverlayPriority.HIGH);
 	}
 
@@ -157,6 +159,14 @@ public class CoxInfoBox extends Overlay
 				return spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0);
 			default:
 				return spriteManager.getSprite(SpriteID.BARBARIAN_ASSAULT_EAR_ICON, 0);
+		}
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }

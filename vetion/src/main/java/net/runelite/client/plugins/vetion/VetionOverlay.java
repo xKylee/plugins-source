@@ -46,14 +46,16 @@ public class VetionOverlay extends Overlay
 	private static final Duration MAX_TIME = Duration.ofSeconds(9);
 	private final VetionPlugin plugin;
 	private final Client client;
+	private final VetionConfig config;
 
 	@Inject
-	private VetionOverlay(Client client, VetionPlugin plugin)
+	private VetionOverlay(Client client, VetionPlugin plugin, VetionConfig config)
 	{
 		this.plugin = plugin;
 		this.client = client;
+		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 	}
 
 	@Override
@@ -89,7 +91,18 @@ public class VetionOverlay extends Overlay
 				}
 			}
 		});
-
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

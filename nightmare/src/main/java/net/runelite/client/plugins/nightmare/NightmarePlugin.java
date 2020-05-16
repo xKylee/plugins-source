@@ -27,6 +27,7 @@ import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -196,7 +197,7 @@ public class NightmarePlugin extends Plugin
 
 		if (projectile.getId() == 1770)
 		{
-			Player targetPlayer = (Player)projectile.getInteracting();
+			Player targetPlayer = (Player) projectile.getInteracting();
 			parasiteTargets.putIfAbsent(targetPlayer.getPlayerId(), targetPlayer);
 		}
 	}
@@ -340,5 +341,24 @@ public class NightmarePlugin extends Plugin
 	private boolean isNightmareNpc(int id)
 	{
 		return id >= 9425 && id <= 9433;
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("nightmareOfAshihama"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			prayerOverlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.remove(prayerOverlay);
+			overlayManager.add(overlay);
+			overlayManager.add(prayerOverlay);
+		}
 	}
 }

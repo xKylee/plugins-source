@@ -49,8 +49,7 @@ public class PileIndicatorsOverlay extends Overlay
 		super(plugin);
 		this.plugin = plugin;
 		this.config = config;
-
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
 	}
@@ -89,6 +88,18 @@ public class PileIndicatorsOverlay extends Overlay
 		}
 
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 
 }

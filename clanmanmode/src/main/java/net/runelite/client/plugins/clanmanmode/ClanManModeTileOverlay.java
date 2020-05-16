@@ -14,15 +14,15 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 @Singleton
 public class ClanManModeTileOverlay extends Overlay
 {
-	private final net.runelite.client.plugins.clanmanmode.ClanManModeService ClanManModeService;
+	private final ClanManModeService ClanManModeService;
 	private final ClanManModeConfig config;
 
 	@Inject
-	private ClanManModeTileOverlay(final ClanManModeConfig config, final net.runelite.client.plugins.clanmanmode.ClanManModeService ClanManModeService)
+	private ClanManModeTileOverlay(final ClanManModeConfig config, final ClanManModeService ClanManModeService)
 	{
 		this.config = config;
 		this.ClanManModeService = ClanManModeService;
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.MED);
 	}
@@ -46,5 +46,17 @@ public class ClanManModeTileOverlay extends Overlay
 		});
 
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

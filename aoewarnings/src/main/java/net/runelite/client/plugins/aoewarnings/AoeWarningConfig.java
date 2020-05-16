@@ -71,6 +71,17 @@ public interface AoeWarningConfig extends Config
 	}
 
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "aoeNotifyAll",
 		name = "Notify for all AoE warnings",
 		description = "Configures whether or not AoE Projectile Warnings should trigger a notification",

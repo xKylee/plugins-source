@@ -55,17 +55,19 @@ public class DemonicGorillaOverlay extends Overlay
 
 	private final Client client;
 	private final DemonicGorillaPlugin plugin;
+	private final DemonicGorillaConfig config;
 
 	@Inject
 	private SkillIconManager iconManager;
 
 	@Inject
-	public DemonicGorillaOverlay(final Client client, final DemonicGorillaPlugin plugin)
+	public DemonicGorillaOverlay(final Client client, final DemonicGorillaPlugin plugin, final DemonicGorillaConfig config)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
 		this.client = client;
 		this.plugin = plugin;
+		this.config = config;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
 	}
 
 	private BufferedImage getIcon(DemonicGorilla.AttackStyle attackStyle)
@@ -136,7 +138,18 @@ public class DemonicGorillaOverlay extends Overlay
 				}
 			}
 		}
-
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

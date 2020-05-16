@@ -20,6 +20,17 @@ public interface WildernessLocationsConfig extends Config
 {
 
 	@ConfigItem(
+		name = "Mirror Mode Compatibility?",
+		keyName = "mirrorMode",
+		description = "Should we show the overlay on Mirror Mode?",
+		position = 0
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "drawOverlay",
 		name = "Draw Overlay",
 		description = "Configure drawing wilderness locations overlay",

@@ -29,6 +29,7 @@ import java.awt.Graphics2D;
 import java.util.Map;
 import javax.inject.Inject;
 import net.runelite.api.Player;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
@@ -45,6 +46,7 @@ class TobDamageOverlay extends OverlayPanel
 		super(plugin);
 		this.plugin = plugin;
 		this.config = config;
+		determineLayer();
 	}
 
 	@Override
@@ -124,9 +126,14 @@ class TobDamageOverlay extends OverlayPanel
 						.build());
 			}
 		}
-
-
 		return super.render(graphics);
 	}
 
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+	}
 }

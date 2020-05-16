@@ -48,18 +48,20 @@ class GrotesqueGuardiansOverlay extends Overlay
 	private static final int GROTESQUE_GUARDIANS_REGION_ID = 6727;
 	private final Client client;
 	private final GrotesqueGuardiansPlugin plugin;
+	private final GrotesqueGuardiansConfig config;
 	private static final int GROTESQUE_GUARDIANS_LIGHTNING_START = 1416;
 	private static final int GROTESQUE_GUARDIANS_LIGHTNING_END = 1431;
 	private static final int GROTESQUE_GUARDIANS_FALLING_ROCKS = 1436;
 	private static final int GROTESQUE_GUARDIANS_STONE_ORB = 160;
 
 	@Inject
-	private GrotesqueGuardiansOverlay(final Client client, final GrotesqueGuardiansPlugin plugin)
+	private GrotesqueGuardiansOverlay(final Client client, final GrotesqueGuardiansPlugin plugin, final GrotesqueGuardiansConfig config)
 	{
 		this.client = client;
 		this.plugin = plugin;
+		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -117,5 +119,17 @@ class GrotesqueGuardiansOverlay extends Overlay
 			}
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

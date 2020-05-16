@@ -79,7 +79,7 @@ public class BombOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPriority(OverlayPriority.MED);
 	}
 
@@ -155,6 +155,18 @@ public class BombOverlay extends Overlay
 				OverlayUtil.renderTextLocation(graphics, canvasCenterPoint, bombTimerString, color_code);
 			}
 		});
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 
 }

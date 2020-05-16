@@ -157,6 +157,13 @@ public class TheatrePlugin extends Plugin
 		{
 			nyloHandler.onConfigChanged();
 		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			overlay.determineLayer();
+			overlayManager.remove(overlay);
+			overlayManager.add(overlay);
+		}
 	}
 
 	@Subscribe
