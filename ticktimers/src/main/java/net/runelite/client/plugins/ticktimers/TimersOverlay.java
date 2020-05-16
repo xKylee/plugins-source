@@ -98,7 +98,7 @@ public class TimersOverlay extends Overlay
 				continue;
 			}
 
-			if (config.ignoreNonAttacking() && npc.getNpcInteracting() != client.getLocalPlayer())
+			if (config.ignoreNonAttacking() && npc.getNpcInteracting() != client.getLocalPlayer() && npc.getMonsterType() != GENERAL_GRAARDOR)
 			{
 				continue;
 			}
