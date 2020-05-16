@@ -158,6 +158,11 @@ public class TheatrePlugin extends Plugin
 			nyloHandler.onConfigChanged();
 		}
 
+		if (xarpusHandler != null)
+		{
+			xarpusHandler.onConfigChanged();
+		}
+
 		if (event.getKey().equals("mirrorMode"))
 		{
 			overlay.determineLayer();

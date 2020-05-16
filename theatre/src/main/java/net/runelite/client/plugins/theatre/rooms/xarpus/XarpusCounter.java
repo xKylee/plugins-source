@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY_CONFIG;
+import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -18,13 +20,15 @@ class XarpusCounter extends Overlay
 {
 	private final PanelComponent panelComponent = new PanelComponent();
 	private final XarpusHandler xarpusHandler;
+	private final TheatreConfig config;
 
-	XarpusCounter(final TheatrePlugin plugin, final XarpusHandler xarpushandler)
+	XarpusCounter(final TheatrePlugin plugin, final XarpusHandler xarpushandler, final TheatreConfig config)
 	{
 		super(plugin);
 		this.xarpusHandler = xarpushandler;
-
+		this.config = config;
 		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+		determineLayer();
 		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "Theatre xarpus overlay"));
 
 	}
@@ -59,5 +63,13 @@ class XarpusCounter extends Overlay
 		}
 
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
 	}
 }

@@ -58,13 +58,13 @@ public class NyloPredictor
 	{
 		this.client = client;
 		this.handler = handler;
-		this.reset();
+		reset();
 	}
 
 	public void reset()
 	{
-		this.currentSpawns.clear();
-		this.currentIndex = -1;
+		currentSpawns.clear();
+		currentIndex = -1;
 	}
 
 	public void onNpcSpawned(NpcSpawned event)
@@ -114,7 +114,7 @@ public class NyloPredictor
 		}
 
 		currentSpawns.put(new Nylocas(type, spawn), npc);
-		this.checkSpawns();
+		checkSpawns();
 	}
 
 	private void checkSpawns()
@@ -153,18 +153,18 @@ public class NyloPredictor
 				{
 					Nylocas nylo = nylocas.getValue();
 
-					if (!this.handler.waveSpawns.contains(nylocas.getKey()))
+					if (!handler.waveSpawns.contains(nylocas.getKey()))
 					{
-						this.handler.waveSpawns.add(nylocas.getKey());
+						handler.waveSpawns.add(nylocas.getKey());
 					}
 
-					if (this.isAgressive(nylo.getType(), nylo.getSpawn(), currentIndex) && !this.handler.waveAgros.contains(nylocas.getKey()))
+					if (isAgressive(nylo.getType(), nylo.getSpawn(), currentIndex) && !handler.waveAgros.contains(nylocas.getKey()))
 					{
-						this.handler.waveAgros.add(nylocas.getKey());
+						handler.waveAgros.add(nylocas.getKey());
 					}
 				}
 
-				int elapsedTicks = client.getTickCount() - this.handler.startTick;
+				int elapsedTicks = client.getTickCount() - handler.startTick;
 
 				int mage_count = 0;
 				int range_count = 0;
@@ -360,7 +360,7 @@ public class NyloPredictor
 
 	public int getCurrentWave()
 	{
-		return this.currentIndex + 1;
+		return currentIndex + 1;
 	}
 
 	public int getTotalWaves()
@@ -458,12 +458,12 @@ public class NyloPredictor
 
 		NylocasType getType()
 		{
-			return this.type;
+			return type;
 		}
 
 		Spawn getSpawn()
 		{
-			return this.spawn;
+			return spawn;
 		}
 
 		@Override
@@ -472,7 +472,7 @@ public class NyloPredictor
 			if ((object instanceof Nylocas))
 			{
 				Nylocas nylo = (Nylocas) object;
-				return nylo.getType() == this.type && nylo.getSpawn() == this.spawn;
+				return nylo.getType() == type && nylo.getSpawn() == spawn;
 			}
 
 			return false;
@@ -486,12 +486,12 @@ public class NyloPredictor
 
 		Wave(Nylocas... nylocas)
 		{
-			this.spawns = nylocas;
+			spawns = nylocas;
 		}
 
 		Nylocas[] getSpawns()
 		{
-			return this.spawns;
+			return spawns;
 		}
 	}
 }

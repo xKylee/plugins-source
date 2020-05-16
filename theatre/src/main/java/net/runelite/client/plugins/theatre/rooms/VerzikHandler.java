@@ -60,36 +60,36 @@ public class VerzikHandler extends RoomHandler
 	@Override
 	public void onStart()
 	{
-		if (this.plugin.getRoom() == TheatreRoom.VERSIK)
+		if (plugin.getRoom() == TheatreRoom.VERSIK)
 		{
 			return;
 		}
 
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.VERSIK);
+		reset();
+		plugin.setRoom(TheatreRoom.VERSIK);
 	}
 
 	@Override
 	public void onStop()
 	{
-		this.reset();
-		this.plugin.setRoom(TheatreRoom.UNKNOWN);
+		reset();
+		plugin.setRoom(TheatreRoom.UNKNOWN);
 	}
 
 	private void reset()
 	{
-		this.redCrabsTimer = 13;
-		this.Verzik_RangeProjectiles.clear();
-		this.versikCounter = 19;
-		this.attacksLeft = 0;
-		this.npc = null;
-		this.yellows = 0;
-		this.lastId = -1;
-		this.tornados = false;
-		this.startTime = 0;
-		this.last0PlayerLocation = null;
-		this.last1PlayerLocation = null;
-		this.memorizedTornados.clear();
+		redCrabsTimer = 13;
+		Verzik_RangeProjectiles.clear();
+		versikCounter = 19;
+		attacksLeft = 0;
+		npc = null;
+		yellows = 0;
+		lastId = -1;
+		tornados = false;
+		startTime = 0;
+		last0PlayerLocation = null;
+		last1PlayerLocation = null;
+		memorizedTornados.clear();
 	}
 
 	public void render(Graphics2D graphics)
@@ -112,7 +112,7 @@ public class VerzikHandler extends RoomHandler
 
 			if (id == TheatreConstant.VERZIK_ID_P1)
 			{
-				if (config.p1attacks() && this.versikCounter >= 0)
+				if (config.p1attacks() && versikCounter >= 0)
 				{
 					String str = Integer.toString(versikCounter);
 
@@ -124,7 +124,7 @@ public class VerzikHandler extends RoomHandler
 			}
 			else if (id == TheatreConstant.VERZIK_ID_P2)
 			{
-				if (config.p2attacks() && this.versikCounter >= 0)
+				if (config.p2attacks() && versikCounter >= 0)
 				{
 					String str = Integer.toString(versikCounter);
 
@@ -154,9 +154,9 @@ public class VerzikHandler extends RoomHandler
 		}
 
 
-		if (config.showVerzikYellows() && this.yellows > 0)
+		if (config.showVerzikYellows() && yellows > 0)
 		{
-			String text = Integer.toString(this.yellows);
+			String text = Integer.toString(yellows);
 
 			for (GraphicsObject object : client.getGraphicsObjects())
 			{
@@ -204,12 +204,12 @@ public class VerzikHandler extends RoomHandler
 			}
 		}
 
-		if (config.highlightPurpleTornado() && this.tornados && this.last1PlayerLocation != null)
+		if (config.highlightPurpleTornado() && tornados && last1PlayerLocation != null)
 		{
 			Player local = client.getLocalPlayer();
 			if (local != null)
 			{
-				for (MemorizedTornado mt : this.memorizedTornados.values())
+				for (MemorizedTornado mt : memorizedTornados.values())
 				{
 					NPC npc = mt.getNpc();
 					if (npc.getId() != TheatreConstant.NPC_ID_TORNADO)
@@ -246,31 +246,31 @@ public class VerzikHandler extends RoomHandler
 			this.npc = npc;
 			if (id == TheatreConstant.VERZIK_ID_P3_BAT)
 			{
-				this.onStop();
+				onStop();
 			}
 			else
 			{
-				this.onStart();
+				onStart();
 
 				if (id == TheatreConstant.VERZIK_ID_P1)
 				{
-					this.versikCounter = 19;
+					versikCounter = 19;
 				}
 				else if (id == TheatreConstant.VERZIK_ID_P2)
 				{
-					this.versikCounter = 3;
+					versikCounter = 3;
 				}
 				else if (id == TheatreConstant.VERZIK_ID_P3)
 				{
-					this.versikCounter = -1;
-					this.attacksLeft = 9;
+					versikCounter = -1;
+					attacksLeft = 9;
 				}
 			}
 		}
 
 		if (id == TheatreConstant.NPC_ID_TORNADO)
 		{
-			this.memorizedTornados.putIfAbsent(npc.getIndex(), new MemorizedTornado(npc));
+			memorizedTornados.putIfAbsent(npc.getIndex(), new MemorizedTornado(npc));
 		}
 	}
 
@@ -278,9 +278,9 @@ public class VerzikHandler extends RoomHandler
 	{
 		final NPC npc = npcDespawned.getNpc();
 
-		if (npc.getId() == TheatreConstant.NPC_ID_TORNADO && this.memorizedTornados.containsKey(npc.getIndex()))
+		if (npc.getId() == TheatreConstant.NPC_ID_TORNADO && memorizedTornados.containsKey(npc.getIndex()))
 		{
-			this.memorizedTornados.remove(npc.getIndex());
+			memorizedTornados.remove(npc.getIndex());
 		}
 	}
 
@@ -340,15 +340,15 @@ public class VerzikHandler extends RoomHandler
 		{
 			Verzik_RangeProjectiles.keySet().removeIf(p -> p.getRemainingCycles() < 1);
 		}
-		if (this.yellows == 0)
+		if (yellows == 0)
 		{
-			//if (this.autosSinceYellows > 0){
+			//if (autosSinceYellows > 0){
 			for (GraphicsObject object : client.getGraphicsObjects())
 			{
 				if (object.getId() == TheatreConstant.GRAPHIC_ID_YELLOWS)
 				{
-					this.yellows = 14;
-//						this.versikCounter = 22;
+					yellows = 14;
+//						versikCounter = 22;
 					break;
 				}
 			}
@@ -356,7 +356,7 @@ public class VerzikHandler extends RoomHandler
 		}
 		else
 		{
-			this.yellows--;
+			yellows--;
 		}
 
 		if (npc != null && npc.getAnimation() == 8117)
@@ -388,7 +388,7 @@ public class VerzikHandler extends RoomHandler
 
 		if (!foundVerzik)
 		{
-			this.onStop();
+			onStop();
 			return;
 		}
 
@@ -399,46 +399,46 @@ public class VerzikHandler extends RoomHandler
 
 		int id = npc.getId();
 
-		if (this.lastId != id)
+		if (lastId != id)
 		{
-			this.lastId = id;
+			lastId = id;
 
 			if (id == TheatreConstant.VERZIK_ID_P1)
 			{
-				this.startTime = System.currentTimeMillis();
+				startTime = System.currentTimeMillis();
 			}
-			else if (id == TheatreConstant.VERZIK_ID_P1_WALK && this.startTime != 0)
+			else if (id == TheatreConstant.VERZIK_ID_P1_WALK && startTime != 0)
 			{
-				long elapsedTime = System.currentTimeMillis() - this.startTime;
+				long elapsedTime = System.currentTimeMillis() - startTime;
 				long seconds = elapsedTime / 1000L;
 
 				long minutes = seconds / 60L;
 				seconds = seconds % 60;
 				if (config.extraTimers())
 				{
-					this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Final Challenge - Part 1' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Final Challenge - Part 1' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
 				}
 			}
-			else if (id == TheatreConstant.VERZIK_ID_P2_TRANSFORM && this.startTime != 0)
+			else if (id == TheatreConstant.VERZIK_ID_P2_TRANSFORM && startTime != 0)
 			{
-				long elapsedTime = System.currentTimeMillis() - this.startTime;
+				long elapsedTime = System.currentTimeMillis() - startTime;
 				long seconds = elapsedTime / 1000L;
 
 				long minutes = seconds / 60L;
 				seconds = seconds % 60;
 
-				this.versikCounter = -1;
-				this.attacksLeft = 9;
+				versikCounter = -1;
+				attacksLeft = 9;
 				if (config.extraTimers())
 				{
-					this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Final Challenge - Part 2' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Wave 'The Final Challenge - Part 2' completed! Duration: <col=ff0000>" + minutes + ":" + twoDigitString(seconds), null);
 				}
 			}
 		}
 
 		if (id == TheatreConstant.VERZIK_ID_P3_BAT)
 		{
-			this.onStop();
+			onStop();
 			return;
 		}
 		else if (id == TheatreConstant.VERZIK_ID_P1_WALK)
@@ -457,9 +457,9 @@ public class VerzikHandler extends RoomHandler
 		}
 		else if (id == TheatreConstant.VERZIK_ID_P3)
 		{
-			if (foundTornado && !this.tornados)
+			if (foundTornado && !tornados)
 			{
-				this.tornados = true;
+				tornados = true;
 			}
 
 			boolean isGreenBall = false;
@@ -472,11 +472,11 @@ public class VerzikHandler extends RoomHandler
 				}
 			}
 
-			if (this.tornados)
+			if (tornados)
 			{
-				if (this.last1PlayerLocation != null)
+				if (last1PlayerLocation != null)
 				{
-					for (MemorizedTornado mt : this.memorizedTornados.values())
+					for (MemorizedTornado mt : memorizedTornados.values())
 					{
 						NPC mtNpc = mt.getNpc();
 
@@ -494,17 +494,17 @@ public class VerzikHandler extends RoomHandler
 					}
 				}
 
-				if (this.last1PlayerLocation == null)
+				if (last1PlayerLocation == null)
 				{
-					this.last1PlayerLocation = client.getLocalPlayer().getWorldLocation();
-					this.last0PlayerLocation = this.last1PlayerLocation;
+					last1PlayerLocation = client.getLocalPlayer().getWorldLocation();
+					last0PlayerLocation = last1PlayerLocation;
 				}
 				else
 				{
-					this.last1PlayerLocation = this.last0PlayerLocation;
-					this.last0PlayerLocation = client.getLocalPlayer().getWorldLocation();
+					last1PlayerLocation = last0PlayerLocation;
+					last0PlayerLocation = client.getLocalPlayer().getWorldLocation();
 
-					this.memorizedTornados.entrySet().removeIf(entry -> entry.getValue().getRelativeDelta(this.last1PlayerLocation) != -1);
+					memorizedTornados.entrySet().removeIf(entry -> entry.getValue().getRelativeDelta(last1PlayerLocation) != -1);
 				}
 			}
 
@@ -518,8 +518,8 @@ public class VerzikHandler extends RoomHandler
 				case TheatreConstant.ANIMATION_ID_P3_MAGE:
 					if (versikCounter < 2)
 					{
-						this.attacksLeft--;
-						if (this.tornados)
+						attacksLeft--;
+						if (tornados)
 						{
 							versikCounter = 5;
 						}
@@ -538,7 +538,7 @@ public class VerzikHandler extends RoomHandler
 					if (versikCounter < 2)
 					{
 						attacksLeft--;
-						if (this.tornados)
+						if (tornados)
 						{
 							versikCounter = 5;
 						}
