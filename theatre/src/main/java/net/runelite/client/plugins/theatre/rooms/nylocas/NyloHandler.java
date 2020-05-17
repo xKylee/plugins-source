@@ -22,7 +22,6 @@ import net.runelite.api.MenuOpcode;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
-import net.runelite.api.PlayerAppearance;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
@@ -64,6 +63,7 @@ public class NyloHandler extends RoomHandler
 	private NyloPredictor predictor = null;
 	private WeaponStyle currentWeaponStyle;
 	private boolean skipTickCheck = false;
+	private Player player;
 
 	public NyloHandler(final Client client, final TheatrePlugin plugin, final TheatreConfig config, final EventBus eventBus)
 	{
@@ -360,17 +360,12 @@ public class NyloHandler extends RoomHandler
 		}
 		else
 		{
-			Player p = client.getLocalPlayer();
-			if (p == null)
+
+			if (player == null || player.getPlayerAppearance() == null)
 			{
 				return;
 			}
-			PlayerAppearance pa = p.getPlayerAppearance();
-			if (pa == null)
-			{
-				return;
-			}
-			int weaponID = ObjectUtils.defaultIfNull(pa.getEquipmentId(KitType.WEAPON), -1);
+			int weaponID = ObjectUtils.defaultIfNull(player.getPlayerAppearance().getEquipmentId(KitType.WEAPON), -1);
 			currentWeaponStyle = WeaponMap.StyleMap.get(weaponID);
 		}
 		boolean findPillar = false;
@@ -441,19 +436,37 @@ public class NyloHandler extends RoomHandler
 					case MAGIC:
 						if (target.equals(RANGE_NYLO) || target.equals(MELEE_NYLO))
 						{
-							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							try
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							catch (IndexOutOfBoundsException ignored)
+							{
+							}
 						}
 						break;
 					case RANGE:
 						if (target.contains(MAGE_NYLO) || target.contains(MELEE_NYLO))
 						{
-							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							try
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							catch (IndexOutOfBoundsException ignored)
+							{
+							}
 						}
 						break;
 					case MELEE:
 						if (target.contains(MAGE_NYLO) || target.contains(RANGE_NYLO))
 						{
-							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							try
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							catch (IndexOutOfBoundsException ignored)
+							{
+							}
 						}
 						break;
 					default:
