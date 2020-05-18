@@ -401,6 +401,18 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
+		position = 1,
+		keyName = "spawnTimerInfobox",
+		name = "Spawn Timer Infobox",
+		description = "Display an Infobox that times spawn sets during Zuk fight.",
+		section = "ExtraSection"
+	)
+	default boolean spawnTimerInfobox()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		position = 0,
 		keyName = "indicateNibblers",
 		name = "Indicate Nibblers",
