@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
+import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.ui.overlay.Overlay;
@@ -41,6 +42,9 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.util.WeaponMap;
+import net.runelite.client.util.WeaponStyle;
+import org.apache.commons.lang3.ObjectUtils;
 
 @Singleton
 class PrayAgainstPlayerOverlayPrayerTab extends Overlay
@@ -49,6 +53,7 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 	private final PrayAgainstPlayerPlugin plugin;
 	private final PrayAgainstPlayerConfig config;
 	private final Client client;
+	private WeaponStyle opponentWeaponStyle;
 
 	@Inject
 	private PrayAgainstPlayerOverlayPrayerTab(final PrayAgainstPlayerPlugin plugin, final PrayAgainstPlayerConfig config, final Client client)
@@ -98,15 +103,22 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 		{
 			return;
 		}
-		switch (WeaponType.checkWeaponOnPlayer(client, player))
+		if (player.getPlayerAppearance() == null)
 		{
-			case WEAPON_MAGIC:
+			return;
+		}
+		int opponentWeapon = ObjectUtils.defaultIfNull(player.getPlayerAppearance().getEquipmentId(KitType.WEAPON), -1);
+		opponentWeaponStyle = WeaponMap.StyleMap.get(opponentWeapon);
+
+		switch (opponentWeaponStyle)
+		{
+			case MAGIC:
 				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(PROTECT_FROM_MAGIC.getBounds()), color);
 				break;
-			case WEAPON_MELEE:
+			case MELEE:
 				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(PROTECT_FROM_MELEE.getBounds()), color);
 				break;
-			case WEAPON_RANGED:
+			case RANGE:
 				OverlayUtil.renderPolygon(graphics, rectangleToPolygon(PROTECT_FROM_RANGED.getBounds()), color);
 				break;
 			default:

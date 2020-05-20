@@ -43,6 +43,9 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.util.WeaponMap;
+import net.runelite.client.util.WeaponStyle;
+import org.apache.commons.lang3.ObjectUtils;
 
 @Singleton
 class PrayAgainstPlayerOverlay extends Overlay
@@ -51,6 +54,7 @@ class PrayAgainstPlayerOverlay extends Overlay
 	private final PrayAgainstPlayerPlugin plugin;
 	private final PrayAgainstPlayerConfig config;
 	private final Client client;
+	private WeaponStyle opponentWeaponStyle;
 
 	@Inject
 	private PrayAgainstPlayerOverlay(final PrayAgainstPlayerPlugin plugin, final PrayAgainstPlayerConfig config, final Client client)
@@ -183,16 +187,23 @@ class PrayAgainstPlayerOverlay extends Overlay
 		final int offset = (player.getLogicalHeight() / 2) + 75;
 		BufferedImage icon;
 
-		switch (WeaponType.checkWeaponOnPlayer(client, player))
+		if (player.getPlayerAppearance() == null)
 		{
-			case WEAPON_MELEE:
-				icon = plugin.getProtectionIcon(WeaponType.WEAPON_MELEE);
+			return;
+		}
+		int opponentWeapon = ObjectUtils.defaultIfNull(player.getPlayerAppearance().getEquipmentId(KitType.WEAPON), -1);
+		opponentWeaponStyle = WeaponMap.StyleMap.get(opponentWeapon);
+
+		switch (opponentWeaponStyle)
+		{
+			case MAGIC:
+				icon = plugin.getProtectionIcon(WeaponStyle.MAGIC);
 				break;
-			case WEAPON_MAGIC:
-				icon = plugin.getProtectionIcon(WeaponType.WEAPON_MAGIC);
+			case MELEE:
+				icon = plugin.getProtectionIcon(WeaponStyle.MELEE);
 				break;
-			case WEAPON_RANGED:
-				icon = plugin.getProtectionIcon(WeaponType.WEAPON_RANGED);
+			case RANGE:
+				icon = plugin.getProtectionIcon(WeaponStyle.RANGE);
 				break;
 			default:
 				icon = null;
