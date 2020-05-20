@@ -113,13 +113,22 @@ public class EffectTimersOverlay extends Overlay
 		Timer timer = timerManager.getTimerFor(actor, timerType);
 		switch (config.timeMode())
 		{
-			case SECONDS:
-				long millisRemaining = timer.getMillisForRender();
-				if (millisRemaining == -1)
+
+			case MINS_SECONDS_MILLI:
+				long minSecondsMillisRemaining = timer.getMillisForRender();
+				if (minSecondsMillisRemaining == -1)
 				{
 					return false; // this shouldnt happen but just in case
 				}
-				text = formatTime(millisRemaining);
+				text = formatTimeMMSSMS(minSecondsMillisRemaining);
+				break;
+			case SECONDS:
+				long secondsRemaining = timer.getMillisForRender();
+				if (secondsRemaining == -1)
+				{
+					return false; // this shouldnt happen but just in case
+				}
+				text = formatTimeSS(secondsRemaining);
 				break;
 			case TICKS:
 				int tfr = timer.getTicksForRender();
@@ -155,7 +164,7 @@ public class EffectTimersOverlay extends Overlay
 			textLocation = new Point(textLocation.getX() + xOffset, textLocation.getY() + image.getHeight() - yOffset);
 		}
 
-		OverlayUtil.renderTextLocation(g, textLocation, text, timer.determineColor());
+		OverlayUtil.renderTextLocation(g, text, config.textSize(), config.fontStyle().getFont(), timer.determineColor(), textLocation, false, 0);
 
 		return true;
 	}
@@ -164,7 +173,7 @@ public class EffectTimersOverlay extends Overlay
 	/*
 		TODO: if the game lags this will go mental
 	 */
-	public String formatTime(long time)
+	public String formatTimeMMSSMS(long time)
 	{
 		if (time > 59999)
 		{
@@ -179,6 +188,27 @@ public class EffectTimersOverlay extends Overlay
 			return ((int) time / 1000) + "." + ((int) (time % 1000) / 100);
 		}
 		return "0." + ((int) time / 100);
+	}
+
+	@VisibleForTesting
+	/*
+		TODO: if the game lags this will go mental
+	 */
+	public String formatTimeSS(long time)
+	{
+		if (time > 59999)
+		{
+			return formatSeconds(((int) (time % 60000) / 1000)) + "";
+		}
+		else if (time > 9999)
+		{
+			return ((int) time / 1000) + "";
+		}
+		else if (time > 999)
+		{
+			return ((int) time / 1000) + "";
+		}
+		return "0";
 	}
 
 	private String formatSeconds(int seconds)
