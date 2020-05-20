@@ -807,12 +807,20 @@ public class InfernoPlugin extends Plugin
 			{
 				if (infernoNPC.getType() == InfernoNPC.Type.ZUK)
 				{
-					int ticksTilZukAttack = infernoNPC.getTicksTillNextAttack();
+					int ticksTilZukAttack = finalPhase ? infernoNPC.getTicksTillNextAttack() : infernoNPC.getTicksTillNextAttack() - 1;
 
-					//if ticksTilZukAttack < 1, must be due to finalPhase. don't render predicted safespot
 					if (ticksTilZukAttack < 1)
 					{
-						return;
+						if (finalPhase)
+						{
+							//if ticksTilZukAttack < 1 and finalPhase, must be due to finalPhase. don't render predicted safepot until next attack.
+							return;
+						}
+						else
+						{
+							//safe to start to render the next safespot
+							ticksTilZukAttack = 10;
+						}
 					}
 
 					//if zuk shield moving in positive direction
