@@ -54,7 +54,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
-import net.runelite.client.util.WeaponStyle;
 import org.pf4j.Extension;
 
 @Extension
@@ -369,15 +368,15 @@ public class PrayAgainstPlayerPlugin extends Plugin
 		return ImageUtil.outlineImage(freezeCanvas, PROTECTION_ICON_OUTLINE_COLOR);
 	}
 
-	BufferedImage getProtectionIcon(WeaponStyle weaponStyle)
+	BufferedImage getProtectionIcon(WeaponType weaponType)
 	{
-		switch (weaponStyle)
+		switch (weaponType)
 		{
-			case RANGE:
+			case WEAPON_RANGED:
 				return ProtectionIcons[0];
-			case MELEE:
+			case WEAPON_MELEE:
 				return ProtectionIcons[1];
-			case MAGIC:
+			case WEAPON_MAGIC:
 				return ProtectionIcons[2];
 		}
 		return null;
