@@ -134,12 +134,31 @@ public class Timer
 	{
 		if (plugin.getConfig().showIcons())
 		{
-			return getTimerState() == TimerState.COOLDOWN ? plugin.getConfig().cooldownColor() : plugin.getConfig().timerColor();
+			if (plugin.getConfig().setColors())
+			{
+				return getTimerState() == TimerState.COOLDOWN ? plugin.getConfig().cooldownColor() : plugin.getConfig().timerColor();
+			}
+			else
+			{
+				return getTimerState() == TimerState.COOLDOWN ? type.getDefaultColor().darker() : type.getDefaultColor();
+			}
+		}
+		if (!plugin.getConfig().showIcons())
+		{
+			if (plugin.getConfig().setColors())
+			{
+				return getTimerState() == TimerState.COOLDOWN ? plugin.getConfig().cooldownColor() : plugin.getConfig().timerColor();
+			}
+			else
+			{
+				return getTimerState() == TimerState.COOLDOWN ? type.getDefaultColor().darker() : type.getDefaultColor();
+			}
 		}
 		else
 		{
 			return getTimerState() == TimerState.COOLDOWN ? type.getDefaultColor().darker() : type.getDefaultColor();
 		}
+
 	}
 
 	public enum TimerState

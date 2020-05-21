@@ -52,12 +52,18 @@ public class EffectTimersOverlayTest
 	@Test
 	public void testTimeHandler()
 	{
-		assertEquals("6.0", timersOverlay.formatTime(6000));
-		assertEquals("0.7", timersOverlay.formatTime(744));
-		assertEquals("14", timersOverlay.formatTime(14265));
-		assertEquals("5:00", timersOverlay.formatTime(300000));
-		assertEquals("37", timersOverlay.formatTime(37845));
-		assertEquals("1.3", timersOverlay.formatTime(1345));
+		assertEquals("6.0", timersOverlay.formatTimeMMSSMS(6000));
+		assertEquals("0.7", timersOverlay.formatTimeMMSSMS(744));
+		assertEquals("14", timersOverlay.formatTimeMMSSMS(14265));
+		assertEquals("5:00", timersOverlay.formatTimeMMSSMS(300000));
+		assertEquals("37", timersOverlay.formatTimeMMSSMS(37845));
+		assertEquals("1.3", timersOverlay.formatTimeMMSSMS(1345));
+		assertEquals("6", timersOverlay.formatTimeSS(6000));
+		assertEquals("0", timersOverlay.formatTimeSS(744));
+		assertEquals("14", timersOverlay.formatTimeSS(14265));
+		assertEquals("300", timersOverlay.formatTimeSS(300000));
+		assertEquals("37", timersOverlay.formatTimeSS(37845));
+		assertEquals("1", timersOverlay.formatTimeSS(1345));
 	}
 
 }
