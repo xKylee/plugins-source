@@ -325,6 +325,12 @@ public class InfernoPlugin extends Plugin
 					spawnTimerInfoBox.run();
 				}
 				break;
+			case JAD:
+				if (zuk != null && spawnTimerInfoBox != null && !spawnTimerInfoBox.isRunning())
+				{
+					spawnTimerInfoBox.run();
+				}
+				break;
 			case ZUK:
 				finalPhase = false;
 				zukShieldCornerTicks = -2;

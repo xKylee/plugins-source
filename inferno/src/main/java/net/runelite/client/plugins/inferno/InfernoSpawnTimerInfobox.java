@@ -45,11 +45,14 @@ class InfernoSpawnTimerInfobox extends InfoBox
 	@Getter(AccessLevel.PACKAGE)
 	private boolean running;
 
+	private boolean pausedOnce;
+
 	InfernoSpawnTimerInfobox(final BufferedImage image, final InfernoPlugin plugin)
 	{
 		super(image, plugin);
 		setPriority(InfoBoxPriority.HIGH);
 		running = false;
+		pausedOnce = false;
 		timeRemaining = SPAWN_DURATION;
 	}
 
@@ -67,12 +70,13 @@ class InfernoSpawnTimerInfobox extends InfoBox
 
 	void pause()
 	{
-		if (!running)
+		if (!running || pausedOnce)
 		{
 			return;
 		}
 
 		running = false;
+		pausedOnce = true;
 
 		long timeElapsed = Instant.now().getEpochSecond() - startTime;
 
