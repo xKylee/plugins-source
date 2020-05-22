@@ -222,18 +222,20 @@ public class TickTimersPlugin extends Plugin
 
 	private void handleBosses()
 	{
-		for (NPCContainer npcs : getNpcContainer())
+		for (NPCContainer npc : getNpcContainer())
 		{
-			if (npcs.getTicksUntilAttack() >= 0)
+			npc.setNpcInteracting(npc.getNpc().getInteracting());
+
+			if (npc.getTicksUntilAttack() >= 0)
 			{
-				npcs.setTicksUntilAttack(npcs.getTicksUntilAttack() - 1);
+				npc.setTicksUntilAttack(npc.getTicksUntilAttack() - 1);
 			}
 
-			for (int anims : npcs.getAnimations())
+			for (int animation : npc.getAnimations())
 			{
-				if (anims == npcs.getNpc().getAnimation() && npcs.getTicksUntilAttack() < 1)
+				if (animation == npc.getNpc().getAnimation() && npc.getTicksUntilAttack() < 1)
 				{
-					npcs.setTicksUntilAttack(npcs.getAttackSpeed());
+					npc.setTicksUntilAttack(npc.getAttackSpeed());
 				}
 			}
 		}

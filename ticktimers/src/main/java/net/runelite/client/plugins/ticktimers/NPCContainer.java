@@ -43,12 +43,13 @@ import net.runelite.api.Prayer;
 @Getter(AccessLevel.PACKAGE)
 class NPCContainer
 {
-	private NPC npc;
-	private int npcIndex;
-	private String npcName;
+	@Getter(AccessLevel.PACKAGE)
+	private final NPC npc;
+	private final int npcIndex;
+	private final String npcName;
 	private int npcSize;
-	private ImmutableSet<Integer> animations;
-	private int attackSpeed;
+	private final ImmutableSet<Integer> animations;
+	private final int attackSpeed;
 	@Setter(AccessLevel.PACKAGE)
 	private int ticksUntilAttack;
 	@Setter(AccessLevel.PACKAGE)
