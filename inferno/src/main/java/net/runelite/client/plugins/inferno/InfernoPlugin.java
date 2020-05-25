@@ -351,7 +351,7 @@ public class InfernoPlugin extends Plugin
 				{
 					if (infernoNPC.getType() == InfernoNPC.Type.ZUK)
 					{
-						infernoNPC.setTicksTillNextAttack(infernoNPC.getTicksTillNextAttack() - 3);
+						infernoNPC.setTicksTillNextAttack(infernoNPC.getTicksTillNextAttack() - 10);
 					}
 				}
 				log.debug("[INFERNO] Final phase detected!");
