@@ -74,7 +74,7 @@ public class TimersOverlay extends Overlay
 		// Maps each tick to a set of attacks and their priorities
 		TreeMap<Integer, TreeMap<Integer, Prayer>> tickAttackMap = new TreeMap<>();
 
-		for (NPCContainer npc : plugin.getNpcContainer())
+		for (NPCContainer npc : plugin.getNpcContainers())
 		{
 			if (npc.getNpc() == null)
 			{
@@ -119,8 +119,7 @@ public class TimersOverlay extends Overlay
 				color = attackStyle.getColor();
 			}
 
-			final Point canvasPoint = npc.getNpc().getCanvasTextLocation(graphics, Integer.toString(ticksLeft), 0);
-
+			final Point canvasPoint = npc.getNpc().getCanvasTextLocation(graphics, ticksLeftStr, 0);
 			OverlayUtil.renderTextLocation(graphics, ticksLeftStr, config.textSize(), font, color, canvasPoint, shadows, 0);
 
 			if (config.showPrayerWidgetHelper() && attackStyle.getPrayer() != null)

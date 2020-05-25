@@ -80,7 +80,7 @@ public class TickTimersPlugin extends Plugin
 	private NPCManager npcManager;
 
 	@Getter(AccessLevel.PACKAGE)
-	private Set<NPCContainer> npcContainer = new HashSet<>();
+	private Set<NPCContainer> npcContainers = new HashSet<>();
 	private boolean validRegion;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -95,13 +95,13 @@ public class TickTimersPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
-		npcContainer.clear();
+		npcContainers.clear();
 	}
 
 	@Override
 	public void shutDown()
 	{
-		npcContainer.clear();
+		npcContainers.clear();
 		overlayManager.remove(timersOverlay);
 		validRegion = false;
 	}
@@ -116,6 +116,10 @@ public class TickTimersPlugin extends Plugin
 
 		if (regionCheck())
 		{
+			for (NPC npc : client.getNpcs())
+			{
+				addNpc(npc);
+			}
 			validRegion = true;
 			overlayManager.add(timersOverlay);
 		}
@@ -123,8 +127,8 @@ public class TickTimersPlugin extends Plugin
 		{
 			validRegion = false;
 			overlayManager.remove(timersOverlay);
+			npcContainers.clear();
 		}
-		npcContainer.clear();
 	}
 
 	@Subscribe
@@ -135,40 +139,7 @@ public class TickTimersPlugin extends Plugin
 			return;
 		}
 
-		NPC npc = event.getNpc();
-
-		switch (npc.getId())
-		{
-			case NpcID.SERGEANT_STRONGSTACK:
-			case NpcID.SERGEANT_STEELWILL:
-			case NpcID.SERGEANT_GRIMSPIKE:
-			case NpcID.GENERAL_GRAARDOR:
-			case NpcID.TSTANON_KARLAK:
-			case NpcID.BALFRUG_KREEYATH:
-			case NpcID.ZAKLN_GRITCH:
-			case NpcID.KRIL_TSUTSAROTH:
-			case NpcID.STARLIGHT:
-			case NpcID.BREE:
-			case NpcID.GROWLER:
-			case NpcID.COMMANDER_ZILYANA:
-			case NpcID.FLIGHT_KILISA:
-			case NpcID.FLOCKLEADER_GEERIN:
-			case NpcID.WINGMAN_SKREE:
-			case NpcID.KREEARRA:
-				if (config.gwd())
-				{
-					npcContainer.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
-				}
-				break;
-			case NpcID.DAGANNOTH_REX:
-			case NpcID.DAGANNOTH_SUPREME:
-			case NpcID.DAGANNOTH_PRIME:
-				if (config.dks())
-				{
-					npcContainer.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
-				}
-				break;
-		}
+		addNpc(event.getNpc());
 	}
 
 	@Subscribe
@@ -179,32 +150,7 @@ public class TickTimersPlugin extends Plugin
 			return;
 		}
 
-		NPC npc = event.getNpc();
-
-		switch (npc.getId())
-		{
-			case NpcID.SERGEANT_STRONGSTACK:
-			case NpcID.SERGEANT_STEELWILL:
-			case NpcID.SERGEANT_GRIMSPIKE:
-			case NpcID.GENERAL_GRAARDOR:
-			case NpcID.TSTANON_KARLAK:
-			case NpcID.BALFRUG_KREEYATH:
-			case NpcID.ZAKLN_GRITCH:
-			case NpcID.KRIL_TSUTSAROTH:
-			case NpcID.STARLIGHT:
-			case NpcID.BREE:
-			case NpcID.GROWLER:
-			case NpcID.COMMANDER_ZILYANA:
-			case NpcID.FLIGHT_KILISA:
-			case NpcID.FLOCKLEADER_GEERIN:
-			case NpcID.WINGMAN_SKREE:
-			case NpcID.KREEARRA:
-			case NpcID.DAGANNOTH_REX:
-			case NpcID.DAGANNOTH_SUPREME:
-			case NpcID.DAGANNOTH_PRIME:
-				npcContainer.removeIf(c -> c.getNpc() == npc);
-				break;
-		}
+		removeNpc(event.getNpc());
 	}
 
 	@Subscribe
@@ -222,7 +168,7 @@ public class TickTimersPlugin extends Plugin
 
 	private void handleBosses()
 	{
-		for (NPCContainer npc : getNpcContainer())
+		for (NPCContainer npc : getNpcContainers())
 		{
 			npc.setNpcInteracting(npc.getNpc().getInteracting());
 
@@ -264,6 +210,80 @@ public class TickTimersPlugin extends Plugin
 				overlayManager.remove(timersOverlay);
 				overlayManager.add(timersOverlay);
 			}
+		}
+	}
+
+	private void addNpc(NPC npc)
+	{
+		if (npc == null)
+		{
+			return;
+		}
+
+		switch (npc.getId())
+		{
+			case NpcID.SERGEANT_STRONGSTACK:
+			case NpcID.SERGEANT_STEELWILL:
+			case NpcID.SERGEANT_GRIMSPIKE:
+			case NpcID.GENERAL_GRAARDOR:
+			case NpcID.TSTANON_KARLAK:
+			case NpcID.BALFRUG_KREEYATH:
+			case NpcID.ZAKLN_GRITCH:
+			case NpcID.KRIL_TSUTSAROTH:
+			case NpcID.STARLIGHT:
+			case NpcID.BREE:
+			case NpcID.GROWLER:
+			case NpcID.COMMANDER_ZILYANA:
+			case NpcID.FLIGHT_KILISA:
+			case NpcID.FLOCKLEADER_GEERIN:
+			case NpcID.WINGMAN_SKREE:
+			case NpcID.KREEARRA:
+				if (config.gwd())
+				{
+					npcContainers.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
+				}
+				break;
+			case NpcID.DAGANNOTH_REX:
+			case NpcID.DAGANNOTH_SUPREME:
+			case NpcID.DAGANNOTH_PRIME:
+				if (config.dks())
+				{
+					npcContainers.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
+				}
+				break;
+		}
+	}
+
+	private void removeNpc(NPC npc)
+	{
+		if (npc == null)
+		{
+			return;
+		}
+
+		switch (npc.getId())
+		{
+			case NpcID.SERGEANT_STRONGSTACK:
+			case NpcID.SERGEANT_STEELWILL:
+			case NpcID.SERGEANT_GRIMSPIKE:
+			case NpcID.GENERAL_GRAARDOR:
+			case NpcID.TSTANON_KARLAK:
+			case NpcID.BALFRUG_KREEYATH:
+			case NpcID.ZAKLN_GRITCH:
+			case NpcID.KRIL_TSUTSAROTH:
+			case NpcID.STARLIGHT:
+			case NpcID.BREE:
+			case NpcID.GROWLER:
+			case NpcID.COMMANDER_ZILYANA:
+			case NpcID.FLIGHT_KILISA:
+			case NpcID.FLOCKLEADER_GEERIN:
+			case NpcID.WINGMAN_SKREE:
+			case NpcID.KREEARRA:
+			case NpcID.DAGANNOTH_REX:
+			case NpcID.DAGANNOTH_SUPREME:
+			case NpcID.DAGANNOTH_PRIME:
+				npcContainers.removeIf(c -> c.getNpc() == npc);
+				break;
 		}
 	}
 }
