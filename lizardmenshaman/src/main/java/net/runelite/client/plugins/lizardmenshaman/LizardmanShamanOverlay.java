@@ -31,6 +31,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,13 @@ import net.runelite.api.Actor;
 import net.runelite.api.AnimationID;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
+import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
+import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
+import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.plugins.lizardmenshaman.LizardmanShamanConfig.SpawnOverlayConfig;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -51,6 +56,8 @@ class LizardmanShamanOverlay extends Overlay
 {
 	private final Client client;
 	private final LizardmanShamanConfig config;
+
+	private static final Set<Integer> CANYON_REGION_IDS = Set.of(5689, 5690);
 
 	@Inject
 	private LizardmanShamanOverlay(final Client client, final LizardmanShamanConfig config)
@@ -64,100 +71,74 @@ class LizardmanShamanOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!config.showSpawnOverlay().equals(LizardmanShamanConfig.SpawnOverlayConfig.DISABLED))
+		if (!config.showSpawnOverlay().equals(SpawnOverlayConfig.DISABLED))
 		{
-			renderValidMovement(graphics);
+			final boolean inCanyon = isPlayerInCanyonRegion();
+
+			for (NPC npc : client.getNpcs())
+			{
+				if (npc.getId() != NpcID.SPAWN_6768)
+				{
+					continue;
+				}
+
+				renderExplosionArea(graphics, npc, inCanyon);
+			}
 		}
 
 		return null;
 	}
 
-	/**
-	 * Adapted from net.runelite.client.plugins.devtools.SceneOverlay
-	 *
-	 * @param graphics
-	 */
-	private void renderValidMovement(Graphics2D graphics)
+	private void renderExplosionArea(Graphics2D graphics, Actor actor, boolean inCanyon)
 	{
-		for (NPC npc : client.getNpcs())
+		WorldArea worldArea = actor.getWorldArea();
+
+		if (worldArea == null)
 		{
-			if (!isSpawnNpc(npc))
-			{
-				continue;
-			}
+			return;
+		}
 
-			for (int dx = -1; dx <= 1; dx++)
+		LocalPoint localPoint = actor.getLocalLocation();
+
+		if (localPoint == null)
+		{
+			return;
+		}
+
+		final int explosionRadius = inCanyon ? 2 : 1;
+
+		for (int x = -explosionRadius; x <= explosionRadius; x++)
+		{
+			for (int y = -explosionRadius; y <= explosionRadius; y++)
 			{
-				for (int dy = -1; dy <= 1; dy++)
+				if (!worldArea.canTravelInDirection(client, x, y))
 				{
-					if (dx == 0 && dy == 0)
-					{
-						continue;
-					}
+					continue;
+				}
 
-					renderTileIfValidForMovement(graphics, npc, dx, dy);
+				LocalPoint lp = new LocalPoint(
+					localPoint.getX() + x * Perspective.LOCAL_TILE_SIZE + x * Perspective.LOCAL_TILE_SIZE * (worldArea.getWidth() - 1) / 2,
+					localPoint.getY() + y * Perspective.LOCAL_TILE_SIZE + y * Perspective.LOCAL_TILE_SIZE * (worldArea.getHeight() - 1) / 2);
+
+				Polygon polygon = Perspective.getCanvasTilePoly(client, lp);
+
+				if (polygon == null)
+				{
+					return;
+				}
+
+				if (actor.getAnimation() == AnimationID.LIZARDMAN_SHAMAN_SPAWN_EXPLOSION)
+				{
+					renderPolygon(graphics, polygon, 1, config.explosionBorderColor(), config.explosionFillColor());
+				}
+				else if (config.showSpawnOverlay().equals(SpawnOverlayConfig.ALWAYS))
+				{
+					renderPolygon(graphics, polygon, 1, config.spawnWalkableBorderColor(), config.spawnWalkableFillColor());
 				}
 			}
 		}
 	}
 
-	/**
-	 * Adapted from net.runelite.client.plugins.devtools.SceneOverlay
-	 *
-	 * @param graphics
-	 * @param actor
-	 * @param dx
-	 * @param dy
-	 */
-	private void renderTileIfValidForMovement(Graphics2D graphics, Actor actor, int dx, int dy)
-	{
-		WorldArea area = actor.getWorldArea();
-
-		if (area == null)
-		{
-			return;
-		}
-
-		if (area.canTravelInDirection(client, dx, dy))
-		{
-			LocalPoint lp = actor.getLocalLocation();
-
-			if (lp == null)
-			{
-				return;
-			}
-
-			lp = new LocalPoint(
-				lp.getX() + dx * Perspective.LOCAL_TILE_SIZE + dx * Perspective.LOCAL_TILE_SIZE * (area.getWidth() - 1) / 2,
-				lp.getY() + dy * Perspective.LOCAL_TILE_SIZE + dy * Perspective.LOCAL_TILE_SIZE * (area.getHeight() - 1) / 2);
-
-			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
-
-			if (poly == null)
-			{
-				return;
-			}
-
-			if (isExplodingAnimation(actor))
-			{
-				renderPolygon(graphics, poly, 1, config.explosionBorderColor(), config.explosionFillColor());
-			}
-			else if (config.showSpawnOverlay().equals(LizardmanShamanConfig.SpawnOverlayConfig.ALWAYS))
-			{
-				renderPolygon(graphics, poly, 1, config.spawnWalkableBorderColor(), config.spawnWalkableFillColor());
-			}
-		}
-	}
-
-	/**
-	 * Adapted from net.runelite.client.ui.overlay.OverlayUtil
-	 *
-	 * @param graphics
-	 * @param poly
-	 * @param strokeWidth
-	 * @param strokeColor
-	 * @param fillColor
-	 */
 	private static void renderPolygon(Graphics2D graphics, Shape poly, int strokeWidth, Color strokeColor, Color fillColor)
 	{
 		graphics.setColor(strokeColor);
@@ -169,31 +150,26 @@ class LizardmanShamanOverlay extends Overlay
 		graphics.setStroke(originalStroke);
 	}
 
-	/**
-	 * Returns true if the Actor's animation is exploding.
-	 *
-	 * @param actor an Actor object.
-	 * @return true if the Actor is exploding, else returns false.
-	 */
-	private static boolean isExplodingAnimation(Actor actor)
+	private boolean isPlayerInCanyonRegion()
 	{
-		return actor.getAnimation() == AnimationID.LIZARDMAN_SHAMAN_SPAWN_EXPLOSION;
+		Player player = client.getLocalPlayer();
+
+		if (player == null)
+		{
+			return false;
+		}
+
+		WorldPoint worldPoint = player.getWorldLocation();
+
+		if (worldPoint == null)
+		{
+			return false;
+		}
+
+		return CANYON_REGION_IDS.contains(worldPoint.getRegionID());
 	}
 
-	/**
-	 * Returns true if the NPC is a Lizardman Shaman Spawn.
-	 *
-	 * @param npc an NPC object.
-	 * @return true if the NPC is a lizardman shaman spawn, else returns false.
-	 */
-	private static boolean isSpawnNpc(NPC npc)
-	{
-		final int NPC_ID_SPAWN = 6768;
-
-		return npc.getId() == NPC_ID_SPAWN;
-	}
-
-	public void determineLayer()
+	void determineLayer()
 	{
 		if (config.mirrorMode())
 		{
