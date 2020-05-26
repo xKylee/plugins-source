@@ -10,6 +10,7 @@ import javax.inject.Named;
 import net.runelite.api.Client;
 import net.runelite.client.RuneLite;
 import net.runelite.client.config.OpenOSRSConfig;
+import net.runelite.client.config.RuneLiteConfig;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,10 @@ public class EffectTimersOverlayTest
 	@Mock
 	@Bind
 	private ScheduledExecutorService scheduledExecutorService;
+
+	@Mock
+	@Bind
+	private RuneLiteConfig runeLiteConfig;
 
 	@Mock
 	@Bind
