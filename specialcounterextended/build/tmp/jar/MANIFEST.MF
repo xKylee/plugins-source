@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Plugin-Version: 0.0.2
+Plugin-Id: specialattackcounterextended-plugin
+Plugin-Provider: OpenOSRS
+Plugin-Dependencies: socket-plugin
+Plugin-Description: Track DWH, Arclight, Darklight, and BGS special atta
+ cks used on NPCs using server sockets.
+Plugin-License: 3-Clause BSD License
+
