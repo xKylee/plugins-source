@@ -25,8 +25,8 @@
 
 version = "0.0.2"
 
-project.extra["PluginName"] = "socket"
-project.extra["PluginDescription"] = "This is a socket plugin."
+project.extra["PluginName"] = "Socket"
+project.extra["PluginDescription"] = "Socket connection for broadcasting messages across clients."
 
 tasks {
     jar {
