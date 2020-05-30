@@ -31,7 +31,6 @@ project.extra["PluginDescription"] = "Track DWH, Arclight, Darklight, and BGS sp
 dependencies {
 
     compileOnly(project(":socket"))
-    compileOnly(project(":sotetseg"))
 }
 
 tasks {

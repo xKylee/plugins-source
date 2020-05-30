@@ -7,9 +7,10 @@ import net.runelite.api.events.Event;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 
 @AllArgsConstructor
-public class SocketBroadcastPacket implements Event {
+public class SocketBroadcastPacket implements Event
+{
 
-    @Getter(AccessLevel.PUBLIC)
-    private JSONObject payload;
-    
+	@Getter(AccessLevel.PUBLIC)
+	private JSONObject payload;
+
 }

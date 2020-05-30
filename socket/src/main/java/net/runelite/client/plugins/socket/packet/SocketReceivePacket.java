@@ -10,7 +10,7 @@ import net.runelite.client.plugins.socket.org.json.JSONObject;
 public class SocketReceivePacket implements Event
 {
 
-    @Getter(AccessLevel.PUBLIC)
-    private JSONObject payload;
+	@Getter(AccessLevel.PUBLIC)
+	private JSONObject payload;
 
 }

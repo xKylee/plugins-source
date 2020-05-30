@@ -30,16 +30,17 @@ import net.runelite.api.ItemID;
 
 @AllArgsConstructor
 @Getter
-enum SpecialWeapon {
+enum SpecialWeapon
+{
 
-    DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
-    ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
-    DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
-    BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
-    BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
-    DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true);
+	DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
+	ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
+	DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
+	BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
+	BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
+	DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true);
 
-    private final String name;
-    private final int itemID;
-    private final boolean damage;
+	private final String name;
+	private final int itemID;
+	private final boolean damage;
 }
