@@ -46,7 +46,25 @@ public interface GauntletConfig extends Config
 	enum CounterDisplay
 	{
 		ONBOSS("On Boss"),
-		INFOBOX("Info Box"),
+		BOX("Box"),
+		BOTH("Both"),
+		NONE("None");
+
+		private String name;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum PrayerHighlight
+	{
+		PRAYERWIDGET("On Widget"),
+		BOX("Box"),
 		BOTH("Both"),
 		NONE("None");
 
@@ -84,8 +102,8 @@ public interface GauntletConfig extends Config
 	@ConfigItem(
 		position = 1,
 		keyName = "highlightResources",
-		name = "Highlight Resources (Outline)",
-		description = "Highlights all the resources in each room with an outline.",
+		name = "Highlight resources (outline)",
+		description = "Overlay resources with a colored outline.",
 		titleSection = "resources"
 	)
 	default boolean highlightResources()
@@ -96,8 +114,8 @@ public interface GauntletConfig extends Config
 	@ConfigItem(
 		position = 2,
 		keyName = "highlightResourcesColor",
-		name = "Highlight Color",
-		description = "Highlights all the resources in each room with this color.",
+		name = "Outline color",
+		description = "Change the color of the resource outline.",
 		titleSection = "resources",
 		hidden = true,
 		unhide = "highlightResources"
@@ -110,11 +128,9 @@ public interface GauntletConfig extends Config
 	@ConfigItem(
 		position = 3,
 		keyName = "highlightResourcesIcons",
-		name = "Highlight Resources (Icon)",
-		description = "Highlights all the icons in each room with an icon.",
-		titleSection = "resources",
-		hidden = true,
-		unhide = "highlightResources"
+		name = "Highlight resources (icon)",
+		description = "Overlay resources with their respective icons.",
+		titleSection = "resources"
 	)
 	default boolean highlightResourcesIcons()
 	{
@@ -128,21 +144,33 @@ public interface GauntletConfig extends Config
 	@ConfigItem(
 		position = 4,
 		keyName = "resourceIconSize",
-		name = "Resource Icon Size",
-		description = " change the size of resource icons.",
+		name = "Icon size",
+		description = "Change the size of the resource icons.",
 		hidden = true,
-		unhide = "highlightResources",
+		unhide = "highlightResourcesIcons",
 		titleSection = "resources"
 	)
 	default int resourceIconSize()
 	{
-		return 20;
+		return 16;
+	}
+
+	@ConfigItem(
+		position = 5,
+		keyName = "displayResources",
+		name = "Resource counter (infobox)",
+		description = "Display the count of gathered resources in infoboxes.",
+		titleSection = "resources"
+	)
+	default boolean displayGatheredResources()
+	{
+		return false;
 	}
 
 	@ConfigTitleSection(
 		keyName = "boss",
-		position = 5,
-		name = "Boss",
+		position = 1,
+		name = "Hunllef Boss",
 		description = ""
 	)
 	default Title boss()
@@ -151,10 +179,10 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 6,
+		position = 0,
 		keyName = "countAttacks",
-		name = "Count Attacks Display",
-		description = "Count the attacks until the Hunllef switches their attack style and prayer.",
+		name = "Atk/prayer counter",
+		description = "Display a counter for when the Hunllef will switch attacks or prayer.",
 		titleSection = "boss"
 	)
 	default CounterDisplay countAttacks()
@@ -163,82 +191,22 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 7,
-		keyName = "highlightWidget",
-		name = "Highlight Prayer (Prayer Tab)",
-		description = "Highlights the correct prayer to use in your prayer book.",
+		position = 1,
+		keyName = "highlightPrayer",
+		name = "Highlight prayer",
+		description = "Highlight the correct prayer to use against the Hunllef's attacks.",
 		titleSection = "boss"
 	)
-	default boolean highlightWidget()
+	default PrayerHighlight highlightPrayer()
 	{
-		return false;
+		return PrayerHighlight.NONE;
 	}
 
 	@ConfigItem(
-		position = 8,
-		keyName = "highlightPrayerInfobox",
-		name = "Highlight Prayer (InfoBox)",
-		description = "Highlights the correct prayer to use in an Infobox.",
-		titleSection = "boss"
-	)
-	default boolean highlightPrayerInfobox()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 9,
-		keyName = "flashOnWrongAttack",
-		name = "Flash screen on Wrong Attack",
-		description = "This will flash your screen if you attack with the wrong stlye.",
-		titleSection = "boss"
-	)
-	default boolean flashOnWrongAttack()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 10,
-		keyName = "uniquePrayerAudio",
-		name = "Prayer Audio Warning",
-		description = "Plays a unique sound whenever the boss is about to shut down your prayer.",
-		titleSection = "boss"
-	)
-	default boolean uniquePrayerAudio()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 11,
-		keyName = "uniquePrayerVisual",
-		name = "Prayer Attack (Icon)",
-		description = "Prayer attacks will have a unique overlay visual.",
-		titleSection = "boss"
-	)
-	default boolean uniquePrayerVisual()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 12,
-		keyName = "uniqueAttackVisual",
-		name = "Magic & Range Attack (Icon)",
-		description = "Magic and Range attacks will have a unique overlay visual.",
-		titleSection = "boss"
-	)
-	default boolean uniqueAttackVisual()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 13,
+		position = 2,
 		keyName = "attackVisualOutline",
-		name = "Hunllefs' attacks (Outline)",
-		description = "Outline the Hunllefs' attacks.",
+		name = "Attack projectiles (outline)",
+		description = "Attack projectiles will have a colored outline overlay.",
 		titleSection = "boss"
 	)
 	default boolean attackVisualOutline()
@@ -247,23 +215,22 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 14,
-		keyName = "overlayBoss",
-		name = "Outline Hunllef (Color)",
-		description = "Overlay Hunllef while you are on the wrong prayer with an color denoting it's current attack style.",
+		position = 3,
+		keyName = "uniqueAttackVisual",
+		name = "Attack projectiles (icon)",
+		description = "Attack projectiles will have an icon overlay.",
 		titleSection = "boss"
 	)
-	default boolean overlayBoss()
+	default boolean uniqueAttackVisual()
 	{
 		return false;
 	}
 
-
 	@ConfigItem(
-		position = 15,
+		position = 4,
 		keyName = "overlayBossPrayer",
-		name = "Hunllef Overlay (Icons)",
-		description = "Overlay the Hunllef with an icon denoting it's current attack style.",
+		name = "Attack style (icon)",
+		description = "Overlay the Hunllef with an icon denoting its current attack style.",
 		titleSection = "boss"
 	)
 	default boolean overlayBossPrayer()
@@ -272,10 +239,46 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 5,
+		keyName = "uniquePrayerAudio",
+		name = "Prayer attack (audio)",
+		description = "Play a sound when the Hunllef is about to use its prayer attack.",
+		titleSection = "boss"
+	)
+	default boolean uniquePrayerAudio()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 6,
+		keyName = "overlayBoss",
+		name = "Wrong prayer (outline)",
+		description = "While on the wrong prayer, outline the Hunllef with a color matching its attack style.",
+		titleSection = "boss"
+	)
+	default boolean overlayBoss()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 7,
+		keyName = "flashOnWrongAttack",
+		name = "Wrong attack (flash)",
+		description = "While on the wrong attack style, flash the screen.",
+		titleSection = "boss"
+	)
+	default boolean flashOnWrongAttack()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 8,
 		keyName = "overlayTornadoes",
-		name = "Show Tornado Decay",
-		description = "Display the amount of ticks left until the tornadoes decay.",
+		name = "Tornado decay counter",
+		description = "Overlay tornadoes with the amount of ticks left until decay.",
 		titleSection = "boss"
 	)
 	default boolean overlayTornadoes()
@@ -288,10 +291,10 @@ public interface GauntletConfig extends Config
 		max = 50
 	)
 	@ConfigItem(
-		position = 17,
+		position = 9,
 		keyName = "projectileIconSize",
-		name = "Hunllef Projectile Icon Size",
-		description = " change the size of Projectile icons.",
+		name = "Proj. icon size",
+		description = "Change the size of projectile icons.",
 		titleSection = "boss"
 	)
 	@Units(Units.PIXELS)
@@ -302,7 +305,7 @@ public interface GauntletConfig extends Config
 
 	@ConfigTitleSection(
 		keyName = "timer",
-		position = 18,
+		position = 2,
 		name = "Timer",
 		description = ""
 	)
@@ -312,10 +315,10 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 19,
+		position = 0,
 		keyName = "displayTimerWidget",
-		name = "Show Gauntlet timer overlay",
-		description = "Display a timer widget that tracks your gauntlet progress.",
+		name = "Gauntlet timer (overlay)",
+		description = "Display a timer overlay that tracks your gauntlet progress.",
 		titleSection = "timer"
 	)
 	default boolean displayTimerWidget()
@@ -324,25 +327,13 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 20,
+		position = 1,
 		keyName = "displayTimerChat",
-		name = "Show Gauntlet timer chat message",
+		name = "Gauntlet timer (chat)",
 		description = "Display a chat message that tracks your gauntlet progress.",
 		titleSection = "timer"
 	)
 	default boolean displayTimerChat()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 21,
-		keyName = "displayResources",
-		name = "Show raw resources gathered",
-		description = "Displays how much of each resource you have gathered.",
-		titleSection = "resources"
-	)
-	default boolean displayGatheredResources()
 	{
 		return false;
 	}

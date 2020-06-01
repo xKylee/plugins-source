@@ -50,6 +50,7 @@ import net.runelite.api.model.Vertex;
 import net.runelite.client.graphics.ModelOutlineRenderer;
 import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.BOTH;
 import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.ONBOSS;
+import net.runelite.client.plugins.gauntlet.GauntletConfig.PrayerHighlight;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -249,7 +250,9 @@ public class GauntletOverlay extends Overlay
 					graphics.drawImage(attackIcon, imageLoc.getX(), imageLoc.getY(), null);
 				}
 
-				if (config.highlightWidget())
+				PrayerHighlight prayerHighlight = config.highlightPrayer();
+
+				if (prayerHighlight == PrayerHighlight.PRAYERWIDGET || prayerHighlight == PrayerHighlight.BOTH)
 				{
 					if (phase.getPrayer() == null)
 					{
