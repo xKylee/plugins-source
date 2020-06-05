@@ -532,7 +532,8 @@ public class CoxPlugin extends Plugin
 		client.clearHintArrow();
 		sleepcount--;
 
-		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0) {
+		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
+		{
 			olmReady = true;
 			olmTicksUntilAction = olmActive ? 3 : 4;
 		}
