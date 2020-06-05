@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2018, Raqes <j.raqes@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package net.runelite.client.plugins.specialcounterextended;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.runelite.api.ItemID;
+
+@AllArgsConstructor
+@Getter
+enum SpecialWeapon
+{
+	DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
+	ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
+	DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
+	BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
+	BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
+	DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true),
+	SARADOMIN_GODSWORD("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD, true),
+	SARADOMIN_GODSWORD_OR("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD_OR, true),
+	BLOWPIPE_FULL("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE, true),
+	BLOWPIPE_EMPTY("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE_EMPTY, true),
+	VOLATILE_NIGHTMARE_STAFF("Volatile Nightmare Staff", ItemID.VOLATILE_NIGHTMARE_STAFF, true),
+	ANCIENT_MACE("Ancient Mace", ItemID.ANCIENT_MACE, true),
+	ELDRITCH_NIGHTMARE_STAFF("Eldritch Nightmare Staff", ItemID.ELDRITCH_NIGHTMARE_STAFF, true),
+	DRAGON_CLAWS("Dragon Claws", ItemID.DRAGON_CLAWS, true),
+	DRAGON_DAGGER("Dragon Dagger", ItemID.DRAGON_DAGGER, true),
+	DRAGON_DAGGER_P("Dragon Dagger", ItemID.DRAGON_DAGGERP, true),
+	DRAGON_DAGGER_PPLUS("Dragon Dagger", ItemID.DRAGON_DAGGERP_5680, true),
+	DRAGON_DAGGER_PPLUSPLUS("Dragon Dagger", ItemID.DRAGON_DAGGERP_5698, true),
+	CRYSTAL_HALBERD("Crystal Halberd", ItemID.CRYSTAL_HALBERD, true);
+
+	private final String name;
+	private final int itemID;
+	private final boolean damage;
+}
