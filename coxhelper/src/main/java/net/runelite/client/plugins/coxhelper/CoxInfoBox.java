@@ -79,14 +79,14 @@ public class CoxInfoBox extends Overlay
 		{
 			prayAgainstPanel.getChildren().clear();
 
-			final PrayAgainst prayAgainst = plugin.getPrayAgainstOlm();
+			final PrayAgainst prayAgainst = plugin.getOlmPrayer();
 
 			if (System.currentTimeMillis() < plugin.getLastPrayTime() + 120000 && prayAgainst != null && config.prayAgainstOlm())
 			{
 				final int scale = config.prayAgainstOlmSize();
 				InfoBoxComponent prayComponent = new InfoBoxComponent();
 				BufferedImage prayImg = ImageUtil.resizeImage(
-					getPrayerImage(plugin.getPrayAgainstOlm()), scale, scale
+					getPrayerImage(plugin.getOlmPrayer()), scale, scale
 				);
 				prayComponent.setImage(prayImg);
 				prayComponent.setColor(Color.WHITE);
@@ -103,7 +103,7 @@ public class CoxInfoBox extends Overlay
 			}
 			else
 			{
-				plugin.setPrayAgainstOlm(null);
+				plugin.setOlmPrayer(null);
 			}
 
 			if (config.vangHealth() && plugin.getVanguards() > 0)
@@ -115,7 +115,7 @@ public class CoxInfoBox extends Overlay
 
 				TableComponent tableComponent = new TableComponent();
 				tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
-				for (NPCContainer npcs : plugin.getNpcContainer().values())
+				for (NPCContainer npcs : plugin.getNpcContainers().values())
 				{
 					float percent = (float) npcs.getNpc().getHealthRatio() / npcs.getNpc().getHealthScale() * 100;
 					switch (npcs.getNpc().getId())
@@ -142,7 +142,7 @@ public class CoxInfoBox extends Overlay
 		}
 		if (client.getLocalPlayer().getWorldLocation().getRegionID() == 4919)
 		{
-			plugin.setPrayAgainstOlm(null);
+			plugin.setOlmPrayer(null);
 		}
 		return null;
 	}

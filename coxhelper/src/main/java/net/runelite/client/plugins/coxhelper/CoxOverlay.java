@@ -73,12 +73,12 @@ public class CoxOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		for (WorldPoint point : plugin.getOlm_Heal())
+		for (WorldPoint point : plugin.getOlmHealPools())
 		{
 			drawTile(graphics, point, config.tpColor(), 2, 150);
 		}
 
-		for (WorldPoint point : plugin.getOlm_TP())
+		for (WorldPoint point : plugin.getOlmPortals())
 		{
 			client.setHintArrow(point);
 			drawTile(graphics, point, config.tpColor(), 2, 150);
@@ -86,7 +86,7 @@ public class CoxOverlay extends Overlay
 
 		if (plugin.inRaid())
 		{
-			for (NPCContainer npcs : plugin.getNpcContainer().values())
+			for (NPCContainer npcs : plugin.getNpcContainers().values())
 			{
 				Color color;
 				List<WorldPoint> hitSquares;
@@ -203,10 +203,10 @@ public class CoxOverlay extends Overlay
 				}
 			}
 
-			if (plugin.isHandCripple())
+			if (plugin.isHandCrippled())
 			{
 				int tick = plugin.getCrippleTimer();
-				NPC olmHand = plugin.getHand();
+				NPC olmHand = plugin.getOlmHand();
 				final String tickStr = String.valueOf(tick);
 				Point canvasPoint = olmHand.getCanvasTextLocation(graphics, tickStr, 50);
 				renderTextLocation(graphics, tickStr, config.textSize(), config.fontStyle().getFont(), Color.GRAY, canvasPoint);
@@ -278,17 +278,17 @@ public class CoxOverlay extends Overlay
 				}
 			}
 
-			if (plugin.isRunOlm())
+			if (plugin.isOlmActive())
 			{
-				NPC boss = plugin.getOlm_NPC();
+				NPC boss = plugin.getOlmNPC();
 
 				if (config.olmTick())
 				{
 					if (boss != null)
 					{
-						final int tick = plugin.getOlm_TicksUntilAction();
-						final int cycle = plugin.getOlm_ActionCycle();
-						final int spec = plugin.getOlm_NextSpec();
+						final int tick = plugin.getOlmTicksUntilAction();
+						final int cycle = plugin.getOlmActionCycle();
+						final int spec = plugin.getOlmNextSpec();
 						final String tickStr = String.valueOf(tick);
 						String cycleStr = "?";
 						switch (cycle)
