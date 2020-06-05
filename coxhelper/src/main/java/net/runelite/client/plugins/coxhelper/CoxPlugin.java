@@ -131,7 +131,7 @@ public class CoxPlugin extends Plugin
 	private int OlmPhase = 0;
 	private int Olm_TicksUntilAction = -1;
 	private int Olm_ActionCycle = -1; //4:0 = auto 3:0 = null 2:0 = auto 1:0 = spec + actioncycle =4
-	private int Olm_NextSpec = -1; // 1= portals 2=lightnig 3=crystals 4= heal hand if p4
+	private int Olm_NextSpec = -1; // 1= crystals 2=lightnig 3=portals 4= heal hand if p4
 	private Map<NPC, NPCContainer> npcContainer = new HashMap<>();
 	@Setter(AccessLevel.PACKAGE)
 	private PrayAgainst prayAgainstOlm;
@@ -201,12 +201,21 @@ public class CoxPlugin extends Plugin
 				case "the great olm rises with the power of acid.":
 				case "the great olm rises with the power of crystal.":
 				case "the great olm rises with the power of flame.":
-					OlmPhase = 0;
-					resetOlm();
-					break;
 				case "the great olm is giving its all. this is its final stand.":
-					OlmPhase = 1;
-					resetOlm();
+					if (!runOlm)
+					{
+						Olm_ActionCycle = -1;
+						Olm_TicksUntilAction = 4;
+					}
+					else
+					{
+						Olm_ActionCycle = -1;
+						Olm_TicksUntilAction = 3;
+					}
+					OlmPhase = 0;
+					runOlm = true;
+					crippleTimer = 45;
+					Olm_NextSpec = -1;
 					break;
 				case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
 				case "the great olm fires a sphere of aggression your way.":
@@ -228,23 +237,6 @@ public class CoxPlugin extends Plugin
 
 			}
 		}
-	}
-
-	private void resetOlm()
-	{
-		if (!runOlm)
-		{
-			Olm_ActionCycle = -1;
-			Olm_TicksUntilAction = 4;
-		}
-		else
-		{
-			Olm_ActionCycle = -1;
-			Olm_TicksUntilAction = 3;
-		}
-		runOlm = true;
-		crippleTimer = 45;
-		Olm_NextSpec = -1;
 	}
 
 	@Subscribe
