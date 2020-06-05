@@ -131,7 +131,7 @@ public class CoxPlugin extends Plugin
 	private int OlmPhase = 0;
 	private int Olm_TicksUntilAction = -1;
 	private int Olm_ActionCycle = -1; //4:0 = auto 3:0 = null 2:0 = auto 1:0 = spec + actioncycle =4
-	private int Olm_NextSpec = -1; // 1= crystals 2=lightnig 3=portals 4= heal hand if p4
+	private int Olm_NextSpec = -1; // 1= portals 2=lightnig 3=crystals 4= heal hand if p4
 	private Map<NPC, NPCContainer> npcContainer = new HashMap<>();
 	@Setter(AccessLevel.PACKAGE)
 	private PrayAgainst prayAgainstOlm;
