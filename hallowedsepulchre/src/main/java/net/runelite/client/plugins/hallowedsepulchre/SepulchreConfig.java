@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.sepulchre;
+package net.runelite.client.plugins.hallowedsepulchre;
 
 import java.awt.Color;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigTitleSection;
 import net.runelite.client.config.Title;
 
-@ConfigGroup("sepulchre")
+@ConfigGroup("hallowedsepulchre")
 public interface SepulchreConfig extends Config
 {
 	@Getter

@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.sepulchre;
+package net.runelite.client.plugins.hallowedsepulchre;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,7 +18,7 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.graphics.ModelOutlineRenderer;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.CROSSBOW_STATUE_ANIM_DEFAULT;
+import static net.runelite.client.plugins.hallowedsepulchre.SepulchreIDs.CROSSBOW_STATUE_ANIM_DEFAULT;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;

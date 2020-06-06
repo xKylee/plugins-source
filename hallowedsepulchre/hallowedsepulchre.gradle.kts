@@ -27,8 +27,8 @@ import ProjectVersions.rlVersion
 
 version = "0.0.1"
 
-project.extra["PluginName"] = "Sepulchre"
-project.extra["PluginDescription"] = "Sepulchre"
+project.extra["PluginName"] = "Hallowed Sepulchre"
+project.extra["PluginDescription"] = "Hallowed Sepulchre"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
