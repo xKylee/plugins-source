@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.sepulchre;
+package net.runelite.client.plugins.hallowedsepulchre;
 
 import lombok.AccessLevel;
 import lombok.Getter;

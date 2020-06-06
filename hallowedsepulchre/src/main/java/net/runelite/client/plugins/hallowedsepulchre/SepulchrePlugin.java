@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.sepulchre;
+package net.runelite.client.plugins.hallowedsepulchre;
 
 import com.google.inject.Provides;
 import java.util.ArrayList;
@@ -48,39 +48,13 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.ARROW_9672;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.ARROW_9673;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.ARROW_9674;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.CROSSBOW_STATUE_38444;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.CROSSBOW_STATUE_38445;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.CROSSBOW_STATUE_38446;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.SWORD_9669;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.SWORD_9670;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.SWORD_9671;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38409;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38410;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38411;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38412;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38416;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38417;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38418;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38419;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38420;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38421;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38422;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38423;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38424;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_38425;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_ANIM_FIRE;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_ANIM_SPEED_2;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_ANIM_SPEED_3;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.WIZARD_STATUE_ANIM_SPEED_4;
+import net.runelite.client.plugins.sepulchre.SepulchreIDs.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Sepulchre",
+	name = "Hallowed Sepulchre",
 	enabledByDefault = false,
 	description = "A plugin for the sepulchre.",
 	tags = {"sepulchre", "agility"},
@@ -135,7 +109,7 @@ public class SepulchrePlugin extends Plugin
 	@Subscribe
 	private void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals("sepulchre"))
+		if (!event.getGroup().equals("hallowedsepulchre"))
 		{
 			return;
 		}
