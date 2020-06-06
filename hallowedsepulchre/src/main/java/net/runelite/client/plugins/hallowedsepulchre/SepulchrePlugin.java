@@ -48,7 +48,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import static net.runelite.client.plugins.sepulchre.SepulchreIDs.*;
+import static net.runelite.client.plugins.hallowedsepulchre.SepulchreIDs.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -57,7 +57,7 @@ import org.pf4j.Extension;
 	name = "Hallowed Sepulchre",
 	enabledByDefault = false,
 	description = "A plugin for the sepulchre.",
-	tags = {"sepulchre", "agility"},
+	tags = {"sepulchre", "hallowed", "darkmyre", "agility"},
 	type = PluginType.MINIGAME
 )
 @Slf4j
