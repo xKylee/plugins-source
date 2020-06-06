@@ -536,6 +536,7 @@ public class CoxPlugin extends Plugin
 		{
 			olmReady = true;
 			olmTicksUntilAction = olmActive ? 3 : 4;
+			olmActionCycle = 4;
 		}
 
 		if (olmTicksUntilAction == 1)
