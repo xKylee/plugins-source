@@ -535,6 +535,7 @@ public class CoxPlugin extends Plugin
 			olmTicksUntilAction = olmPhase == 0 ? 4 : 3; // first phase has 1 extra tick before attack
 			olmActionCycle = 4;
 			olmNextSpec = 3;
+			return;
 		}
 
 		if (olmTicksUntilAction == 1)
