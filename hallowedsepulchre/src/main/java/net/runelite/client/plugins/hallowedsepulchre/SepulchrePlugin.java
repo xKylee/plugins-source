@@ -48,7 +48,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.sepulchre.SepulchreIDs.*;
+import static net.runelite.client.plugins.sepulchre.SepulchreIDs.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
