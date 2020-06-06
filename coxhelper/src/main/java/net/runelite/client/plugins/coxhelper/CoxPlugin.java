@@ -537,6 +537,7 @@ public class CoxPlugin extends Plugin
 			olmReady = true;
 			olmTicksUntilAction = olmActive ? 3 : 4;
 			olmActionCycle = 4;
+			olmNextSpec = 3;
 		}
 
 		if (olmTicksUntilAction == 1)
@@ -547,14 +548,7 @@ public class CoxPlugin extends Plugin
 				olmTicksUntilAction = 4;
 				if (olmNextSpec == 1)
 				{
-					if (olmPhase == 1)
-					{
-						olmNextSpec = 4; // 4 = heal 3= cry 2 = lightn 1 = swap
-					}
-					else
-					{
-						olmNextSpec = 3;
-					}
+					olmNextSpec = olmPhase == 1 ? 4 : 3;
 				}
 				else
 				{
