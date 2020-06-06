@@ -122,9 +122,9 @@ public class CoxPlugin extends Plugin
 	private Map<NPC, NPCContainer> npcContainers = new HashMap<>();
 
 	//olm
-	private boolean olmActive;
-	private boolean olmReady;
-	private int olmPhase = 0;
+	private boolean olmActive; // in olm fight
+	private boolean olmReady; // olm ready to attack
+	private int olmPhase = -1; // -1=unknown 0=first 1=normal 2=final
 	private NPC olmHand;
 	private NPC olmNPC;
 	private int olmTicksUntilAction = -1;
@@ -205,11 +205,11 @@ public class CoxPlugin extends Plugin
 				case "the great olm rises with the power of acid.":
 				case "the great olm rises with the power of crystal.":
 				case "the great olm rises with the power of flame.":
-					olmPhase = 0;
+					olmPhase = olmPhase == -1 ? 0 : 1; // if unknown assume first phase
 					resetOlm();
 					break;
 				case "the great olm is giving its all. this is its final stand.":
-					olmPhase = 1;
+					olmPhase = 2;
 					resetOlm();
 					break;
 				case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
@@ -401,7 +401,7 @@ public class CoxPlugin extends Plugin
 	{
 		if (!inRaid())
 		{
-			olmPhase = 0;
+			olmPhase = -1;
 			sleepcount = 0;
 			olmHealPools.clear();
 			npcContainers.clear();
@@ -535,8 +535,9 @@ public class CoxPlugin extends Plugin
 		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
 		{
 			olmReady = true;
-			olmTicksUntilAction = olmActive ? 3 : 4;
+			olmTicksUntilAction = olmPhase == 0 ? 4 : 3; // first phase has 1 extra tick before attack
 			olmActionCycle = 4;
+			olmNextSpec = 3;
 		}
 
 		if (olmTicksUntilAction == 1)
@@ -547,14 +548,7 @@ public class CoxPlugin extends Plugin
 				olmTicksUntilAction = 4;
 				if (olmNextSpec == 1)
 				{
-					if (olmPhase == 1)
-					{
-						olmNextSpec = 4; // 4 = heal 3= cry 2 = lightn 1 = swap
-					}
-					else
-					{
-						olmNextSpec = 3;
-					}
+					olmNextSpec = olmPhase == 2 ? 4 : 3; // final phase has an extra special
 				}
 				else
 				{
