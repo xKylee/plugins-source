@@ -140,7 +140,6 @@ public class CoxPlugin extends Plugin
 	@Setter(AccessLevel.PACKAGE)
 	private PrayAgainst olmPrayer;
 	private long lastPrayTime;
-	private int sleepcount = 0;
 
 	@Provides
 	CoxConfig getConfig(ConfigManager configManager)
@@ -402,7 +401,6 @@ public class CoxPlugin extends Plugin
 		if (!inRaid())
 		{
 			olmPhase = -1;
-			sleepcount = 0;
 			olmHealPools.clear();
 			npcContainers.clear();
 			victims.clear();
@@ -530,7 +528,6 @@ public class CoxPlugin extends Plugin
 		olmHealPools.clear();
 		olmPortals.clear();
 		client.clearHintArrow();
-		sleepcount--;
 
 		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
 		{
@@ -571,23 +568,6 @@ public class CoxPlugin extends Plugin
 
 		for (GraphicsObject o : client.getGraphicsObjects())
 		{
-			if (sleepcount <= 0)
-			{
-				if (o.getId() == 1338)
-				{
-					olmTicksUntilAction = 1;
-					olmNextSpec = 2;
-					olmActionCycle = 4; //spec=1 null=3
-					sleepcount = 5;
-				}
-				if (o.getId() == 1356)
-				{
-					olmTicksUntilAction = 4;
-					olmNextSpec = 1;
-					olmActionCycle = 4; //spec=1 null=3
-					sleepcount = 50;
-				}
-			}
 			if (o.getId() == GraphicID.OLM_TELEPORT)
 			{
 				olmPortals.add(WorldPoint.fromLocal(client, o.getLocation()));
