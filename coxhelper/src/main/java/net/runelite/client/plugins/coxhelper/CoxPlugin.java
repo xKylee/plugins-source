@@ -124,7 +124,7 @@ public class CoxPlugin extends Plugin
 	//olm
 	private boolean olmActive; // in olm fight
 	private boolean olmReady; // olm ready to attack
-	private int olmPhase = -1; // -1=unknown 0=first 1=normal 2=final
+	private int olmPhase = -1; // -1=unknown 0=first 1=middle 2=final
 	private NPC olmHand;
 	private NPC olmNPC;
 	private int olmTicksUntilAction = -1;
@@ -204,7 +204,12 @@ public class CoxPlugin extends Plugin
 				case "the great olm rises with the power of acid.":
 				case "the great olm rises with the power of crystal.":
 				case "the great olm rises with the power of flame.":
-					olmPhase = olmPhase == -1 ? 0 : 1; // if unknown assume first phase
+					switch (olmPhase) {
+						case -1:
+							olmPhase = 0;
+						case 0:
+							olmPhase = 1;
+					}
 					resetOlm();
 					break;
 				case "the great olm is giving its all. this is its final stand.":
@@ -532,7 +537,7 @@ public class CoxPlugin extends Plugin
 		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
 		{
 			olmReady = true;
-			olmTicksUntilAction = olmPhase == 0 ? 4 : 3; // first phase has 1 extra tick before attack
+			olmTicksUntilAction = olmPhase == 0 ? 2 : 4; // first phase has 1 extra tick before attack
 			olmActionCycle = 4;
 			olmNextSpec = 3;
 			return;
