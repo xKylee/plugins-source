@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.GameObject;
 
-class SepulchreGameObject
+class HallowedSepulchreGameObject
 {
 	@Getter(AccessLevel.PACKAGE)
 	private final GameObject gameObject;
@@ -20,7 +20,7 @@ class SepulchreGameObject
 	@Getter(AccessLevel.PACKAGE)
 	private final int animationSpeed;
 
-	SepulchreGameObject(final GameObject gameObject, final int animationId, final int animationSpeed)
+	HallowedSepulchreGameObject(final GameObject gameObject, final int animationId, final int animationSpeed)
 	{
 		this.gameObject = gameObject;
 		this.animationId = animationId;

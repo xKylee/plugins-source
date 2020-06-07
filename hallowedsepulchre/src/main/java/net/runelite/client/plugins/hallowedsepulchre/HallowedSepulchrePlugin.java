@@ -30,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.DynamicObject;
 import net.runelite.api.Entity;
 import net.runelite.api.GameObject;
@@ -48,7 +47,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import static net.runelite.client.plugins.hallowedsepulchre.SepulchreIDs.*;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -60,23 +59,22 @@ import org.pf4j.Extension;
 	tags = {"sepulchre", "hallowed", "darkmyre", "agility"},
 	type = PluginType.MINIGAME
 )
-@Slf4j
-public class SepulchrePlugin extends Plugin
+public class HallowedSepulchrePlugin extends Plugin
 {
 	@Inject
-	private SepulchreConfig config;
+	private HallowedSepulchreConfig config;
 
 	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
-	private SepulchreOverlay sepulchreOverlay;
+	private HallowedSepulchreOverlay hallowedSepulchreOverlay;
 
 	@Getter(AccessLevel.PACKAGE)
 	private List<GameObject> crossbowStatues = new ArrayList<>();
 
 	@Getter(AccessLevel.PACKAGE)
-	private List<SepulchreGameObject> wizardStatues = new ArrayList<>();
+	private List<HallowedSepulchreGameObject> wizardStatues = new ArrayList<>();
 
 	@Getter(AccessLevel.PACKAGE)
 	private List<NPC> arrows = new ArrayList<>();
@@ -85,25 +83,25 @@ public class SepulchrePlugin extends Plugin
 	private List<NPC> swords = new ArrayList<>();
 
 	@Provides
-	SepulchreConfig getConfig(ConfigManager configManager)
+	HallowedSepulchreConfig getConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(SepulchreConfig.class);
+		return configManager.getConfig(HallowedSepulchreConfig.class);
 	}
 
 	@Override
 	protected void startUp()
 	{
-		overlayManager.add(sepulchreOverlay);
+		overlayManager.add(hallowedSepulchreOverlay);
 
-		reset();
+		resetHallowedSupulchre();
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		overlayManager.remove(sepulchreOverlay);
+		overlayManager.remove(hallowedSepulchreOverlay);
 
-		reset();
+		resetHallowedSupulchre();
 	}
 
 	@Subscribe
@@ -129,9 +127,9 @@ public class SepulchrePlugin extends Plugin
 				wizardStatues.clear();
 				break;
 			case "mirrorMode":
-				sepulchreOverlay.determineLayer();
-				overlayManager.remove(sepulchreOverlay);
-				overlayManager.add(sepulchreOverlay);
+				hallowedSepulchreOverlay.determineLayer();
+				overlayManager.remove(hallowedSepulchreOverlay);
+				overlayManager.add(hallowedSepulchreOverlay);
 				break;
 			default:
 				break;
@@ -143,7 +141,7 @@ public class SepulchrePlugin extends Plugin
 	{
 		if (config.highlightWizardStatues() && !wizardStatues.isEmpty())
 		{
-			for (SepulchreGameObject wizardStatue : wizardStatues)
+			for (HallowedSepulchreGameObject wizardStatue : wizardStatues)
 			{
 				int ticks = wizardStatue.getTicksUntilNextAnimation();
 
@@ -204,14 +202,9 @@ public class SepulchrePlugin extends Plugin
 	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
-		GameState gameState = event.getGameState();
-
-		if (gameState == GameState.LOGIN_SCREEN || gameState == GameState.HOPPING || gameState == GameState.LOADING)
+		if (event.getGameState() != GameState.LOGGED_IN)
 		{
-			crossbowStatues.clear();
-			wizardStatues.clear();
-			arrows.clear();
-			swords.clear();
+			resetHallowedSupulchre();
 		}
 	}
 
@@ -266,21 +259,21 @@ public class SepulchrePlugin extends Plugin
 			case WIZARD_STATUE_38410:
 			case WIZARD_STATUE_38411:
 			case WIZARD_STATUE_38412:
-				wizardStatues.add(new SepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_4));
+				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_4));
 				break;
 			case WIZARD_STATUE_38416:
 			case WIZARD_STATUE_38417:
 			case WIZARD_STATUE_38418:
 			case WIZARD_STATUE_38419:
 			case WIZARD_STATUE_38420:
-				wizardStatues.add(new SepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_3));
+				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_3));
 				break;
 			case WIZARD_STATUE_38421:
 			case WIZARD_STATUE_38422:
 			case WIZARD_STATUE_38423:
 			case WIZARD_STATUE_38424:
 			case WIZARD_STATUE_38425:
-				wizardStatues.add(new SepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_2));
+				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_2));
 				break;
 			default:
 				break;
@@ -317,7 +310,7 @@ public class SepulchrePlugin extends Plugin
 		}
 	}
 
-	private void reset()
+	private void resetHallowedSupulchre()
 	{
 		crossbowStatues.clear();
 		wizardStatues.clear();
