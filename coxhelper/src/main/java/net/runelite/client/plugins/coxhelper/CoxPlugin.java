@@ -548,7 +548,7 @@ public class CoxPlugin extends Plugin
 				{
 					olmNextSpec = olmPhase == 2 ? 4 : 3; // final phase has an extra special
 				}
-				else
+				else if (!handCrippled)
 				{
 					olmNextSpec--;
 				}
