@@ -34,7 +34,7 @@ import net.runelite.client.config.ConfigTitleSection;
 import net.runelite.client.config.Title;
 
 @ConfigGroup("hallowedsepulchre")
-public interface SepulchreConfig extends Config
+public interface HallowedSepulchreConfig extends Config
 {
 	@Getter
 	@AllArgsConstructor

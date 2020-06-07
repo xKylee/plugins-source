@@ -24,7 +24,7 @@
  */
 package net.runelite.client.plugins.hallowedsepulchre;
 
-class SepulchreIDs
+class HallowedSepulchreIDs
 {
 	static final int ARROW_9672 = 9672;
 	static final int ARROW_9673 = 9673;

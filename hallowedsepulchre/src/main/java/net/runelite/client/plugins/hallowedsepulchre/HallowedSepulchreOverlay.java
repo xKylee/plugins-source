@@ -18,21 +18,21 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.graphics.ModelOutlineRenderer;
-import static net.runelite.client.plugins.hallowedsepulchre.SepulchreIDs.CROSSBOW_STATUE_ANIM_DEFAULT;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_ANIM_DEFAULT;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
-public class SepulchreOverlay extends Overlay
+public class HallowedSepulchreOverlay extends Overlay
 {
 	private final Client client;
-	private final SepulchrePlugin plugin;
-	private final SepulchreConfig config;
+	private final HallowedSepulchrePlugin plugin;
+	private final HallowedSepulchreConfig config;
 	private final ModelOutlineRenderer modelOutlineRenderer;
 
 	@Inject
-	SepulchreOverlay(final Client client, final SepulchrePlugin plugin, final SepulchreConfig config, final ModelOutlineRenderer modelOutlineRenderer)
+	HallowedSepulchreOverlay(final Client client, final HallowedSepulchrePlugin plugin, final HallowedSepulchreConfig config, final ModelOutlineRenderer modelOutlineRenderer)
 	{
 		this.client = client;
 		this.plugin = plugin;
@@ -45,9 +45,9 @@ public class SepulchreOverlay extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		SepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
+		HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
 
-		if (!highlightArrows.equals(SepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
+		if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
 		{
 			for (NPC npc : plugin.getArrows())
 			{
@@ -55,9 +55,9 @@ public class SepulchreOverlay extends Overlay
 			}
 		}
 
-		SepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
+		HallowedSepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
 
-		if (!highlightSwords.equals(SepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
+		if (!highlightSwords.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
 		{
 			for (NPC npc : plugin.getSwords())
 			{
@@ -78,7 +78,7 @@ public class SepulchreOverlay extends Overlay
 		return null;
 	}
 
-	private void renderNpcHighlight(final NPC npc, SepulchreConfig.HighlightMode highlightMode, Graphics2D graphics2D, final Color color)
+	private void renderNpcHighlight(final NPC npc, HallowedSepulchreConfig.HighlightMode highlightMode, Graphics2D graphics2D, final Color color)
 	{
 		NPCDefinition npcDefinition = npc.getTransformedDefinition();
 
@@ -87,12 +87,12 @@ public class SepulchreOverlay extends Overlay
 			return;
 		}
 
-		if (highlightMode.equals(SepulchreConfig.HighlightMode.OUTLINE) || highlightMode.equals(SepulchreConfig.HighlightMode.BOTH))
+		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.OUTLINE) || highlightMode.equals(HallowedSepulchreConfig.HighlightMode.BOTH))
 		{
 			modelOutlineRenderer.drawOutline(npc, 1, color);
 		}
 
-		if (highlightMode.equals(SepulchreConfig.HighlightMode.TILE) || highlightMode.equals(SepulchreConfig.HighlightMode.BOTH))
+		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.TILE) || highlightMode.equals(HallowedSepulchreConfig.HighlightMode.BOTH))
 		{
 			int size = 1;
 
@@ -149,7 +149,7 @@ public class SepulchreOverlay extends Overlay
 
 	private void renderWizardStatues(Graphics2D graphics2D)
 	{
-		for (SepulchreGameObject sepulchreGameObject : plugin.getWizardStatues())
+		for (HallowedSepulchreGameObject sepulchreGameObject : plugin.getWizardStatues())
 		{
 			GameObject gameObject = sepulchreGameObject.getGameObject();
 
