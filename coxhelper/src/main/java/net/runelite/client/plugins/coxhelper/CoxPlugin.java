@@ -255,10 +255,24 @@ public class CoxPlugin extends Plugin
 		switch (projectile.getId())
 		{
 			case ProjectileID.OLM_MAGE_ATTACK:
+				if (!olmReady && olmNPC != null)
+				{
+					olmReady = true;
+					olmTicksUntilAction = 4; // first phase has 1 extra tick before attack
+					olmActionCycle = 3;
+					olmNextSpec = 3;
+				}
 				olmPrayer = PrayAgainst.MAGIC;
 				lastPrayTime = System.currentTimeMillis();
 				break;
 			case ProjectileID.OLM_RANGE_ATTACK:
+				if (!olmReady && olmNPC != null)
+				{
+					olmReady = true;
+					olmTicksUntilAction = 4; // first phase has 1 extra tick before attack
+					olmActionCycle = 3;
+					olmNextSpec = 3;
+				}
 				olmPrayer = PrayAgainst.RANGED;
 				lastPrayTime = System.currentTimeMillis();
 				break;
@@ -528,15 +542,6 @@ public class CoxPlugin extends Plugin
 		olmHealPools.clear();
 		olmPortals.clear();
 		client.clearHintArrow();
-
-		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
-		{
-			olmReady = true;
-			olmTicksUntilAction = olmPhase == 0 ? 4 : 3; // first phase has 1 extra tick before attack
-			olmActionCycle = 4;
-			olmNextSpec = 3;
-			return;
-		}
 
 		if (olmTicksUntilAction == 1)
 		{
