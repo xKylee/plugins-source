@@ -532,8 +532,8 @@ public class CoxPlugin extends Plugin
 		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
 		{
 			olmReady = true;
-			olmTicksUntilAction = olmPhase == 0 ? 4 : 3; // first phase has 1 extra tick before attack
-			olmActionCycle = 4;
+			olmTicksUntilAction = olmPhase == 0 ? 5 : 4; // first phase has 1 extra tick before attack
+			olmActionCycle = 3;
 			olmNextSpec = 3;
 			return;
 		}
