@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.14"
+version = "0.0.13"
 
 project.extra["PluginName"] = "CoX Helper"
 project.extra["PluginDescription"] = "All-in-one plugin for Chambers of Xeric"
