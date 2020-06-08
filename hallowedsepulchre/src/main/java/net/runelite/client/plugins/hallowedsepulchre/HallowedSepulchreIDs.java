@@ -24,10 +24,13 @@
  */
 package net.runelite.client.plugins.hallowedsepulchre;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 class HallowedSepulchreIDs
 {
-	static final int SEPULCHRE_LOBBY_REGION_ID = 9565;
-
 	static final int ARROW_9672 = 9672;
 	static final int ARROW_9673 = 9673;
 	static final int ARROW_9674 = 9674;
@@ -63,4 +66,41 @@ class HallowedSepulchreIDs
 	static final int WIZARD_STATUE_ANIM_SPEED_2 = 2;
 
 	static final int WIZARD_STATUE_ANIM_FIRE = 8658;
+
+	static final Set<Integer> REGION_IDS = Stream.of(8794,
+		8795,
+		8796,
+		8797,
+		8798,
+		9050,
+		9051,
+		9052,
+		9053,
+		9054,
+		9306,
+		9307,
+		9308,
+		9309,
+		9310,
+		9562,
+		9563,
+		9564,
+		9565, // Lobby
+		9566,
+		9818,
+		9819,
+		9820,
+		9821,
+		9822,
+		10074,
+		10075,
+		10076,
+		10077,
+		10078,
+		10330,
+		10331,
+		10332,
+		10333,
+		10334)
+		.collect(Collectors.toCollection(HashSet::new));
 }
