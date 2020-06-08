@@ -67,9 +67,9 @@ public class CoxDebugBox extends Overlay
 		tableComponent.addRow("olmActive", String.valueOf(plugin.isOlmActive()));
 		tableComponent.addRow("olmReady", String.valueOf(plugin.isOlmReady()));
 		tableComponent.addRow("olmPhase", String.valueOf(plugin.getOlmPhase()));
+		tableComponent.addRow("olmPhaseType", String.valueOf(plugin.getOlmPhaseType()));
 		tableComponent.addRow("olmTicksUntilAction", String.valueOf(plugin.getOlmTicksUntilAction()));
 		tableComponent.addRow("olmActionCycle", String.valueOf(plugin.getOlmActionCycle()));
-		tableComponent.addRow("olmNextSpec", String.valueOf(plugin.getOlmNextSpec()));
 		tableComponent.addRow("portalTicks", String.valueOf(plugin.getPortalTicks()));
 		tableComponent.addRow("handCrippled", String.valueOf(plugin.isHandCrippled()));
 		tableComponent.addRow("crippleTimer", String.valueOf(plugin.getCrippleTimer()));

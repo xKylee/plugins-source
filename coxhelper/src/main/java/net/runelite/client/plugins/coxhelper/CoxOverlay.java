@@ -288,30 +288,12 @@ public class CoxOverlay extends Overlay
 					{
 						final int tick = plugin.getOlmTicksUntilAction();
 						final int cycle = plugin.getOlmActionCycle();
-						final int spec = plugin.getOlmNextSpec();
 						final String tickStr = String.valueOf(tick);
 						String cycleStr = "?";
 						switch (cycle)
 						{
 							case 1:
-								switch (spec)
-								{
-									case 1:
-										cycleStr = "Portals";
-										break;
-									case 2:
-										cycleStr = "lightning";
-										break;
-									case 3:
-										cycleStr = "Crystals";
-										break;
-									case 4:
-										cycleStr = "Heal";
-										break;
-									case -1:
-										cycleStr = "??";
-										break;
-								}
+								cycleStr = "Special";
 								break;
 							case 2:
 								cycleStr = "Sauto";
