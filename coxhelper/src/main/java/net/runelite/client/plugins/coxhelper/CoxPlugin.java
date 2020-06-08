@@ -416,7 +416,7 @@ public class CoxPlugin extends Plugin
 	{
 		if (!inRaid())
 		{
-			olmPhase = -1;
+			olmPhase = 0;
 			olmPhaseType = PhaseType.UNKNOWN;
 			olmTicksUntilAction = -1;
 			olmActionCycle = -1;
