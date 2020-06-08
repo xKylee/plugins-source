@@ -105,6 +105,10 @@ public class CoxPlugin extends Plugin
 
 	@Inject
 	@Getter(AccessLevel.NONE)
+	private CoxDebugBox coxDebugBox;
+
+	@Inject
+	@Getter(AccessLevel.NONE)
 	private CoxConfig config;
 
 	@Inject
@@ -152,6 +156,7 @@ public class CoxPlugin extends Plugin
 	{
 		overlayManager.add(coxOverlay);
 		overlayManager.add(coxInfoBox);
+		overlayManager.add(coxDebugBox);
 		handCrippled = false;
 		olmHand = null;
 		olmPortals.clear();
@@ -167,6 +172,7 @@ public class CoxPlugin extends Plugin
 	{
 		overlayManager.remove(coxOverlay);
 		overlayManager.remove(coxInfoBox);
+		overlayManager.remove(coxDebugBox);
 	}
 
 	@Subscribe
@@ -204,7 +210,8 @@ public class CoxPlugin extends Plugin
 				case "the great olm rises with the power of acid.":
 				case "the great olm rises with the power of crystal.":
 				case "the great olm rises with the power of flame.":
-					switch (olmPhase) {
+					switch (olmPhase)
+					{
 						case -1:
 							olmPhase = 0;
 						case 0:
@@ -537,7 +544,7 @@ public class CoxPlugin extends Plugin
 		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
 		{
 			olmReady = true;
-			olmTicksUntilAction = olmPhase == 0 ? 2 : 4; // first phase has 1 extra tick before attack
+			olmTicksUntilAction = olmPhase == 0 ? 1 : 4; // first phase has 1 extra tick before attack
 			olmActionCycle = 4;
 			olmNextSpec = 3;
 			return;
@@ -611,10 +618,13 @@ public class CoxPlugin extends Plugin
 		{
 			coxOverlay.determineLayer();
 			coxInfoBox.determineLayer();
+			coxDebugBox.determineLayer();
 			overlayManager.remove(coxOverlay);
 			overlayManager.remove(coxInfoBox);
+			overlayManager.remove(coxDebugBox);
 			overlayManager.add(coxOverlay);
 			overlayManager.add(coxInfoBox);
+			overlayManager.add(coxDebugBox);
 		}
 	}
 }
