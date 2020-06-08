@@ -30,12 +30,14 @@ import java.util.List;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.DynamicObject;
 import net.runelite.api.Entity;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
@@ -48,7 +50,34 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.*;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.ARROW_9672;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.ARROW_9673;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.ARROW_9674;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_38444;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_38445;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_38446;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.REGION_IDS;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.SWORD_9669;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.SWORD_9670;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.SWORD_9671;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38409;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38410;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38411;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38412;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38416;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38417;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38418;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38419;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38420;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38421;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38422;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38423;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38424;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38425;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_FIRE;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_SPEED_2;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_SPEED_3;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_SPEED_4;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -250,6 +279,25 @@ public class HallowedSepulchrePlugin extends Plugin
 		if (event.getGameState() != GameState.LOGGED_IN)
 		{
 			resetHallowedSepulchre();
+		}
+	}
+
+	@Subscribe
+	private void onChatMessage(ChatMessage message)
+	{
+		if (!playerInSepulchre || message.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+
+		switch (message.getMessage())
+		{
+			case "You make your way back to the lobby of the Hallowed Sepulchre.":
+			case "The obelisk teleports you back to the lobby of the Hallowed Sepulchre.":
+				resetHallowedSepulchre();
+				break;
+			default:
+				break;
 		}
 	}
 
