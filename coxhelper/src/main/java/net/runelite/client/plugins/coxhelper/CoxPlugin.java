@@ -128,12 +128,12 @@ public class CoxPlugin extends Plugin
 	//olm
 	private boolean olmActive; // in olm fight
 	private boolean olmReady; // olm ready to attack
-	private int olmPhase = -1; // -1=unknown 0=first 1=middle 2=final
+	private int olmPhase = 0;
+	private PhaseType olmPhaseType = PhaseType.UNKNOWN;
 	private NPC olmHand;
 	private NPC olmNPC;
 	private int olmTicksUntilAction = -1;
 	private int olmActionCycle = -1; //4:0 = auto 3:0 = null 2:0 = auto 1:0 = spec + actioncycle =4
-	private int olmNextSpec = -1; // 1= portals 2=lightnig 3=crystals 4= heal hand if p4
 	private final List<WorldPoint> olmHealPools = new ArrayList<>();
 	private final List<WorldPoint> olmPortals = new ArrayList<>();
 	private int portalTicks = 10;
@@ -208,19 +208,23 @@ public class CoxPlugin extends Plugin
 			switch (Text.standardize(event.getMessageNode().getValue()))
 			{
 				case "the great olm rises with the power of acid.":
+					olmPhase++;
+					olmPhaseType = PhaseType.ACID;
+					resetOlm();
+					break;
 				case "the great olm rises with the power of crystal.":
+					olmPhase++;
+					olmPhaseType = PhaseType.CRYSTAL;
+					resetOlm();
+					break;
 				case "the great olm rises with the power of flame.":
-					switch (olmPhase)
-					{
-						case -1:
-							olmPhase = 0;
-						case 0:
-							olmPhase = 1;
-					}
+					olmPhase++;
+					olmPhaseType = PhaseType.FLAME;
 					resetOlm();
 					break;
 				case "the great olm is giving its all. this is its final stand.":
-					olmPhase = 2;
+					olmPhase++;
+					olmPhaseType = PhaseType.FINAL;
 					resetOlm();
 					break;
 				case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
@@ -250,8 +254,8 @@ public class CoxPlugin extends Plugin
 		olmActive = true;
 		olmReady = false;
 		crippleTimer = 45;
-		olmNextSpec = -1;
 		olmActionCycle = -1;
+		olmTicksUntilAction = -1;
 	}
 
 	@Subscribe
@@ -413,6 +417,9 @@ public class CoxPlugin extends Plugin
 		if (!inRaid())
 		{
 			olmPhase = -1;
+			olmPhaseType = PhaseType.UNKNOWN;
+			olmTicksUntilAction = -1;
+			olmActionCycle = -1;
 			olmHealPools.clear();
 			npcContainers.clear();
 			victims.clear();
@@ -544,9 +551,8 @@ public class CoxPlugin extends Plugin
 		if (!olmReady && olmNPC != null && olmNPC.getCombatLevel() > 0)
 		{
 			olmReady = true;
-			olmTicksUntilAction = olmPhase == 0 ? 1 : 4; // first phase has 1 extra tick before attack
+			olmTicksUntilAction = olmPhase == 1 ? 1 : 4;
 			olmActionCycle = 4;
-			olmNextSpec = 3;
 			return;
 		}
 
@@ -555,15 +561,6 @@ public class CoxPlugin extends Plugin
 			if (olmActionCycle == 1)
 			{
 				olmActionCycle = 4;
-				olmTicksUntilAction = 4;
-				if (olmNextSpec == 1)
-				{
-					olmNextSpec = olmPhase == 2 ? 4 : 3; // final phase has an extra special
-				}
-				else if (!handCrippled)
-				{
-					olmNextSpec--;
-				}
 			}
 			else
 			{
@@ -571,8 +568,8 @@ public class CoxPlugin extends Plugin
 				{
 					olmActionCycle--;
 				}
-				olmTicksUntilAction = 4;
 			}
+			olmTicksUntilAction = 4;
 		}
 		else
 		{
@@ -626,5 +623,13 @@ public class CoxPlugin extends Plugin
 			overlayManager.add(coxInfoBox);
 			overlayManager.add(coxDebugBox);
 		}
+	}
+
+	enum PhaseType {
+		ACID,
+		CRYSTAL,
+		FLAME,
+		FINAL,
+		UNKNOWN,
 	}
 }
