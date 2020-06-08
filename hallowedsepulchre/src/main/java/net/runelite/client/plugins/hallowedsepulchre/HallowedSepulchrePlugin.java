@@ -30,6 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.runelite.api.Client;
 import net.runelite.api.DynamicObject;
 import net.runelite.api.Entity;
 import net.runelite.api.GameObject;
@@ -62,6 +63,9 @@ import org.pf4j.Extension;
 public class HallowedSepulchrePlugin extends Plugin
 {
 	@Inject
+	private Client client;
+
+	@Inject
 	private HallowedSepulchreConfig config;
 
 	@Inject
@@ -81,6 +85,9 @@ public class HallowedSepulchrePlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private List<NPC> swords = new ArrayList<>();
+
+	@Getter(AccessLevel.PACKAGE)
+	private boolean playerInSepulchre = false;
 
 	@Provides
 	HallowedSepulchreConfig getConfig(ConfigManager configManager)
@@ -139,6 +146,19 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onGameTick(GameTick event)
 	{
+		if (!isInSepulchreRegion())
+		{
+			if (playerInSepulchre)
+			{
+				resetHallowedSepulchre();
+				playerInSepulchre = false;
+			}
+
+			return;
+		}
+
+		playerInSepulchre = true;
+
 		if (config.highlightWizardStatues() && !wizardStatues.isEmpty())
 		{
 			for (HallowedSepulchreGameObject wizardStatue : wizardStatues)
@@ -170,6 +190,11 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onNpcSpawned(NpcSpawned event)
 	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
 		NPC npc = event.getNpc();
 
 		addNpc(npc);
@@ -178,6 +203,11 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onNpcDespawned(NpcDespawned event)
 	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
 		NPC npc = event.getNpc();
 
 		removeNpc(npc);
@@ -186,6 +216,11 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onGameObjectSpawned(GameObjectSpawned event)
 	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
 		GameObject gameObject = event.getGameObject();
 
 		addGameObject(gameObject);
@@ -194,6 +229,11 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onGameObjectDespawned(GameObjectDespawned event)
 	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
 		GameObject gameObject = event.getGameObject();
 
 		removeGameObject(gameObject);
@@ -202,6 +242,11 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
 		if (event.getGameState() != GameState.LOGGED_IN)
 		{
 			resetHallowedSepulchre();
@@ -316,5 +361,10 @@ public class HallowedSepulchrePlugin extends Plugin
 		wizardStatues.clear();
 		arrows.clear();
 		swords.clear();
+	}
+
+	private boolean isInSepulchreRegion()
+	{
+		return REGION_IDS.contains(client.getMapRegions()[0]);
 	}
 }

@@ -45,6 +45,11 @@ public class HallowedSepulchreOverlay extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
+		if (!plugin.isPlayerInSepulchre())
+		{
+			return null;
+		}
+
 		HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
 
 		if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
