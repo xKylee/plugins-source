@@ -93,7 +93,7 @@ public class HallowedSepulchrePlugin extends Plugin
 	{
 		overlayManager.add(hallowedSepulchreOverlay);
 
-		resetHallowedSupulchre();
+		resetHallowedSepulchre();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class HallowedSepulchrePlugin extends Plugin
 	{
 		overlayManager.remove(hallowedSepulchreOverlay);
 
-		resetHallowedSupulchre();
+		resetHallowedSepulchre();
 	}
 
 	@Subscribe
@@ -204,7 +204,7 @@ public class HallowedSepulchrePlugin extends Plugin
 	{
 		if (event.getGameState() != GameState.LOGGED_IN)
 		{
-			resetHallowedSupulchre();
+			resetHallowedSepulchre();
 		}
 	}
 
@@ -310,7 +310,7 @@ public class HallowedSepulchrePlugin extends Plugin
 		}
 	}
 
-	private void resetHallowedSupulchre()
+	private void resetHallowedSepulchre()
 	{
 		crossbowStatues.clear();
 		wizardStatues.clear();
