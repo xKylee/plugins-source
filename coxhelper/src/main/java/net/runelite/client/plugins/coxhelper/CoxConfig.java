@@ -274,9 +274,21 @@ public interface CoxConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+		position = 15,
+		keyName = "olmDebug",
+		name = "Olm Debug Info",
+		description = "Dev tool to show info about olm",
+		titleSection = "olmTitle"
+	)
+	default boolean olmDebug()
+	{
+		return false;
+	}
+
 	@ConfigTitleSection(
 		keyName = "colors",
-		position = 15,
+		position = 16,
 		name = "Colors",
 		description = ""
 	)
@@ -286,7 +298,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 17,
 		keyName = "muttaColor",
 		name = "Muttadile Tile Color",
 		description = "Change hit area tile color for muttadiles",
@@ -300,7 +312,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 17,
+		position = 18,
 		keyName = "guardColor",
 		name = "Guardians Tile Color",
 		description = "Change safespot area tile color for Guardians",
@@ -314,7 +326,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 18,
+		position = 19,
 		keyName = "tektonColor",
 		name = "Tekton Tile Color",
 		description = "Change hit area tile color for Tekton",
@@ -328,7 +340,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 19,
+		position = 20,
 		keyName = "burnColor",
 		name = "Burn Victim Color",
 		description = "Changes tile color for burn victim.",
@@ -342,7 +354,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 20,
+		position = 21,
 		keyName = "acidColor",
 		name = "Acid Victim Color",
 		description = "Changes tile color for acid victim.",
@@ -356,7 +368,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 21,
+		position = 22,
 		keyName = "tpColor",
 		name = "Teleport Target Color",
 		description = "Changes tile color for teleport target.",
@@ -371,7 +383,7 @@ public interface CoxConfig extends Config
 
 	@ConfigTitleSection(
 		keyName = "text",
-		position = 22,
+		position = 23,
 		name = "Text",
 		description = ""
 	)
@@ -381,7 +393,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 23,
+		position = 24,
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Bold/Italics/Plain",
@@ -397,7 +409,7 @@ public interface CoxConfig extends Config
 		max = 20
 	)
 	@ConfigItem(
-		position = 24,
+		position = 25,
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
@@ -410,7 +422,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 25,
+		position = 26,
 		keyName = "shadows",
 		name = "Shadows",
 		description = "Adds Shadows to text.",
