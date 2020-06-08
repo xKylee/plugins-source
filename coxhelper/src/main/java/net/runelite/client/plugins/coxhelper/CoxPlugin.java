@@ -625,7 +625,8 @@ public class CoxPlugin extends Plugin
 		}
 	}
 
-	enum PhaseType {
+	enum PhaseType
+	{
 		ACID,
 		CRYSTAL,
 		FLAME,
