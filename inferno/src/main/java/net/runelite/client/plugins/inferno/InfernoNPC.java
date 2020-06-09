@@ -193,23 +193,26 @@ class InfernoNPC
 			}
 		}
 
+		//for zuk attacks, we will not ensure ticksTillNextAttack <= 0 before updating
+		if (this.getType == Type.ZUK)
+		{
+			if (this.getNpc().getAnimation() == AnimationID.TZKAL_ZUK)
+			{
+				if (finalPhase)
+				{
+					this.updateNextAttack(this.getType().getDefaultAttack(), 7);
+				}
+				else
+				{
+					this.updateNextAttack(this.getType().getDefaultAttack(), 10);
+				}
+			}
+		}
+
 		if (ticksTillNextAttack <= 0)
 		{
 			switch (this.getType())
 			{
-				case ZUK:
-					if (this.getNpc().getAnimation() == AnimationID.TZKAL_ZUK)
-					{
-						if (finalPhase)
-						{
-							this.updateNextAttack(this.getType().getDefaultAttack(), 7);
-						}
-						else
-						{
-							this.updateNextAttack(this.getType().getDefaultAttack(), 10);
-						}
-					}
-					break;
 				case JAD:
 					if (this.getNextAttack() != Attack.UNKNOWN)
 					{
