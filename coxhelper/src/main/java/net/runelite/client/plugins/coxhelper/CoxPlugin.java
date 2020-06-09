@@ -204,8 +204,7 @@ public class CoxPlugin extends Plugin
 				case "the great olm rises with the power of acid.":
 				case "the great olm rises with the power of crystal.":
 				case "the great olm rises with the power of flame.":
-					switch (olmPhase)
-					{
+					switch (olmPhase) {
 						case -1:
 							olmPhase = 0;
 						case 0:
