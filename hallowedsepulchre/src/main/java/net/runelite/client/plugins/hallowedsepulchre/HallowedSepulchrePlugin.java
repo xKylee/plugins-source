@@ -50,7 +50,34 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.*;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.ARROW_9672;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.ARROW_9673;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.ARROW_9674;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_38444;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_38445;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.CROSSBOW_STATUE_38446;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.REGION_IDS;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.SWORD_9669;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.SWORD_9670;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.SWORD_9671;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38409;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38410;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38411;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38412;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38416;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38417;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38418;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38419;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38420;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38421;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38422;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38423;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38424;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_38425;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_FIRE;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_SPEED_2;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_SPEED_3;
+import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.WIZARD_STATUE_ANIM_SPEED_4;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -58,8 +85,8 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Hallowed Sepulchre",
 	enabledByDefault = false,
-	description = "A plugin for the sepulchre.",
-	tags = {"sepulchre", "hallowed", "darkmyre", "agility"},
+	description = "A plugin for the Hallowed Sepulchre agility minigame.",
+	tags = {"sepulchre", "hallowed", "darkmeyer", "agility", "course", "minigame"},
 	type = PluginType.MINIGAME
 )
 public class HallowedSepulchrePlugin extends Plugin
@@ -77,9 +104,6 @@ public class HallowedSepulchrePlugin extends Plugin
 	private HallowedSepulchreOverlay hallowedSepulchreOverlay;
 
 	@Getter(AccessLevel.PACKAGE)
-	private boolean isInsideSepulchre;
-
-	@Getter(AccessLevel.PACKAGE)
 	private List<GameObject> crossbowStatues = new ArrayList<>();
 
 	@Getter(AccessLevel.PACKAGE)
@@ -91,6 +115,9 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private List<NPC> swords = new ArrayList<>();
 
+	@Getter(AccessLevel.PACKAGE)
+	private boolean playerInSepulchre = false;
+
 	@Provides
 	HallowedSepulchreConfig getConfig(ConfigManager configManager)
 	{
@@ -101,6 +128,7 @@ public class HallowedSepulchrePlugin extends Plugin
 	protected void startUp()
 	{
 		overlayManager.add(hallowedSepulchreOverlay);
+
 		resetHallowedSepulchre();
 	}
 
@@ -108,6 +136,7 @@ public class HallowedSepulchrePlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(hallowedSepulchreOverlay);
+
 		resetHallowedSepulchre();
 	}
 
@@ -121,18 +150,6 @@ public class HallowedSepulchrePlugin extends Plugin
 
 		switch (event.getKey())
 		{
-			case "highlightArrows":
-				arrows.clear();
-				break;
-			case "highlightSwords":
-				swords.clear();
-				break;
-			case "highlightCrossbowmanStatue":
-				crossbowStatues.clear();
-				break;
-			case "highlightWizardStatue":
-				wizardStatues.clear();
-				break;
 			case "mirrorMode":
 				hallowedSepulchreOverlay.determineLayer();
 				overlayManager.remove(hallowedSepulchreOverlay);
@@ -146,36 +163,41 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Subscribe
 	private void onGameTick(GameTick event)
 	{
-		if (isInsideSepulchre())
+		if (!isInSepulchreRegion())
 		{
-			if (client.getLocalPlayer().getWorldLocation().getRegionID() == SEPULCHRE_LOBBY_REGION_ID)
+			if (playerInSepulchre)
 			{
 				resetHallowedSepulchre();
+				playerInSepulchre = false;
 			}
 
-			if (config.highlightWizardStatues() && !wizardStatues.isEmpty())
+			return;
+		}
+
+		playerInSepulchre = true;
+
+		if (config.highlightWizardStatues() && !wizardStatues.isEmpty())
+		{
+			for (HallowedSepulchreGameObject wizardStatue : wizardStatues)
 			{
-				for (HallowedSepulchreGameObject wizardStatue : wizardStatues)
+				int ticks = wizardStatue.getTicksUntilNextAnimation();
+
+				if (ticks >= 0)
 				{
-					int ticks = wizardStatue.getTicksUntilNextAnimation();
+					wizardStatue.setTicksUntilNextAnimation(--ticks);
+				}
+				else
+				{
+					Entity entity = wizardStatue.getGameObject().getEntity();
 
-					if (ticks >= 0)
+					if (!(entity instanceof DynamicObject))
 					{
-						wizardStatue.setTicksUntilNextAnimation(--ticks);
+						return;
 					}
-					else
+
+					if (((DynamicObject) entity).getAnimationID() == wizardStatue.getAnimationId())
 					{
-						Entity entity = wizardStatue.getGameObject().getEntity();
-
-						if (!(entity instanceof DynamicObject))
-						{
-							return;
-						}
-
-						if (((DynamicObject) entity).getAnimationID() == wizardStatue.getAnimationId())
-						{
-							wizardStatue.setTicksUntilNextAnimation(wizardStatue.getAnimationSpeed());
-						}
+						wizardStatue.setTicksUntilNextAnimation(wizardStatue.getAnimationSpeed());
 					}
 				}
 			}
@@ -183,58 +205,87 @@ public class HallowedSepulchrePlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onChatMessage(ChatMessage message)
-	{
-		if (message.getType() == ChatMessageType.GAMEMESSAGE && message.getMessage().contains("You venture down into the Hallowed Sepulchre."))
-		{
-			isInsideSepulchre = true;
-		}
-	}
-
-	@Subscribe
 	private void onNpcSpawned(NpcSpawned event)
 	{
-		if (isInsideSepulchre())
+		if (!playerInSepulchre)
 		{
-			NPC npc = event.getNpc();
-
-			addNpc(npc);
+			return;
 		}
+
+		NPC npc = event.getNpc();
+
+		addNpc(npc);
 	}
 
 	@Subscribe
 	private void onNpcDespawned(NpcDespawned event)
 	{
-		if (isInsideSepulchre())
+		if (!playerInSepulchre)
 		{
-			NPC npc = event.getNpc();
-
-			removeNpc(npc);
+			return;
 		}
+
+		NPC npc = event.getNpc();
+
+		removeNpc(npc);
 	}
 
 	@Subscribe
 	private void onGameObjectSpawned(GameObjectSpawned event)
 	{
-			GameObject gameObject = event.getGameObject();
+		if (!playerInSepulchre)
+		{
+			return;
+		}
 
-			addGameObject(gameObject);
+		GameObject gameObject = event.getGameObject();
+
+		addGameObject(gameObject);
 	}
 
 	@Subscribe
 	private void onGameObjectDespawned(GameObjectDespawned event)
 	{
-			GameObject gameObject = event.getGameObject();
+		if (!playerInSepulchre)
+		{
+			return;
+		}
 
-			removeGameObject(gameObject);
+		GameObject gameObject = event.getGameObject();
+
+		removeGameObject(gameObject);
 	}
 
 	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
-		if ((event.getGameState() != GameState.LOGGED_IN && event.getGameState() != GameState.LOADING ) && isInsideSepulchre())
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
+		if (event.getGameState() != GameState.LOGGED_IN)
 		{
 			resetHallowedSepulchre();
+		}
+	}
+
+	@Subscribe
+	private void onChatMessage(ChatMessage message)
+	{
+		if (!playerInSepulchre || message.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+
+		switch (message.getMessage())
+		{
+			case "You make your way back to the lobby of the Hallowed Sepulchre.":
+			case "The obelisk teleports you back to the lobby of the Hallowed Sepulchre.":
+				resetHallowedSepulchre();
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -342,10 +393,14 @@ public class HallowedSepulchrePlugin extends Plugin
 
 	private void resetHallowedSepulchre()
 	{
-		isInsideSepulchre = false;
 		crossbowStatues.clear();
 		wizardStatues.clear();
 		arrows.clear();
 		swords.clear();
+	}
+
+	private boolean isInSepulchreRegion()
+	{
+		return REGION_IDS.contains(client.getMapRegions()[0]);
 	}
 }

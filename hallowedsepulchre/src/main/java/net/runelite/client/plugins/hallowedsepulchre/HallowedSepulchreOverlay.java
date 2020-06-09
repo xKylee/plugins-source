@@ -45,38 +45,41 @@ public class HallowedSepulchreOverlay extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (plugin.isInsideSepulchre())
+		if (!plugin.isPlayerInSepulchre())
 		{
-			HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
+			return null;
+		}
 
-			if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
+		HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
+
+		if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
+		{
+			for (NPC npc : plugin.getArrows())
 			{
-				for (NPC npc : plugin.getArrows())
-				{
-					renderNpcHighlight(npc, highlightArrows, graphics2D, config.highlightArrowsColor());
-				}
-			}
-
-			HallowedSepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
-
-			if (!highlightSwords.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
-			{
-				for (NPC npc : plugin.getSwords())
-				{
-					renderNpcHighlight(npc, highlightSwords, graphics2D, config.highlightSwordsColor());
-				}
-			}
-
-			if (config.highlightCrossbowStatues() && !plugin.getCrossbowStatues().isEmpty())
-			{
-				renderCrossbowStatues(graphics2D);
-			}
-
-			if (config.highlightWizardStatues() && !plugin.getWizardStatues().isEmpty())
-			{
-				renderWizardStatues(graphics2D);
+				renderNpcHighlight(npc, highlightArrows, graphics2D, config.highlightArrowsColor());
 			}
 		}
+
+		HallowedSepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
+
+		if (!highlightSwords.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
+		{
+			for (NPC npc : plugin.getSwords())
+			{
+				renderNpcHighlight(npc, highlightSwords, graphics2D, config.highlightSwordsColor());
+			}
+		}
+
+		if (config.highlightCrossbowStatues() && !plugin.getCrossbowStatues().isEmpty())
+		{
+			renderCrossbowStatues(graphics2D);
+		}
+
+		if (config.highlightWizardStatues() && !plugin.getWizardStatues().isEmpty())
+		{
+			renderWizardStatues(graphics2D);
+		}
+
 		return null;
 	}
 

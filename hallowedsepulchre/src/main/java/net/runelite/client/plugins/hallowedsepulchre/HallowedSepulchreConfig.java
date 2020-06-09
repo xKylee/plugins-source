@@ -128,7 +128,7 @@ public interface HallowedSepulchreConfig extends Config
 	@ConfigItem(
 		position = 4,
 		keyName = "wizardFontSize",
-		name = "Wizard Statue Font Size",
+		name = "Wizard statue font size",
 		description = "Adjust the font size of the tick countdown.",
 		titleSection = "overlays"
 	)
