@@ -45,36 +45,38 @@ public class HallowedSepulchreOverlay extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
-
-		if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
+		if (plugin.isInsideSepulchre())
 		{
-			for (NPC npc : plugin.getArrows())
+			HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
+
+			if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
 			{
-				renderNpcHighlight(npc, highlightArrows, graphics2D, config.highlightArrowsColor());
+				for (NPC npc : plugin.getArrows())
+				{
+					renderNpcHighlight(npc, highlightArrows, graphics2D, config.highlightArrowsColor());
+				}
+			}
+
+			HallowedSepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
+
+			if (!highlightSwords.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
+			{
+				for (NPC npc : plugin.getSwords())
+				{
+					renderNpcHighlight(npc, highlightSwords, graphics2D, config.highlightSwordsColor());
+				}
+			}
+
+			if (config.highlightCrossbowStatues() && !plugin.getCrossbowStatues().isEmpty())
+			{
+				renderCrossbowStatues(graphics2D);
+			}
+
+			if (config.highlightWizardStatues() && !plugin.getWizardStatues().isEmpty())
+			{
+				renderWizardStatues(graphics2D);
 			}
 		}
-
-		HallowedSepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
-
-		if (!highlightSwords.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
-		{
-			for (NPC npc : plugin.getSwords())
-			{
-				renderNpcHighlight(npc, highlightSwords, graphics2D, config.highlightSwordsColor());
-			}
-		}
-
-		if (config.highlightCrossbowStatues() && !plugin.getCrossbowStatues().isEmpty())
-		{
-			renderCrossbowStatues(graphics2D);
-		}
-
-		if (config.highlightWizardStatues() && !plugin.getWizardStatues().isEmpty())
-		{
-			renderWizardStatues(graphics2D);
-		}
-
 		return null;
 	}
 
@@ -170,7 +172,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 			final Point canvasPoint = gameObject.getCanvasTextLocation(graphics2D, ticksLeftStr, 0);
 
-			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, 18, Font.PLAIN, color, canvasPoint, false, 0);
+			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(), Font.PLAIN, color, canvasPoint, false, 0);
 		}
 	}
 

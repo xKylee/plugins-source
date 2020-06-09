@@ -32,6 +32,7 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigTitleSection;
 import net.runelite.client.config.Title;
+import net.runelite.client.config.Units;
 
 @ConfigGroup("hallowedsepulchre")
 public interface HallowedSepulchreConfig extends Config
@@ -122,6 +123,19 @@ public interface HallowedSepulchreConfig extends Config
 	default boolean highlightWizardStatues()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "wizardFontSize",
+		name = "Wizard Statue Font Size",
+		description = "Adjust the font size of the tick countdown.",
+		titleSection = "overlays"
+	)
+	@Units(Units.POINTS)
+	default int wizardFontSize()
+	{
+		return 12;
 	}
 
 	@ConfigTitleSection(

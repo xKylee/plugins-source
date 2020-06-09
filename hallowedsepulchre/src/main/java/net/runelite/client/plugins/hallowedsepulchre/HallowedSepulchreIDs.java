@@ -26,6 +26,8 @@ package net.runelite.client.plugins.hallowedsepulchre;
 
 class HallowedSepulchreIDs
 {
+	static final int SEPULCHRE_LOBBY_REGION_ID = 9565;
+
 	static final int ARROW_9672 = 9672;
 	static final int ARROW_9673 = 9673;
 	static final int ARROW_9674 = 9674;
