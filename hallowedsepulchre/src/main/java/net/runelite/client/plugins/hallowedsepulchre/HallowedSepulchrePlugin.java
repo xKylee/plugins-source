@@ -150,18 +150,6 @@ public class HallowedSepulchrePlugin extends Plugin
 
 		switch (event.getKey())
 		{
-			case "highlightArrows":
-				arrows.clear();
-				break;
-			case "highlightSwords":
-				swords.clear();
-				break;
-			case "highlightCrossbowmanStatue":
-				crossbowStatues.clear();
-				break;
-			case "highlightWizardStatue":
-				wizardStatues.clear();
-				break;
 			case "mirrorMode":
 				hallowedSepulchreOverlay.determineLayer();
 				overlayManager.remove(hallowedSepulchreOverlay);
