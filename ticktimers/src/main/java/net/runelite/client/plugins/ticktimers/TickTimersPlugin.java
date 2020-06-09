@@ -95,11 +95,10 @@ public class TickTimersPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
-		if (gameStateChanged.getGameState() != GameState.LOGGED_IN)
+		if (client.getGameState() != GameState.LOGGED_IN)
 		{
 			return;
 		}
-		
 		if (regionCheck())
 		{
 			npcContainers.clear();
