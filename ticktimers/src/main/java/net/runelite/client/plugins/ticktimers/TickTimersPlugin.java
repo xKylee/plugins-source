@@ -109,7 +109,7 @@ public class TickTimersPlugin extends Plugin
 			validRegion = true;
 			overlayManager.add(timersOverlay);
 		}
-		else
+		else if (!regionCheck())
 		{
 			validRegion = false;
 			overlayManager.remove(timersOverlay);
@@ -143,7 +143,7 @@ public class TickTimersPlugin extends Plugin
 			validRegion = true;
 			overlayManager.add(timersOverlay);
 		}
-		else
+		else if (!regionCheck())
 		{
 			validRegion = false;
 			overlayManager.remove(timersOverlay);
