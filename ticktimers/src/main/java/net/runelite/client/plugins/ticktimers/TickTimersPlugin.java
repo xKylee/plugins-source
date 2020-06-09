@@ -95,7 +95,27 @@ public class TickTimersPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
-		npcContainers.clear();
+		if (gameStateChanged.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+		
+		if (regionCheck())
+		{
+			npcContainers.clear();
+			for (NPC npc : client.getNpcs())
+			{
+				addNpc(npc);
+			}
+			validRegion = true;
+			overlayManager.add(timersOverlay);
+		}
+		else
+		{
+			validRegion = false;
+			overlayManager.remove(timersOverlay);
+			npcContainers.clear();
+		}
 	}
 
 	@Override
