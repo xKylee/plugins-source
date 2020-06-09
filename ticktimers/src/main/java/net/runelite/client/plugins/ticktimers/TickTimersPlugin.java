@@ -116,6 +116,7 @@ public class TickTimersPlugin extends Plugin
 
 		if (regionCheck())
 		{
+			npcContainers.clear();
 			for (NPC npc : client.getNpcs())
 			{
 				addNpc(npc);
