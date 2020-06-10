@@ -105,17 +105,14 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		if (client.getGameState() != GameState.LOGGED_IN)
-		{
-			return;
-		}
-		resetHallowedSepulchre();
 		overlayManager.add(hallowedSepulchreOverlay);
+		resetHallowedSepulchre();
 
-		if (!isInSepulchreRegion())
+		if (client.getGameState() != GameState.LOGGED_IN || !isInSepulchreRegion())
 		{
 			return;
 		}
+
 		locateSepulchreGameObjects();
 	}
 
@@ -123,6 +120,8 @@ public class HallowedSepulchrePlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(hallowedSepulchreOverlay);
+
+		playerInSepulchre = false;
 
 		resetHallowedSepulchre();
 	}
