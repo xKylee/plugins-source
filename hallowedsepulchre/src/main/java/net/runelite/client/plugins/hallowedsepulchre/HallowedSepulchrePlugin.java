@@ -36,6 +36,7 @@ import net.runelite.api.DynamicObject;
 import net.runelite.api.Entity;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
+import net.runelite.api.LocatableQueryResults;
 import net.runelite.api.NPC;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
@@ -44,6 +45,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -76,6 +78,9 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Inject
 	private HallowedSepulchreOverlay hallowedSepulchreOverlay;
 
+	@Inject
+	private GameObjectQuery gameObjectQuery;
+
 	@Getter(AccessLevel.PACKAGE)
 	private List<GameObject> crossbowStatues = new ArrayList<>();
 
@@ -103,6 +108,11 @@ public class HallowedSepulchrePlugin extends Plugin
 		overlayManager.add(hallowedSepulchreOverlay);
 
 		resetHallowedSepulchre();
+
+		if (isInSepulchreRegion())
+		{
+			locateSepulchreGameObjects();
+		}
 	}
 
 	@Override
@@ -375,5 +385,15 @@ public class HallowedSepulchrePlugin extends Plugin
 	private boolean isInSepulchreRegion()
 	{
 		return REGION_IDS.contains(client.getMapRegions()[0]);
+	}
+
+	private void locateSepulchreGameObjects()
+	{
+		LocatableQueryResults<GameObject> locatableQueryResults = gameObjectQuery.result(client);
+
+		for (GameObject gameObject : locatableQueryResults)
+		{
+			addGameObject(gameObject);
+		}
 	}
 }
