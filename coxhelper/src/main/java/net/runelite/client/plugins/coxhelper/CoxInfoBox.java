@@ -55,18 +55,16 @@ public class CoxInfoBox extends Overlay
 	private final CoxPlugin plugin;
 	private final CoxConfig config;
 	private final Client client;
-	private final Olm olm;
 	private final SpriteManager spriteManager;
 	private final PanelComponent prayAgainstPanel = new PanelComponent();
 	private final PanelComponent panelComponent = new PanelComponent();
 
 	@Inject
-	CoxInfoBox(CoxPlugin plugin, CoxConfig config, Client client, Olm olm, SpriteManager spriteManager)
+	CoxInfoBox(CoxPlugin plugin, CoxConfig config, Client client, SpriteManager spriteManager)
 	{
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
-		this.olm = olm;
 		this.spriteManager = spriteManager;
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		determineLayer();
@@ -81,14 +79,14 @@ public class CoxInfoBox extends Overlay
 		{
 			prayAgainstPanel.getChildren().clear();
 
-			final PrayAgainst prayAgainst = olm.getPrayer();
+			final PrayAgainst prayAgainst = plugin.getOlmPrayer();
 
-			if (System.currentTimeMillis() < olm.getLastPrayTime() + 120000 && prayAgainst != null && config.prayAgainstOlm())
+			if (System.currentTimeMillis() < plugin.getLastPrayTime() + 120000 && prayAgainst != null && config.prayAgainstOlm())
 			{
 				final int scale = config.prayAgainstOlmSize();
 				InfoBoxComponent prayComponent = new InfoBoxComponent();
 				BufferedImage prayImg = ImageUtil.resizeImage(
-					getPrayerImage(olm.getPrayer()), scale, scale
+					getPrayerImage(plugin.getOlmPrayer()), scale, scale
 				);
 				prayComponent.setImage(prayImg);
 				prayComponent.setColor(Color.WHITE);
@@ -105,7 +103,7 @@ public class CoxInfoBox extends Overlay
 			}
 			else
 			{
-				olm.setPrayer(null);
+				plugin.setOlmPrayer(null);
 			}
 
 			if (config.vangHealth() && plugin.getVanguards() > 0)
@@ -144,7 +142,7 @@ public class CoxInfoBox extends Overlay
 		}
 		if (client.getLocalPlayer().getWorldLocation().getRegionID() == 4919)
 		{
-			olm.setPrayer(null);
+			plugin.setOlmPrayer(null);
 		}
 		return null;
 	}

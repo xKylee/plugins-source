@@ -41,15 +41,13 @@ public class CoxDebugBox extends Overlay
 {
 	private final CoxPlugin plugin;
 	private final CoxConfig config;
-	private final Olm olm;
 	private final PanelComponent panelComponent = new PanelComponent();
 
 	@Inject
-	CoxDebugBox(CoxPlugin plugin, CoxConfig config, Olm olm)
+	CoxDebugBox(CoxPlugin plugin, CoxConfig config)
 	{
 		this.plugin = plugin;
 		this.config = config;
-		this.olm = olm;
 		setPosition(OverlayPosition.BOTTOM_LEFT);
 		determineLayer();
 		setPriority(OverlayPriority.HIGH);
@@ -66,16 +64,15 @@ public class CoxDebugBox extends Overlay
 		panelComponent.getChildren().clear();
 		TableComponent tableComponent = new TableComponent();
 		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
-		tableComponent.addRow("olmActive", String.valueOf(olm.isActive()));
-		tableComponent.addRow("olmReady", String.valueOf(olm.isReady()));
-		tableComponent.addRow("olmFirstPhase", String.valueOf(olm.isFirstPhase()));
-		tableComponent.addRow("olmDesyncs", String.valueOf(olm.getDesyncs()));
-		tableComponent.addRow("olmTickCycle", String.valueOf(olm.getTickCycle()));
-		tableComponent.addRow("olmTicksUntilAction", String.valueOf(olm.ticksUntilNextAction()));
-		tableComponent.addRow("olmActionCycle", String.valueOf(olm.actionCycle()));
-		tableComponent.addRow("portalTicks", String.valueOf(olm.getPortalTicks()));
-		tableComponent.addRow("handCrippled", String.valueOf(olm.isCrippled()));
-		tableComponent.addRow("crippleTimer", String.valueOf(olm.getCrippleTicks()));
+		tableComponent.addRow("olmActive", String.valueOf(plugin.isOlmActive()));
+		tableComponent.addRow("olmReady", String.valueOf(plugin.isOlmReady()));
+		tableComponent.addRow("olmPhase", String.valueOf(plugin.getOlmPhase()));
+		tableComponent.addRow("olmPhaseType", String.valueOf(plugin.getOlmPhaseType()));
+		tableComponent.addRow("olmTicksUntilAction", String.valueOf(plugin.getOlmTicksUntilAction()));
+		tableComponent.addRow("olmActionCycle", String.valueOf(plugin.getOlmActionCycle()));
+		tableComponent.addRow("portalTicks", String.valueOf(plugin.getPortalTicks()));
+		tableComponent.addRow("handCrippled", String.valueOf(plugin.isHandCrippled()));
+		tableComponent.addRow("crippleTimer", String.valueOf(plugin.getCrippleTimer()));
 		panelComponent.getChildren().add(tableComponent);
 
 		return panelComponent.render(graphics);
