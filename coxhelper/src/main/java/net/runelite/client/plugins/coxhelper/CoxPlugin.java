@@ -174,40 +174,32 @@ public class CoxPlugin extends Plugin
 				}
 			}
 
-			if (!matchChatMessage(event.getMessage()))
+			switch (Text.standardize(event.getMessageNode().getValue()))
 			{
-				matchChatMessage(event.getMessageNode().getValue());
+				case "the great olm rises with the power of acid.":
+				case "the great olm rises with the power of crystal.":
+				case "the great olm rises with the power of flame.":
+				case "the great olm is giving its all. this is its final stand.":
+					//TODO: detect olm phase
+					break;
+				case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
+				case "the great olm fires a sphere of aggression your way.":
+					olm.setPrayer(PrayAgainst.MELEE);
+					break;
+				case "the great olm fires a sphere of magical power your way. your prayers have been sapped.":
+				case "the great olm fires a sphere of magical power your way.":
+					olm.setPrayer(PrayAgainst.MAGIC);
+					break;
+				case "the great olm fires a sphere of accuracy and dexterity your way. your prayers have been sapped.":
+				case "the great olm fires a sphere of accuracy and dexterity your way.":
+					olm.setPrayer(PrayAgainst.RANGED);
+					break;
+				case "the great olm's left claw clenches to protect itself temporarily.":
+					olm.cripple();
+					break;
+				default:
+					break;
 			}
-		}
-	}
-
-	private boolean matchChatMessage(String message)
-	{
-		switch (Text.standardize(message))
-		{
-			case "the great olm rises with the power of acid.":
-			case "the great olm rises with the power of crystal.":
-			case "the great olm rises with the power of flame.":
-			case "the great olm is giving its all. this is its final stand.":
-				olm.nextPhase();
-				return true;
-			case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
-			case "the great olm fires a sphere of aggression your way.":
-				olm.setPrayer(PrayAgainst.MELEE);
-				return true;
-			case "the great olm fires a sphere of magical power your way. your prayers have been sapped.":
-			case "the great olm fires a sphere of magical power your way.":
-				olm.setPrayer(PrayAgainst.MAGIC);
-				return true;
-			case "the great olm fires a sphere of accuracy and dexterity your way. your prayers have been sapped.":
-			case "the great olm fires a sphere of accuracy and dexterity your way.":
-				olm.setPrayer(PrayAgainst.RANGED);
-				return true;
-			case "the great olm's left claw clenches to protect itself temporarily.":
-				olm.cripple();
-				return true;
-			default:
-				return false;
 		}
 	}
 
@@ -310,6 +302,7 @@ public class CoxPlugin extends Plugin
 				olm.setHand(npc);
 				break;
 			case NpcID.GREAT_OLM:
+				olm.nextPhase();
 				olm.setHead(npc);
 		}
 	}
