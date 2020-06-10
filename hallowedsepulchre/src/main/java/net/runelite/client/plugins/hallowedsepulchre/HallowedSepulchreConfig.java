@@ -32,6 +32,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.Range;
 import net.runelite.client.config.Title;
 import net.runelite.client.config.Units;
 
@@ -129,31 +130,6 @@ public interface HallowedSepulchreConfig extends Config
 		return false;
 	}
 
-	@ConfigItem(
-		position = 4,
-		keyName = "wizardFontSize",
-		name = "Tick counter font size",
-		description = "Adjust the font size of the wizard statue tick counter.",
-		titleSection = "overlays"
-	)
-	@Units(Units.POINTS)
-	default int wizardFontSize()
-	{
-		return 12;
-	}
-
-	@ConfigItem(
-		position = 5,
-		keyName = "wizardFontShadow",
-		name = "Tick counter font shadow",
-		description = "Toggle font shadow of the wizard statue tick counter.",
-		titleSection = "overlays"
-	)
-	default boolean wizardFontShadow()
-	{
-		return false;
-	}
-
 	@ConfigTitleSection(
 		keyName = "colors",
 		name = "Colors",
@@ -246,12 +222,61 @@ public interface HallowedSepulchreConfig extends Config
 	@ConfigItem(
 		position = 6,
 		keyName = "wizardStatueTickCounterColor",
-		name = "Wizard statue color",
+		name = "Tick counter",
 		description = "Change the overlay color of the wizard statue tick counter.",
 		titleSection = "colors"
 	)
 	default Color wizardStatueTickCounterColor()
 	{
 		return Color.RED;
+	}
+
+	@ConfigTitleSection(
+		keyName = "other",
+		name = "Other",
+		description = "Other settings.",
+		position = 3
+	)
+	default boolean other()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 0,
+		keyName = "wizardFontSize",
+		name = "Tick counter font size",
+		description = "Adjust the font size of the wizard statue tick counter.",
+		titleSection = "other"
+	)
+	@Units(Units.POINTS)
+	default int wizardFontSize()
+	{
+		return 12;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "wizardFontShadow",
+		name = "Tick counter font shadow",
+		description = "Toggle font shadow of the wizard statue tick counter.",
+		titleSection = "other"
+	)
+	default boolean wizardFontShadow()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "tileOutlineWidth",
+		name = "Tile outline width",
+		description = "Change width of tile outlines.",
+		titleSection = "other"
+	)
+	@Range(min = 1, max = 5)
+	default int tileOutlineWidth()
+	{
+		return 1;
 	}
 }

@@ -127,7 +127,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 			if (polygon != null)
 			{
-				drawStrokeAndFill(graphics2D, outlineColor, fillColor, 1.0f, polygon);
+				drawStrokeAndFill(graphics2D, outlineColor, fillColor, config.tileOutlineWidth(), polygon);
 			}
 		}
 	}
