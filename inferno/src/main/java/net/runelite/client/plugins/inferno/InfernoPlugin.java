@@ -129,6 +129,7 @@ public class InfernoPlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private boolean finalPhase = false;
+	private boolean finalPhaseTick = false;
 	@Getter(AccessLevel.PACKAGE)
 	private NPC zukShield = null;
 	private NPC zuk = null;
@@ -286,6 +287,12 @@ public class InfernoPlugin extends Plugin
 		calculateCentralNibbler();
 
 		calculateSpawnTimerInfobox();
+
+		//no longer on the same tick that finalPhase started
+		if (finalPhaseTick)
+		{
+			finalPhaseTick = false;
+		}
 	}
 
 	@Subscribe
@@ -347,11 +354,12 @@ public class InfernoPlugin extends Plugin
 				break;
 			case HEALER_ZUK:
 				finalPhase = true;
+				finalPhaseTick = true;
 				for (InfernoNPC infernoNPC : infernoNpcs)
 				{
 					if (infernoNPC.getType() == InfernoNPC.Type.ZUK)
 					{
-						infernoNPC.setTicksTillNextAttack(infernoNPC.getTicksTillNextAttack() - 10);
+						infernoNPC.setTicksTillNextAttack(-1);
 					}
 				}
 				log.debug("[INFERNO] Final phase detected!");
@@ -490,7 +498,7 @@ public class InfernoPlugin extends Plugin
 	{
 		for (InfernoNPC infernoNPC : infernoNpcs)
 		{
-			infernoNPC.gameTick(client, lastLocation, finalPhase);
+			infernoNPC.gameTick(client, lastLocation, finalPhase, finalPhaseTick);
 
 			if (infernoNPC.getType() == InfernoNPC.Type.ZUK && zukShieldCornerTicks == -1)
 			{
