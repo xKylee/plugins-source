@@ -131,15 +131,11 @@ public class HallowedSepulchrePlugin extends Plugin
 			return;
 		}
 
-		switch (event.getKey())
+		if (event.getKey().equals("mirrorMode"))
 		{
-			case "mirrorMode":
-				hallowedSepulchreOverlay.determineLayer();
-				overlayManager.remove(hallowedSepulchreOverlay);
-				overlayManager.add(hallowedSepulchreOverlay);
-				break;
-			default:
-				break;
+			hallowedSepulchreOverlay.determineLayer();
+			overlayManager.remove(hallowedSepulchreOverlay);
+			overlayManager.add(hallowedSepulchreOverlay);
 		}
 	}
 
@@ -153,7 +149,6 @@ public class HallowedSepulchrePlugin extends Plugin
 				resetHallowedSepulchre();
 				playerInSepulchre = false;
 			}
-
 			return;
 		}
 

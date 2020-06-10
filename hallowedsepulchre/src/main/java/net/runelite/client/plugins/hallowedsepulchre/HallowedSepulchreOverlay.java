@@ -3,7 +3,6 @@ package net.runelite.client.plugins.hallowedsepulchre;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -191,7 +190,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 			final Point canvasPoint = gameObject.getCanvasTextLocation(graphics2D, ticksLeftStr, 0);
 
-			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(), Font.PLAIN, color, canvasPoint, config.wizardFontShadow(), 0);
+			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(), config.fontStyle().getFont(), color, canvasPoint, config.wizardFontShadow(), 0);
 		}
 	}
 
