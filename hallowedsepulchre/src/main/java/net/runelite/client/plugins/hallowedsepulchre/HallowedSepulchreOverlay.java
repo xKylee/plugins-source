@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.Stroke;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.DynamicObject;
@@ -42,6 +43,11 @@ public class HallowedSepulchreOverlay extends Overlay
 		determineLayer();
 	}
 
+	void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
+	}
+
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
@@ -50,84 +56,89 @@ public class HallowedSepulchreOverlay extends Overlay
 			return null;
 		}
 
-		HallowedSepulchreConfig.HighlightMode highlightArrows = config.highlightArrows();
+		renderArrows(graphics2D);
 
-		if (!highlightArrows.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getArrows().isEmpty())
-		{
-			for (NPC npc : plugin.getArrows())
-			{
-				renderNpcHighlight(npc, highlightArrows, graphics2D, config.highlightArrowsColor());
-			}
-		}
+		renderSwords(graphics2D);
 
-		HallowedSepulchreConfig.HighlightMode highlightSwords = config.highlightSwords();
+		renderCrossbowStatues(graphics2D);
 
-		if (!highlightSwords.equals(HallowedSepulchreConfig.HighlightMode.NONE) && !plugin.getSwords().isEmpty())
-		{
-			for (NPC npc : plugin.getSwords())
-			{
-				renderNpcHighlight(npc, highlightSwords, graphics2D, config.highlightSwordsColor());
-			}
-		}
-
-		if (config.highlightCrossbowStatues() && !plugin.getCrossbowStatues().isEmpty())
-		{
-			renderCrossbowStatues(graphics2D);
-		}
-
-		if (config.highlightWizardStatues() && !plugin.getWizardStatues().isEmpty())
-		{
-			renderWizardStatues(graphics2D);
-		}
+		renderWizardStatues(graphics2D);
 
 		return null;
 	}
 
-	private void renderNpcHighlight(final NPC npc, HallowedSepulchreConfig.HighlightMode highlightMode, Graphics2D graphics2D, final Color color)
+	private void renderArrows(final Graphics2D graphics2D)
 	{
-		NPCDefinition npcDefinition = npc.getTransformedDefinition();
+		final HallowedSepulchreConfig.HighlightMode highlightMode = config.highlightArrows();
 
-		if (npcDefinition == null || npc.isDead())
+		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.NONE) || plugin.getArrows().isEmpty())
+		{
+			return;
+		}
+
+		for (NPC npc : plugin.getArrows())
+		{
+			renderNpcHighlight(graphics2D, config.arrowsOutlineColor(), config.arrowsFillColor(), npc, highlightMode);
+		}
+	}
+
+	private void renderSwords(final Graphics2D graphics2D)
+	{
+		final HallowedSepulchreConfig.HighlightMode highlightMode = config.highlightSwords();
+
+		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.NONE) || plugin.getSwords().isEmpty())
+		{
+			return;
+		}
+
+		for (NPC npc : plugin.getSwords())
+		{
+			renderNpcHighlight(graphics2D, config.swordsOutlineColor(), config.swordsFillColor(), npc, highlightMode);
+		}
+	}
+
+	private void renderNpcHighlight(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final NPC npc, final HallowedSepulchreConfig.HighlightMode highlightMode)
+	{
+		final NPCDefinition npcDefinition = npc.getTransformedDefinition();
+
+		if (npcDefinition == null)
 		{
 			return;
 		}
 
 		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.OUTLINE) || highlightMode.equals(HallowedSepulchreConfig.HighlightMode.BOTH))
 		{
-			modelOutlineRenderer.drawOutline(npc, 1, color);
+			modelOutlineRenderer.drawOutline(npc, 1, outlineColor);
 		}
 
 		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.TILE) || highlightMode.equals(HallowedSepulchreConfig.HighlightMode.BOTH))
 		{
 			int size = 1;
 
-			NPCDefinition composition = npc.getTransformedDefinition();
+			final NPCDefinition composition = npc.getTransformedDefinition();
 
 			if (composition != null)
 			{
 				size = composition.getSize();
 			}
 
-			final LocalPoint lp = npc.getLocalLocation();
-			final Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, lp, size);
-			renderPoly(graphics2D, color, tilePoly);
+			final LocalPoint localPoint = npc.getLocalLocation();
+			final Polygon polygon = Perspective.getCanvasTileAreaPoly(client, localPoint, size);
+
+			if (polygon != null)
+			{
+				drawStrokeAndFill(graphics2D, outlineColor, fillColor, 1.0f, polygon);
+			}
 		}
 	}
 
-	private void renderPoly(final Graphics2D graphics2D, final Color color, final Polygon polygon)
+	private void renderCrossbowStatues(final Graphics2D graphics2D)
 	{
-		if (polygon != null)
+		if (!config.highlightCrossbowStatues() || plugin.getCrossbowStatues().isEmpty())
 		{
-			graphics2D.setColor(color);
-			graphics2D.setStroke(new BasicStroke(1));
-			graphics2D.draw(polygon);
-			graphics2D.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
-			graphics2D.fill(polygon);
+			return;
 		}
-	}
 
-	private void renderCrossbowStatues(Graphics2D graphics)
-	{
 		for (GameObject gameObject : plugin.getCrossbowStatues())
 		{
 			if (!gameObject.getWorldLocation().isInScene(client))
@@ -135,52 +146,63 @@ public class HallowedSepulchreOverlay extends Overlay
 				continue;
 			}
 
-			Entity entity = gameObject.getEntity();
+			final Entity entity = gameObject.getEntity();
 
 			if (!(entity instanceof DynamicObject) || ((DynamicObject) entity).getAnimationID() == CROSSBOW_STATUE_ANIM_DEFAULT)
 			{
 				continue;
 			}
 
-			Shape p = gameObject.getConvexHull();
+			final Shape shape = gameObject.getConvexHull();
 
-			if (p != null)
+			if (shape != null)
 			{
-				graphics.setColor(config.highlightCrossbowStatueColor());
-				graphics.draw(p);
+				drawStrokeAndFill(graphics2D, config.crossbowStatueOutlineColor(), config.crossbowStatueFillColor(), 1.0f, shape);
 			}
 		}
 	}
 
-	private void renderWizardStatues(Graphics2D graphics2D)
+	private void renderWizardStatues(final Graphics2D graphics2D)
 	{
+		if (!config.highlightWizardStatues() || plugin.getWizardStatues().isEmpty())
+		{
+			return;
+		}
+
 		for (HallowedSepulchreGameObject sepulchreGameObject : plugin.getWizardStatues())
 		{
-			GameObject gameObject = sepulchreGameObject.getGameObject();
+			final GameObject gameObject = sepulchreGameObject.getGameObject();
 
 			if (!gameObject.getWorldLocation().isInScene(client))
 			{
 				continue;
 			}
 
-			int ticksLeft = sepulchreGameObject.getTicksUntilNextAnimation();
-			String ticksLeftStr = String.valueOf(ticksLeft);
+			final int ticksLeft = sepulchreGameObject.getTicksUntilNextAnimation();
 
 			if (ticksLeft <= 0)
 			{
 				continue;
 			}
 
-			Color color = (ticksLeft == 1 ? Color.WHITE : config.wizardStatueTickCounterColor());
+			final String ticksLeftStr = String.valueOf(ticksLeft);
+
+			final Color color = (ticksLeft == 1 ? Color.WHITE : config.wizardStatueTickCounterColor());
 
 			final Point canvasPoint = gameObject.getCanvasTextLocation(graphics2D, ticksLeftStr, 0);
 
-			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(), Font.PLAIN, color, canvasPoint, false, 0);
+			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(), Font.PLAIN, color, canvasPoint, config.wizardFontShadow(), 0);
 		}
 	}
 
-	void determineLayer()
+	public static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
+		graphics2D.setColor(outlineColor);
+		final Stroke originalStroke = graphics2D.getStroke();
+		graphics2D.setStroke(new BasicStroke(strokeWidth));
+		graphics2D.draw(shape);
+		graphics2D.setColor(fillColor);
+		graphics2D.fill(shape);
+		graphics2D.setStroke(originalStroke);
 	}
 }
