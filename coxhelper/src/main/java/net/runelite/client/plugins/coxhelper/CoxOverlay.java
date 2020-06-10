@@ -312,7 +312,7 @@ public class CoxOverlay extends Overlay
 						}
 						final String combinedStr = cycleStr + ":" + tickStr;
 						Point canvasPoint = head.getCanvasTextLocation(graphics, combinedStr, 130);
-						var color = cycle == 1 ? config.olmSpecialColor() : Color.WHITE;
+						var color = cycle == 4 ? config.olmSpecialColor() : Color.WHITE;
 						renderTextLocation(graphics, combinedStr, config.textSize(), config.fontStyle().getFont(), color, canvasPoint);
 					}
 				}

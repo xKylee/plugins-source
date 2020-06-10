@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import net.runelite.api.coords.WorldPoint;
 
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
+@Singleton
 public class Olm
 {
 	private final Client client;
@@ -178,7 +180,7 @@ public class Olm
 
 	public int ticksUntilNextAction()
 	{
-		return this.tickCycle % 4;
+		return this.tickCycle % 4 == 0 ?  1 : 4 - (this.tickCycle % 4) + 1;
 	}
 
 	public int actionCycle()
