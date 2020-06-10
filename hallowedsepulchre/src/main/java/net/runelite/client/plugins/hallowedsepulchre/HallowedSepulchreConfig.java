@@ -252,7 +252,7 @@ public interface HallowedSepulchreConfig extends Config
 	)
 	default FontStyle fontStyle()
 	{
-		return FontStyle.BOLD;
+		return FontStyle.PLAIN;
 	}
 
 	@ConfigItem(
