@@ -25,6 +25,7 @@
 package net.runelite.client.plugins.hallowedsepulchre;
 
 import java.awt.Color;
+import java.awt.Font;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.client.config.Alpha;
@@ -42,22 +43,37 @@ public interface HallowedSepulchreConfig extends Config
 	Color RED_OPAQUE = new Color(255, 0, 0, 255);
 	Color RED_TRANSPARENT = new Color(255, 0, 0, 20);
 
-	@Getter
-	@AllArgsConstructor
-	enum HighlightMode
+	@ConfigTitleSection(
+		keyName = "overlays",
+		position = 0,
+		name = "Overlays",
+		description = ""
+	)
+	default Title overlay()
 	{
-		NONE("None"),
-		OUTLINE("Outline"),
-		TILE("Tile"),
-		BOTH("Both");
+		return new Title();
+	}
 
-		private String name;
+	@ConfigTitleSection(
+		keyName = "colors",
+		name = "Colors",
+		description = "Customize overlay colors.",
+		position = 1
+	)
+	default boolean colors()
+	{
+		return false;
+	}
 
-		@Override
-		public String toString()
-		{
-			return getName();
-		}
+	@ConfigTitleSection(
+		keyName = "other",
+		name = "Other",
+		description = "Other settings.",
+		position = 2
+	)
+	default boolean other()
+	{
+		return false;
 	}
 
 	@ConfigItem(
@@ -69,17 +85,6 @@ public interface HallowedSepulchreConfig extends Config
 	default boolean mirrorMode()
 	{
 		return false;
-	}
-
-	@ConfigTitleSection(
-		keyName = "overlays",
-		position = 1,
-		name = "Overlays",
-		description = ""
-	)
-	default Title overlay()
-	{
-		return new Title();
 	}
 
 	@ConfigItem(
@@ -126,17 +131,6 @@ public interface HallowedSepulchreConfig extends Config
 		titleSection = "overlays"
 	)
 	default boolean highlightWizardStatues()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
-		keyName = "colors",
-		name = "Colors",
-		description = "Customize overlay colors.",
-		position = 2
-	)
-	default boolean colors()
 	{
 		return false;
 	}
@@ -231,17 +225,10 @@ public interface HallowedSepulchreConfig extends Config
 		return Color.RED;
 	}
 
-	@ConfigTitleSection(
-		keyName = "other",
-		name = "Other",
-		description = "Other settings.",
-		position = 3
+	@Range(
+		min = 1,
+		max = 20
 	)
-	default boolean other()
-	{
-		return false;
-	}
-
 	@ConfigItem(
 		position = 0,
 		keyName = "wizardFontSize",
@@ -257,6 +244,19 @@ public interface HallowedSepulchreConfig extends Config
 
 	@ConfigItem(
 		position = 1,
+		keyName = "fontStyle",
+		name = "Font Style",
+		description = "Bold/Italics/Plain",
+		titleSection = "other"
+
+	)
+	default FontStyle fontStyle()
+	{
+		return FontStyle.PLAIN;
+	}
+
+	@ConfigItem(
+		position = 2,
 		keyName = "wizardFontShadow",
 		name = "Tick counter font shadow",
 		description = "Toggle font shadow of the wizard statue tick counter.",
@@ -267,16 +267,56 @@ public interface HallowedSepulchreConfig extends Config
 		return false;
 	}
 
+	@Range(
+		min = 1,
+		max = 5
+	)
 	@ConfigItem(
-		position = 2,
+		position = 3,
 		keyName = "tileOutlineWidth",
 		name = "Tile outline width",
 		description = "Change width of tile outlines.",
 		titleSection = "other"
 	)
-	@Range(min = 1, max = 5)
+	@Units(Units.POINTS)
 	default int tileOutlineWidth()
 	{
 		return 1;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum HighlightMode
+	{
+		NONE("None"),
+		OUTLINE("Outline"),
+		TILE("Tile"),
+		BOTH("Both");
+
+		private String name;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum FontStyle
+	{
+		BOLD("Bold", Font.BOLD),
+		ITALIC("Italic", Font.ITALIC),
+		PLAIN("Plain", Font.PLAIN);
+
+		private String name;
+		private int font;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
 	}
 }
