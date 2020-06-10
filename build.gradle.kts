@@ -123,5 +123,10 @@ subprojects {
             exclude("**/LayoutSolver.java")
             exclude("**/RoomType.java")
         }
+
+        register<Copy>("copyDeps") {
+            into("./build/deps/")
+            from(configurations["runtimeClasspath"])
+        }
     }
 }

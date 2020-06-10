@@ -58,6 +58,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
+import static net.runelite.client.plugins.aoewarnings.AoeWarningConfig.*;
 
 @Extension
 @PluginDescriptor(
@@ -322,7 +323,7 @@ public class AoeWarningPlugin extends Plugin
 			case VORKATH_POISON_POOL:
 			case VORKATH_SPAWN:
 			case VORKATH_TICK_FIRE:
-				return notify ? config.isVorkathNotifyEnabled() : config.isVorkathEnabled();
+				return notify ? config.isVorkathNotifyEnabled() : config.vorkathModes().contains(VorkathMode.of(projectileInfo));
 			case VETION_LIGHTNING:
 				return notify ? config.isVetionNotifyEnabled() : config.isVetionEnabled();
 			case CHAOS_FANATIC:

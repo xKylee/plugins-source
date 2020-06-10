@@ -28,6 +28,7 @@ package net.runelite.client.plugins.aoewarnings;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.EnumSet;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +38,7 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigTitleSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Title;
+import static net.runelite.client.plugins.aoewarnings.AoeProjectileInfo.*;
 
 @ConfigGroup("aoe")
 public interface AoeWarningConfig extends Config
@@ -56,6 +58,28 @@ public interface AoeWarningConfig extends Config
 		public String toString()
 		{
 			return getName();
+		}
+	}
+
+	@AllArgsConstructor
+	enum VorkathMode
+	{
+		BOMBS(VORKATH_BOMB),
+		POOLS(VORKATH_POISON_POOL),
+		SPAWN(VORKATH_SPAWN),
+		FIRES(VORKATH_TICK_FIRE); // full auto ratatat
+
+		private final AoeProjectileInfo info;
+		static VorkathMode of(AoeProjectileInfo info)
+		{
+			for (VorkathMode m : values())
+			{
+				if (m.info == info)
+				{
+					return m;
+				}
+			}
+			throw new EnumConstantNotPresentException(AoeProjectileInfo.class, info.toString());
 		}
 	}
 
@@ -434,13 +458,14 @@ public interface AoeWarningConfig extends Config
 	@ConfigItem(
 		keyName = "vorkath",
 		name = "Vorkath",
-		description = "Configures whether or not AoE Projectile Warnings for Vorkath are displayed",
+		description = "Configure what AoE projectiles you should be warned for at Vorkath",
 		titleSection = "vorkathTitle",
-		position = 28
+		position = 28,
+		enumClass = VorkathMode.class
 	)
-	default boolean isVorkathEnabled()
+	default EnumSet<VorkathMode> vorkathModes()
 	{
-		return true;
+		return EnumSet.allOf(VorkathMode.class);
 	}
 
 	@ConfigItem(

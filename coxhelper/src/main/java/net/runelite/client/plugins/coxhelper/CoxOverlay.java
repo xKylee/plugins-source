@@ -58,13 +58,15 @@ public class CoxOverlay extends Overlay
 	private final Client client;
 	private final CoxPlugin plugin;
 	private final CoxConfig config;
+	private final Olm olm;
 
 	@Inject
-	private CoxOverlay(final Client client, final CoxPlugin plugin, final CoxConfig config)
+	private CoxOverlay(final Client client, final CoxPlugin plugin, final CoxConfig config, final Olm olm)
 	{
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+		this.olm = olm;
 		setPosition(OverlayPosition.DYNAMIC);
 		determineLayer();
 		setPriority(OverlayPriority.HIGH);
@@ -73,12 +75,12 @@ public class CoxOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		for (WorldPoint point : plugin.getOlm_Heal())
+		for (WorldPoint point : olm.getHealPools())
 		{
 			drawTile(graphics, point, config.tpColor(), 2, 150);
 		}
 
-		for (WorldPoint point : plugin.getOlm_TP())
+		for (WorldPoint point : olm.getPortals())
 		{
 			client.setHintArrow(point);
 			drawTile(graphics, point, config.tpColor(), 2, 150);
@@ -86,7 +88,7 @@ public class CoxOverlay extends Overlay
 
 		if (plugin.inRaid())
 		{
-			for (NPCContainer npcs : plugin.getNpcContainer().values())
+			for (NPCContainer npcs : plugin.getNpcContainers().values())
 			{
 				Color color;
 				List<WorldPoint> hitSquares;
@@ -203,10 +205,10 @@ public class CoxOverlay extends Overlay
 				}
 			}
 
-			if (plugin.isHandCripple())
+			if (olm.isCrippled())
 			{
-				int tick = plugin.getCrippleTimer();
-				NPC olmHand = plugin.getHand();
+				int tick = olm.getCrippleTicks();
+				NPC olmHand = olm.getHand();
 				final String tickStr = String.valueOf(tick);
 				Point canvasPoint = olmHand.getCanvasTextLocation(graphics, tickStr, 50);
 				renderTextLocation(graphics, tickStr, config.textSize(), config.fontStyle().getFont(), Color.GRAY, canvasPoint);
@@ -214,9 +216,9 @@ public class CoxOverlay extends Overlay
 
 			if (config.timers())
 			{
-				if (plugin.getVictims().size() > 0)
+				if (olm.getVictims().size() > 0)
 				{
-					plugin.getVictims().forEach(victim ->
+					olm.getVictims().forEach(victim ->
 					{
 						final int ticksLeft = victim.getTicks();
 						String ticksLeftStr = String.valueOf(ticksLeft);
@@ -278,48 +280,30 @@ public class CoxOverlay extends Overlay
 				}
 			}
 
-			if (plugin.isRunOlm())
+			if (olm.isActive())
 			{
-				NPC boss = plugin.getOlm_NPC();
+				NPC head = olm.getHead();
 
 				if (config.olmTick())
 				{
-					if (boss != null)
+					if (head != null)
 					{
-						final int tick = plugin.getOlm_TicksUntilAction();
-						final int cycle = plugin.getOlm_ActionCycle();
-						final int spec = plugin.getOlm_NextSpec();
+						final int tick = olm.ticksUntilNextAction();
+						final int cycle = olm.actionCycle();
 						final String tickStr = String.valueOf(tick);
 						String cycleStr = "?";
 						switch (cycle)
 						{
-							case 1:
-								switch (spec)
-								{
-									case 1:
-										cycleStr = "Portals";
-										break;
-									case 2:
-										cycleStr = "lightning";
-										break;
-									case 3:
-										cycleStr = "Crystals";
-										break;
-									case 4:
-										cycleStr = "Heal";
-										break;
-									case -1:
-										cycleStr = "??";
-										break;
-								}
-								break;
-							case 2:
-								cycleStr = "Sauto";
+							case 4:
+								cycleStr = "Special";
 								break;
 							case 3:
+								cycleStr = "Sauto";
+								break;
+							case 2:
 								cycleStr = "Null";
 								break;
-							case 4:
+							case 1:
 								cycleStr = "Nauto";
 								break;
 							case -1:
@@ -327,8 +311,9 @@ public class CoxOverlay extends Overlay
 								break;
 						}
 						final String combinedStr = cycleStr + ":" + tickStr;
-						Point canvasPoint = boss.getCanvasTextLocation(graphics, combinedStr, 130);
-						renderTextLocation(graphics, combinedStr, config.textSize(), config.fontStyle().getFont(), Color.WHITE, canvasPoint);
+						Point canvasPoint = head.getCanvasTextLocation(graphics, combinedStr, 130);
+						var color = cycle == 4 ? config.olmSpecialColor() : Color.WHITE;
+						renderTextLocation(graphics, combinedStr, config.textSize(), config.fontStyle().getFont(), color, canvasPoint);
 					}
 				}
 			}

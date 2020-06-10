@@ -35,6 +35,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
+import net.runelite.client.plugins.gauntlet.GauntletConfig.PrayerHighlight;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -69,7 +70,9 @@ public class GauntletInfoBoxOverlay extends Overlay
 	{
 		panelComponent.getChildren().clear();
 
-		if (!config.highlightPrayerInfobox() || !plugin.fightingBoss() || plugin.getHunllef() == null)
+		PrayerHighlight prayerHighlight = config.highlightPrayer();
+
+		if (prayerHighlight == PrayerHighlight.NONE || prayerHighlight == PrayerHighlight.PRAYERWIDGET || !plugin.fightingBoss() || plugin.getHunllef() == null)
 		{
 			return null;
 		}

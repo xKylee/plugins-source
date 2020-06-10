@@ -28,7 +28,8 @@ public enum TimeMode
 {
 
 	TICKS("Ticks"),
-	SECONDS("MM:SS");
+	SECONDS("Seconds"),
+	MINS_SECONDS_MILLI("MM:SS:MS");
 
 	String human;
 

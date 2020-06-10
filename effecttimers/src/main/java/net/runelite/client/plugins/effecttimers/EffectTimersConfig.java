@@ -29,6 +29,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Keybind;
+import net.runelite.client.config.Range;
 
 @ConfigGroup("effecttimers")
 public interface EffectTimersConfig extends Config
@@ -78,10 +79,23 @@ public interface EffectTimersConfig extends Config
 	}
 
 	@ConfigItem(
+		name = "Set Colors",
+		keyName = "setColors",
+		description = "Should we set our own timer colors?",
+		position = 4
+	)
+	default boolean setColors()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		name = "Timer Color",
 		keyName = "timerColor",
 		description = "Color for timers not on cooldown",
-		position = 4
+		position = 5,
+		hidden = true,
+		unhide = "setColors"
 	)
 	default Color timerColor()
 	{
@@ -92,7 +106,9 @@ public interface EffectTimersConfig extends Config
 		name = "Cooldown Color",
 		keyName = "cooldownColor",
 		description = "Color for timers on cooldown",
-		position = 5
+		position = 6,
+		hidden = true,
+		unhide = "setColors"
 	)
 	default Color cooldownColor()
 	{
@@ -103,7 +119,7 @@ public interface EffectTimersConfig extends Config
 		name = "Freeze Timers",
 		keyName = "freezeTimers",
 		description = "Should we render freeze timers?",
-		position = 6
+		position = 7
 	)
 	default boolean freezeTimers()
 	{
@@ -114,7 +130,7 @@ public interface EffectTimersConfig extends Config
 		name = "Teleblock Timers",
 		keyName = "teleblockTimers",
 		description = "Should we render teleblock timers?",
-		position = 7
+		position = 8
 	)
 	default boolean teleblockTimers()
 	{
@@ -125,7 +141,7 @@ public interface EffectTimersConfig extends Config
 		name = "Vengeance Timers",
 		keyName = "vengTimers",
 		description = "Should we render vengeance timers?",
-		position = 8
+		position = 9
 	)
 	default boolean vengTimers()
 	{
@@ -136,7 +152,7 @@ public interface EffectTimersConfig extends Config
 		name = "SOTD Timers",
 		keyName = "sotdTimers",
 		description = "Should we render staff of the dead timers?",
-		position = 9
+		position = 10
 	)
 	default boolean sotdTimers()
 	{
@@ -147,7 +163,7 @@ public interface EffectTimersConfig extends Config
 		name = "Imbued Heart Timers",
 		keyName = "imbHeartTimers",
 		description = "Should we render staff of the imbued heart timers?",
-		position = 10
+		position = 11
 	)
 	default boolean imbHeartTimers()
 	{
@@ -158,7 +174,7 @@ public interface EffectTimersConfig extends Config
 		name = "DFS/DFW Timers",
 		keyName = "dfsTimers",
 		description = "Should we render staff of the dragon fire shield and Dragonfire Ward timers?",
-		position = 11
+		position = 12
 	)
 	default boolean dfsTimers()
 	{
@@ -169,7 +185,7 @@ public interface EffectTimersConfig extends Config
 		name = "Ancient Wyvern Shield Timers",
 		keyName = "ancWyvernTimers",
 		description = "Should we render staff of the Ancient Wyvern shield timers?",
-		position = 12
+		position = 13
 	)
 	default boolean ancWyvernTimers()
 	{
@@ -180,7 +196,7 @@ public interface EffectTimersConfig extends Config
 		name = "Show Icons",
 		keyName = "showIcons",
 		description = "Should we render the icons? Note disabling this will override all colors",
-		position = 13
+		position = 14
 	)
 	default boolean showIcons()
 	{
@@ -188,10 +204,37 @@ public interface EffectTimersConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "fontStyle",
+		name = "Font Style",
+		description = "Bold/Italics/Plain",
+		position = 15
+	)
+	default FontStyle fontStyle()
+	{
+		return FontStyle.BOLD;
+	}
+
+	@Range(
+		min = 9,
+		max = 14
+	)
+	@ConfigItem(
+		keyName = "textSize",
+		name = "Text Size",
+		description = "Text Size for Timers.",
+		position = 16,
+		titleSection = "overlayTitle"
+	)
+	default int textSize()
+	{
+		return 11;
+	}
+
+	@ConfigItem(
 		name = "X Offset",
 		keyName = "xOffset",
 		description = "X Offset for overlay rendering",
-		position = 14
+		position = 17
 	)
 	default int xOffset()
 	{
@@ -202,7 +245,7 @@ public interface EffectTimersConfig extends Config
 		name = "Debug Keybind",
 		keyName = "debugKeybind",
 		description = "Don't press this unless you know what it does :)",
-		position = 15,
+		position = 18,
 		hidden = true
 	)
 	default Keybind debugKeybind()
@@ -214,13 +257,11 @@ public interface EffectTimersConfig extends Config
 		name = "Debug Integer",
 		keyName = "debugInteger",
 		description = "Related to the keybind in some way :)",
-		position = 16,
+		position = 19,
 		hidden = true
 	)
 	default int debugInteger()
 	{
 		return -1;
 	}
-
-
 }

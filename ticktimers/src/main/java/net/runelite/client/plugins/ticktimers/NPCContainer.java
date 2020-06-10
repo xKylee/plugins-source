@@ -28,6 +28,7 @@ package net.runelite.client.plugins.ticktimers;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.awt.Color;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,20 +44,21 @@ import net.runelite.api.Prayer;
 @Getter(AccessLevel.PACKAGE)
 class NPCContainer
 {
-	private NPC npc;
-	private int npcIndex;
-	private String npcName;
+	@Getter(AccessLevel.PACKAGE)
+	private final NPC npc;
+	private final int npcIndex;
+	private final String npcName;
+	private final ImmutableSet<Integer> animations;
+	private final int attackSpeed;
+	@Getter(AccessLevel.PACKAGE)
+	private final BossMonsters monsterType;
 	private int npcSize;
-	private ImmutableSet<Integer> animations;
-	private int attackSpeed;
 	@Setter(AccessLevel.PACKAGE)
 	private int ticksUntilAttack;
 	@Setter(AccessLevel.PACKAGE)
 	private Actor npcInteracting;
 	@Setter(AccessLevel.PACKAGE)
 	private AttackStyle attackStyle;
-	@Getter(AccessLevel.PACKAGE)
-	private final BossMonsters monsterType;
 
 	NPCContainer(final NPC npc, final int attackSpeed)
 	{
@@ -84,6 +86,27 @@ class NPCContainer
 		{
 			this.npcSize = composition.getSize();
 		}
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(npc);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		NPCContainer that = (NPCContainer) o;
+		return Objects.equals(npc, that.npc);
 	}
 
 	@RequiredArgsConstructor

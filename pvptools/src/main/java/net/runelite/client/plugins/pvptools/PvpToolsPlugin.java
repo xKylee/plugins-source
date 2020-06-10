@@ -170,14 +170,17 @@ public class PvpToolsPlugin extends Plugin
 	{
 		CopyOnWriteArrayList<Player> ccMembers = ClanChatPlugin.getClanMembers();
 		ArrayList<String> missingMembers = new ArrayList<>();
-		for (ClanMember clanMember : client.getClanMembers())
+		if (this.client.getClanMemberManager() != null)
 		{
-			if (!Objects.isNull(clanMember))
+			for (ClanMember clanMember : client.getClanMemberManager().getMembers())
 			{
-				List<String> arrayList = ccMembers.stream().map(player -> Text.removeTags(Text.standardize(player.getName()))).collect(Collectors.toList());
-				if (!arrayList.contains(Text.removeTags(Text.standardize(clanMember.getUsername()))) && !missingMembers.contains(clanMember.getUsername()))
+				if (!Objects.isNull(clanMember))
 				{
-					missingMembers.add("[W" + clanMember.getWorld() + "] - " + clanMember.getUsername());
+					List<String> arrayList = ccMembers.stream().map(player -> Text.removeTags(Text.standardize(player.getName()))).collect(Collectors.toList());
+					if (!arrayList.contains(Text.removeTags(Text.standardize(clanMember.getName()))) && !missingMembers.contains(clanMember.getName()))
+					{
+						missingMembers.add("[W" + clanMember.getWorld() + "] - " + clanMember.getName());
+					}
 				}
 			}
 		}
@@ -189,14 +192,17 @@ public class PvpToolsPlugin extends Plugin
 	{
 		CopyOnWriteArrayList<Player> ccMembers = ClanChatPlugin.getClanMembers();
 		ArrayList<String> currentMembers = new ArrayList<>();
-		for (ClanMember clanMember : client.getClanMembers())
+		if (this.client.getClanMemberManager() != null)
 		{
-			if (!Objects.isNull(clanMember))
+			for (ClanMember clanMember : client.getClanMemberManager().getMembers())
 			{
-				List<String> arrayList = ccMembers.stream().map(player -> Text.removeTags(Text.standardize(player.getName()))).collect(Collectors.toList());
-				if (arrayList.contains(Text.removeTags(Text.standardize(clanMember.getUsername()))) && !currentMembers.contains(clanMember.getUsername()))
+				if (!Objects.isNull(clanMember))
 				{
-					currentMembers.add(clanMember.getUsername());
+					List<String> arrayList = ccMembers.stream().map(player -> Text.removeTags(Text.standardize(player.getName()))).collect(Collectors.toList());
+					if (arrayList.contains(Text.removeTags(Text.standardize(clanMember.getName()))) && !currentMembers.contains(clanMember.getName()))
+					{
+						currentMembers.add(clanMember.getName());
+					}
 				}
 			}
 		}
