@@ -27,6 +27,7 @@ package net.runelite.client.plugins.hallowedsepulchre;
 import java.awt.Color;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -37,6 +38,9 @@ import net.runelite.client.config.Units;
 @ConfigGroup("hallowedsepulchre")
 public interface HallowedSepulchreConfig extends Config
 {
+	Color RED_OPAQUE = new Color(255, 0, 0, 255);
+	Color RED_TRANSPARENT = new Color(255, 0, 0, 20);
+
 	@Getter
 	@AllArgsConstructor
 	enum HighlightMode
@@ -117,7 +121,7 @@ public interface HallowedSepulchreConfig extends Config
 		position = 3,
 		keyName = "highlightWizardStatue",
 		name = "Wizard statue tick counter",
-		description = "Overlay wizard statues with a tick countdown.",
+		description = "Overlay wizard statues with a tick counter.",
 		titleSection = "overlays"
 	)
 	default boolean highlightWizardStatues()
@@ -128,14 +132,26 @@ public interface HallowedSepulchreConfig extends Config
 	@ConfigItem(
 		position = 4,
 		keyName = "wizardFontSize",
-		name = "Wizard statue font size",
-		description = "Adjust the font size of the tick countdown.",
+		name = "Tick counter font size",
+		description = "Adjust the font size of the wizard statue tick counter.",
 		titleSection = "overlays"
 	)
 	@Units(Units.POINTS)
 	default int wizardFontSize()
 	{
 		return 12;
+	}
+
+	@ConfigItem(
+		position = 5,
+		keyName = "wizardFontShadow",
+		name = "Tick counter font shadow",
+		description = "Toggle font shadow of the wizard statue tick counter.",
+		titleSection = "overlays"
+	)
+	default boolean wizardFontShadow()
+	{
+		return false;
 	}
 
 	@ConfigTitleSection(
@@ -149,44 +165,86 @@ public interface HallowedSepulchreConfig extends Config
 		return false;
 	}
 
+	@Alpha
 	@ConfigItem(
 		position = 0,
-		keyName = "highlightArrowsColor",
-		name = "Arrows color",
-		description = "Change the overlay color of arrows.",
+		keyName = "arrowsOutlineColor",
+		name = "Arrows outline",
+		description = "Change the overlay outline color of arrows.",
 		titleSection = "colors"
 	)
-	default Color highlightArrowsColor()
+	default Color arrowsOutlineColor()
 	{
-		return Color.RED;
+		return RED_OPAQUE;
 	}
 
+	@Alpha
 	@ConfigItem(
 		position = 1,
-		keyName = "highlightSwordsColor",
-		name = "Swords color",
-		description = "Change the overlay color of swords.",
+		keyName = "arrowsFillColor",
+		name = "Arrows fill",
+		description = "Change the overlay fill color of arrows.",
 		titleSection = "colors"
 	)
-	default Color highlightSwordsColor()
+	default Color arrowsFillColor()
 	{
-		return Color.RED;
+		return RED_TRANSPARENT;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 2,
+		keyName = "swordsOutlineColor",
+		name = "Swords outline",
+		description = "Change the overlay outline color of swords.",
+		titleSection = "colors"
+	)
+	default Color swordsOutlineColor()
+	{
+		return RED_OPAQUE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 3,
+		keyName = "swordsFillColor",
+		name = "Swords fill",
+		description = "Change the overlay fill color of swords.",
+		titleSection = "colors"
+	)
+	default Color swordsFillColor()
+	{
+		return RED_TRANSPARENT;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 4,
+		keyName = "crossbowStatueOutlineColor",
+		name = "Crossbow outline",
+		description = "Change the overlay outline color of the crossbow statues.",
+		titleSection = "colors"
+	)
+	default Color crossbowStatueOutlineColor()
+	{
+		return RED_OPAQUE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 5,
+		keyName = "crossbowStatueFillColor",
+		name = "Crossbow fill",
+		description = "Change the overlay fill color of the crossbow statues.",
+		titleSection = "colors"
+	)
+	default Color crossbowStatueFillColor()
+	{
+		return RED_TRANSPARENT;
 	}
 
 	@ConfigItem(
-		position = 2,
-		keyName = "highlightCrossbowStatueColor",
-		name = "Crossbow color",
-		description = "Change the overlay color of the crossbow statues.",
-		titleSection = "colors"
-	)
-	default Color highlightCrossbowStatueColor()
-	{
-		return Color.RED;
-	}
-
-	@ConfigItem(
-		position = 2,
+		position = 6,
 		keyName = "wizardStatueTickCounterColor",
 		name = "Wizard statue color",
 		description = "Change the overlay color of the wizard statue tick counter.",
