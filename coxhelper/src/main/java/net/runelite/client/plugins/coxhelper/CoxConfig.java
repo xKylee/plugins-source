@@ -41,24 +41,6 @@ import net.runelite.client.config.Units;
 
 public interface CoxConfig extends Config
 {
-	@Getter
-	@AllArgsConstructor
-	enum FontStyle
-	{
-		BOLD("Bold", Font.BOLD),
-		ITALIC("Italic", Font.ITALIC),
-		PLAIN("Plain", Font.PLAIN);
-
-		private String name;
-		private int font;
-
-		@Override
-		public String toString()
-		{
-			return getName();
-		}
-	}
-
 	@ConfigItem(
 		name = "Mirror Mode Compatibility?",
 		keyName = "mirrorMode",
@@ -381,9 +363,23 @@ public interface CoxConfig extends Config
 		return new Color(193, 255, 245);
 	}
 
+	@ConfigItem(
+		position = 23,
+		keyName = "olmSpecialColor",
+		name = "Olm Special Color",
+		description = "Changes color of a special on Olm's tick counter",
+		titleSection = "colors",
+		hidden = true,
+		unhide = "olmTick"
+	)
+	default Color olmSpecialColor()
+	{
+		return new Color(89, 255, 0);
+	}
+
 	@ConfigTitleSection(
 		keyName = "text",
-		position = 23,
+		position = 24,
 		name = "Text",
 		description = ""
 	)
@@ -393,7 +389,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 24,
+		position = 25,
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Bold/Italics/Plain",
@@ -409,7 +405,7 @@ public interface CoxConfig extends Config
 		max = 20
 	)
 	@ConfigItem(
-		position = 25,
+		position = 26,
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
@@ -422,7 +418,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 26,
+		position = 27,
 		keyName = "shadows",
 		name = "Shadows",
 		description = "Adds Shadows to text.",
@@ -431,5 +427,23 @@ public interface CoxConfig extends Config
 	default boolean shadows()
 	{
 		return true;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum FontStyle
+	{
+		BOLD("Bold", Font.BOLD),
+		ITALIC("Italic", Font.ITALIC),
+		PLAIN("Plain", Font.PLAIN);
+
+		private String name;
+		private int font;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
 	}
 }
