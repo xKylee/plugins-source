@@ -15,6 +15,7 @@ import net.runelite.api.GameObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCDefinition;
 import net.runelite.api.Perspective;
+import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.graphics.ModelOutlineRenderer;
@@ -55,18 +56,27 @@ public class HallowedSepulchreOverlay extends Overlay
 			return null;
 		}
 
-		renderArrows(graphics2D);
+		Player player = client.getLocalPlayer();
 
-		renderSwords(graphics2D);
+		if (player == null)
+		{
+			return null;
+		}
 
-		renderCrossbowStatues(graphics2D);
+		LocalPoint playerLocation = player.getLocalLocation();
 
-		renderWizardStatues(graphics2D);
+		renderArrows(graphics2D, playerLocation);
+
+		renderSwords(graphics2D, playerLocation);
+
+		renderCrossbowStatues(graphics2D, playerLocation);
+
+		renderWizardStatues(graphics2D, playerLocation);
 
 		return null;
 	}
 
-	private void renderArrows(final Graphics2D graphics2D)
+	private void renderArrows(final Graphics2D graphics2D, final LocalPoint playerLocation)
 	{
 		final HallowedSepulchreConfig.HighlightMode highlightMode = config.highlightArrows();
 
@@ -77,11 +87,16 @@ public class HallowedSepulchreOverlay extends Overlay
 
 		for (NPC npc : plugin.getArrows())
 		{
+			if (!withinRenderingDistance(npc.getLocalLocation(), playerLocation))
+			{
+				continue;
+			}
+
 			renderNpcHighlight(graphics2D, config.arrowsOutlineColor(), config.arrowsFillColor(), npc, highlightMode);
 		}
 	}
 
-	private void renderSwords(final Graphics2D graphics2D)
+	private void renderSwords(final Graphics2D graphics2D, final LocalPoint playerLocation)
 	{
 		final HallowedSepulchreConfig.HighlightMode highlightMode = config.highlightSwords();
 
@@ -92,6 +107,11 @@ public class HallowedSepulchreOverlay extends Overlay
 
 		for (NPC npc : plugin.getSwords())
 		{
+			if (!withinRenderingDistance(npc.getLocalLocation(), playerLocation))
+			{
+				continue;
+			}
+
 			renderNpcHighlight(graphics2D, config.swordsOutlineColor(), config.swordsFillColor(), npc, highlightMode);
 		}
 	}
@@ -131,7 +151,7 @@ public class HallowedSepulchreOverlay extends Overlay
 		}
 	}
 
-	private void renderCrossbowStatues(final Graphics2D graphics2D)
+	private void renderCrossbowStatues(final Graphics2D graphics2D, final LocalPoint playerLocation)
 	{
 		if (!config.highlightCrossbowStatues() || plugin.getCrossbowStatues().isEmpty())
 		{
@@ -140,7 +160,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 		for (GameObject gameObject : plugin.getCrossbowStatues())
 		{
-			if (!gameObject.getWorldLocation().isInScene(client))
+			if (!gameObject.getWorldLocation().isInScene(client) || !withinRenderingDistance(gameObject.getLocalLocation(), playerLocation))
 			{
 				continue;
 			}
@@ -161,7 +181,7 @@ public class HallowedSepulchreOverlay extends Overlay
 		}
 	}
 
-	private void renderWizardStatues(final Graphics2D graphics2D)
+	private void renderWizardStatues(final Graphics2D graphics2D, final LocalPoint playerLocation)
 	{
 		if (!config.highlightWizardStatues() || plugin.getWizardStatues().isEmpty())
 		{
@@ -172,7 +192,7 @@ public class HallowedSepulchreOverlay extends Overlay
 		{
 			final GameObject gameObject = sepulchreGameObject.getGameObject();
 
-			if (!gameObject.getWorldLocation().isInScene(client))
+			if (!gameObject.getWorldLocation().isInScene(client) || !withinRenderingDistance(gameObject.getLocalLocation(), playerLocation))
 			{
 				continue;
 			}
@@ -192,6 +212,18 @@ public class HallowedSepulchreOverlay extends Overlay
 
 			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(), config.fontStyle().getFont(), color, canvasPoint, config.wizardFontShadow(), 0);
 		}
+	}
+
+	private boolean withinRenderingDistance(final LocalPoint localPoint, final LocalPoint playerLocation)
+	{
+		final int maxDistance = config.renderDistance().getDistance();
+
+		if (maxDistance == 0)
+		{
+			return true;
+		}
+
+		return localPoint.distanceTo(playerLocation) < maxDistance;
 	}
 
 	public static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
