@@ -135,6 +135,18 @@ public interface HallowedSepulchreConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		position = 4,
+		keyName = "renderDistance",
+		name = "Render distance",
+		description = "How far to render overlays from your player's position.",
+		titleSection = "overlays"
+	)
+	default RenderDistance renderDistance()
+	{
+		return RenderDistance.MEDIUM;
+	}
+
 	@Alpha
 	@ConfigItem(
 		position = 0,
@@ -319,4 +331,24 @@ public interface HallowedSepulchreConfig extends Config
 			return getName();
 		}
 	}
+
+	@Getter
+	@AllArgsConstructor
+	enum RenderDistance
+	{
+		SHORT("Short", 2350),
+		MEDIUM("Medium", 3525),
+		FAR("Far", 4700),
+		UNCAPPED("Uncapped", 0);
+
+		private String name;
+		private int distance;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
+	}
+
 }
