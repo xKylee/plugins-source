@@ -66,7 +66,7 @@ public class HallowedSepulchrePlugin extends Plugin
 {
 	private static final String GAME_MESSAGE_ENTER_LOBBY1 = "You make your way back to the lobby of the Hallowed Sepulchre.";
 	private static final String GAME_MESSAGE_ENTER_LOBBY2 = "The obelisk teleports you back to the lobby of the Hallowed Sepulchre.";
-	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture down into the Hallowed Sepulchre.";
+	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture further down into the Hallowed Sepulchre.";
 
 	@Inject
 	private Client client;
