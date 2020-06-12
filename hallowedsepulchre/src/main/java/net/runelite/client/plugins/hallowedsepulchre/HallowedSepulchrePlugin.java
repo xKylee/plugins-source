@@ -66,7 +66,7 @@ public class HallowedSepulchrePlugin extends Plugin
 {
 	private static final String GAME_MESSAGE_ENTER_LOBBY1 = "You make your way back to the lobby of the Hallowed Sepulchre.";
 	private static final String GAME_MESSAGE_ENTER_LOBBY2 = "The obelisk teleports you back to the lobby of the Hallowed Sepulchre.";
-	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture down into the Hallowed Sepulchre.";
+	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture further down into the Hallowed Sepulchre.";
 
 	@Inject
 	private Client client;
@@ -324,21 +324,19 @@ public class HallowedSepulchrePlugin extends Plugin
 			case WIZARD_STATUE_38410:
 			case WIZARD_STATUE_38411:
 			case WIZARD_STATUE_38412:
-				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_4));
-				break;
 			case WIZARD_STATUE_38416:
 			case WIZARD_STATUE_38417:
 			case WIZARD_STATUE_38418:
 			case WIZARD_STATUE_38419:
 			case WIZARD_STATUE_38420:
-				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_3));
+				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_4));
 				break;
 			case WIZARD_STATUE_38421:
 			case WIZARD_STATUE_38422:
 			case WIZARD_STATUE_38423:
 			case WIZARD_STATUE_38424:
 			case WIZARD_STATUE_38425:
-				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_2));
+				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_3));
 				break;
 			default:
 				break;
