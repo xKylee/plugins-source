@@ -49,21 +49,19 @@ class HallowedSepulchreIDs
 	static final int WIZARD_STATUE_38410 = 38410;
 	static final int WIZARD_STATUE_38411 = 38411;
 	static final int WIZARD_STATUE_38412 = 38412;
-	static final int WIZARD_STATUE_ANIM_SPEED_4 = 4;
-
 	static final int WIZARD_STATUE_38416 = 38416;
 	static final int WIZARD_STATUE_38417 = 38417;
 	static final int WIZARD_STATUE_38418 = 38418;
 	static final int WIZARD_STATUE_38419 = 38419;
 	static final int WIZARD_STATUE_38420 = 38420;
-	static final int WIZARD_STATUE_ANIM_SPEED_3 = 3;
+	static final int WIZARD_STATUE_ANIM_SPEED_4 = 4;
 
 	static final int WIZARD_STATUE_38421 = 38421;
 	static final int WIZARD_STATUE_38422 = 38422;
 	static final int WIZARD_STATUE_38423 = 38423;
 	static final int WIZARD_STATUE_38424 = 38424;
 	static final int WIZARD_STATUE_38425 = 38425;
-	static final int WIZARD_STATUE_ANIM_SPEED_2 = 2;
+	static final int WIZARD_STATUE_ANIM_SPEED_3 = 3;
 
 	static final int WIZARD_STATUE_ANIM_FIRE = 8658;
 
