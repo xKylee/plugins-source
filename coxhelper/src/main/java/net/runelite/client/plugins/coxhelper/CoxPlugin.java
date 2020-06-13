@@ -302,6 +302,7 @@ public class CoxPlugin extends Plugin
 				olm.setHand(npc);
 				break;
 			case NpcID.GREAT_OLM:
+			case NpcID.GREAT_OLM_7554:
 				olm.nextPhase();
 				olm.setHead(npc);
 		}
