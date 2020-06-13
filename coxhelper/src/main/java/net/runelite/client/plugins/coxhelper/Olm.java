@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,11 +61,7 @@ public class Olm
 		this.firstPhase = !active;
 		this.active = true;
 		this.ready = false;
-		this.desyncs = 0;
 		this.tickCycle = -1;
-		this.healPools.clear();
-		this.portals.clear();
-		this.portalTicks = 10;
 		this.crippled = false;
 		this.crippleTicks = 45;
 		this.prayer = null;
@@ -167,20 +164,23 @@ public class Olm
 		this.updateCrippleSticks();
 		this.updateSpecials();
 
-		if (!ready && hand != null && hand.getCombatLevel() > 0)
+		if (!ready)
 		{
-			ready = true;
-			tickCycle = firstPhase ? 4 : 1;
-			return;
+			if (head != null && head.getCombatLevel() > 0)
+			{
+				ready = true;
+				tickCycle = firstPhase ? 4 : 1;
+			}
 		}
-
-
-		tickCycle = tickCycle == 16 ? 1 : tickCycle + 1;
+		else
+		{
+			tickCycle = tickCycle == 16 ? 1 : tickCycle + 1;
+		}
 	}
 
 	public int ticksUntilNextAction()
 	{
-		return this.tickCycle % 4 == 0 ?  1 : 4 - (this.tickCycle % 4) + 1;
+		return this.tickCycle % 4 == 0 ? 1 : 4 - (this.tickCycle % 4) + 1;
 	}
 
 	public int actionCycle()
