@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
