@@ -39,15 +39,13 @@ import net.runelite.client.ui.overlay.components.table.TableComponent;
 @Singleton
 public class CoxDebugBox extends Overlay
 {
-	private final CoxPlugin plugin;
 	private final CoxConfig config;
 	private final Olm olm;
 	private final PanelComponent panelComponent = new PanelComponent();
 
 	@Inject
-	CoxDebugBox(CoxPlugin plugin, CoxConfig config, Olm olm)
+	CoxDebugBox(CoxConfig config, Olm olm)
 	{
-		this.plugin = plugin;
 		this.config = config;
 		this.olm = olm;
 		setPosition(OverlayPosition.BOTTOM_LEFT);
