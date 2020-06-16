@@ -36,7 +36,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 	@Inject
 	HallowedSepulchreOverlay(final Client client, final HallowedSepulchrePlugin plugin,
-							 final HallowedSepulchreConfig config, final ModelOutlineRenderer modelOutlineRenderer)
+					final HallowedSepulchreConfig config, final ModelOutlineRenderer modelOutlineRenderer)
 	{
 		this.client = client;
 		this.plugin = plugin;
@@ -235,7 +235,7 @@ public class HallowedSepulchreOverlay extends Overlay
 	}
 
 	private static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor,
-										  final float strokeWidth, final Shape shape)
+						final float strokeWidth, final Shape shape)
 	{
 		graphics2D.setColor(outlineColor);
 		final Stroke originalStroke = graphics2D.getStroke();
