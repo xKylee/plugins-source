@@ -257,7 +257,7 @@ public interface HallowedSepulchreConfig extends Config
 	@ConfigItem(
 		position = 1,
 		keyName = "fontStyle",
-		name = "Font Style",
+		name = "Font style",
 		description = "Bold/Italics/Plain",
 		titleSection = "other"
 
@@ -305,12 +305,12 @@ public interface HallowedSepulchreConfig extends Config
 		TILE("Tile"),
 		BOTH("Both");
 
-		private String name;
+		private final String name;
 
 		@Override
 		public String toString()
 		{
-			return getName();
+			return name;
 		}
 	}
 
@@ -322,13 +322,13 @@ public interface HallowedSepulchreConfig extends Config
 		ITALIC("Italic", Font.ITALIC),
 		PLAIN("Plain", Font.PLAIN);
 
-		private String name;
-		private int font;
+		private final String name;
+		private final int font;
 
 		@Override
 		public String toString()
 		{
-			return getName();
+			return name;
 		}
 	}
 
@@ -341,14 +341,13 @@ public interface HallowedSepulchreConfig extends Config
 		FAR("Far", 4700),
 		UNCAPPED("Uncapped", 0);
 
-		private String name;
-		private int distance;
+		private final String name;
+		private final int distance;
 
 		@Override
 		public String toString()
 		{
-			return getName();
+			return name;
 		}
 	}
-
 }
