@@ -168,7 +168,7 @@ public class Olm
 			if (head != null && head.getCombatLevel() > 0)
 			{
 				ready = true;
-				tickCycle = firstPhase ? 3 : 1;
+				tickCycle = firstPhase ? 4 : 1;
 			}
 		}
 		else
