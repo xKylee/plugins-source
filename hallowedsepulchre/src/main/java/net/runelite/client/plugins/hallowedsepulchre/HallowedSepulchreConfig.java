@@ -137,6 +137,18 @@ public interface HallowedSepulchreConfig extends Config
 
 	@ConfigItem(
 		position = 4,
+		keyName = "highlightServerTile",
+		name = "Highlight server tile",
+		description = "Highlight the tile the player is on, according to the server.",
+		titleSection = "overlays"
+	)
+	default boolean highlightServerTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 5,
 		keyName = "renderDistance",
 		name = "Render distance",
 		description = "How far to render overlays from your player's position.",
@@ -225,8 +237,34 @@ public interface HallowedSepulchreConfig extends Config
 		return RED_TRANSPARENT;
 	}
 
+	@Alpha
 	@ConfigItem(
 		position = 6,
+		keyName = "serverTileOutlineColor",
+		name = "Server tile outline",
+		description = "Change the overlay outline color of the player's server tile.",
+		titleSection = "colors"
+	)
+	default Color serverTileOutlineColor()
+	{
+		return Color.CYAN;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 7,
+		keyName = "serverTileFillColor",
+		name = "Server tile  fill",
+		description = "Change the overlay fill color of the player's server tile.",
+		titleSection = "colors"
+	)
+	default Color serverTileFillColor()
+	{
+		return new Color(0, 0, 0, 0);
+	}
+
+	@ConfigItem(
+		position = 8,
 		keyName = "wizardStatueTickCounterColor",
 		name = "Tick counter",
 		description = "Change the overlay color of the wizard statue tick counter.",

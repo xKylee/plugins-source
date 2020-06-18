@@ -17,6 +17,7 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -68,6 +69,8 @@ public class HallowedSepulchreOverlay extends Overlay
 		renderCrossbowStatues(graphics2D);
 
 		renderWizardStatues(graphics2D);
+
+		renderServerTile(graphics2D);
 
 		return null;
 	}
@@ -220,6 +223,38 @@ public class HallowedSepulchreOverlay extends Overlay
 			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(),
 				config.fontStyle().getFont(), color, canvasPoint, config.wizardFontShadow(), 0);
 		}
+	}
+
+	private void renderServerTile(final Graphics2D graphics2D)
+	{
+		if (!config.highlightServerTile())
+		{
+			return;
+		}
+
+		final WorldPoint worldPoint = player.getWorldLocation();
+
+		if (worldPoint == null)
+		{
+			return;
+		}
+
+		final LocalPoint localPoint = LocalPoint.fromWorld(client, worldPoint);
+
+		if (localPoint == null)
+		{
+			return;
+		}
+
+		final Polygon polygon = Perspective.getCanvasTilePoly(client, localPoint);
+
+		if (polygon == null)
+		{
+			return;
+		}
+
+		drawStrokeAndFill(graphics2D, config.serverTileOutlineColor(), config.serverTileFillColor(),
+			config.tileOutlineWidth(), polygon);
 	}
 
 	private boolean isOutsideRenderDistance(final LocalPoint localPoint)
