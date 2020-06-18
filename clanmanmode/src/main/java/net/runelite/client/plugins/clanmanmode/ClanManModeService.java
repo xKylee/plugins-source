@@ -44,7 +44,7 @@ public class ClanManModeService
 				continue;
 			}
 
-			boolean isClanMember = player.isClanMember();
+			boolean isFriendsChatMember = player.isFriendsChatMember();
 			Actor interacting = player.getInteracting();
 			Player interactor = null;
 			if (interacting != null && !(interacting instanceof NPC))
@@ -59,7 +59,7 @@ public class ClanManModeService
 
 			if (plugin.inwildy == 1)
 			{
-				if (isClanMember)
+				if (isFriendsChatMember)
 				{
 					if (!plugin.clan.containsKey(player.getName()))
 					{
@@ -78,7 +78,7 @@ public class ClanManModeService
 						}
 						if (config.CalcSelfCB())
 						{
-							if (interacting.getCombatLevel() <= selfmax && interacting.getCombatLevel() - wildydiff >= selfmin && !interactor.isClanMember())
+							if (interacting.getCombatLevel() <= selfmax && interacting.getCombatLevel() - wildydiff >= selfmin && !interactor.isFriendsChatMember())
 							{
 								interactors.put(interactor.getName(), player.getName());
 								consumer.accept(interactor, config.getClanAttackableColor());
@@ -86,7 +86,7 @@ public class ClanManModeService
 						}
 						else
 						{
-							if (interacting.getCombatLevel() <= maxatk && interacting.getCombatLevel() - wildydiff >= minatk && !interactor.isClanMember())
+							if (interacting.getCombatLevel() <= maxatk && interacting.getCombatLevel() - wildydiff >= minatk && !interactor.isFriendsChatMember())
 							{
 								interactors.put(interactor.getName(), player.getName());
 								consumer.accept(interactor, config.getClanAttackableColor());
