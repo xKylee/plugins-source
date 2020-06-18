@@ -68,8 +68,8 @@ public class HallowedSepulchrePlugin extends Plugin
 	private static final String GAME_MESSAGE_ENTER_LOBBY2 = "The obelisk teleports you back to the lobby of the Hallowed Sepulchre.";
 	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture further down into the Hallowed Sepulchre.";
 
+	private static final int ANIM_TICK_SPEED_2 = 2;
 	private static final int ANIM_TICK_SPEED_3 = 3;
-	private static final int ANIM_TICK_SPEED_4 = 4;
 
 	private static final int WIZARD_STATUE_ANIM_FIRE = 8658;
 
@@ -91,7 +91,7 @@ public class HallowedSepulchrePlugin extends Plugin
 		ObjectID.CROSSBOWMAN_STATUE_38446
 	);
 
-	private static final Set<Integer> WIZARD_STATUE_3TICK_IDS = Set.of(
+	private static final Set<Integer> WIZARD_STATUE_2TICK_IDS = Set.of(
 		ObjectID.WIZARD_STATUE_38421,
 		ObjectID.WIZARD_STATUE_38422,
 		ObjectID.WIZARD_STATUE_38423,
@@ -99,7 +99,7 @@ public class HallowedSepulchrePlugin extends Plugin
 		ObjectID.WIZARD_STATUE_38425
 	);
 
-	private static final Set<Integer> WIZARD_STATUE_4TICK_IDS = Set.of(
+	private static final Set<Integer> WIZARD_STATUE_3TICK_IDS = Set.of(
 		ObjectID.WIZARD_STATUE,
 		ObjectID.WIZARD_STATUE_38410,
 		ObjectID.WIZARD_STATUE_38411,
@@ -345,13 +345,13 @@ public class HallowedSepulchrePlugin extends Plugin
 		{
 			crossbowStatues.add(gameObject);
 		}
+		else if (WIZARD_STATUE_2TICK_IDS.contains(id))
+		{
+			wizardStatues.add(new HallowedSepulchreWizardStatue(gameObject, WIZARD_STATUE_ANIM_FIRE, ANIM_TICK_SPEED_2));
+		}
 		else if (WIZARD_STATUE_3TICK_IDS.contains(id))
 		{
 			wizardStatues.add(new HallowedSepulchreWizardStatue(gameObject, WIZARD_STATUE_ANIM_FIRE, ANIM_TICK_SPEED_3));
-		}
-		else if (WIZARD_STATUE_4TICK_IDS.contains(id))
-		{
-			wizardStatues.add(new HallowedSepulchreWizardStatue(gameObject, WIZARD_STATUE_ANIM_FIRE, ANIM_TICK_SPEED_4));
 		}
 	}
 
