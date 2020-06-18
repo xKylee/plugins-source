@@ -45,7 +45,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.game.ClanManager;
+import net.runelite.client.game.FriendChatManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.PlayerContainer;
 import net.runelite.client.game.PlayerManager;
@@ -92,7 +92,7 @@ public class PlayerScouter extends Plugin
 	private PlayerManager playerManager;
 
 	@Inject
-	private ClanManager clanManager;
+	private FriendChatManager friendChatManager;
 
 	private final Map<String, Integer> blacklist = new HashMap<>();
 	private HttpUrl webhook;
@@ -203,7 +203,7 @@ public class PlayerScouter extends Plugin
 		if (player.getPlayer() == client.getLocalPlayer()
 			|| (!blacklist.isEmpty() && blacklist.containsKey(player.getName()))
 			|| (!config.scoutFriends() && client.isFriended(player.getName(), false)
-			|| (!config.scoutClan() && clanManager.isClanMember(player.getName()))))
+			|| (!config.scoutClan() && friendChatManager.isMember(player.getName()))))
 		{
 			log.debug("Player Rejected: {}", player.getName());
 			return;

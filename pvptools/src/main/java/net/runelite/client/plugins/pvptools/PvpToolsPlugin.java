@@ -28,8 +28,8 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.runelite.api.ClanMember;
 import net.runelite.api.Client;
+import net.runelite.api.FriendsChatMember;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
@@ -53,7 +53,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.clanchat.ClanChatPlugin;
+import net.runelite.client.plugins.friendschat.FriendsChatPlugin;
 import static net.runelite.client.plugins.pvptools.PvpToolsPanel.htmlLabel;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
@@ -168,18 +168,18 @@ public class PvpToolsPlugin extends Plugin
 
 	private List<String> getMissingMembers()
 	{
-		CopyOnWriteArrayList<Player> ccMembers = ClanChatPlugin.getClanMembers();
+		CopyOnWriteArrayList<Player> ccMembers = FriendsChatPlugin.getClanMembers();
 		ArrayList<String> missingMembers = new ArrayList<>();
-		if (this.client.getClanMemberManager() != null)
+		if (this.client.getFriendsChatManager() != null)
 		{
-			for (ClanMember clanMember : client.getClanMemberManager().getMembers())
+			for (FriendsChatMember friendsChatMember : client.getFriendsChatManager().getMembers())
 			{
-				if (!Objects.isNull(clanMember))
+				if (!Objects.isNull(friendsChatMember))
 				{
 					List<String> arrayList = ccMembers.stream().map(player -> Text.removeTags(Text.standardize(player.getName()))).collect(Collectors.toList());
-					if (!arrayList.contains(Text.removeTags(Text.standardize(clanMember.getName()))) && !missingMembers.contains(clanMember.getName()))
+					if (!arrayList.contains(Text.removeTags(Text.standardize(friendsChatMember.getName()))) && !missingMembers.contains(friendsChatMember.getName()))
 					{
-						missingMembers.add("[W" + clanMember.getWorld() + "] - " + clanMember.getName());
+						missingMembers.add("[W" + friendsChatMember.getWorld() + "] - " + friendsChatMember.getName());
 					}
 				}
 			}
@@ -190,18 +190,18 @@ public class PvpToolsPlugin extends Plugin
 
 	private List<String> getCurrentMembers()
 	{
-		CopyOnWriteArrayList<Player> ccMembers = ClanChatPlugin.getClanMembers();
+		CopyOnWriteArrayList<Player> ccMembers = FriendsChatPlugin.getClanMembers();
 		ArrayList<String> currentMembers = new ArrayList<>();
-		if (this.client.getClanMemberManager() != null)
+		if (this.client.getFriendsChatManager() != null)
 		{
-			for (ClanMember clanMember : client.getClanMemberManager().getMembers())
+			for (FriendsChatMember friendsChatMember : client.getFriendsChatManager().getMembers())
 			{
-				if (!Objects.isNull(clanMember))
+				if (!Objects.isNull(friendsChatMember))
 				{
 					List<String> arrayList = ccMembers.stream().map(player -> Text.removeTags(Text.standardize(player.getName()))).collect(Collectors.toList());
-					if (arrayList.contains(Text.removeTags(Text.standardize(clanMember.getName()))) && !currentMembers.contains(clanMember.getName()))
+					if (arrayList.contains(Text.removeTags(Text.standardize(friendsChatMember.getName()))) && !currentMembers.contains(friendsChatMember.getName()))
 					{
-						currentMembers.add(clanMember.getName());
+						currentMembers.add(friendsChatMember.getName());
 					}
 				}
 			}
@@ -432,7 +432,7 @@ public class PvpToolsPlugin extends Plugin
 					}
 					if (PvPUtil.isAttackable(client, p))
 					{
-						if (p.isClanMember())
+						if (p.isFriendsChatMember())
 						{
 							friendlyPlayerCount++;
 						}
@@ -457,7 +457,7 @@ public class PvpToolsPlugin extends Plugin
 		for (Player p : client.getPlayers())
 		{
 			if (Objects.nonNull(p) && PvPUtil.isAttackable(client, p) &&
-				!p.isClanMember() && !(p.getOverheadIcon() == null))
+				!p.isFriendsChatMember() && !(p.getOverheadIcon() == null))
 			{
 				switch (p.getOverheadIcon())
 				{
