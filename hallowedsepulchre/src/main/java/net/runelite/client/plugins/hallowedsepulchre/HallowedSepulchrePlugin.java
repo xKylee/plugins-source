@@ -69,7 +69,7 @@ public class HallowedSepulchrePlugin extends Plugin
 	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture further down into the Hallowed Sepulchre.";
 
 	private static final int ANIM_TICK_SPEED_3 = 3;
-	private static final int ANIM_TICK_SPEED_4 = 4;
+	private static final int ANIM_TICK_SPEED_4 = 3;
 
 	private static final int WIZARD_STATUE_ANIM_FIRE = 8658;
 
