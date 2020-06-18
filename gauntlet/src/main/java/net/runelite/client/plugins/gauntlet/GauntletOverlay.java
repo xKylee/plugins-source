@@ -48,7 +48,6 @@ import net.runelite.api.NPCDefinition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
-import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.model.Jarvis;
@@ -616,7 +615,7 @@ class GauntletOverlay extends Overlay
 	}
 
 	private static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor,
-										  final float strokeWidth, final Shape shape)
+											final float strokeWidth, final Shape shape)
 	{
 		final Color originalColor = graphics2D.getColor();
 		final Stroke originalStroke = graphics2D.getStroke();
