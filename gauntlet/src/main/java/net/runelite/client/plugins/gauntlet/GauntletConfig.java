@@ -754,15 +754,15 @@ public interface GauntletConfig extends Config
 	// Player Section
 
 	@ConfigItem(
-		name = "Outline correct prayer",
-		description = "Outline the correct prayer to use against the Hunllef's current attack style.",
+		name = "Overlay prayer",
+		description = "Overlay the correct prayer to use against the Hunllef's current attack style.",
 		position = 0,
 		keyName = "correctPrayerOverlay",
 		section = "playerSection"
 	)
-	default boolean correctPrayerOverlay()
+	default PrayerHighlightMode correctPrayerOverlay()
 	{
-		return false;
+		return PrayerHighlightMode.NONE;
 	}
 
 	@ConfigItem(
@@ -885,6 +885,24 @@ public interface GauntletConfig extends Config
 		public String toString()
 		{
 			return name;
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum PrayerHighlightMode
+	{
+		PRAYERWIDGET("On Widget"),
+		BOX("Box"),
+		BOTH("Both"),
+		NONE("None");
+
+		private String name;
+
+		@Override
+		public String toString()
+		{
+			return getName();
 		}
 	}
 }
