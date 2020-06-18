@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, kThisIsCvpv <https://github.com/kThisIsCvpv>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * Copyright (c) 2019, kyle <https://github.com/Kyleeld>
@@ -26,6 +27,7 @@
 
 package net.runelite.client.plugins.gauntlet;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,55 +35,68 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import net.runelite.api.Client;
+import net.runelite.api.GameObject;
 import net.runelite.api.Model;
 import net.runelite.api.NPC;
+import net.runelite.api.NPCDefinition;
 import net.runelite.api.Perspective;
+import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.model.Jarvis;
 import net.runelite.api.model.Vertex;
 import net.runelite.client.graphics.ModelOutlineRenderer;
-import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.BOTH;
-import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.ONBOSS;
-import net.runelite.client.plugins.gauntlet.GauntletConfig.PrayerHighlight;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
-import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
-import static net.runelite.client.util.ImageUtil.resizeImage;
 
-public class GauntletOverlay extends Overlay
+class GauntletOverlay extends Overlay
 {
-	@Inject
-	private OverlayManager overlayManager;
+	private static final Color[] COLORS = new Color[]{
+		Color.BLUE,
+		Color.RED,
+		Color.GREEN,
+		Color.ORANGE,
+		Color.WHITE,
+		Color.CYAN,
+		Color.MAGENTA,
+		Color.PINK,
+		Color.YELLOW,
+		Color.DARK_GRAY,
+		Color.LIGHT_GRAY
+	};
 
-	@Inject
-	private GauntletCounter GauntletCounter;
+	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
-	private static final Color FLASH_COLOR = new Color(255, 0, 0, 70);
-	private static final int MAX_DISTANCE = 2400;
+	private static final int COLOR_DURATION = 10;
+
 	private final Client client;
 	private final GauntletPlugin plugin;
 	private final GauntletConfig config;
-	private final ModelOutlineRenderer outlineRenderer;
+	private final ModelOutlineRenderer modelOutlineRenderer;
+
+	private Player player;
+
 	private int timeout;
+	private int idx;
 
 	@Inject
-	private GauntletOverlay(Client client, GauntletPlugin plugin, GauntletConfig config, ModelOutlineRenderer outlineRenderer)
+	private GauntletOverlay(final Client client, final GauntletPlugin plugin, final GauntletConfig config,
+							final ModelOutlineRenderer modelOutlineRenderer)
 	{
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
-		this.outlineRenderer = outlineRenderer;
+		this.modelOutlineRenderer = modelOutlineRenderer;
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
@@ -89,353 +104,530 @@ public class GauntletOverlay extends Overlay
 	}
 
 	@Override
-	public Dimension render(Graphics2D graphics)
+	public Dimension render(final Graphics2D graphics2D)
 	{
-		// Save resources. There's nothing to render if the user is not in a raid.
-
-		if (!plugin.startedGauntlet())
+		if (!plugin.isInGauntlet())
 		{
 			return null;
 		}
 
-		if (plugin.fightingBoss())
+		if (plugin.isInHunllefRoom())
 		{
-			// This section handles the visuals when the player is in the boss room.
-			// This section handles the projectile overlays.
-			Set<Missiles> projectiles = plugin.getProjectiles();
-			projectiles.forEach(projectile ->
+			final GauntletHunllef hunllef = plugin.getHunllef();
+
+			if (hunllef == null)
 			{
-				BufferedImage icon = resizeImage(projectile.getImage(), config.projectileIconSize(), config.projectileIconSize());
-				Color color = projectile.getColor();
-
-				Polygon polygon = boundProjectile(projectile.getProjectile());
-				if (polygon == null)
-				{
-					int x = (int) projectile.getProjectile().getX();
-					int y = (int) projectile.getProjectile().getY();
-
-					LocalPoint point = new LocalPoint(x, y);
-					Point loc = Perspective.getCanvasImageLocation(client, point, icon, -(int) projectile.getProjectile().getZ());
-
-					if (loc == null)
-					{
-						return;
-					}
-
-					if (config.uniqueAttackVisual())
-					{
-						graphics.drawImage(icon, loc.getX(), loc.getY(), null);
-					}
-				}
-				else
-				{
-					if (config.attackVisualOutline())
-					{
-						graphics.setColor(color);
-						graphics.draw(polygon);
-						graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 50));
-						graphics.fill(polygon);
-					}
-					if (config.uniqueAttackVisual())
-					{
-						Rectangle bounds = polygon.getBounds();
-						int x = (int) bounds.getCenterX() - (icon.getWidth() / 2);
-						int y = (int) bounds.getCenterY() - (icon.getHeight() / 2);
-						graphics.drawImage(icon, x, y, null);
-					}
-				}
-			});
-			projectiles.removeIf(proj -> proj.getProjectile().getRemainingCycles() <= 0);
-
-			plugin.getTornadoes().forEach(tornado ->
-			{
-				if (config.overlayTornadoes())
-				{
-					if (tornado.getTimeLeft() <= 0)
-					{
-						return;
-					}
-
-					final String textOverlay = Integer.toString(tornado.getTimeLeft());
-					final Point textLoc = Perspective.getCanvasTextLocation(client, graphics, tornado.getNpc().getLocalLocation(), textOverlay, 0);
-					final LocalPoint lp = LocalPoint.fromWorld(client, tornado.getNpc().getWorldLocation());
-
-					if (lp == null)
-					{
-						return;
-					}
-
-					final Polygon tilePoly = Perspective.getCanvasTilePoly(client, lp);
-					OverlayUtil.renderPolygon(graphics, tilePoly, Color.YELLOW);
-
-					if (textLoc == null)
-					{
-						return;
-					}
-
-					Font oldFont = graphics.getFont();
-					graphics.setFont(new Font("Arial", Font.BOLD, 20));
-					Point pointShadow = new Point(textLoc.getX() + 1, textLoc.getY() + 1);
-					OverlayUtil.renderTextLocation(graphics, pointShadow, textOverlay, Color.BLACK);
-					OverlayUtil.renderTextLocation(graphics, textLoc, textOverlay, Color.YELLOW);
-					graphics.setFont(oldFont);
-				}
-			});
-
-			if (plugin.getHunllef() != null)
-			{
-				final Hunllef hunllef = plugin.getHunllef();
-				final Hunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
-				final NPC boss = hunllef.getNpc();
-				final LocalPoint point = boss.getLocalLocation();
-
-				if (plugin.isFlash() && config.flashOnWrongAttack())
-				{
-					final Color flash = graphics.getColor();
-					graphics.setColor(FLASH_COLOR);
-					graphics.fill(new Rectangle(client.getCanvas().getSize()));
-					graphics.setColor(flash);
-					timeout++;
-					if (timeout >= 15)
-					{
-						timeout = 0;
-						plugin.setFlash(false);
-					}
-				}
-
-				if (config.overlayBoss())
-				{
-					Shape polygon = boss.getConvexHull();
-
-					if (polygon == null)
-					{
-						return null;
-					}
-
-					if (phase.getPrayer() != null && !client.isPrayerActive(phase.getPrayer()))
-					{
-						Color color = phase.getColor();
-						outlineRenderer.drawOutline(boss, 12, color, new Color(0, 0, 0, 0));
-					}
-				}
-
-				if (config.overlayBossPrayer())
-				{
-					BufferedImage attackIcon = null;
-
-					switch (phase)
-					{
-						case MAGIC:
-							attackIcon = resizeImage(hunllef.getMage(), config.projectileIconSize(), config.projectileIconSize());
-							break;
-						case RANGE:
-							attackIcon = resizeImage(hunllef.getRange(), config.projectileIconSize(), config.projectileIconSize());
-							break;
-						default:
-							break;
-					}
-
-					if (attackIcon == null)
-					{
-						return null;
-					}
-
-					Point imageLoc = Perspective.getCanvasImageLocation(client, point, attackIcon, boss.getLogicalHeight() / 2);
-
-					if (imageLoc == null)
-					{
-						return null;
-					}
-
-					graphics.drawImage(attackIcon, imageLoc.getX(), imageLoc.getY(), null);
-				}
-
-				PrayerHighlight prayerHighlight = config.highlightPrayer();
-
-				if (prayerHighlight == PrayerHighlight.PRAYERWIDGET || prayerHighlight == PrayerHighlight.BOTH)
-				{
-					if (phase.getPrayer() == null)
-					{
-						return null;
-					}
-
-					final Rectangle bounds = OverlayUtil.renderPrayerOverlay(graphics, client, phase.getPrayer(), phase.getColor());
-
-					if (bounds != null)
-					{
-						final Color color = hunllef.getTicksUntilAttack() == 1 ? Color.WHITE : phase.getColor();
-						renderTextLocation(graphics, Integer.toString(hunllef.getTicksUntilAttack()), 16, Font.BOLD, color, centerPoint(bounds), false);
-					}
-				}
-
-				if (config.countAttacks() == ONBOSS || config.countAttacks() == BOTH)
-				{
-					String textOverlay;
-
-					textOverlay = Integer.toString(hunllef.getBossAttacks());
-
-					if (textOverlay.length() > 0)
-					{
-						textOverlay += " | ";
-					}
-
-					textOverlay += Integer.toString(hunllef.getPlayerAttacks());
-
-					if (textOverlay.length() > 0)
-					{
-						Point textLoc = Perspective.getCanvasTextLocation(client, graphics, point, textOverlay, boss.getLogicalHeight() / 2);
-
-						if (textLoc == null)
-						{
-							return null;
-						}
-
-						textLoc = new Point(textLoc.getX(), textLoc.getY() + 35);
-
-						Font oldFont = graphics.getFont();
-
-						graphics.setFont(new Font("Arial", Font.BOLD, 20));
-						Point pointShadow = new Point(textLoc.getX() + 1, textLoc.getY() + 1);
-
-						OverlayUtil.renderTextLocation(graphics, pointShadow, textOverlay, Color.BLACK);
-						OverlayUtil.renderTextLocation(graphics, textLoc, textOverlay, phase.getColor());
-
-						graphics.setFont(oldFont);
-					}
-				}
+				return null;
 			}
-			if (plugin.getHunllef() == null)
+
+			final NPC npc = hunllef.getNpc();
+
+			if (npc == null)
 			{
-				overlayManager.remove(GauntletCounter);
+				return null;
 			}
+
+			if (npc.isDead())
+			{
+				renderDiscoMode();
+				return null;
+			}
+
+			renderTornadoes(graphics2D);
+
+			renderProjectiles(graphics2D);
+
+			renderHunllefWrongPrayerOutline();
+
+			renderHunllefAttackCounter(graphics2D);
+
+			renderHunllefAttackStyleIcon(graphics2D);
+
+			renderHunllefTile(graphics2D);
+
+			renderFlash(graphics2D);
 		}
 		else
 		{
-			// This section overlays all resources.
-			final LocalPoint playerLocation = client.getLocalPlayer().getLocalLocation();
+			player = client.getLocalPlayer();
 
-			final Set<Resources> resources = plugin.getResources();
-			resources.forEach(object ->
+			if (player == null)
 			{
-				if (object.getGameObject().getLocalLocation().distanceTo(playerLocation) < MAX_DISTANCE)
-				{
+				return null;
+			}
 
-					// Don't use Convex Hull click box. As the room start to fill up, your FPS will dip.
-					Shape polygon = object.getGameObject().getConvexHull();
-
-					if (polygon == null)
-					{
-						return;
-					}
-					// This section will highlight the resource with color.
-					if (config.highlightResources())
-					{
-						outlineRenderer.drawOutline(object.getGameObject(), 2, config.highlightResourcesColor());
-					}
-
-					// This section will overlay the resource with an icon.
-					if (config.highlightResourcesIcons())
-					{
-						BufferedImage icon = resizeImage(object.getImage(), config.resourceIconSize(), config.resourceIconSize());
-						Rectangle bounds = polygon.getBounds();
-						int startX = (int) bounds.getCenterX() - (icon.getWidth() / 2);
-						int startY = (int) bounds.getCenterY() - (icon.getHeight() / 2);
-						graphics.drawImage(icon, startX, startY, null);
-					}
-				}
-			});
+			renderResources(graphics2D);
+			renderUtilities();
+			renderDemibosses();
+			renderStrongNpcs();
+			renderWeakNpcs();
 		}
+
 		return null;
 	}
 
-	private Polygon boundProjectile(Projectile proj)
+	void determineLayer()
 	{
-		if (proj == null || proj.getModel() == null)
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
+	}
+
+	private void renderTornadoes(final Graphics2D graphics2D)
+	{
+		if ((!config.tornadoTickCounter() && !config.tornadoTileOutline()) || plugin.getTornados().isEmpty())
+		{
+			return;
+		}
+
+		for (final GauntletTornado tornado : plugin.getTornados())
+		{
+			final int timeLeft = tornado.getTimeLeft();
+
+			if (timeLeft < 0)
+			{
+				continue;
+			}
+
+			final NPC npc = tornado.getNpc();
+
+			if (config.tornadoTileOutline())
+			{
+
+				final Polygon polygon = Perspective.getCanvasTilePoly(client, npc.getLocalLocation());
+
+				if (polygon == null)
+				{
+					continue;
+				}
+
+				drawStrokeAndFill(graphics2D, config.tornadoOutlineColor(), config.tornadoFillColor(),
+					config.tornadoTileOutlineWidth(), polygon);
+			}
+
+			if (config.tornadoTickCounter())
+			{
+				final String ticksLeftStr = String.valueOf(timeLeft);
+
+				final Point point = npc.getCanvasTextLocation(graphics2D, ticksLeftStr, 0);
+
+				if (point == null)
+				{
+					return;
+				}
+
+				OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.tornadoFontSize(),
+					config.tornadoFontStyle().getFont(), config.tornadoFontColor(), point,
+					config.tornadoFontShadow(), 0);
+			}
+		}
+	}
+
+	private void renderProjectiles(final Graphics2D graphics2D)
+	{
+		if ((!config.outlineProjectile() && !config.overlayProjectileIcon())
+			|| plugin.getProjectiles().isEmpty())
+		{
+			return;
+		}
+
+		for (final GauntletProjectile projectile : plugin.getProjectiles())
+		{
+			final Polygon polygon = getProjectilePolygon(projectile.getProjectile());
+
+			if (polygon == null)
+			{
+				continue;
+			}
+
+			if (config.outlineProjectile())
+			{
+				final Color originalColor = graphics2D.getColor();
+
+				graphics2D.setColor(projectile.getOutlineColor());
+				graphics2D.draw(polygon);
+
+				graphics2D.setColor(projectile.getFillColor());
+				graphics2D.fill(polygon);
+
+				graphics2D.setColor(originalColor);
+			}
+
+			if (config.overlayProjectileIcon())
+			{
+				final BufferedImage icon = projectile.getIcon();
+
+				final Rectangle bounds = polygon.getBounds();
+
+				final int x = (int) bounds.getCenterX() - (icon.getWidth() / 2);
+				final int y = (int) bounds.getCenterY() - (icon.getHeight() / 2);
+
+				graphics2D.drawImage(icon, x, y, null);
+			}
+		}
+	}
+
+	private void renderHunllefWrongPrayerOutline()
+	{
+		if (!config.hunllefOverlayWrongPrayerOutline())
+		{
+			return;
+		}
+
+		final GauntletHunllef hunllef = plugin.getHunllef();
+
+		final GauntletHunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
+
+		if (client.isPrayerActive(phase.getPrayer()))
+		{
+			return;
+		}
+
+		modelOutlineRenderer.drawOutline(hunllef.getNpc(), config.hunllefWrongPrayerOutlineWidth(), phase.getColor(),
+			TRANSPARENT);
+	}
+
+	private void renderHunllefAttackCounter(final Graphics2D graphics2D)
+	{
+		if (!config.hunllefOverlayAttackCounter())
+		{
+			return;
+		}
+
+		final GauntletHunllef hunllef = plugin.getHunllef();
+
+		final NPC npc = hunllef.getNpc();
+
+		final String text = String.format("%d | %d", hunllef.getBossAttacks(),
+			hunllef.getPlayerAttacks());
+
+		// offset value is height above the npc tile
+		final Point point = npc.getCanvasTextLocation(graphics2D, text, 0);
+
+		if (point == null)
+		{
+			return;
+		}
+
+		final Font originalFont = graphics2D.getFont();
+
+		graphics2D.setFont(new Font(Font.DIALOG,
+			config.hunllefAttackCounterFontStyle().getFont(), config.hunllefAttackCounterFontSize()));
+
+		OverlayUtil.renderTextLocation(graphics2D, point, text, hunllef.getCurrentPhase().getColor());
+
+		graphics2D.setFont(originalFont);
+	}
+
+	private void renderHunllefAttackStyleIcon(final Graphics2D graphics2D)
+	{
+		if (!config.hunllefOverlayAttackStyleIcon())
+		{
+			return;
+		}
+
+		final GauntletHunllef hunllef = plugin.getHunllef();
+
+		final NPC npc = hunllef.getNpc();
+
+		final BufferedImage icon = hunllef.getAttackStyleIcon();
+
+		// offset value is height above the npc tile
+		final Point point = Perspective.getCanvasImageLocation(client, npc.getLocalLocation(), icon,
+			npc.getLogicalHeight() - 100);
+
+		if (point == null)
+		{
+			return;
+		}
+
+		graphics2D.drawImage(icon, point.getX(), point.getY(), null);
+	}
+
+	private void renderHunllefTile(final Graphics2D graphics2D)
+	{
+		if (!config.hunllefOutlineTile())
+		{
+			return;
+		}
+
+		final NPC npc = plugin.getHunllef().getNpc();
+
+		final NPCDefinition npcDefinition = npc.getDefinition();
+
+		if (npcDefinition == null)
+		{
+			return;
+		}
+
+		final Polygon polygon = Perspective.getCanvasTileAreaPoly(client, npc.getLocalLocation(),
+			npcDefinition.getSize());
+
+		if (polygon == null)
+		{
+			return;
+		}
+
+		drawStrokeAndFill(graphics2D, config.hunllefOutlineColor(), config.hunllefFillColor(),
+			config.hunllefTileOutlineWidth(), polygon);
+	}
+
+	private void renderFlash(final Graphics2D graphics2D)
+	{
+		if (!config.flashOnWrongAttack() || !plugin.isFlash())
+		{
+			return;
+		}
+
+		final Color originalColor = graphics2D.getColor();
+
+		graphics2D.setColor(config.flashColor());
+
+		graphics2D.fill(client.getCanvas().getBounds());
+
+		graphics2D.setColor(originalColor);
+
+		if (++timeout >= config.flashOnWrongAttackDuration())
+		{
+			timeout = 0;
+			plugin.setFlash(false);
+		}
+	}
+
+	private void renderResources(final Graphics2D graphics2D)
+	{
+		if (!config.resourceOverlay() || plugin.getResources().isEmpty())
+		{
+			return;
+		}
+
+		final LocalPoint playerLocalLocation = player.getLocalLocation();
+
+		for (final GauntletResource resource : plugin.getResources())
+		{
+			final LocalPoint gameObjectLocalLocation = resource.getGameObject().getLocalLocation();
+
+			if (isOutsideRenderDistance(gameObjectLocalLocation, playerLocalLocation))
+			{
+				continue;
+			}
+
+			final Polygon polygon = Perspective.getCanvasTilePoly(client, gameObjectLocalLocation);
+
+			if (polygon == null)
+			{
+				continue;
+			}
+
+			drawStrokeAndFill(graphics2D, config.resourceOutlineColor(), config.resourceFillColor(),
+				config.resourceTileOutlineWidth(), polygon);
+
+			OverlayUtil.renderImageLocation(client, graphics2D, gameObjectLocalLocation, resource.getIcon(), 0);
+		}
+	}
+
+	private void renderUtilities()
+	{
+		if (!config.utilitiesOutline() || plugin.getUtilities().isEmpty())
+		{
+			return;
+		}
+
+		final LocalPoint localPoint = player.getLocalLocation();
+
+		for (final GameObject gameObject : plugin.getUtilities())
+		{
+			if (!gameObject.getWorldLocation().isInScene(client)
+				|| isOutsideRenderDistance(gameObject.getLocalLocation(), localPoint))
+			{
+				continue;
+			}
+
+			final Shape shape = gameObject.getConvexHull();
+
+			if (shape == null)
+			{
+				continue;
+			}
+
+			modelOutlineRenderer.drawOutline(gameObject, config.utilitiesOutlineWidth(),
+				config.utilitiesOutlineColor(), TRANSPARENT);
+		}
+	}
+
+	private void renderDemibosses()
+	{
+		if (!config.demibossOutline() || plugin.getDemibosses().isEmpty())
+		{
+			return;
+		}
+
+		final LocalPoint localPointPlayer = player.getLocalLocation();
+
+		for (final GauntletDemiboss demiboss : plugin.getDemibosses())
+		{
+			final NPC npc = demiboss.getNpc();
+
+			final LocalPoint localPointNpc = npc.getLocalLocation();
+
+			if (localPointNpc == null || npc.isDead() || isOutsideRenderDistance(localPointNpc, localPointPlayer))
+			{
+				continue;
+			}
+
+			modelOutlineRenderer.drawOutline(npc, config.demibossOutlineWidth(),
+				demiboss.getDemiboss().getOutlineColor(), TRANSPARENT);
+		}
+	}
+
+	private void renderStrongNpcs()
+	{
+		if (!config.strongNpcOutline() || plugin.getStrongNpcs().isEmpty())
+		{
+			return;
+		}
+
+		final LocalPoint localPointPLayer = player.getLocalLocation();
+
+		for (final NPC npc : plugin.getStrongNpcs())
+		{
+			final LocalPoint localPointNpc = npc.getLocalLocation();
+
+			if (localPointNpc == null || npc.isDead() || isOutsideRenderDistance(localPointNpc, localPointPLayer))
+			{
+				continue;
+			}
+
+			modelOutlineRenderer.drawOutline(npc, config.strongNpcOutlineWidth(), config.strongNpcOutlineColor(),
+				TRANSPARENT);
+		}
+	}
+
+	private void renderWeakNpcs()
+	{
+		if (!config.weakNpcOutline() || plugin.getWeakNpcs().isEmpty())
+		{
+			return;
+		}
+
+		final LocalPoint localPointPlayer = player.getLocalLocation();
+
+		for (final NPC npc : plugin.getWeakNpcs())
+		{
+			final LocalPoint localPointNpc = npc.getLocalLocation();
+
+			if (localPointNpc == null || npc.isDead() || isOutsideRenderDistance(localPointNpc, localPointPlayer))
+			{
+				continue;
+			}
+
+			modelOutlineRenderer.drawOutline(npc, config.weakNpcOutlineWidth(), config.weakNpcOutlineColor(),
+				TRANSPARENT);
+		}
+	}
+
+	private void renderDiscoMode()
+	{
+		if (!config.discoMode())
+		{
+			return;
+		}
+
+		if (++timeout > COLOR_DURATION)
+		{
+			timeout = 0;
+			idx = idx >= COLORS.length - 1 ? 0 : idx + 1;
+		}
+
+		modelOutlineRenderer.drawOutline(plugin.getHunllef().getNpc(), 12, COLORS[idx], TRANSPARENT);
+	}
+
+	private Polygon getProjectilePolygon(final Projectile projectile)
+	{
+		if (projectile == null || projectile.getModel() == null)
 		{
 			return null;
 		}
 
-		Model model = proj.getModel();
-		LocalPoint point = new LocalPoint((int) proj.getX(), (int) proj.getY());
-		int tileHeight = Perspective.getTileHeight(client, point, client.getPlane());
+		final Model model = projectile.getModel();
 
-		double angle = Math.atan(proj.getVelocityY() / proj.getVelocityX());
-		angle = Math.toDegrees(angle) + (proj.getVelocityX() < 0 ? 180 : 0);
+		final LocalPoint localPoint = new LocalPoint((int) projectile.getX(), (int) projectile.getY());
+
+		final int tileHeight = Perspective.getTileHeight(client, localPoint, client.getPlane());
+
+		double angle = Math.atan(projectile.getVelocityY() / projectile.getVelocityX());
+		angle = Math.toDegrees(angle) + (projectile.getVelocityX() < 0 ? 180 : 0);
 		angle = angle < 0 ? angle + 360 : angle;
 		angle = 360 - angle - 90;
 
 		double ori = angle * (512d / 90d);
 		ori = ori < 0 ? ori + 2048 : ori;
 
-		int orientation = (int) Math.round(ori);
+		final int orientation = (int) Math.round(ori);
 
-		List<Vertex> vertices = model.getVertices();
+		final List<Vertex> vertices = model.getVertices();
+
 		for (int i = 0; i < vertices.size(); ++i)
 		{
 			vertices.set(i, vertices.get(i).rotate(orientation));
 		}
 
-		List<Point> list = new ArrayList<>();
+		final List<Point> list = new ArrayList<>();
 
-		for (Vertex vertex : vertices)
+		for (final Vertex vertex : vertices)
 		{
-			final Point localToCanvas = Perspective.localToCanvas(client, point.getX() - vertex.getX(), point.getY() - vertex.getZ(), tileHeight + vertex.getY() + (int) proj.getZ());
-			if (localToCanvas != null)
+			final Point point = Perspective.localToCanvas(client, localPoint.getX() - vertex.getX(),
+				localPoint.getY() - vertex.getZ(), tileHeight + vertex.getY() + (int) projectile.getZ());
+
+			if (point == null)
 			{
-				list.add(localToCanvas);
+				continue;
 			}
+
+			list.add(point);
 		}
 
 		final List<Point> convexHull = Jarvis.convexHull(list);
+
 		if (convexHull == null)
 		{
 			return null;
 		}
 
 		final Polygon polygon = new Polygon();
-		for (final Point hullPoint : convexHull)
+
+		for (final Point point : convexHull)
 		{
-			polygon.addPoint(hullPoint.getX(), hullPoint.getY());
+			polygon.addPoint(point.getX(), point.getY());
 		}
 
 		return polygon;
 	}
 
-	private void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint, boolean shadows)
+	private boolean isOutsideRenderDistance(final LocalPoint localPoint, final LocalPoint playerLocation)
 	{
-		graphics.setFont(new Font("Arial", fontStyle, fontSize));
-		if (canvasPoint != null)
+		final int maxDistance = config.resourceRenderDistance().getDistance();
+
+		if (maxDistance == 0)
 		{
-			final Point canvasCenterPoint = new Point(
-				canvasPoint.getX() - 3,
-				canvasPoint.getY() + 6);
-			final Point canvasCenterPoint_shadow = new Point(
-				canvasPoint.getX() - 2,
-				canvasPoint.getY() + 7);
-			if (shadows)
-			{
-				OverlayUtil.renderTextLocation(graphics, canvasCenterPoint_shadow, txtString, Color.BLACK);
-			}
-			OverlayUtil.renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
+			return false;
 		}
+
+		return localPoint.distanceTo(playerLocation) >= maxDistance;
 	}
 
-	private Point centerPoint(Rectangle rect)
+	private static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor,
+											final float strokeWidth, final Shape shape)
 	{
-		int x = (int) (rect.getX() + rect.getWidth() / 2);
-		int y = (int) (rect.getY() + rect.getHeight() / 2);
-		return new Point(x, y);
-	}
+		final Color originalColor = graphics2D.getColor();
+		final Stroke originalStroke = graphics2D.getStroke();
 
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
-		}
+		graphics2D.setStroke(new BasicStroke(strokeWidth));
+		graphics2D.setColor(outlineColor);
+		graphics2D.draw(shape);
+
+		graphics2D.setColor(fillColor);
+		graphics2D.fill(shape);
+
+		graphics2D.setColor(originalColor);
+		graphics2D.setStroke(originalStroke);
 	}
 }

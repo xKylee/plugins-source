@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
@@ -21,52 +22,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.gauntlet;
 
-import java.awt.image.BufferedImage;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.GameObject;
-import net.runelite.api.ObjectID;
-import net.runelite.api.Skill;
-import net.runelite.api.Tile;
-import net.runelite.client.game.SkillIconManager;
+import lombok.RequiredArgsConstructor;
+import net.runelite.api.NPC;
 
-@Getter(AccessLevel.PACKAGE)
-class Resources
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class GauntletTornado
 {
-	private GameObject gameObject;
-	private Tile tile;
-	private BufferedImage image;
+	private static final int TICK_DURATION = 20;
 
-	Resources(GameObject object, Tile tile, SkillIconManager skillIconManager)
-	{
-		this.gameObject = object;
-		this.tile = tile;
-		this.image = assignedImage(skillIconManager, object.getId());
-	}
+	@Getter(AccessLevel.PACKAGE)
+	private int timeLeft = TICK_DURATION;
 
-	private BufferedImage assignedImage(SkillIconManager SkillIconManager, int id)
+	@Getter(AccessLevel.PACKAGE)
+	private final NPC npc;
+
+	void updateTimeLeft()
 	{
-		switch (id)
+		if (timeLeft >= 0)
 		{
-			case ObjectID.CRYSTAL_DEPOSIT:
-			case ObjectID.CORRUPT_DEPOSIT:
-				return SkillIconManager.getSkillImage(Skill.MINING);
-			case ObjectID.PHREN_ROOTS:
-			case ObjectID.PHREN_ROOTS_36066:
-				return SkillIconManager.getSkillImage(Skill.WOODCUTTING);
-			case ObjectID.FISHING_SPOT_36068:
-			case ObjectID.FISHING_SPOT_35971:
-				return SkillIconManager.getSkillImage(Skill.FISHING);
-			case ObjectID.GRYM_ROOT:
-			case ObjectID.GRYM_ROOT_36070:
-				return SkillIconManager.getSkillImage(Skill.HERBLORE);
-			case ObjectID.LINUM_TIRINUM:
-			case ObjectID.LINUM_TIRINUM_36072:
-				return SkillIconManager.getSkillImage(Skill.FARMING);
-			default:
-				return null;
+			timeLeft--;
 		}
 	}
 }
