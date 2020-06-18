@@ -222,6 +222,9 @@ public class GauntletPlugin extends Plugin
 	private GauntletWidgetOverlay widgetOverlay;
 
 	@Inject
+	private GauntletPrayerInfoboxOverlay infoBoxOverlay;
+
+	@Inject
 	private GauntletConfig config;
 
 	@Inject
@@ -276,6 +279,7 @@ public class GauntletPlugin extends Plugin
 		initializeGauntlet();
 		overlayManager.add(overlay);
 		overlayManager.add(widgetOverlay);
+		overlayManager.add(infoBoxOverlay);
 		inGauntlet = true;
 	}
 
@@ -286,6 +290,7 @@ public class GauntletPlugin extends Plugin
 
 		overlayManager.remove(overlay);
 		overlayManager.remove(widgetOverlay);
+		overlayManager.remove(infoBoxOverlay);
 
 		clearData();
 	}
@@ -318,6 +323,7 @@ public class GauntletPlugin extends Plugin
 			case "mirrorMode":
 				overlay.determineLayer();
 				widgetOverlay.determineLayer();
+				infoBoxOverlay.determineLayer();
 
 				if (overlayManager.anyMatch(o -> o instanceof GauntletOverlay))
 				{
@@ -329,6 +335,12 @@ public class GauntletPlugin extends Plugin
 				{
 					overlayManager.remove(widgetOverlay);
 					overlayManager.add(widgetOverlay);
+				}
+
+				if (overlayManager.anyMatch(o -> o instanceof GauntletPrayerInfoboxOverlay))
+				{
+					overlayManager.remove(infoBoxOverlay);
+					overlayManager.add(infoBoxOverlay);
 				}
 				break;
 			default:
@@ -392,6 +404,7 @@ public class GauntletPlugin extends Plugin
 				inGauntlet = true;
 				overlayManager.add(overlay);
 				overlayManager.add(widgetOverlay);
+				overlayManager.add(infoBoxOverlay);
 			}
 		}
 		else

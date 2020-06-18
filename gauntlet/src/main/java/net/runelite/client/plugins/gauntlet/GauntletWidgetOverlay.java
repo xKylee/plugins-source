@@ -68,7 +68,10 @@ public class GauntletWidgetOverlay extends Overlay
 
 	private void renderCorrectPrayer(final Graphics2D graphics2D)
 	{
-		if (!config.correctPrayerOverlay())
+		final GauntletConfig.PrayerHighlightMode prayerHighlightMode = config.correctPrayerOverlay();
+
+		if (prayerHighlightMode == GauntletConfig.PrayerHighlightMode.NONE ||
+			prayerHighlightMode == GauntletConfig.PrayerHighlightMode.BOX)
 		{
 			return;
 		}
