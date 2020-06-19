@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * Copyright (c) 2019, kyle <https://github.com/Kyleeld>
  * All rights reserved.
@@ -22,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.overlay;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,8 +37,10 @@ import net.runelite.api.NPC;
 import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
+import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletConfig.PrayerHighlightMode;
-import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.plugins.gauntlet.entity.Hunllef;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -45,7 +48,7 @@ import net.runelite.client.ui.overlay.components.ComponentConstants;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 
-class GauntletPrayerInfoboxOverlay extends Overlay
+public class OverlayPrayerBox extends Overlay
 {
 	private static final Color NOT_ACTIVATED_BACKGROUND_COLOR = new Color(150, 0, 0, 150);
 
@@ -62,9 +65,10 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 	private BufferedImage spriteProtectFromRange;
 
 	@Inject
-	GauntletPrayerInfoboxOverlay(final Client client, final GauntletPlugin plugin, final GauntletConfig config,
-									final SpriteManager spriteManager)
+	OverlayPrayerBox(final Client client, final GauntletPlugin plugin, final GauntletConfig config, final SpriteManager spriteManager)
 	{
+		super(plugin);
+
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
@@ -84,14 +88,14 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 			return null;
 		}
 
-		final PrayerHighlightMode prayerHighlightMode = config.correctPrayerOverlay();
+		final PrayerHighlightMode prayerHighlightMode = config.prayerOverlay();
 
 		if (prayerHighlightMode == PrayerHighlightMode.NONE || prayerHighlightMode == PrayerHighlightMode.PRAYERWIDGET)
 		{
 			return null;
 		}
 
-		final GauntletHunllef hunllef = plugin.getHunllef();
+		final Hunllef hunllef = plugin.getHunllef();
 
 		if (hunllef == null)
 		{
@@ -105,7 +109,7 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 			return null;
 		}
 
-		final GauntletHunllef.BossAttackPhase bossAttackPhase = hunllef.getCurrentPhase();
+		final Hunllef.BossAttackPhase bossAttackPhase = hunllef.getCurrentPhase();
 
 		final Prayer prayer = bossAttackPhase.getPrayer();
 
@@ -129,7 +133,7 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 		return panelComponent.render(graphics);
 	}
 
-	void determineLayer()
+	public void determineLayer()
 	{
 		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
@@ -143,7 +147,9 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 			case PROTECT_FROM_MAGIC:
 				if (spriteProtectFromMagic == null)
 				{
-					spriteProtectFromMagic = scaleImg(spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0));
+					spriteProtectFromMagic = scaleSprite(
+						spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0)
+					);
 				}
 
 				bufferedImage = spriteProtectFromMagic;
@@ -151,8 +157,9 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 			case PROTECT_FROM_MISSILES:
 				if (spriteProtectFromRange == null)
 				{
-
-					spriteProtectFromRange = scaleImg(spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0));
+					spriteProtectFromRange = scaleSprite(
+						spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0)
+					);
 				}
 
 				bufferedImage = spriteProtectFromRange;
@@ -164,15 +171,15 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 		return bufferedImage;
 	}
 
-	private static BufferedImage scaleImg(final BufferedImage img)
+	private static BufferedImage scaleSprite(final BufferedImage bufferedImage)
 	{
-		if (img == null)
+		if (bufferedImage == null)
 		{
 			return null;
 		}
 
-		final double width = img.getWidth(null);
-		final double height = img.getHeight(null);
+		final double width = bufferedImage.getWidth(null);
+		final double height = bufferedImage.getHeight(null);
 		final double size = 36; // Limit size to 2 as that is minimum size not causing breakage
 		final double scalex = size / width;
 		final double scaley = size / height;
@@ -181,7 +188,7 @@ class GauntletPrayerInfoboxOverlay extends Overlay
 		final int newHeight = (int) (height * scale);
 		final BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		final Graphics g = scaledImage.createGraphics();
-		g.drawImage(img, 0, 0, newWidth, newHeight, null);
+		g.drawImage(bufferedImage, 0, 0, newWidth, newHeight, null);
 		g.dispose();
 
 		return scaledImage;

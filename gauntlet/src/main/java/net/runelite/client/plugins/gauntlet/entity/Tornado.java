@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
+ * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,55 +23,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.entity;
 
-import java.awt.Color;
-import java.util.Set;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.runelite.api.NPC;
-import net.runelite.api.NpcID;
 
-@Getter(AccessLevel.PACKAGE)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-class GauntletDemiboss
+@RequiredArgsConstructor
+public class Tornado
 {
-	@EqualsAndHashCode.Include
-	final NPC npc;
+	private static final int TICK_DURATION = 20;
 
-	final Demiboss demiboss;
+	@Getter
+	private int timeLeft = TICK_DURATION;
 
-	GauntletDemiboss(final NPC npc)
+	@Getter
+	private final NPC npc;
+
+	public void updateTimeLeft()
 	{
-		this.npc = npc;
-		this.demiboss = Demiboss.fromId(npc.getId());
-	}
-
-	@AllArgsConstructor(access = AccessLevel.PRIVATE)
-	enum Demiboss
-	{
-		BEAR(Set.of(NpcID.CRYSTALLINE_BEAR, NpcID.CORRUPTED_BEAR), Color.RED),
-		DARK_BEAST(Set.of(NpcID.CRYSTALLINE_DARK_BEAST, NpcID.CORRUPTED_DARK_BEAST), Color.GREEN),
-		DRAGON(Set.of(NpcID.CRYSTALLINE_DRAGON, NpcID.CORRUPTED_DRAGON), Color.BLUE);
-
-		private final Set<Integer> ids;
-
-		@Getter(AccessLevel.PACKAGE)
-		private final Color outlineColor;
-
-		static Demiboss fromId(final int id)
+		if (timeLeft >= 0)
 		{
-			for (final Demiboss demiboss : Demiboss.values())
-			{
-				if (demiboss.ids.contains(id))
-				{
-					return demiboss;
-				}
-			}
-
-			return null;
+			timeLeft--;
 		}
 	}
 }

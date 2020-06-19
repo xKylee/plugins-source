@@ -23,11 +23,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.entity;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.api.NPC;
@@ -36,12 +35,12 @@ import net.runelite.api.Skill;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.util.ImageUtil;
 
-class GauntletHunllef
+public class Hunllef
 {
 	private static final int MAX_PLAYER_ATTACKS = 6;
 	private static final int MAX_BOSS_ATTACKS = 4;
 
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private final NPC npc;
 
 	private final BufferedImage originalMagicIcon;
@@ -50,19 +49,19 @@ class GauntletHunllef
 	private BufferedImage magicIcon;
 	private BufferedImage rangeIcon;
 
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private BossAttackPhase currentPhase;
 
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private int bossAttacks;
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private int playerAttacks;
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private int ticksUntilAttack;
 
 	private int attackStyleIconSize;
 
-	GauntletHunllef(final NPC npc, final int attackStyleIconSize, final SkillIconManager skillIconManager)
+	public Hunllef(final NPC npc, final int attackStyleIconSize, final SkillIconManager skillIconManager)
 	{
 		this.npc = npc;
 		this.bossAttacks = MAX_BOSS_ATTACKS;
@@ -74,7 +73,7 @@ class GauntletHunllef
 		this.currentPhase = BossAttackPhase.RANGE;
 	}
 
-	void updateTicksUntilAttack()
+	public void onGameTick()
 	{
 		if (ticksUntilAttack > 0)
 		{
@@ -82,7 +81,7 @@ class GauntletHunllef
 		}
 	}
 
-	void updatePlayerAttack()
+	public void updatePlayerAttack()
 	{
 		playerAttacks--;
 
@@ -92,7 +91,7 @@ class GauntletHunllef
 		}
 	}
 
-	void updateAttack(final BossAttack style)
+	public void updateAttack(final BossAttack style)
 	{
 		ticksUntilAttack = MAX_PLAYER_ATTACKS;
 
@@ -147,14 +146,14 @@ class GauntletHunllef
 		}
 	}
 
-	void setAttackStyleIconSize(final int attackStyleIconSize)
+	public void setAttackStyleIconSize(final int attackStyleIconSize)
 	{
 		this.attackStyleIconSize = attackStyleIconSize;
 		magicIcon = ImageUtil.resizeImage(originalMagicIcon, attackStyleIconSize, attackStyleIconSize);
 		rangeIcon = ImageUtil.resizeImage(originalRangeIcon, attackStyleIconSize, attackStyleIconSize);
 	}
 
-	BufferedImage getAttackStyleIcon()
+	public BufferedImage getAttackStyleIcon()
 	{
 		final BufferedImage icon;
 
@@ -184,8 +183,8 @@ class GauntletHunllef
 	}
 
 	@AllArgsConstructor
-	@Getter(AccessLevel.PACKAGE)
-	enum BossAttackPhase
+	@Getter
+	public enum BossAttackPhase
 	{
 		MAGIC(Color.CYAN, Prayer.PROTECT_FROM_MAGIC),
 		RANGE(Color.GREEN, Prayer.PROTECT_FROM_MISSILES);
@@ -194,7 +193,7 @@ class GauntletHunllef
 		private final Prayer prayer;
 	}
 
-	enum BossAttack
+	public enum BossAttack
 	{
 		MAGIC,
 		RANGE,

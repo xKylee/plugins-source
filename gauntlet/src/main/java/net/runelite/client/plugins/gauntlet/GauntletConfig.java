@@ -67,12 +67,12 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigSection(
-		name = "Other npcs",
+		name = "Npcs",
 		description = "Other npcs section.",
 		position = 2,
-		keyName = "otherNpcsSection"
+		keyName = "npcSection"
 	)
-	default boolean otherNpcsSection()
+	default boolean npcSection()
 	{
 		return false;
 	}
@@ -122,9 +122,20 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigSection(
+		name = "Timer",
+		description = "Timer section.",
+		position = 7,
+		keyName = "timerSection"
+	)
+	default boolean timerSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
 		name = "Other",
 		description = "Other section.",
-		position = 7,
+		position = 8,
 		keyName = "otherSection"
 	)
 	default boolean otherSection()
@@ -269,7 +280,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay demi-bosses with a colored outline.",
 		position = 0,
 		keyName = "demibossOutline",
-		section = "otherNpcsSection"
+		section = "npcSection"
 	)
 	default boolean demibossOutline()
 	{
@@ -285,7 +296,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the demi-boss outline.",
 		position = 1,
 		keyName = "demibossOutlineWidth",
-		section = "otherNpcsSection",
+		section = "npcSection",
 		hidden = true,
 		unhide = "demibossOutline"
 	)
@@ -300,7 +311,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay strong npcs with a colored outline.",
 		position = 2,
 		keyName = "strongNpcOutline",
-		section = "otherNpcsSection"
+		section = "npcSection"
 	)
 	default boolean strongNpcOutline()
 	{
@@ -316,7 +327,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the strong npcs outline.",
 		position = 3,
 		keyName = "strongNpcOutlineWidth",
-		section = "otherNpcsSection",
+		section = "npcSection",
 		hidden = true,
 		unhide = "strongNpcOutline"
 	)
@@ -332,7 +343,7 @@ public interface GauntletConfig extends Config
 		description = "Change the outline color of strong npcs.",
 		position = 4,
 		keyName = "strongNpcOutlineColor",
-		section = "otherNpcsSection",
+		section = "npcSection",
 		hidden = true,
 		unhide = "strongNpcOutline"
 	)
@@ -346,7 +357,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay weak npcs with a colored outline.",
 		position = 5,
 		keyName = "weakNpcOutline",
-		section = "otherNpcsSection"
+		section = "npcSection"
 	)
 	default boolean weakNpcOutline()
 	{
@@ -362,7 +373,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the weak npcs outline.",
 		position = 6,
 		keyName = "weakNpcOutlineWidth",
-		section = "otherNpcsSection",
+		section = "npcSection",
 		hidden = true,
 		unhide = "weakNpcOutline"
 	)
@@ -378,7 +389,7 @@ public interface GauntletConfig extends Config
 		description = "Change the outline color of weak npcs.",
 		position = 7,
 		keyName = "weakNpcOutlineColor",
-		section = "otherNpcsSection",
+		section = "npcSection",
 		hidden = true,
 		unhide = "weakNpcOutline"
 	)
@@ -757,10 +768,10 @@ public interface GauntletConfig extends Config
 		name = "Overlay prayer",
 		description = "Overlay the correct prayer to use against the Hunllef's current attack style.",
 		position = 0,
-		keyName = "correctPrayerOverlay",
+		keyName = "prayerOverlay",
 		section = "playerSection"
 	)
-	default PrayerHighlightMode correctPrayerOverlay()
+	default PrayerHighlightMode prayerOverlay()
 	{
 		return PrayerHighlightMode.NONE;
 	}
@@ -808,6 +819,32 @@ public interface GauntletConfig extends Config
 	default Color flashColor()
 	{
 		return new Color(255, 0, 0, 70);
+	}
+
+	// Timer Section
+
+	@ConfigItem(
+		position = 0,
+		keyName = "timerOverlay",
+		name = "Overlay timer",
+		description = "Display a timer overlay that tracks your gauntlet progress.",
+		section = "timerSection"
+	)
+	default boolean timerOverlay()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "timerChatMessage",
+		name = "Chat timer",
+		description = "Display a chat message that tracks your gauntlet progress.",
+		section = "timerSection"
+	)
+	default boolean timerChatMessage()
+	{
+		return false;
 	}
 
 	// Other Section
@@ -897,7 +934,7 @@ public interface GauntletConfig extends Config
 		BOTH("Both"),
 		NONE("None");
 
-		private String name;
+		private final String name;
 
 		@Override
 		public String toString()
