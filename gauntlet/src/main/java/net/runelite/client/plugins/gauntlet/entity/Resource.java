@@ -22,10 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.entity;
 
 import java.awt.image.BufferedImage;
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.GameObject;
 import net.runelite.api.ObjectID;
@@ -33,9 +32,9 @@ import net.runelite.api.Skill;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.util.ImageUtil;
 
-class GauntletResource
+public class Resource
 {
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private final GameObject gameObject;
 
 	private final BufferedImage originalIcon;
@@ -44,7 +43,7 @@ class GauntletResource
 
 	private int iconSize;
 
-	GauntletResource(final GameObject gameObject, final int iconSize, final SkillIconManager skillIconManager)
+	public Resource(final GameObject gameObject, final int iconSize, final SkillIconManager skillIconManager)
 	{
 		this.gameObject = gameObject;
 		this.iconSize = iconSize;
@@ -52,13 +51,13 @@ class GauntletResource
 		this.originalIcon = getOriginalIcon(skillIconManager, gameObject.getId());
 	}
 
-	void setIconSize(final int iconSize)
+	public void setIconSize(final int iconSize)
 	{
 		this.iconSize = iconSize;
 		icon = ImageUtil.resizeImage(originalIcon, iconSize, iconSize);
 	}
 
-	BufferedImage getIcon()
+	public BufferedImage getIcon()
 	{
 		if (icon == null)
 		{

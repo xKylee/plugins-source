@@ -23,37 +23,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.entity;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.Skill;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.util.ImageUtil;
 
-class GauntletProjectile
+public class Projectile
 {
 	private static final int PROJECTILE_FILL_ALPHA = 100;
 
-	@Getter(AccessLevel.PACKAGE)
-	private final Projectile projectile;
+	@Getter
+	private final net.runelite.api.Projectile projectile;
 
 	private final BufferedImage originalIcon;
 
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private final Color outlineColor;
-	@Getter(AccessLevel.PACKAGE)
+	@Getter
 	private final Color fillColor;
 
 	private BufferedImage icon;
 
 	private int iconSize;
 
-	GauntletProjectile(final Projectile projectile, final int iconSize, final SkillIconManager skillIconManager)
+	public Projectile(final net.runelite.api.Projectile projectile, final int iconSize, final SkillIconManager skillIconManager)
 	{
 		this.projectile = projectile;
 		this.iconSize = iconSize;
@@ -65,13 +63,13 @@ class GauntletProjectile
 			PROJECTILE_FILL_ALPHA);
 	}
 
-	void setIconSize(final int iconSize)
+	public void setIconSize(final int iconSize)
 	{
 		this.iconSize = iconSize;
 		icon = ImageUtil.resizeImage(originalIcon, iconSize, iconSize);
 	}
 
-	BufferedImage getIcon()
+	public BufferedImage getIcon()
 	{
 		if (icon == null)
 		{

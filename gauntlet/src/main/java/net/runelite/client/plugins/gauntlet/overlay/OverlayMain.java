@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.overlay;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -48,18 +48,23 @@ import net.runelite.api.NPCDefinition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
-import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.model.Jarvis;
 import net.runelite.api.model.Vertex;
 import net.runelite.client.graphics.ModelOutlineRenderer;
-import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.plugins.gauntlet.GauntletConfig;
+import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.plugins.gauntlet.entity.Demiboss;
+import net.runelite.client.plugins.gauntlet.entity.Hunllef;
+import net.runelite.client.plugins.gauntlet.entity.Projectile;
+import net.runelite.client.plugins.gauntlet.entity.Resource;
+import net.runelite.client.plugins.gauntlet.entity.Tornado;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
-class GauntletOverlay extends Overlay
+public class OverlayMain extends Overlay
 {
 	private static final Color[] COLORS = new Color[]{
 		Color.BLUE,
@@ -90,9 +95,10 @@ class GauntletOverlay extends Overlay
 	private int idx;
 
 	@Inject
-	private GauntletOverlay(final Client client, final GauntletPlugin plugin, final GauntletConfig config,
-							final ModelOutlineRenderer modelOutlineRenderer)
+	private OverlayMain(final Client client, final GauntletPlugin plugin, final GauntletConfig config, final ModelOutlineRenderer modelOutlineRenderer)
 	{
+		super(plugin);
+
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
@@ -113,7 +119,7 @@ class GauntletOverlay extends Overlay
 
 		if (plugin.isInHunllefRoom())
 		{
-			final GauntletHunllef hunllef = plugin.getHunllef();
+			final Hunllef hunllef = plugin.getHunllef();
 
 			if (hunllef == null)
 			{
@@ -166,7 +172,7 @@ class GauntletOverlay extends Overlay
 		return null;
 	}
 
-	void determineLayer()
+	public void determineLayer()
 	{
 		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
@@ -178,7 +184,7 @@ class GauntletOverlay extends Overlay
 			return;
 		}
 
-		for (final GauntletTornado tornado : plugin.getTornados())
+		for (final Tornado tornado : plugin.getTornados())
 		{
 			final int timeLeft = tornado.getTimeLeft();
 
@@ -223,13 +229,12 @@ class GauntletOverlay extends Overlay
 
 	private void renderProjectiles(final Graphics2D graphics2D)
 	{
-		if ((!config.outlineProjectile() && !config.overlayProjectileIcon())
-			|| plugin.getProjectiles().isEmpty())
+		if ((!config.outlineProjectile() && !config.overlayProjectileIcon()) || plugin.getProjectiles().isEmpty())
 		{
 			return;
 		}
 
-		for (final GauntletProjectile projectile : plugin.getProjectiles())
+		for (final Projectile projectile : plugin.getProjectiles())
 		{
 			final Polygon polygon = getProjectilePolygon(projectile.getProjectile());
 
@@ -272,9 +277,9 @@ class GauntletOverlay extends Overlay
 			return;
 		}
 
-		final GauntletHunllef hunllef = plugin.getHunllef();
+		final Hunllef hunllef = plugin.getHunllef();
 
-		final GauntletHunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
+		final Hunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
 
 		if (client.isPrayerActive(phase.getPrayer()))
 		{
@@ -292,7 +297,7 @@ class GauntletOverlay extends Overlay
 			return;
 		}
 
-		final GauntletHunllef hunllef = plugin.getHunllef();
+		final Hunllef hunllef = plugin.getHunllef();
 
 		final NPC npc = hunllef.getNpc();
 
@@ -309,7 +314,7 @@ class GauntletOverlay extends Overlay
 
 		final Font originalFont = graphics2D.getFont();
 
-		graphics2D.setFont(new Font(Font.DIALOG,
+		graphics2D.setFont(new Font(Font.SANS_SERIF,
 			config.hunllefAttackCounterFontStyle().getFont(), config.hunllefAttackCounterFontSize()));
 
 		OverlayUtil.renderTextLocation(graphics2D, point, text, hunllef.getCurrentPhase().getColor());
@@ -324,7 +329,7 @@ class GauntletOverlay extends Overlay
 			return;
 		}
 
-		final GauntletHunllef hunllef = plugin.getHunllef();
+		final Hunllef hunllef = plugin.getHunllef();
 
 		final NPC npc = hunllef.getNpc();
 
@@ -401,7 +406,7 @@ class GauntletOverlay extends Overlay
 
 		final LocalPoint playerLocalLocation = player.getLocalLocation();
 
-		for (final GauntletResource resource : plugin.getResources())
+		for (final Resource resource : plugin.getResources())
 		{
 			final LocalPoint gameObjectLocalLocation = resource.getGameObject().getLocalLocation();
 
@@ -462,7 +467,7 @@ class GauntletOverlay extends Overlay
 
 		final LocalPoint localPointPlayer = player.getLocalLocation();
 
-		for (final GauntletDemiboss demiboss : plugin.getDemibosses())
+		for (final Demiboss demiboss : plugin.getDemibosses())
 		{
 			final NPC npc = demiboss.getNpc();
 
@@ -474,7 +479,7 @@ class GauntletOverlay extends Overlay
 			}
 
 			modelOutlineRenderer.drawOutline(npc, config.demibossOutlineWidth(),
-				demiboss.getDemiboss().getOutlineColor(), TRANSPARENT);
+				demiboss.getType().getOutlineColor(), TRANSPARENT);
 		}
 	}
 
@@ -540,7 +545,7 @@ class GauntletOverlay extends Overlay
 		modelOutlineRenderer.drawOutline(plugin.getHunllef().getNpc(), 12, COLORS[idx], TRANSPARENT);
 	}
 
-	private Polygon getProjectilePolygon(final Projectile projectile)
+	private Polygon getProjectilePolygon(final net.runelite.api.Projectile projectile)
 	{
 		if (projectile == null || projectile.getModel() == null)
 		{
@@ -614,8 +619,7 @@ class GauntletOverlay extends Overlay
 		return localPoint.distanceTo(playerLocation) >= maxDistance;
 	}
 
-	private static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor,
-											final float strokeWidth, final Shape shape)
+	private static void drawStrokeAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
 	{
 		final Color originalColor = graphics2D.getColor();
 		final Stroke originalStroke = graphics2D.getStroke();
