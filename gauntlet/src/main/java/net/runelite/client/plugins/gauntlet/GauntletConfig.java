@@ -146,7 +146,7 @@ public interface GauntletConfig extends Config
 	// Resources Section
 
 	@ConfigItem(
-		name = "Overlay resources",
+		name = "Overlay resource icon and tile",
 		description = "Overlay resources with a respective icon and tile outline.",
 		position = 0,
 		keyName = "resourceOverlay",
@@ -200,12 +200,12 @@ public interface GauntletConfig extends Config
 		name = "Tile outline color",
 		description = "Change the tile outline color of resources.",
 		position = 3,
-		keyName = "resourceOutlineColor",
+		keyName = "resourceTileOutlineColor",
 		section = "resourcesSection",
 		hidden = true,
 		unhide = "resourceOverlay"
 	)
-	default Color resourceOutlineColor()
+	default Color resourceTileOutlineColor()
 	{
 		return Color.YELLOW;
 	}
@@ -215,14 +215,60 @@ public interface GauntletConfig extends Config
 		name = "Tile fill color",
 		description = "Change the tile fill color of resources.",
 		position = 4,
-		keyName = "resourceFillColor",
+		keyName = "resourceTileFillColor",
 		section = "resourcesSection",
 		hidden = true,
 		unhide = "resourceOverlay"
 	)
-	default Color resourceFillColor()
+	default Color resourceTileFillColor()
 	{
 		return new Color(255, 255, 255, 50);
+	}
+
+	@ConfigItem(
+		name = "Outline resources",
+		description = "Outline resources with a colored outline.",
+		position = 5,
+		keyName = "resourceOutline",
+		section = "resourcesSection"
+	)
+	default boolean resourceOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 8
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the width of the resource outline.",
+		position = 6,
+		keyName = "resourceOutlineWidth",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOutline"
+	)
+	@Units(Units.POINTS)
+	default int resourceOutlineWidth()
+	{
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline color",
+		description = "Change the outline color of resources.",
+		position = 7,
+		keyName = "resourceOutlineColor",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOutline"
+	)
+	default Color resourceOutlineColor()
+	{
+		return Color.YELLOW;
 	}
 
 	// Utilities Section
@@ -401,7 +447,7 @@ public interface GauntletConfig extends Config
 	// Hunllef Section
 
 	@ConfigItem(
-		name = "Attack and prayer counter",
+		name = "Display counter on Hunllef",
 		description = "Overlay the Hunllef with an attack and prayer counter.",
 		position = 0,
 		keyName = "hunllefOverlayAttackCounter",
@@ -446,7 +492,7 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		name = "Outline wrong prayer",
+		name = "Outline Hunllef on wrong prayer",
 		description = "Outline the Hunllef when incorrectly praying against its current attack style.",
 		position = 3,
 		keyName = "hunllefOverlayWrongPrayerOutline",
@@ -538,7 +584,7 @@ public interface GauntletConfig extends Config
 	}
 
 	@ConfigItem(
-		name = "Overlay attack style icon",
+		name = "Overlay style icon on Hunllef",
 		description = "Overlay a current attack style icon on the Hunllef.",
 		position = 9,
 		keyName = "hunllefOverlayAttackStyleIcon",
@@ -628,7 +674,7 @@ public interface GauntletConfig extends Config
 	// Tornadoes Section
 
 	@ConfigItem(
-		name = "Overlay tick counter",
+		name = "Overlay tornado tick counter",
 		description = "Overlay tornadoes with a tick counter.",
 		position = 0,
 		keyName = "tornadoTickCounter",
