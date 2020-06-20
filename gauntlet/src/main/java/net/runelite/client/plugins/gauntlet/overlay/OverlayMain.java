@@ -399,7 +399,7 @@ public class OverlayMain extends Overlay
 
 	private void renderResources(final Graphics2D graphics2D)
 	{
-		if (!config.resourceOverlay() || plugin.getResources().isEmpty())
+		if ((!config.resourceOverlay() && !config.resourceOutline()) || plugin.getResources().isEmpty())
 		{
 			return;
 		}
@@ -408,24 +408,42 @@ public class OverlayMain extends Overlay
 
 		for (final Resource resource : plugin.getResources())
 		{
-			final LocalPoint gameObjectLocalLocation = resource.getGameObject().getLocalLocation();
+			final GameObject gameObject = resource.getGameObject();
+
+			final LocalPoint gameObjectLocalLocation = gameObject.getLocalLocation();
 
 			if (isOutsideRenderDistance(gameObjectLocalLocation, playerLocalLocation))
 			{
 				continue;
 			}
 
-			final Polygon polygon = Perspective.getCanvasTilePoly(client, gameObjectLocalLocation);
-
-			if (polygon == null)
+			if (config.resourceOverlay())
 			{
-				continue;
+				final Polygon polygon = Perspective.getCanvasTilePoly(client, gameObjectLocalLocation);
+
+				if (polygon == null)
+				{
+					continue;
+				}
+
+				drawStrokeAndFill(graphics2D, config.resourceTileOutlineColor(), config.resourceTileFillColor(),
+					config.resourceTileOutlineWidth(), polygon);
+
+				OverlayUtil.renderImageLocation(client, graphics2D, gameObjectLocalLocation, resource.getIcon(), 0);
 			}
 
-			drawStrokeAndFill(graphics2D, config.resourceOutlineColor(), config.resourceFillColor(),
-				config.resourceTileOutlineWidth(), polygon);
+			if (config.resourceOutline())
+			{
+				final Shape shape = gameObject.getConvexHull();
 
-			OverlayUtil.renderImageLocation(client, graphics2D, gameObjectLocalLocation, resource.getIcon(), 0);
+				if (shape == null)
+				{
+					continue;
+				}
+
+				modelOutlineRenderer.drawOutline(gameObject, config.resourceOutlineWidth(),
+					config.resourceOutlineColor(), TRANSPARENT);
+			}
 		}
 	}
 
@@ -440,8 +458,7 @@ public class OverlayMain extends Overlay
 
 		for (final GameObject gameObject : plugin.getUtilities())
 		{
-			if (!gameObject.getWorldLocation().isInScene(client)
-				|| isOutsideRenderDistance(gameObject.getLocalLocation(), localPoint))
+			if (isOutsideRenderDistance(gameObject.getLocalLocation(), localPoint))
 			{
 				continue;
 			}
