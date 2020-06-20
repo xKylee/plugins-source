@@ -70,8 +70,6 @@ public class Olm
 		this.crippleTicks = 45;
 		this.prayer = null;
 		this.lastPrayTime = 0;
-		this.hand = null;
-		this.head = null;
 		this.lastHeadAnimation = -2;
 		this.lastHandAnimation = -2;
 	}
