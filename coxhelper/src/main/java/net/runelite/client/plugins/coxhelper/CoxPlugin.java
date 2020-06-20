@@ -47,8 +47,8 @@ import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.GraphicsObjectCreated;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
@@ -194,11 +194,6 @@ public class CoxPlugin extends Plugin
 				case "the great olm fires a sphere of accuracy and dexterity your way.":
 					olm.setPrayer(PrayAgainst.RANGED);
 					break;
-				case "the great olm's left claw clenches to protect itself temporarily.":
-					olm.cripple();
-					break;
-				default:
-					break;
 			}
 		}
 	}
@@ -297,13 +292,6 @@ public class CoxPlugin extends Plugin
 				vanguards++;
 				npcContainers.put(npc, new NPCContainer(npc));
 				break;
-			case NpcID.GREAT_OLM_LEFT_CLAW:
-			case NpcID.GREAT_OLM_LEFT_CLAW_7555:
-				olm.setHand(npc);
-				break;
-			case NpcID.GREAT_OLM:
-				olm.nextPhase();
-				olm.setHead(npc);
 		}
 	}
 
@@ -347,10 +335,6 @@ public class CoxPlugin extends Plugin
 					npcContainers.remove(event.getNpc());
 				}
 				vanguards--;
-				break;
-			case NpcID.GREAT_OLM_RIGHT_CLAW_7553:
-			case NpcID.GREAT_OLM_RIGHT_CLAW:
-				olm.uncripple();
 				break;
 		}
 	}
@@ -455,26 +439,6 @@ public class CoxPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	private void onGraphicsObjectCreated(GraphicsObjectCreated event)
-	{
-		var object = event.getGraphicsObject();
-		if (object == null)
-		{
-			return;
-		}
-
-		if (object.getId() == 1338)
-		{
-			var lag = olm.getTickCycle() - 4;
-			if (lag != 0)
-			{
-				log.info("olm desync by " + lag + " ticks");
-				olm.intermentDesyncs();
-			}
-		}
-	}
-
 	boolean inRaid()
 	{
 		return client.getVar(Varbits.IN_RAID) == 1;
@@ -499,6 +463,29 @@ public class CoxPlugin extends Plugin
 			overlayManager.add(coxOverlay);
 			overlayManager.add(coxInfoBox);
 			overlayManager.add(coxDebugBox);
+		}
+	}
+
+	@Subscribe
+	public void onGameObjectSpawned(GameObjectSpawned event)
+	{
+		if (event.getGameObject() == null)
+		{
+			return;
+		}
+
+		int id = event.getGameObject().getId();
+		switch (id)
+		{
+			case OlmID.OLM_HEAD_GAMEOBJECT_RISING:
+			case OlmID.OLM_HEAD_GAMEOBJECT_READY:
+				olm.setHead(event.getGameObject());
+				olm.startPhase();
+				break;
+			case OlmID.OLM_LEFT_HAND_GAMEOBJECT_RISING:
+			case OlmID.OLM_LEFT_HAND_GAMEOBJECT_READY:
+				olm.setHand(event.getGameObject());
+				break;
 		}
 	}
 }

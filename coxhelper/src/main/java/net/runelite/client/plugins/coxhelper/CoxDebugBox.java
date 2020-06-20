@@ -66,8 +66,9 @@ public class CoxDebugBox extends Overlay
 		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
 		tableComponent.addRow("olmActive", String.valueOf(olm.isActive()));
 		tableComponent.addRow("olmReady", String.valueOf(olm.isReady()));
+		tableComponent.addRow("lastHand", String.valueOf(olm.getLastHandAnimation()));
+		tableComponent.addRow("lastHead", String.valueOf(olm.getLastHeadAnimation()));
 		tableComponent.addRow("olmFirstPhase", String.valueOf(olm.isFirstPhase()));
-		tableComponent.addRow("olmDesyncs", String.valueOf(olm.getDesyncs()));
 		tableComponent.addRow("olmTickCycle", String.valueOf(olm.getTickCycle()));
 		tableComponent.addRow("olmTicksUntilAction", String.valueOf(olm.ticksUntilNextAction()));
 		tableComponent.addRow("olmActionCycle", String.valueOf(olm.actionCycle()));
