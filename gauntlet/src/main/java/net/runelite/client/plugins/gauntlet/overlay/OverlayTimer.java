@@ -23,6 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.gauntlet.overlay;
 
 import java.awt.Color;
@@ -30,6 +31,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.time.Instant;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.runelite.api.ChatMessageType;
 import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
@@ -48,10 +50,12 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 import net.runelite.client.ui.overlay.components.table.TableAlignment;
 import net.runelite.client.ui.overlay.components.table.TableComponent;
 
+@Singleton
 public class OverlayTimer extends Overlay
 {
 	private final GauntletPlugin plugin;
 	private final GauntletConfig config;
+	private final ChatMessageManager chatMessageManager;
 
 	private final PanelComponent panelComponent;
 
@@ -61,15 +65,14 @@ public class OverlayTimer extends Overlay
 	private long timeBossEnter;
 
 	@Inject
-	private ChatMessageManager chatMessageManager;
-
-	@Inject
-	public OverlayTimer(final GauntletPlugin plugin, final GauntletConfig config)
+	public OverlayTimer(final GauntletPlugin plugin, final GauntletConfig config, final ChatMessageManager chatMessageManager)
 	{
 		super(plugin);
 
 		this.plugin = plugin;
 		this.config = config;
+
+		this.chatMessageManager = chatMessageManager;
 
 		this.panelComponent = new PanelComponent();
 

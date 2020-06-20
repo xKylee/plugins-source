@@ -35,11 +35,11 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Actor;
 import net.runelite.api.AnimationID;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.HeadIcon;
-import net.runelite.api.LocatableQueryResults;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCDefinition;
 import net.runelite.api.NpcID;
@@ -49,7 +49,9 @@ import net.runelite.api.Player;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.SoundEffectID;
 import net.runelite.api.Varbits;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
@@ -77,10 +79,12 @@ import net.runelite.client.plugins.gauntlet.entity.Projectile;
 import net.runelite.client.plugins.gauntlet.entity.Resource;
 import net.runelite.client.plugins.gauntlet.entity.Tornado;
 import net.runelite.client.plugins.gauntlet.overlay.Overlay;
-import net.runelite.client.plugins.gauntlet.overlay.OverlayMain;
+import net.runelite.client.plugins.gauntlet.overlay.OverlayGauntlet;
+import net.runelite.client.plugins.gauntlet.overlay.OverlayHunllefRoom;
 import net.runelite.client.plugins.gauntlet.overlay.OverlayPrayerBox;
 import net.runelite.client.plugins.gauntlet.overlay.OverlayPrayerWidget;
 import net.runelite.client.plugins.gauntlet.overlay.OverlayTimer;
+import net.runelite.client.plugins.gauntlet.resource.ResourceTracker;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -88,12 +92,15 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Gauntlet",
 	enabledByDefault = false,
-	description = "Plugin for The Gauntlet.",
-	tags = {"Gauntlet"},
-	type = PluginType.PVM
+	description = "All-in-one plugin for the Gauntlet.",
+	tags = {"gauntlet"},
+	type = PluginType.MINIGAME
 )
 public class GauntletPlugin extends Plugin
 {
+	private static final int VARBIT_LOOT_DROP_NOTIFICATION = 5399;
+	private static final int VARBIT_UNTRADEABLE_LOOT_DROP_NOTIFICATIONS = 5402;
+
 	private static final int ONEHAND_SLASH_AXE_ANIMATION = 395;
 	private static final int ONEHAND_CRUSH_PICKAXE_ANIMATION = 400;
 	private static final int ONEHAND_CRUSH_AXE_ANIMATION = 401;
@@ -225,13 +232,19 @@ public class GauntletPlugin extends Plugin
 	private GauntletConfig config;
 
 	@Inject
+	private ResourceTracker resourceTracker;
+
+	@Inject
 	private SkillIconManager skillIconManager;
 
 	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
-	private OverlayMain overlayMain;
+	private OverlayGauntlet overlayGauntlet;
+
+	@Inject
+	private OverlayHunllefRoom overlayHunllefRoom;
 
 	@Inject
 	private OverlayPrayerWidget overlayPrayerWidget;
@@ -285,7 +298,8 @@ public class GauntletPlugin extends Plugin
 	protected void startUp()
 	{
 		overlays = Set.of(
-			overlayMain,
+			overlayGauntlet,
+			overlayHunllefRoom,
 			overlayPrayerBox,
 			overlayPrayerWidget,
 			overlayTimer
@@ -296,9 +310,21 @@ public class GauntletPlugin extends Plugin
 			return;
 		}
 
-		initialize();
+		for (final GameObject gameObject : new GameObjectQuery().result(client))
+		{
+			addGameObject(gameObject);
+		}
 
-		addOverlays();
+		for (final NPC npc : client.getNpcs())
+		{
+			addNpc(npc);
+		}
+
+		resourceTracker.setNamedDropMessage(client);
+
+		overlayTimer.initialize();
+
+		overlays.forEach(o -> overlayManager.add(o));
 
 		inGauntlet = true;
 	}
@@ -308,15 +334,27 @@ public class GauntletPlugin extends Plugin
 	{
 		inGauntlet = false;
 
-		removeOverlays();
+		overlays.forEach(o -> overlayManager.remove(o));
 
-		reset();
+		hunllef = null;
+		flash = false;
+
+		overlayTimer.reset();
+		resourceTracker.reset();
+
+		resources.clear();
+		utilities.clear();
+		projectiles.clear();
+		tornados.clear();
+		demibosses.clear();
+		strongNpcs.clear();
+		weakNpcs.clear();
 	}
 
 	@Subscribe
 	private void onConfigChanged(final ConfigChanged event)
 	{
-		if (!event.getGroup().equals("Gauntlet"))
+		if (!event.getGroup().equals("gauntlet"))
 		{
 			return;
 		}
@@ -336,7 +374,15 @@ public class GauntletPlugin extends Plugin
 				}
 				break;
 			case "mirrorMode":
-				resetOverlays();
+				overlays.forEach(overlay -> {
+					overlay.determineLayer();
+
+					if (overlayManager.anyMatch(o -> o == overlay))
+					{
+						overlayManager.remove(overlay);
+						overlayManager.add(overlay);
+					}
+				});
 				break;
 			default:
 				break;
@@ -398,7 +444,9 @@ public class GauntletPlugin extends Plugin
 			{
 				inGauntlet = true;
 
-				addOverlays();
+				overlays.forEach(o -> overlayManager.add(o));
+
+				resourceTracker.setNamedDropMessage(client);
 			}
 
 			overlayTimer.updateState();
@@ -501,37 +549,18 @@ public class GauntletPlugin extends Plugin
 		processAnimation(actor);
 	}
 
-	private void initialize()
+	@Subscribe
+	private void onChatMessage(final ChatMessage event)
 	{
-		final LocatableQueryResults<GameObject> locatableQueryResults = new GameObjectQuery().result(client);
-
-		for (final GameObject gameObject : locatableQueryResults)
+		if (!inGauntlet || isInHunllefRoom() || (event.getType() != ChatMessageType.SPAM
+			&& event.getType() != ChatMessageType.GAMEMESSAGE))
 		{
-			addGameObject(gameObject);
+			return;
 		}
 
-		for (final NPC npc : client.getNpcs())
-		{
-			addNpc(npc);
-		}
+		final String chatMessage = event.getMessage();
 
-		overlayTimer.initialize();
-	}
-
-	private void reset()
-	{
-		flash = false;
-		hunllef = null;
-
-		resources.clear();
-		utilities.clear();
-		projectiles.clear();
-		tornados.clear();
-		demibosses.clear();
-		strongNpcs.clear();
-		weakNpcs.clear();
-
-		overlayTimer.reset();
+		resourceTracker.parseChatMessage(chatMessage);
 	}
 
 	private void addGameObject(final GameObject gameObject)
@@ -719,27 +748,23 @@ public class GauntletPlugin extends Plugin
 		hunllef.updatePlayerAttack();
 	}
 
-	private void addOverlays()
+	public int getInstanceRegionId()
 	{
-		overlays.forEach(o -> overlayManager.add(o));
-	}
+		final Player player = client.getLocalPlayer();
 
-	private void removeOverlays()
-	{
-		overlays.forEach(o -> overlayManager.remove(o));
-	}
+		if (player == null)
+		{
+			return -1;
+		}
 
-	private void resetOverlays()
-	{
-		overlays.forEach(overlay -> {
-			overlay.determineLayer();
+		final WorldPoint worldPoint = WorldPoint.fromLocalInstance(client, player.getLocalLocation());
 
-			if (overlayManager.anyMatch(o -> o == overlay))
-			{
-				overlayManager.remove(overlay);
-				overlayManager.add(overlay);
-			}
-		});
+		if (worldPoint == null)
+		{
+			return -1;
+		}
+
+		return worldPoint.getRegionID();
 	}
 
 	public boolean isInHunllefRoom()
@@ -750,5 +775,13 @@ public class GauntletPlugin extends Plugin
 	private boolean isInTheGauntlet()
 	{
 		return client.getVar(Varbits.GAUNTLET_ENTERED) == 1;
+	}
+
+	public boolean isLootDropNotificationsEnabled()
+	{
+		final boolean lootDrop = client.getVarbitValue(VARBIT_LOOT_DROP_NOTIFICATION) == 1;
+		final boolean untradeableLootDrop = client.getVarbitValue(VARBIT_UNTRADEABLE_LOOT_DROP_NOTIFICATIONS) == 1;
+
+		return lootDrop && untradeableLootDrop;
 	}
 }
