@@ -194,8 +194,6 @@ public class CoxPlugin extends Plugin
 				case "the great olm fires a sphere of accuracy and dexterity your way.":
 					olm.setPrayer(PrayAgainst.RANGED);
 					break;
-				default:
-					break;
 			}
 		}
 	}
@@ -483,9 +481,11 @@ public class CoxPlugin extends Plugin
 			case OlmID.OLM_HEAD_GAMEOBJECT_READY:
 				olm.setHead(event.getGameObject());
 				olm.startPhase();
+				break;
 			case OlmID.OLM_LEFT_HAND_GAMEOBJECT_RISING:
 			case OlmID.OLM_LEFT_HAND_GAMEOBJECT_READY:
 				olm.setHand(event.getGameObject());
+				break;
 		}
 	}
 }

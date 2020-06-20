@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.DynamicObject;
@@ -17,6 +18,7 @@ import net.runelite.api.GraphicID;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.coords.WorldPoint;
 
+@Slf4j
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
 @Singleton
@@ -230,12 +232,17 @@ public class Olm
 			case OlmID.OLM_LEFT_HAND_LIGHTNING:
 			case OlmID.OLM_LEFT_HAND_PORTALS:
 			case OlmID.OLM_LEFT_HAND_HEAL:
+				if (this.tickCycle != 1)
+				{
+					log.info("tick cycle desync should be 1, was " + this.tickCycle);
+				}
 				this.tickCycle = 1;
 				break;
 			case OlmID.OLM_LEFT_HAND_CRIPPLING:
 				this.cripple();
 				break;
-			case OlmID.OLM_LEFT_HAND_UNCRIPPLING:
+			case OlmID.OLM_LEFT_HAND_UNCRIPPLING1:
+			case OlmID.OLM_LEFT_HAND_UNCRIPPLING2:
 				this.uncripple();
 				break;
 		}

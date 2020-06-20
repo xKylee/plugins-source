@@ -19,10 +19,12 @@ public class OlmID
 	public static final int OLM_AUTO_LEFT = 7347;
 	public static final int OLM_DYING = 7348;
 	// Olm hand animations
-	public static final int OLM_LEFT_HAND_IDLE = 7355;
+	public static final int OLM_LEFT_HAND_IDLE1 = 7355;
 	public static final int OLM_LEFT_HAND_CRIPPLING = 7360;
 	public static final int OLM_LEFT_HAND_CRIPPLED = 7361;
-	public static final int OLM_LEFT_HAND_UNCRIPPLING = 7362;
+	public static final int OLM_LEFT_HAND_UNCRIPPLING1 = 7362;
+	public static final int OLM_LEFT_HAND_UNCRIPPLING2 = 7364;
+	public static final int OLM_LEFT_HAND_IDLE2 = 7365;
 	public static final int OLM_LEFT_HAND_CRYSTALS = 7366;
 	public static final int OLM_LEFT_HAND_HEAL = 7367;
 	public static final int OLM_LEFT_HAND_LIGHTNING = 7368;
