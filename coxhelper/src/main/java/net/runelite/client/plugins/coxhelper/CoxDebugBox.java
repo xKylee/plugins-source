@@ -48,44 +48,45 @@ public class CoxDebugBox extends Overlay
 	{
 		this.config = config;
 		this.olm = olm;
-		setPosition(OverlayPosition.BOTTOM_LEFT);
-		determineLayer();
-		setPriority(OverlayPriority.HIGH);
+		this.setPosition(OverlayPosition.BOTTOM_LEFT);
+		this.determineLayer();
+		this.setPriority(OverlayPriority.HIGH);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!config.olmDebug())
+		if (!this.config.olmDebug())
 		{
 			return null;
 		}
 
-		panelComponent.getChildren().clear();
+		this.panelComponent.getChildren().clear();
 		TableComponent tableComponent = new TableComponent();
 		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
-		tableComponent.addRow("olmActive", String.valueOf(olm.isActive()));
-		tableComponent.addRow("olmReady", String.valueOf(olm.isReady()));
-		tableComponent.addRow("lastHand", String.valueOf(olm.getLastHandAnimation()));
-		tableComponent.addRow("lastHead", String.valueOf(olm.getLastHeadAnimation()));
-		tableComponent.addRow("olmFirstPhase", String.valueOf(olm.isFirstPhase()));
-		tableComponent.addRow("olmTickCycle", String.valueOf(olm.getTickCycle()));
-		tableComponent.addRow("olmTicksUntilAction", String.valueOf(olm.ticksUntilNextAction()));
-		tableComponent.addRow("olmActionCycle", String.valueOf(olm.actionCycle()));
-		tableComponent.addRow("portalTicks", String.valueOf(olm.getPortalTicks()));
-		tableComponent.addRow("handCrippled", String.valueOf(olm.isCrippled()));
-		tableComponent.addRow("crippleTimer", String.valueOf(olm.getCrippleTicks()));
-		panelComponent.getChildren().add(tableComponent);
+		tableComponent.addRow("olmActive", String.valueOf(this.olm.isActive()));
+		tableComponent.addRow("lastHand", String.valueOf(this.olm.getLastHandAnimation()));
+		tableComponent.addRow("lastHead", String.valueOf(this.olm.getLastHeadAnimation()));
+		tableComponent.addRow("olmFirstPhase", String.valueOf(this.olm.isFirstPhase()));
+		tableComponent.addRow("olmFinalPhase", String.valueOf(this.olm.isFinalPhase()));
+		tableComponent.addRow("olmTickCycle", String.valueOf(this.olm.getTickCycle()));
+		tableComponent.addRow("olmSpecial", String.valueOf(this.olm.getSpecialCycle()));
+		tableComponent.addRow("olmTicksUntilAction", String.valueOf(this.olm.ticksUntilNextAction()));
+		tableComponent.addRow("olmActionCycle", String.valueOf(this.olm.actionCycle()));
+		tableComponent.addRow("portalTicks", String.valueOf(this.olm.getPortalTicks()));
+		tableComponent.addRow("handCrippled", String.valueOf(this.olm.isCrippled()));
+		tableComponent.addRow("crippleTimer", String.valueOf(this.olm.getCrippleTicks()));
+		this.panelComponent.getChildren().add(tableComponent);
 
-		return panelComponent.render(graphics);
+		return this.panelComponent.render(graphics);
 	}
 
 
 	public void determineLayer()
 	{
-		if (config.mirrorMode())
+		if (this.config.mirrorMode())
 		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
+			this.setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }

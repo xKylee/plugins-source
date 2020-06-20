@@ -8,8 +8,8 @@ import net.runelite.api.Player;
 @Getter(AccessLevel.PACKAGE)
 class Victim
 {
-	private Player player;
-	private Type type;
+	private final Player player;
+	private final Type type;
 	private int ticks;
 
 	Victim(Player player, Type type)
@@ -21,9 +21,9 @@ class Victim
 
 	void updateTicks()
 	{
-		if (ticks > 0)
+		if (this.ticks > 0)
 		{
-			ticks--;
+			this.ticks--;
 		}
 	}
 
@@ -35,6 +35,6 @@ class Victim
 		ACID(23),
 		TELEPORT(10);
 
-		private int ticks;
+		private final int ticks;
 	}
 }
