@@ -38,9 +38,9 @@ import net.runelite.api.NPCDefinition;
 class NPCContainer
 {
 
-	private NPC npc;
-	private int npcIndex;
-	private String npcName;
+	private final NPC npc;
+	private final int npcIndex;
+	private final String npcName;
 	private int npcSize;
 	@Setter(AccessLevel.PACKAGE)
 	private int ticksUntilAttack;
@@ -81,7 +81,7 @@ class NPCContainer
 		MELEE("Melee", Color.RED),
 		UNKNOWN("Unknown", Color.WHITE);
 
-		private String name;
-		private Color color;
+		private final String name;
+		private final Color color;
 	}
 }

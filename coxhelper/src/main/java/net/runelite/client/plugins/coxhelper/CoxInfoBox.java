@@ -68,56 +68,56 @@ public class CoxInfoBox extends Overlay
 		this.client = client;
 		this.olm = olm;
 		this.spriteManager = spriteManager;
-		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		determineLayer();
-		setPriority(OverlayPriority.HIGH);
+		this.setPosition(OverlayPosition.BOTTOM_RIGHT);
+		this.determineLayer();
+		this.setPriority(OverlayPriority.HIGH);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		panelComponent.getChildren().clear();
-		if (plugin.inRaid())
+		this.panelComponent.getChildren().clear();
+		if (this.plugin.inRaid())
 		{
-			prayAgainstPanel.getChildren().clear();
+			this.prayAgainstPanel.getChildren().clear();
 
-			final PrayAgainst prayAgainst = olm.getPrayer();
+			final PrayAgainst prayAgainst = this.olm.getPrayer();
 
-			if (System.currentTimeMillis() < olm.getLastPrayTime() + 120000 && prayAgainst != null && config.prayAgainstOlm())
+			if (System.currentTimeMillis() < this.olm.getLastPrayTime() + 120000 && prayAgainst != null && this.config.prayAgainstOlm())
 			{
-				final int scale = config.prayAgainstOlmSize();
+				final int scale = this.config.prayAgainstOlmSize();
 				InfoBoxComponent prayComponent = new InfoBoxComponent();
 				BufferedImage prayImg = ImageUtil.resizeImage(
-					getPrayerImage(olm.getPrayer()), scale, scale
+					this.getPrayerImage(this.olm.getPrayer()), scale, scale
 				);
 				prayComponent.setImage(prayImg);
 				prayComponent.setColor(Color.WHITE);
-				prayComponent.setBackgroundColor(client.isPrayerActive(prayAgainst.getPrayer())
+				prayComponent.setBackgroundColor(this.client.isPrayerActive(prayAgainst.getPrayer())
 					? ComponentConstants.STANDARD_BACKGROUND_COLOR
 					: NOT_ACTIVATED_BACKGROUND_COLOR
 				);
 				prayComponent.setPreferredSize(new Dimension(scale + 4, scale + 4));
-				prayAgainstPanel.getChildren().add(prayComponent);
+				this.prayAgainstPanel.getChildren().add(prayComponent);
 
-				prayAgainstPanel.setPreferredSize(new Dimension(scale + 4, scale + 4));
-				prayAgainstPanel.setBorder(new Rectangle(0, 0, 0, 0));
-				return prayAgainstPanel.render(graphics);
+				this.prayAgainstPanel.setPreferredSize(new Dimension(scale + 4, scale + 4));
+				this.prayAgainstPanel.setBorder(new Rectangle(0, 0, 0, 0));
+				return this.prayAgainstPanel.render(graphics);
 			}
 			else
 			{
-				olm.setPrayer(null);
+				this.olm.setPrayer(null);
 			}
 
-			if (config.vangHealth() && plugin.getVanguards() > 0)
+			if (this.config.vangHealth() && this.plugin.getVanguards() > 0)
 			{
-				panelComponent.getChildren().add(TitleComponent.builder()
+				this.panelComponent.getChildren().add(TitleComponent.builder()
 					.text("Vanguards")
 					.color(Color.pink)
 					.build());
 
 				TableComponent tableComponent = new TableComponent();
 				tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
-				for (NPCContainer npcs : plugin.getNpcContainers().values())
+				for (NPCContainer npcs : this.plugin.getNpcContainers().values())
 				{
 					float percent = (float) npcs.getNpc().getHealthRatio() / npcs.getNpc().getHealthScale() * 100;
 					switch (npcs.getNpc().getId())
@@ -137,14 +137,14 @@ public class CoxInfoBox extends Overlay
 					}
 				}
 
-				panelComponent.getChildren().add(tableComponent);
+				this.panelComponent.getChildren().add(tableComponent);
 
-				return panelComponent.render(graphics);
+				return this.panelComponent.render(graphics);
 			}
 		}
-		if (client.getLocalPlayer().getWorldLocation().getRegionID() == 4919)
+		if (this.client.getLocalPlayer().getWorldLocation().getRegionID() == 4919)
 		{
-			olm.setPrayer(null);
+			this.olm.setPrayer(null);
 		}
 		return null;
 	}
@@ -154,21 +154,21 @@ public class CoxInfoBox extends Overlay
 		switch (prayAgainst)
 		{
 			case MAGIC:
-				return spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0);
+				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0);
 			case MELEE:
-				return spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MELEE, 0);
+				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MELEE, 0);
 			case RANGED:
-				return spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0);
+				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0);
 			default:
-				return spriteManager.getSprite(SpriteID.BARBARIAN_ASSAULT_EAR_ICON, 0);
+				return this.spriteManager.getSprite(SpriteID.BARBARIAN_ASSAULT_EAR_ICON, 0);
 		}
 	}
 
 	public void determineLayer()
 	{
-		if (config.mirrorMode())
+		if (this.config.mirrorMode())
 		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
+			this.setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }
