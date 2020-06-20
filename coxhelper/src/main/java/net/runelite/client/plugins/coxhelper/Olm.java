@@ -11,9 +11,10 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
+import net.runelite.api.DynamicObject;
+import net.runelite.api.GameObject;
 import net.runelite.api.GraphicID;
 import net.runelite.api.GraphicsObject;
-import net.runelite.api.NPC;
 import net.runelite.api.coords.WorldPoint;
 
 @Getter(AccessLevel.PACKAGE)
@@ -35,9 +36,10 @@ public class Olm
 	private boolean ready = false; // ready to attack
 	private boolean firstPhase = false;
 
-	private NPC hand = null;
-	private NPC head = null;
-	private int desyncs = 0;
+	private GameObject hand = null;
+	private int lastHandAnimation = -2;
+	private GameObject head = null;
+	private int lastHeadAnimation = -2;
 
 	private int tickCycle = -1;
 
@@ -55,9 +57,14 @@ public class Olm
 		this.config = config;
 	}
 
-	public void nextPhase()
+	public void startPhase()
 	{
 		this.firstPhase = !active;
+		this.active = true;
+	}
+
+	public void endPhase()
+	{
 		this.active = true;
 		this.ready = false;
 		this.tickCycle = -1;
@@ -65,6 +72,10 @@ public class Olm
 		this.crippleTicks = 45;
 		this.prayer = null;
 		this.lastPrayTime = 0;
+		this.hand = null;
+		this.head = null;
+		this.lastHeadAnimation = -2;
+		this.lastHandAnimation = -2;
 	}
 
 	public void hardRest()
@@ -74,7 +85,8 @@ public class Olm
 		this.firstPhase = false;
 		this.hand = null;
 		this.head = null;
-		this.desyncs = 0;
+		this.lastHeadAnimation = -2;
+		this.lastHandAnimation = -2;
 		this.tickCycle = -1;
 		this.healPools.clear();
 		this.portals.clear();
@@ -162,19 +174,73 @@ public class Olm
 		this.updateVictims();
 		this.updateCrippleSticks();
 		this.updateSpecials();
+		this.handAnimations();
+		this.headAnimations();
+		this.tickCycle = this.tickCycle == 16 ? 1 : this.tickCycle + 1;
+	}
 
-		if (!ready)
+	private void headAnimations()
+	{
+		if (this.head == null || this.head.getEntity() == null)
 		{
-			if (head != null && head.getCombatLevel() > 0)
-			{
-				ready = true;
-				tickCycle = firstPhase ? 4 : 1;
-			}
+			return;
 		}
-		else
+
+		int currentAnimation = ((DynamicObject) this.head.getEntity()).getAnimationID();
+
+		if (currentAnimation == lastHeadAnimation)
 		{
-			tickCycle = tickCycle == 16 ? 1 : tickCycle + 1;
+			return;
 		}
+
+		switch (currentAnimation)
+		{
+			case OlmID.OLM_MIDDLE:
+				if (lastHeadAnimation == OlmID.OLM_RISING_2 || lastHeadAnimation == OlmID.OLM_ENRAGED_RISING_2)
+				{
+					this.ready = true;
+					this.tickCycle = this.firstPhase ? 4 : 1;
+				}
+				break;
+			case OlmID.OLM_DYING:
+				this.endPhase();
+				break;
+		}
+
+		lastHeadAnimation = currentAnimation;
+	}
+
+	private void handAnimations()
+	{
+		if (this.hand == null || this.hand.getEntity() == null)
+		{
+			return;
+		}
+
+		int currentAnimation = ((DynamicObject) this.hand.getEntity()).getAnimationID();
+
+		if (currentAnimation == lastHandAnimation)
+		{
+			return;
+		}
+
+		switch (currentAnimation)
+		{
+			case OlmID.OLM_LEFT_HAND_CRYSTALS:
+			case OlmID.OLM_LEFT_HAND_LIGHTNING:
+			case OlmID.OLM_LEFT_HAND_PORTALS:
+			case OlmID.OLM_LEFT_HAND_HEAL:
+				this.tickCycle = 1;
+				break;
+			case OlmID.OLM_LEFT_HAND_CRIPPLING:
+				this.cripple();
+				break;
+			case OlmID.OLM_LEFT_HAND_UNCRIPPLING:
+				this.uncripple();
+				break;
+		}
+
+		lastHandAnimation = currentAnimation;
 	}
 
 	public int ticksUntilNextAction()
@@ -185,10 +251,5 @@ public class Olm
 	public int actionCycle()
 	{
 		return (int) Math.ceil((double) this.tickCycle / 4);
-	}
-
-	public void intermentDesyncs()
-	{
-		this.desyncs++;
 	}
 }

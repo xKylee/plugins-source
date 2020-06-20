@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
-import net.runelite.api.NPC;
+import net.runelite.api.GameObject;
 import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
@@ -208,9 +208,8 @@ public class CoxOverlay extends Overlay
 			if (olm.isCrippled())
 			{
 				int tick = olm.getCrippleTicks();
-				NPC olmHand = olm.getHand();
 				final String tickStr = String.valueOf(tick);
-				Point canvasPoint = olmHand.getCanvasTextLocation(graphics, tickStr, 50);
+				Point canvasPoint = olm.getHand().getCanvasTextLocation(graphics, tickStr, 50);
 				renderTextLocation(graphics, tickStr, config.textSize(), config.fontStyle().getFont(), Color.GRAY, canvasPoint);
 			}
 
@@ -282,7 +281,7 @@ public class CoxOverlay extends Overlay
 
 			if (olm.isActive())
 			{
-				NPC head = olm.getHead();
+				GameObject head = olm.getHead();
 
 				if (config.olmTick())
 				{
