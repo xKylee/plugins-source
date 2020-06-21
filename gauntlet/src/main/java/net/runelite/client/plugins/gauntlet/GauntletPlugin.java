@@ -98,9 +98,6 @@ import org.pf4j.Extension;
 )
 public class GauntletPlugin extends Plugin
 {
-	private static final int VARBIT_LOOT_DROP_NOTIFICATION = 5399;
-	private static final int VARBIT_UNTRADEABLE_LOOT_DROP_NOTIFICATIONS = 5402;
-
 	private static final int ONEHAND_SLASH_AXE_ANIMATION = 395;
 	private static final int ONEHAND_CRUSH_PICKAXE_ANIMATION = 400;
 	private static final int ONEHAND_CRUSH_AXE_ANIMATION = 401;
@@ -779,8 +776,8 @@ public class GauntletPlugin extends Plugin
 
 	public boolean isLootDropNotificationsEnabled()
 	{
-		final boolean lootDrop = client.getVarbitValue(VARBIT_LOOT_DROP_NOTIFICATION) == 1;
-		final boolean untradeableLootDrop = client.getVarbitValue(VARBIT_UNTRADEABLE_LOOT_DROP_NOTIFICATIONS) == 1;
+		final boolean lootDrop = client.getVar(Varbits.LOOT_DROP_NOTIFICATIONS) == 1;
+		final boolean untradeableLootDrop = client.getVar(Varbits.UNTRADEABLE_LOOT_NOTIFICATIONS) == 1;
 
 		return lootDrop && untradeableLootDrop;
 	}
