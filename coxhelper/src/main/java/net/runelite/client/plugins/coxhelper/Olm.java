@@ -143,7 +143,7 @@ public class Olm
 		{
 			this.specialCycle = 1;
 		}
-		else
+		else if (!this.crippled)
 		{
 			this.specialCycle++;
 		}
