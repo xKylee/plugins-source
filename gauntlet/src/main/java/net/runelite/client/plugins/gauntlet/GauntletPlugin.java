@@ -41,7 +41,6 @@ import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.HeadIcon;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
 import net.runelite.api.NpcID;
 import net.runelite.api.NullNpcID;
 import net.runelite.api.ObjectID;
@@ -94,40 +93,28 @@ import org.pf4j.Extension;
 )
 public class GauntletPlugin extends Plugin
 {
-	private static final int ONEHAND_SLASH_AXE_ANIMATION = 395;
-	private static final int ONEHAND_CRUSH_PICKAXE_ANIMATION = 400;
-	private static final int ONEHAND_CRUSH_AXE_ANIMATION = 401;
-	private static final int UNARMED_PUNCH_ANIMATION = 422;
-	private static final int UNARMED_KICK_ANIMATION = 423;
 	private static final int BOW_ATTACK_ANIMATION = 426;
-	private static final int ONEHAND_STAB_HALBERD_ANIMATION = 428;
-	private static final int ONEHAND_SLASH_HALBERD_ANIMATION = 440;
 
 	private static final Set<Integer> MELEE_ANIM_IDS = Set.of(
 		AnimationID.ONEHAND_STAB_SWORD_ANIMATION,
 		AnimationID.ONEHAND_SLASH_SWORD_ANIMATION,
-		ONEHAND_SLASH_AXE_ANIMATION,
-		ONEHAND_CRUSH_PICKAXE_ANIMATION,
-		ONEHAND_CRUSH_AXE_ANIMATION,
-		UNARMED_PUNCH_ANIMATION,
-		UNARMED_KICK_ANIMATION,
-		ONEHAND_STAB_HALBERD_ANIMATION,
-		ONEHAND_SLASH_HALBERD_ANIMATION
+		395, // ONEHAND_SLASH_AXE_ANIMATION
+		400, // ONEHAND_CRUSH_PICKAXE_ANIMATION
+		401, // ONEHAND_CRUSH_AXE_ANIMATION
+		422, // UNARMED_PUNCH_ANIMATION
+		423, // UNARMED_KICK_ANIMATION
+		428, // ONEHAND_STAB_HALBERD_ANIMATION
+		440  // ONEHAND_SLASH_HALBERD_ANIMATION
 	);
 
-	private static final Set<Integer> ATTACK_ANIM_IDS = Set.of(
-		AnimationID.ONEHAND_STAB_SWORD_ANIMATION,
-		AnimationID.ONEHAND_SLASH_SWORD_ANIMATION,
-		ONEHAND_SLASH_AXE_ANIMATION,
-		ONEHAND_CRUSH_PICKAXE_ANIMATION,
-		ONEHAND_CRUSH_AXE_ANIMATION,
-		UNARMED_PUNCH_ANIMATION,
-		UNARMED_KICK_ANIMATION,
-		BOW_ATTACK_ANIMATION,
-		ONEHAND_STAB_HALBERD_ANIMATION,
-		ONEHAND_SLASH_HALBERD_ANIMATION,
-		AnimationID.HIGH_LEVEL_MAGIC_ATTACK
-	);
+	private static final Set<Integer> ATTACK_ANIM_IDS = new HashSet<>();
+
+	static
+	{
+		ATTACK_ANIM_IDS.addAll(MELEE_ANIM_IDS);
+		ATTACK_ANIM_IDS.add(BOW_ATTACK_ANIMATION);
+		ATTACK_ANIM_IDS.add(AnimationID.HIGH_LEVEL_MAGIC_ATTACK);
+	}
 
 	private static final Set<Integer> PROJECTILE_MAGIC_IDS = Set.of(
 		ProjectileID.HUNLLEF_MAGE_ATTACK,
@@ -144,14 +131,14 @@ public class GauntletPlugin extends Plugin
 		ProjectileID.HUNLLEF_CORRUPTED_PRAYER_ATTACK
 	);
 
-	private static final Set<Integer> PROJECTILE_IDS = Set.of(
-		ProjectileID.HUNLLEF_PRAYER_ATTACK,
-		ProjectileID.HUNLLEF_CORRUPTED_PRAYER_ATTACK,
-		ProjectileID.HUNLLEF_RANGE_ATTACK,
-		ProjectileID.HUNLLEF_CORRUPTED_RANGE_ATTACK,
-		ProjectileID.HUNLLEF_MAGE_ATTACK,
-		ProjectileID.HUNLLEF_CORRUPTED_MAGE_ATTACK
-	);
+	private static final Set<Integer> PROJECTILE_IDS = new HashSet<>();
+
+	static
+	{
+		PROJECTILE_IDS.addAll(PROJECTILE_MAGIC_IDS);
+		PROJECTILE_IDS.addAll(PROJECTILE_RANGE_IDS);
+		PROJECTILE_IDS.addAll(PROJECTILE_PRAYER_IDS);
+	}
 
 	private static final Set<Integer> HUNLLEF_IDS = Set.of(
 		NpcID.CRYSTALLINE_HUNLLEF,
@@ -429,21 +416,22 @@ public class GauntletPlugin extends Plugin
 	@Subscribe
 	private void onVarbitChanged(final VarbitChanged event)
 	{
-		if (isInTheGauntlet())
+		if (isInHunllefRoom())
+		{
+			overlayTimer.setHunllefStart();
+			resourceTracker.reset();
+		}
+		else if (isInTheGauntlet())
 		{
 			if (!inGauntlet)
 			{
-				inGauntlet = true;
-
-				overlays.forEach(o -> overlayManager.add(o));
+				overlayTimer.setGauntletStart();
 
 				resourceTracker.setNamedDropMessage(client);
 
-				overlayTimer.setGauntletStart();
-			}
-			else
-			{
-				overlayTimer.checkHunllefStart();
+				overlays.forEach(o -> overlayManager.add(o));
+
+				inGauntlet = true;
 			}
 		}
 		else
@@ -651,7 +639,7 @@ public class GauntletPlugin extends Plugin
 
 		hunllef.updateAttack();
 
-		if (config.hunllefPrayerAudio() && PROJECTILE_PRAYER_IDS.contains(id))
+		if (PROJECTILE_PRAYER_IDS.contains(id) && config.hunllefPrayerAudio())
 		{
 			client.playSoundEffect(SoundEffectID.MAGIC_SPLASH_BOING);
 		}
@@ -659,77 +647,70 @@ public class GauntletPlugin extends Plugin
 
 	private void processAnimation(final Actor actor)
 	{
+		final int animationId = actor.getAnimation();
+
 		if (actor instanceof Player)
 		{
-			final Player player = client.getLocalPlayer();
-
-			if (player != actor)
+			if (!ATTACK_ANIM_IDS.contains(animationId))
 			{
 				return;
 			}
 
-			processPlayerAnimation(player);
+			final boolean validAttack = isAttackAnimationValid(animationId);
+
+			if (validAttack)
+			{
+				wrongAttackStyle = false;
+				hunllef.updatePlayerAttackCount();
+			}
+			else
+			{
+				wrongAttackStyle = true;
+			}
 		}
 		else if (actor instanceof NPC)
 		{
-			if (actor.getAnimation() == AnimationID.HUNLEFF_TORNADO)
+			if (animationId == AnimationID.HUNLEFF_TORNADO)
 			{
 				hunllef.updateAttack();
 			}
 		}
 	}
 
-	private void processPlayerAnimation(final Player player)
+	private boolean isAttackAnimationValid(final int animationId)
 	{
-		final int animationId = player.getAnimation();
-
-		if (!ATTACK_ANIM_IDS.contains(animationId))
-		{
-			return;
-		}
-
-		final NPCDefinition npcDefinition = hunllef.getNpc().getDefinition();
-
-		if (npcDefinition == null)
-		{
-			return;
-		}
-
-		final HeadIcon headIcon = npcDefinition.getOverheadIcon();
+		final HeadIcon headIcon = hunllef.getNpc().getDefinition().getOverheadIcon();
 
 		if (headIcon == null)
 		{
-			return;
+			return true;
 		}
+
+		boolean isValid = true;
 
 		switch (headIcon)
 		{
 			case MELEE:
 				if (MELEE_ANIM_IDS.contains(animationId))
 				{
-					wrongAttackStyle = true;
-					return;
+					isValid = false;
 				}
 				break;
 			case RANGED:
 				if (animationId == BOW_ATTACK_ANIMATION)
 				{
-					wrongAttackStyle = true;
-					return;
+					isValid = false;
 				}
 				break;
 			case MAGIC:
 				if (animationId == AnimationID.HIGH_LEVEL_MAGIC_ATTACK)
 				{
-					wrongAttackStyle = true;
-					return;
+					isValid = false;
 				}
 				break;
-			default:
-				return;
 		}
 
-		hunllef.updatePlayerAttackCount();
+		return isValid;
 	}
 
 	public int getInstanceRegionId()

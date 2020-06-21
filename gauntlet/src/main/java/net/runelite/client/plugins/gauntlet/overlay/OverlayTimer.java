@@ -185,10 +185,9 @@ public class OverlayTimer extends Overlay
 		state = State.IN_GAUNTLET;
 	}
 
-	public void checkHunllefStart()
+	public void setHunllefStart()
 	{
-		if ((!config.timerOverlay() && !config.timerChatMessage()) || state != State.IN_GAUNTLET
-			|| !plugin.isInHunllefRoom())
+		if (state != State.IN_GAUNTLET || (!config.timerOverlay() && !config.timerChatMessage()))
 		{
 			return;
 		}

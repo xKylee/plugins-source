@@ -109,7 +109,6 @@ public class ResourceTracker
 
 		if (player == null)
 		{
-			namedDropMessage = null;
 			return;
 		}
 
@@ -159,18 +158,9 @@ public class ResourceTracker
 			}
 		}
 
-		final int itemId = resource.itemId;
-
 		final String quantity = matcher.group("quantity");
 
-		if (quantity != null)
-		{
-			incrementItem(itemId, Integer.parseInt(quantity));
-		}
-		else
-		{
-			incrementItem(itemId, 1);
-		}
+		incrementItem(resource.itemId, quantity != null ? Integer.parseInt(quantity) : 1);
 	}
 
 
@@ -191,17 +181,7 @@ public class ResourceTracker
 				continue;
 			}
 
-			final int itemId = resource.itemId;
-
-			if (matcher.groupCount() == 1)
-			{
-				// crystal shards
-				incrementItem(itemId, Integer.parseInt(matcher.group(1)));
-			}
-			else
-			{
-				incrementItem(itemId, 1);
-			}
+			incrementItem(resource.itemId, matcher.groupCount() == 1 ? Integer.parseInt(matcher.group(1)) : 1);
 
 			break;
 		}
@@ -280,7 +260,7 @@ public class ResourceTracker
 		{
 			for (final GauntletResource resource : values())
 			{
-				if ((corrupted == resource.corrupted || resource == RAW_PADDLEFISH) && resource.name.equals(name))
+				if (resource.name.equals(name) && (corrupted == resource.corrupted || resource == RAW_PADDLEFISH))
 				{
 					return resource;
 				}
