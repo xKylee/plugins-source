@@ -39,7 +39,7 @@ import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
 
-@ConfigGroup("Gauntlet")
+@ConfigGroup("gauntlet")
 public interface GauntletConfig extends Config
 {
 	// Sections
@@ -269,6 +269,33 @@ public interface GauntletConfig extends Config
 	default Color resourceOutlineColor()
 	{
 		return Color.YELLOW;
+	}
+
+	@ConfigItem(
+		name = "Track resources",
+		description = "Track resources in a counter infobox.",
+		position = 8,
+		keyName = "resourceTracker",
+		section = "resourcesSection"
+	)
+	default boolean resourceTracker()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Tracking filter",
+		description = "Filter resources to be tracked." +
+			"<br>All resources includes weapon frames, upgrades, and teleport crystals.",
+		position = 9,
+		keyName = "resourceTrackerFilter",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker"
+	)
+	default ResourceFilter resourceTrackerFilter()
+	{
+		return ResourceFilter.DEFAULT;
 	}
 
 	// Utilities Section
@@ -987,5 +1014,10 @@ public interface GauntletConfig extends Config
 		{
 			return getName();
 		}
+	}
+
+	enum ResourceFilter
+	{
+		DEFAULT, ALL
 	}
 }

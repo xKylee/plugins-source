@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
+ * Copyright (c) 2020, Anthony Alves
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,37 +23,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.overlay;
+package net.runelite.client.plugins.gauntlet.resource;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Stroke;
-import net.runelite.client.plugins.Plugin;
+import java.awt.image.BufferedImage;
+import java.util.Map;
+import net.runelite.client.plugins.gauntlet.GauntletConfig;
+import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.ui.overlay.infobox.Counter;
 
-public abstract class Overlay extends net.runelite.client.ui.overlay.Overlay
+public class InfoboxResourceCounter extends Counter
 {
-	Overlay(final Plugin plugin)
+	private final GauntletPlugin plugin;
+	private final GauntletConfig config;
+
+	private final Map<Integer, Integer> resourceCounts;
+
+	private final int itemId;
+
+	InfoboxResourceCounter(final BufferedImage bufferedImage, final GauntletPlugin plugin, final GauntletConfig config, final Map<Integer, Integer> resourceCounts, final int itemId, final int itemCount)
 	{
-		super(plugin);
+		super(bufferedImage, plugin, itemCount);
+		this.plugin = plugin;
+		this.config = config;
+		this.resourceCounts = resourceCounts;
+		this.itemId = itemId;
 	}
 
-	public abstract void determineLayer();
-
-	static void drawOutlineAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
+	@Override
+	public int getCount()
 	{
-		final Color originalColor = graphics2D.getColor();
-		final Stroke originalStroke = graphics2D.getStroke();
+		return resourceCounts.getOrDefault(itemId, 0);
+	}
 
-		graphics2D.setStroke(new BasicStroke(strokeWidth));
-		graphics2D.setColor(outlineColor);
-		graphics2D.draw(shape);
-
-		graphics2D.setColor(fillColor);
-		graphics2D.fill(shape);
-
-		graphics2D.setColor(originalColor);
-		graphics2D.setStroke(originalStroke);
+	@Override
+	public boolean render()
+	{
+		return plugin.isInGauntlet() && config.resourceTracker();
 	}
 }
