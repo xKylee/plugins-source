@@ -161,7 +161,7 @@ public class Olm
 				this.specialCycle = 3;
 				break;
 			case OlmID.OLM_LEFT_HAND_PORTALS:
-				this.specialCycle = this.finalPhase ? 4 : 1;
+				this.specialCycle = this.finalPhase ? 3 : 0;
 				break;
 			case OlmID.OLM_LEFT_HAND_HEAL:
 				this.specialCycle = 1;
