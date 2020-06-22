@@ -58,6 +58,6 @@ public class InfoboxResourceCounter extends Counter
 	@Override
 	public boolean render()
 	{
-		return plugin.isInGauntlet() && config.resourceTracker();
+		return plugin.isInGauntlet() && config.resourceTracker() && !plugin.isInHunllefRoom();
 	}
 }
