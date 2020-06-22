@@ -161,7 +161,7 @@ public class Olm
 				this.specialCycle = 3;
 				break;
 			case OlmID.OLM_LEFT_HAND_PORTALS:
-				this.specialCycle = this.finalPhase ? 3 : 0;
+				this.specialCycle = this.finalPhase ? 4 : 1;
 				break;
 			case OlmID.OLM_LEFT_HAND_HEAL:
 				this.specialCycle = 1;
@@ -250,7 +250,7 @@ public class Olm
 			case OlmID.OLM_MIDDLE:
 				if (this.lastHeadAnimation == OlmID.OLM_RISING_2 || this.lastHeadAnimation == OlmID.OLM_ENRAGED_RISING_2)
 				{
-					this.tickCycle = this.firstPhase ? 4 : 1;
+					this.tickCycle = this.firstPhase ? 3 : 0;
 				}
 				break;
 			case OlmID.OLM_ENRAGED_LEFT:
