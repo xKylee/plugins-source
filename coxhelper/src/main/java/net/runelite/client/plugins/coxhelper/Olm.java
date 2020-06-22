@@ -175,12 +175,12 @@ public class Olm
 
 	public void update()
 	{
-		this.incrementTickCycle();
+		this.headAnimations();
+		this.handAnimations();
 		this.updateVictims();
 		this.updateCrippleSticks();
 		this.updateSpecials();
-		this.handAnimations();
-		this.headAnimations();
+		this.incrementTickCycle();
 	}
 
 	void updateCrippleSticks()
