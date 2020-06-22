@@ -151,11 +151,7 @@ public class Olm
 
 	public void specialSync(int currentAnimation)
 	{
-		if (this.tickCycle != 1)
-		{
-			log.info("tick cycle desync should be 1, was " + this.tickCycle);
-		}
-		this.tickCycle = 1;
+		this.tickCycle = 16;
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_LEFT_HAND_CRYSTALS:
