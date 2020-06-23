@@ -130,7 +130,7 @@ public class Olm
 		this.updateCrippleSticks();
 		this.updateSpecials();
 
-		if (!this.headAnimations() && !this.handAnimations())
+		if (this.headAnimations() || this.handAnimations())
 		{
 			this.incrementTickCycle();
 		}
