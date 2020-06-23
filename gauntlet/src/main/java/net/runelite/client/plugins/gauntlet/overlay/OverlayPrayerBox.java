@@ -60,9 +60,10 @@ public class OverlayPrayerBox extends Overlay
 	private final GauntletPlugin plugin;
 	private final GauntletConfig config;
 
-	private final PanelComponent panelComponent;
-
 	private final SpriteManager spriteManager;
+
+	private final PanelComponent panelComponent;
+	private final InfoBoxComponent infoBoxComponent;
 
 	private BufferedImage spriteProtectFromMagic;
 	private BufferedImage spriteProtectFromRange;
@@ -76,7 +77,16 @@ public class OverlayPrayerBox extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.spriteManager = spriteManager;
+
 		this.panelComponent = new PanelComponent();
+		this.infoBoxComponent = new InfoBoxComponent();
+
+		infoBoxComponent.setColor(Color.WHITE);
+		infoBoxComponent.setPreferredSize(new Dimension(40, 40));
+
+		panelComponent.getChildren().add(infoBoxComponent);
+		panelComponent.setPreferredSize(new Dimension(40, 40));
+		panelComponent.setBorder(new Rectangle(0, 0, 0, 0));
 
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		setPriority(OverlayPriority.HIGH);
@@ -86,14 +96,9 @@ public class OverlayPrayerBox extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics)
 	{
-		if (!plugin.isInGauntlet() || !plugin.isInHunllefRoom())
-		{
-			return null;
-		}
-
 		final PrayerHighlightMode prayerHighlightMode = config.prayerOverlay();
 
-		if (prayerHighlightMode == PrayerHighlightMode.NONE || prayerHighlightMode == PrayerHighlightMode.PRAYERWIDGET)
+		if (prayerHighlightMode == PrayerHighlightMode.NONE || prayerHighlightMode == PrayerHighlightMode.WIDGET)
 		{
 			return null;
 		}
@@ -112,26 +117,13 @@ public class OverlayPrayerBox extends Overlay
 			return null;
 		}
 
-		final Hunllef.BossAttackPhase bossAttackPhase = hunllef.getCurrentPhase();
+		final Prayer prayer = hunllef.getAttackPhase().getPrayer();
 
-		final Prayer prayer = bossAttackPhase.getPrayer();
+		infoBoxComponent.setImage(getPrayerSprite(prayer));
 
-		final InfoBoxComponent infoBoxComponent = new InfoBoxComponent();
-
-		final BufferedImage bufferedImage = getPrayerSprite(prayer);
-
-		panelComponent.getChildren().clear();
-
-		infoBoxComponent.setImage(bufferedImage);
-		infoBoxComponent.setColor(Color.WHITE);
 		infoBoxComponent.setBackgroundColor(client.isPrayerActive(prayer)
 			? ComponentConstants.STANDARD_BACKGROUND_COLOR
 			: NOT_ACTIVATED_BACKGROUND_COLOR);
-		infoBoxComponent.setPreferredSize(new Dimension(40, 40));
-
-		panelComponent.getChildren().add(infoBoxComponent);
-		panelComponent.setPreferredSize(new Dimension(40, 40));
-		panelComponent.setBorder(new Rectangle(0, 0, 0, 0));
 
 		return panelComponent.render(graphics);
 	}
@@ -143,35 +135,25 @@ public class OverlayPrayerBox extends Overlay
 
 	private BufferedImage getPrayerSprite(final Prayer prayer)
 	{
-		final BufferedImage bufferedImage;
-
 		switch (prayer)
 		{
 			case PROTECT_FROM_MAGIC:
 				if (spriteProtectFromMagic == null)
 				{
-					spriteProtectFromMagic = scaleSprite(
-						spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0)
-					);
+					spriteProtectFromMagic = scaleSprite(spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0));
 				}
 
-				bufferedImage = spriteProtectFromMagic;
-				break;
+				return spriteProtectFromMagic;
 			case PROTECT_FROM_MISSILES:
 				if (spriteProtectFromRange == null)
 				{
-					spriteProtectFromRange = scaleSprite(
-						spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0)
-					);
+					spriteProtectFromRange = scaleSprite(spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0));
 				}
 
-				bufferedImage = spriteProtectFromRange;
-				break;
+				return spriteProtectFromRange;
 			default:
 				throw new IllegalStateException("Unexpected boss attack phase prayer: " + prayer);
 		}
-
-		return bufferedImage;
 	}
 
 	private static BufferedImage scaleSprite(final BufferedImage bufferedImage)

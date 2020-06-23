@@ -44,7 +44,7 @@ public class Resource
 
 	private int iconSize;
 
-	public Resource(final GameObject gameObject, final int iconSize, final SkillIconManager skillIconManager)
+	public Resource(final GameObject gameObject, final SkillIconManager skillIconManager, final int iconSize)
 	{
 		this.gameObject = gameObject;
 		this.iconSize = iconSize;
@@ -68,25 +68,25 @@ public class Resource
 		return icon;
 	}
 
-	private BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int objectId)
+	private static BufferedImage getOriginalIcon(final SkillIconManager skillIconManager, final int objectId)
 	{
 		switch (objectId)
 		{
 			case ObjectID.CRYSTAL_DEPOSIT:
 			case ObjectID.CORRUPT_DEPOSIT:
-				return SkillIconManager.getSkillImage(Skill.MINING);
+				return skillIconManager.getSkillImage(Skill.MINING);
 			case ObjectID.PHREN_ROOTS:
 			case ObjectID.PHREN_ROOTS_36066:
-				return SkillIconManager.getSkillImage(Skill.WOODCUTTING);
+				return skillIconManager.getSkillImage(Skill.WOODCUTTING);
 			case ObjectID.FISHING_SPOT_36068:
 			case ObjectID.FISHING_SPOT_35971:
-				return SkillIconManager.getSkillImage(Skill.FISHING);
+				return skillIconManager.getSkillImage(Skill.FISHING);
 			case ObjectID.GRYM_ROOT:
 			case ObjectID.GRYM_ROOT_36070:
-				return SkillIconManager.getSkillImage(Skill.HERBLORE);
+				return skillIconManager.getSkillImage(Skill.HERBLORE);
 			case ObjectID.LINUM_TIRINUM:
 			case ObjectID.LINUM_TIRINUM_36072:
-				return SkillIconManager.getSkillImage(Skill.FARMING);
+				return skillIconManager.getSkillImage(Skill.FARMING);
 			default:
 				throw new IllegalArgumentException("Unsupported gauntlet resource gameobject id: " + objectId);
 		}

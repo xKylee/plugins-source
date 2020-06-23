@@ -44,6 +44,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.NPCDefinition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
+import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.model.Jarvis;
 import net.runelite.api.model.Vertex;
@@ -51,7 +52,7 @@ import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletPlugin;
 import net.runelite.client.plugins.gauntlet.entity.Hunllef;
-import net.runelite.client.plugins.gauntlet.entity.Projectile;
+import net.runelite.client.plugins.gauntlet.entity.Missile;
 import net.runelite.client.plugins.gauntlet.entity.Tornado;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -59,7 +60,7 @@ import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
-public class OverlayHunllefRoom extends Overlay
+public class OverlayHunllef extends Overlay
 {
 	private static final Color[] COLORS = new Color[]{
 		Color.BLUE,
@@ -90,7 +91,7 @@ public class OverlayHunllefRoom extends Overlay
 	private int idx;
 
 	@Inject
-	private OverlayHunllefRoom(final Client client, final GauntletPlugin plugin, final GauntletConfig config, final ModelOutlineRenderer modelOutlineRenderer)
+	private OverlayHunllef(final Client client, final GauntletPlugin plugin, final GauntletConfig config, final ModelOutlineRenderer modelOutlineRenderer)
 	{
 		super(plugin);
 
@@ -107,11 +108,6 @@ public class OverlayHunllefRoom extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || !plugin.isInHunllefRoom())
-		{
-			return null;
-		}
-
 		hunllef = plugin.getHunllef();
 
 		if (hunllef == null)
@@ -134,7 +130,7 @@ public class OverlayHunllefRoom extends Overlay
 
 		renderTornadoes(graphics2D);
 
-		renderProjectiles(graphics2D);
+		renderProjectile(graphics2D);
 
 		renderHunllefWrongPrayerOutline();
 
@@ -156,12 +152,12 @@ public class OverlayHunllefRoom extends Overlay
 
 	private void renderTornadoes(final Graphics2D graphics2D)
 	{
-		if ((!config.tornadoTickCounter() && !config.tornadoTileOutline()) || plugin.getTornados().isEmpty())
+		if ((!config.tornadoTickCounter() && !config.tornadoTileOutline()) || plugin.getTornadoes().isEmpty())
 		{
 			return;
 		}
 
-		for (final Tornado tornado : plugin.getTornados())
+		for (final Tornado tornado : plugin.getTornadoes())
 		{
 			final int timeLeft = tornado.getTimeLeft();
 
@@ -204,46 +200,45 @@ public class OverlayHunllefRoom extends Overlay
 		}
 	}
 
-	private void renderProjectiles(final Graphics2D graphics2D)
+	private void renderProjectile(final Graphics2D graphics2D)
 	{
-		if ((!config.outlineProjectile() && !config.overlayProjectileIcon()) || plugin.getProjectiles().isEmpty())
+		if ((!config.outlineProjectile() && !config.overlayProjectileIcon()) || plugin.getMissile() == null)
 		{
 			return;
 		}
 
-		for (final Projectile projectile : plugin.getProjectiles())
+		final Missile missile = plugin.getMissile();
+
+		final Polygon polygon = getProjectilePolygon(client, missile.getProjectile());
+
+		if (polygon == null)
 		{
-			final Polygon polygon = getProjectilePolygon(client, projectile.getProjectile());
+			return;
+		}
 
-			if (polygon == null)
-			{
-				continue;
-			}
+		if (config.outlineProjectile())
+		{
+			final Color originalColor = graphics2D.getColor();
 
-			if (config.outlineProjectile())
-			{
-				final Color originalColor = graphics2D.getColor();
+			graphics2D.setColor(missile.getOutlineColor());
+			graphics2D.draw(polygon);
 
-				graphics2D.setColor(projectile.getOutlineColor());
-				graphics2D.draw(polygon);
+			graphics2D.setColor(missile.getFillColor());
+			graphics2D.fill(polygon);
 
-				graphics2D.setColor(projectile.getFillColor());
-				graphics2D.fill(polygon);
+			graphics2D.setColor(originalColor);
+		}
 
-				graphics2D.setColor(originalColor);
-			}
+		if (config.overlayProjectileIcon())
+		{
+			final BufferedImage icon = missile.getIcon();
 
-			if (config.overlayProjectileIcon())
-			{
-				final BufferedImage icon = projectile.getIcon();
+			final Rectangle bounds = polygon.getBounds();
 
-				final Rectangle bounds = polygon.getBounds();
+			final int x = (int) bounds.getCenterX() - (icon.getWidth() / 2);
+			final int y = (int) bounds.getCenterY() - (icon.getHeight() / 2);
 
-				final int x = (int) bounds.getCenterX() - (icon.getWidth() / 2);
-				final int y = (int) bounds.getCenterY() - (icon.getHeight() / 2);
-
-				graphics2D.drawImage(icon, x, y, null);
-			}
+			graphics2D.drawImage(icon, x, y, null);
 		}
 	}
 
@@ -254,7 +249,7 @@ public class OverlayHunllefRoom extends Overlay
 			return;
 		}
 
-		final Hunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
+		final Hunllef.AttackPhase phase = hunllef.getAttackPhase();
 
 		if (client.isPrayerActive(phase.getPrayer()))
 		{
@@ -274,10 +269,9 @@ public class OverlayHunllefRoom extends Overlay
 
 		final NPC npc = hunllef.getNpc();
 
-		final String text = String.format("%d | %d", hunllef.getBossAttacks(),
-			hunllef.getPlayerAttacks());
+		final String text = String.format("%d | %d", hunllef.getAttackCount(),
+			hunllef.getPlayerAttackCount());
 
-		// offset value is height above the npc tile
 		final Point point = npc.getCanvasTextLocation(graphics2D, text, 0);
 
 		if (point == null)
@@ -290,7 +284,7 @@ public class OverlayHunllefRoom extends Overlay
 		graphics2D.setFont(new Font(Font.SANS_SERIF,
 			config.hunllefAttackCounterFontStyle().getFont(), config.hunllefAttackCounterFontSize()));
 
-		OverlayUtil.renderTextLocation(graphics2D, point, text, hunllef.getCurrentPhase().getColor());
+		OverlayUtil.renderTextLocation(graphics2D, point, text, hunllef.getAttackPhase().getColor());
 
 		graphics2D.setFont(originalFont);
 	}
@@ -304,9 +298,8 @@ public class OverlayHunllefRoom extends Overlay
 
 		final NPC npc = hunllef.getNpc();
 
-		final BufferedImage icon = hunllef.getAttackStyleIcon();
+		final BufferedImage icon = hunllef.getIcon();
 
-		// offset value is height above the npc tile
 		final Point point = Perspective.getCanvasImageLocation(client, npc.getLocalLocation(), icon,
 			npc.getLogicalHeight() - 100);
 
@@ -348,7 +341,7 @@ public class OverlayHunllefRoom extends Overlay
 
 	private void renderFlash(final Graphics2D graphics2D)
 	{
-		if (!config.flashOnWrongAttack() || !plugin.isFlash())
+		if (!config.flashOnWrongAttack() || !plugin.isWrongAttackStyle())
 		{
 			return;
 		}
@@ -364,7 +357,7 @@ public class OverlayHunllefRoom extends Overlay
 		if (++timeout >= config.flashOnWrongAttackDuration())
 		{
 			timeout = 0;
-			plugin.setFlash(false);
+			plugin.setWrongAttackStyle(false);
 		}
 	}
 
@@ -384,7 +377,7 @@ public class OverlayHunllefRoom extends Overlay
 		modelOutlineRenderer.drawOutline(hunllef.getNpc(), 12, COLORS[idx], TRANSPARENT);
 	}
 
-	private static Polygon getProjectilePolygon(final Client client, final net.runelite.api.Projectile projectile)
+	private static Polygon getProjectilePolygon(final Client client, final Projectile projectile)
 	{
 		if (projectile == null || projectile.getModel() == null)
 		{

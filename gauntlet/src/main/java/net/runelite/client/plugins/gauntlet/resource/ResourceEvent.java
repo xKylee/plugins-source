@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
- * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,28 +22,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.entity;
+package net.runelite.client.plugins.gauntlet.resource;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.runelite.api.NPC;
+import lombok.Value;
+import net.runelite.api.events.Event;
 
-@RequiredArgsConstructor
-public class Tornado
+@Value
+class ResourceEvent implements Event
 {
-	private static final int TICK_DURATION = 21;
-
-	@Getter
-	private int timeLeft = TICK_DURATION;
-
-	@Getter
-	private final NPC npc;
-
-	public void updateTimeLeft()
-	{
-		if (timeLeft >= 0)
-		{
-			timeLeft--;
-		}
-	}
+	Resource resource;
+	int count;
 }
