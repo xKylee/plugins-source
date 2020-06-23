@@ -129,11 +129,9 @@ public class Olm
 		this.updateVictims();
 		this.updateCrippleSticks();
 		this.updateSpecials();
-
-		if (!this.headAnimations() && !this.handAnimations())
-		{
-			this.incrementTickCycle();
-		}
+		this.incrementTickCycle();
+		this.headAnimations();
+		this.handAnimations();
 	}
 
 	public void incrementTickCycle()
@@ -233,28 +231,26 @@ public class Olm
 		}
 	}
 
-	private boolean headAnimations()
+	private void headAnimations()
 	{
 		if (this.head == null || this.head.getEntity() == null)
 		{
-			return false;
+			return;
 		}
 
 		int currentAnimation = ((DynamicObject) this.head.getEntity()).getAnimationID();
 
 		if (currentAnimation == this.lastHeadAnimation)
 		{
-			return false;
+			return;
 		}
 
-		var skipTick = false;
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_MIDDLE:
 				if (this.lastHeadAnimation == OlmID.OLM_RISING_2 || this.lastHeadAnimation == OlmID.OLM_ENRAGED_RISING_2)
 				{
 					this.tickCycle = this.firstPhase ? 4 : 1;
-					skipTick = true;
 				}
 				break;
 			case OlmID.OLM_ENRAGED_LEFT:
@@ -265,24 +261,22 @@ public class Olm
 		}
 
 		this.lastHeadAnimation = currentAnimation;
-		return skipTick;
 	}
 
-	private boolean handAnimations()
+	private void handAnimations()
 	{
 		if (this.hand == null || this.hand.getEntity() == null)
 		{
-			return false;
+			return;
 		}
 
 		int currentAnimation = ((DynamicObject) this.hand.getEntity()).getAnimationID();
 
 		if (currentAnimation == this.lastHandAnimation)
 		{
-			return false;
+			return;
 		}
 
-		var skipTick = false;
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_LEFT_HAND_CRYSTALS:
@@ -290,7 +284,6 @@ public class Olm
 			case OlmID.OLM_LEFT_HAND_PORTALS:
 			case OlmID.OLM_LEFT_HAND_HEAL:
 				this.specialSync(currentAnimation);
-				skipTick = true;
 				break;
 			case OlmID.OLM_LEFT_HAND_CRIPPLING:
 				this.cripple();
@@ -302,6 +295,5 @@ public class Olm
 		}
 
 		this.lastHandAnimation = currentAnimation;
-		return skipTick;
 	}
 }
