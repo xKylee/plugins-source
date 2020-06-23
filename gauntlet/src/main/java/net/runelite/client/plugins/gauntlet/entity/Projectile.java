@@ -35,7 +35,7 @@ import net.runelite.client.util.ImageUtil;
 
 public class Projectile
 {
-	private static final int PROJECTILE_FILL_ALPHA = 100;
+	private static final int FILL_ALPHA = 100;
 
 	@Getter
 	private final net.runelite.api.Projectile projectile;
@@ -59,8 +59,7 @@ public class Projectile
 		this.originalIcon = getOriginalIcon(skillIconManager, projectile.getId());
 
 		this.outlineColor = getOutlineColor(projectile.getId());
-		this.fillColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(),
-			PROJECTILE_FILL_ALPHA);
+		this.fillColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), FILL_ALPHA);
 	}
 
 	public void setIconSize(final int iconSize)

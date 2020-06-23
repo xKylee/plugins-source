@@ -37,8 +37,10 @@ import net.runelite.client.util.ImageUtil;
 
 public class Hunllef
 {
-	private static final int MAX_PLAYER_ATTACKS = 6;
-	private static final int MAX_BOSS_ATTACKS = 4;
+	private static final int ATTACK_TICK_SPEED = 6;
+
+	private static final int MAX_ATTACK_COUNT = 4;
+	private static final int MAX_PLAYER_ATTACK_COUNT = 6;
 
 	@Getter
 	private final NPC npc;
@@ -50,119 +52,119 @@ public class Hunllef
 	private BufferedImage rangeIcon;
 
 	@Getter
-	private BossAttackPhase currentPhase;
+	private AttackPhase attackPhase;
 
 	@Getter
-	private int bossAttacks;
+	private int attackCount;
 	@Getter
-	private int playerAttacks;
+	private int playerAttackCount;
 	@Getter
-	private int ticksUntilAttack;
+	private int ticksUntilNextAttack;
 
-	private int attackStyleIconSize;
+	private int iconSize;
 
-	public Hunllef(final NPC npc, final int attackStyleIconSize, final SkillIconManager skillIconManager)
+	public Hunllef(final NPC npc, final int iconSize, final SkillIconManager skillIconManager)
 	{
 		this.npc = npc;
-		this.bossAttacks = MAX_BOSS_ATTACKS;
-		this.playerAttacks = MAX_PLAYER_ATTACKS;
-		this.ticksUntilAttack = 0;
-		this.attackStyleIconSize = attackStyleIconSize;
+		this.attackCount = MAX_ATTACK_COUNT;
+		this.playerAttackCount = MAX_PLAYER_ATTACK_COUNT;
+		this.ticksUntilNextAttack = 0;
+		this.iconSize = iconSize;
 		this.originalMagicIcon = skillIconManager.getSkillImage(Skill.MAGIC);
 		this.originalRangeIcon = skillIconManager.getSkillImage(Skill.RANGED);
-		this.currentPhase = BossAttackPhase.RANGE;
+		this.attackPhase = AttackPhase.RANGE;
 	}
 
 	public void onGameTick()
 	{
-		if (ticksUntilAttack > 0)
+		if (ticksUntilNextAttack > 0)
 		{
-			ticksUntilAttack--;
+			ticksUntilNextAttack--;
 		}
 	}
 
-	public void updatePlayerAttack()
+	public void updatePlayerAttackCount()
 	{
-		playerAttacks--;
+		playerAttackCount--;
 
-		if (playerAttacks <= 0)
+		if (playerAttackCount <= 0)
 		{
-			playerAttacks = MAX_PLAYER_ATTACKS;
+			playerAttackCount = MAX_PLAYER_ATTACK_COUNT;
 		}
 	}
 
 	public void updateAttack(final BossAttack style)
 	{
-		ticksUntilAttack = MAX_PLAYER_ATTACKS;
+		ticksUntilNextAttack = ATTACK_TICK_SPEED;
 
 		switch (style)
 		{
 			case PRAYER:
 			case MAGIC:
-				if (currentPhase != BossAttackPhase.MAGIC)
+				if (attackPhase != AttackPhase.MAGIC)
 				{
-					currentPhase = BossAttackPhase.MAGIC;
-					bossAttacks = MAX_BOSS_ATTACKS - 1;
+					attackPhase = AttackPhase.MAGIC;
+					attackCount = MAX_ATTACK_COUNT - 1;
 				}
 				else
 				{
-					bossAttacks--;
+					attackCount--;
 				}
 				break;
 			case RANGE:
-				if (currentPhase != BossAttackPhase.RANGE)
+				if (attackPhase != AttackPhase.RANGE)
 				{
-					currentPhase = BossAttackPhase.RANGE;
-					bossAttacks = MAX_BOSS_ATTACKS - 1;
+					attackPhase = AttackPhase.RANGE;
+					attackCount = MAX_ATTACK_COUNT - 1;
 				}
 				else
 				{
-					bossAttacks--;
+					attackCount--;
 				}
 				break;
 			case LIGHTNING:
-				bossAttacks--;
+				attackCount--;
 				break;
 		}
 
-		if (bossAttacks <= 0)
+		if (attackCount <= 0)
 		{
-			final BossAttackPhase nextPhase;
+			final AttackPhase nextPhase;
 
-			switch (currentPhase)
+			switch (attackPhase)
 			{
 				case MAGIC:
 				default:
-					bossAttacks = MAX_BOSS_ATTACKS;
-					nextPhase = BossAttackPhase.RANGE;
+					attackCount = MAX_ATTACK_COUNT;
+					nextPhase = AttackPhase.RANGE;
 					break;
 				case RANGE:
-					bossAttacks = MAX_BOSS_ATTACKS;
-					nextPhase = BossAttackPhase.MAGIC;
+					attackCount = MAX_ATTACK_COUNT;
+					nextPhase = AttackPhase.MAGIC;
 					break;
 			}
 
-			currentPhase = nextPhase;
+			attackPhase = nextPhase;
 		}
 	}
 
-	public void setAttackStyleIconSize(final int attackStyleIconSize)
+	public void setIconSize(final int iconSize)
 	{
-		this.attackStyleIconSize = attackStyleIconSize;
-		magicIcon = ImageUtil.resizeImage(originalMagicIcon, attackStyleIconSize, attackStyleIconSize);
-		rangeIcon = ImageUtil.resizeImage(originalRangeIcon, attackStyleIconSize, attackStyleIconSize);
+		this.iconSize = iconSize;
+		magicIcon = ImageUtil.resizeImage(originalMagicIcon, iconSize, iconSize);
+		rangeIcon = ImageUtil.resizeImage(originalRangeIcon, iconSize, iconSize);
 	}
 
-	public BufferedImage getAttackStyleIcon()
+	public BufferedImage getIcon()
 	{
 		final BufferedImage icon;
 
-		switch (currentPhase)
+		switch (attackPhase)
 		{
 			case MAGIC:
 				if (magicIcon == null)
 				{
-					magicIcon = ImageUtil.resizeImage(originalMagicIcon, attackStyleIconSize, attackStyleIconSize);
+					magicIcon = ImageUtil.resizeImage(originalMagicIcon, iconSize, iconSize);
 				}
 
 				icon = magicIcon;
@@ -170,13 +172,13 @@ public class Hunllef
 			case RANGE:
 				if (rangeIcon == null)
 				{
-					rangeIcon = ImageUtil.resizeImage(originalRangeIcon, attackStyleIconSize, attackStyleIconSize);
+					rangeIcon = ImageUtil.resizeImage(originalRangeIcon, iconSize, iconSize);
 				}
 
 				icon = rangeIcon;
 				break;
 			default:
-				throw new IllegalStateException("Unexpected boss attack phase: " + currentPhase);
+				throw new IllegalStateException("Unexpected boss attack phase: " + attackPhase);
 		}
 
 		return icon;
@@ -184,7 +186,7 @@ public class Hunllef
 
 	@AllArgsConstructor
 	@Getter
-	public enum BossAttackPhase
+	public enum AttackPhase
 	{
 		MAGIC(Color.CYAN, Prayer.PROTECT_FROM_MAGIC),
 		RANGE(Color.GREEN, Prayer.PROTECT_FROM_MISSILES);

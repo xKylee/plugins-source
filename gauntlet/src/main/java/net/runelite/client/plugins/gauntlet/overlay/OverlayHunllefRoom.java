@@ -254,7 +254,7 @@ public class OverlayHunllefRoom extends Overlay
 			return;
 		}
 
-		final Hunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
+		final Hunllef.AttackPhase phase = hunllef.getAttackPhase();
 
 		if (client.isPrayerActive(phase.getPrayer()))
 		{
@@ -274,8 +274,8 @@ public class OverlayHunllefRoom extends Overlay
 
 		final NPC npc = hunllef.getNpc();
 
-		final String text = String.format("%d | %d", hunllef.getBossAttacks(),
-			hunllef.getPlayerAttacks());
+		final String text = String.format("%d | %d", hunllef.getAttackCount(),
+			hunllef.getPlayerAttackCount());
 
 		// offset value is height above the npc tile
 		final Point point = npc.getCanvasTextLocation(graphics2D, text, 0);
@@ -290,7 +290,7 @@ public class OverlayHunllefRoom extends Overlay
 		graphics2D.setFont(new Font(Font.SANS_SERIF,
 			config.hunllefAttackCounterFontStyle().getFont(), config.hunllefAttackCounterFontSize()));
 
-		OverlayUtil.renderTextLocation(graphics2D, point, text, hunllef.getCurrentPhase().getColor());
+		OverlayUtil.renderTextLocation(graphics2D, point, text, hunllef.getAttackPhase().getColor());
 
 		graphics2D.setFont(originalFont);
 	}
@@ -304,7 +304,7 @@ public class OverlayHunllefRoom extends Overlay
 
 		final NPC npc = hunllef.getNpc();
 
-		final BufferedImage icon = hunllef.getAttackStyleIcon();
+		final BufferedImage icon = hunllef.getIcon();
 
 		// offset value is height above the npc tile
 		final Point point = Perspective.getCanvasImageLocation(client, npc.getLocalLocation(), icon,
@@ -348,7 +348,7 @@ public class OverlayHunllefRoom extends Overlay
 
 	private void renderFlash(final Graphics2D graphics2D)
 	{
-		if (!config.flashOnWrongAttack() || !plugin.isFlash())
+		if (!config.flashOnWrongAttack() || !plugin.isWrongAttackStyle())
 		{
 			return;
 		}
@@ -364,7 +364,7 @@ public class OverlayHunllefRoom extends Overlay
 		if (++timeout >= config.flashOnWrongAttackDuration())
 		{
 			timeout = 0;
-			plugin.setFlash(false);
+			plugin.setWrongAttackStyle(false);
 		}
 	}
 

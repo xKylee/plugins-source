@@ -119,7 +119,7 @@ public class GauntletPlugin extends Plugin
 		ONEHAND_SLASH_HALBERD_ANIMATION
 	);
 
-	private static final Set<Integer> PLAYER_ANIM_IDS = Set.of(
+	private static final Set<Integer> ATTACK_ANIM_IDS = Set.of(
 		AnimationID.ONEHAND_STAB_SWORD_ANIMATION,
 		AnimationID.ONEHAND_SLASH_SWORD_ANIMATION,
 		ONEHAND_SLASH_AXE_ANIMATION,
@@ -280,7 +280,7 @@ public class GauntletPlugin extends Plugin
 
 	@Getter
 	@Setter
-	private boolean flash;
+	private boolean wrongAttackStyle;
 
 	@Getter
 	private boolean inGauntlet;
@@ -334,7 +334,7 @@ public class GauntletPlugin extends Plugin
 		overlays.forEach(o -> overlayManager.remove(o));
 
 		hunllef = null;
-		flash = false;
+		wrongAttackStyle = false;
 
 		overlayTimer.reset();
 		resourceTracker.reset();
@@ -367,7 +367,7 @@ public class GauntletPlugin extends Plugin
 			case "hunllefAttackStyleIconSize":
 				if (hunllef != null)
 				{
-					hunllef.setAttackStyleIconSize(config.hunllefAttackStyleIconSize());
+					hunllef.setIconSize(config.hunllefAttackStyleIconSize());
 				}
 				break;
 			case "mirrorMode":
@@ -696,7 +696,7 @@ public class GauntletPlugin extends Plugin
 	{
 		final int animationId = player.getAnimation();
 
-		if (!PLAYER_ANIM_IDS.contains(animationId))
+		if (!ATTACK_ANIM_IDS.contains(animationId))
 		{
 			return;
 		}
@@ -720,21 +720,21 @@ public class GauntletPlugin extends Plugin
 			case MELEE:
 				if (MELEE_ANIM_IDS.contains(animationId))
 				{
-					flash = true;
+					wrongAttackStyle = true;
 					return;
 				}
 				break;
 			case RANGED:
 				if (animationId == BOW_ATTACK_ANIMATION)
 				{
-					flash = true;
+					wrongAttackStyle = true;
 					return;
 				}
 				break;
 			case MAGIC:
 				if (animationId == AnimationID.HIGH_LEVEL_MAGIC_ATTACK)
 				{
-					flash = true;
+					wrongAttackStyle = true;
 					return;
 				}
 				break;
@@ -742,7 +742,7 @@ public class GauntletPlugin extends Plugin
 				return;
 		}
 
-		hunllef.updatePlayerAttack();
+		hunllef.updatePlayerAttackCount();
 	}
 
 	public int getInstanceRegionId()

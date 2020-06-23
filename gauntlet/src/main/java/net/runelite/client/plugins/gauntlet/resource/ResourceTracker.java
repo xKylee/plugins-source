@@ -139,7 +139,7 @@ public class ResourceTracker
 			return;
 		}
 
-		if (config.resourceTrackerFilter() == GauntletConfig.ResourceFilter.DEFAULT)
+		if (config.resourceTrackerFilter() == GauntletConfig.ResourceFilter.BASIC)
 		{
 			switch (resource)
 			{

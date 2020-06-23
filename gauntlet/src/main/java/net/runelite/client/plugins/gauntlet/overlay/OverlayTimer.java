@@ -87,7 +87,7 @@ public class OverlayTimer extends Overlay
 	}
 
 	@Override
-	public Dimension render(final Graphics2D graphics)
+	public Dimension render(final Graphics2D graphics2D)
 	{
 		if (!plugin.isInGauntlet() || !config.timerOverlay())
 		{
@@ -137,7 +137,7 @@ public class OverlayTimer extends Overlay
 
 		panelComponent.getChildren().add(tableComponent);
 
-		return panelComponent.render(graphics);
+		return panelComponent.render(graphics2D);
 	}
 
 	public void determineLayer()

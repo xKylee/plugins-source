@@ -295,7 +295,7 @@ public interface GauntletConfig extends Config
 	)
 	default ResourceFilter resourceTrackerFilter()
 	{
-		return ResourceFilter.DEFAULT;
+		return ResourceFilter.BASIC;
 	}
 
 	// Utilities Section
@@ -1002,7 +1002,7 @@ public interface GauntletConfig extends Config
 	@AllArgsConstructor
 	enum PrayerHighlightMode
 	{
-		PRAYERWIDGET("On Widget"),
+		WIDGET("Widget"),
 		BOX("Box"),
 		BOTH("Both"),
 		NONE("None");
@@ -1018,6 +1018,6 @@ public interface GauntletConfig extends Config
 
 	enum ResourceFilter
 	{
-		DEFAULT, ALL
+		BASIC, ALL
 	}
 }

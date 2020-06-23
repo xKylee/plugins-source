@@ -93,7 +93,7 @@ public class OverlayPrayerBox extends Overlay
 
 		final PrayerHighlightMode prayerHighlightMode = config.prayerOverlay();
 
-		if (prayerHighlightMode == PrayerHighlightMode.NONE || prayerHighlightMode == PrayerHighlightMode.PRAYERWIDGET)
+		if (prayerHighlightMode == PrayerHighlightMode.NONE || prayerHighlightMode == PrayerHighlightMode.WIDGET)
 		{
 			return null;
 		}
@@ -112,9 +112,9 @@ public class OverlayPrayerBox extends Overlay
 			return null;
 		}
 
-		final Hunllef.BossAttackPhase bossAttackPhase = hunllef.getCurrentPhase();
+		final Hunllef.AttackPhase attackPhase = hunllef.getAttackPhase();
 
-		final Prayer prayer = bossAttackPhase.getPrayer();
+		final Prayer prayer = attackPhase.getPrayer();
 
 		final InfoBoxComponent infoBoxComponent = new InfoBoxComponent();
 
