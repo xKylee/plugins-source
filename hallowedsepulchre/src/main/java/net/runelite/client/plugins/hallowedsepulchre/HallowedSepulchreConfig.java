@@ -25,33 +25,55 @@
 package net.runelite.client.plugins.hallowedsepulchre;
 
 import java.awt.Color;
+import java.awt.Font;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.Range;
 import net.runelite.client.config.Title;
+import net.runelite.client.config.Units;
 
 @ConfigGroup("hallowedsepulchre")
 public interface HallowedSepulchreConfig extends Config
 {
-	@Getter
-	@AllArgsConstructor
-	enum HighlightMode
+	Color RED_OPAQUE = new Color(255, 0, 0, 255);
+	Color RED_TRANSPARENT = new Color(255, 0, 0, 20);
+
+	@ConfigTitleSection(
+		keyName = "overlays",
+		position = 0,
+		name = "Overlays",
+		description = ""
+	)
+	default Title overlay()
 	{
-		NONE("None"),
-		OUTLINE("Outline"),
-		TILE("Tile"),
-		BOTH("Both");
+		return new Title();
+	}
 
-		private String name;
+	@ConfigTitleSection(
+		keyName = "colors",
+		name = "Colors",
+		description = "Customize overlay colors.",
+		position = 1
+	)
+	default boolean colors()
+	{
+		return false;
+	}
 
-		@Override
-		public String toString()
-		{
-			return getName();
-		}
+	@ConfigTitleSection(
+		keyName = "other",
+		name = "Other",
+		description = "Other settings.",
+		position = 2
+	)
+	default boolean other()
+	{
+		return false;
 	}
 
 	@ConfigItem(
@@ -63,17 +85,6 @@ public interface HallowedSepulchreConfig extends Config
 	default boolean mirrorMode()
 	{
 		return false;
-	}
-
-	@ConfigTitleSection(
-		keyName = "overlays",
-		position = 1,
-		name = "Overlays",
-		description = ""
-	)
-	default Title overlay()
-	{
-		return new Title();
 	}
 
 	@ConfigItem(
@@ -116,7 +127,7 @@ public interface HallowedSepulchreConfig extends Config
 		position = 3,
 		keyName = "highlightWizardStatue",
 		name = "Wizard statue tick counter",
-		description = "Overlay wizard statues with a tick countdown.",
+		description = "Overlay wizard statues with a tick counter.",
 		titleSection = "overlays"
 	)
 	default boolean highlightWizardStatues()
@@ -124,62 +135,257 @@ public interface HallowedSepulchreConfig extends Config
 		return false;
 	}
 
-	@ConfigTitleSection(
-		keyName = "colors",
-		name = "Colors",
-		description = "Customize overlay colors.",
-		position = 2
+	@ConfigItem(
+		position = 4,
+		keyName = "highlightServerTile",
+		name = "Highlight server tile",
+		description = "Highlight the tile the player is on, according to the server.",
+		titleSection = "overlays"
 	)
-	default boolean colors()
+	default boolean highlightServerTile()
 	{
 		return false;
 	}
 
 	@ConfigItem(
-		position = 0,
-		keyName = "highlightArrowsColor",
-		name = "Arrows color",
-		description = "Change the overlay color of arrows.",
-		titleSection = "colors"
+		position = 5,
+		keyName = "renderDistance",
+		name = "Render distance",
+		description = "How far to render overlays from your player's position.",
+		titleSection = "overlays"
 	)
-	default Color highlightArrowsColor()
+	default RenderDistance renderDistance()
 	{
-		return Color.RED;
+		return RenderDistance.MEDIUM;
 	}
 
+	@Alpha
+	@ConfigItem(
+		position = 0,
+		keyName = "arrowsOutlineColor",
+		name = "Arrows outline",
+		description = "Change the overlay outline color of arrows.",
+		titleSection = "colors"
+	)
+	default Color arrowsOutlineColor()
+	{
+		return RED_OPAQUE;
+	}
+
+	@Alpha
 	@ConfigItem(
 		position = 1,
-		keyName = "highlightSwordsColor",
-		name = "Swords color",
-		description = "Change the overlay color of swords.",
+		keyName = "arrowsFillColor",
+		name = "Arrows fill",
+		description = "Change the overlay fill color of arrows.",
 		titleSection = "colors"
 	)
-	default Color highlightSwordsColor()
+	default Color arrowsFillColor()
 	{
-		return Color.RED;
+		return RED_TRANSPARENT;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 2,
+		keyName = "swordsOutlineColor",
+		name = "Swords outline",
+		description = "Change the overlay outline color of swords.",
+		titleSection = "colors"
+	)
+	default Color swordsOutlineColor()
+	{
+		return RED_OPAQUE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 3,
+		keyName = "swordsFillColor",
+		name = "Swords fill",
+		description = "Change the overlay fill color of swords.",
+		titleSection = "colors"
+	)
+	default Color swordsFillColor()
+	{
+		return RED_TRANSPARENT;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 4,
+		keyName = "crossbowStatueOutlineColor",
+		name = "Crossbow outline",
+		description = "Change the overlay outline color of the crossbow statues.",
+		titleSection = "colors"
+	)
+	default Color crossbowStatueOutlineColor()
+	{
+		return RED_OPAQUE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 5,
+		keyName = "crossbowStatueFillColor",
+		name = "Crossbow fill",
+		description = "Change the overlay fill color of the crossbow statues.",
+		titleSection = "colors"
+	)
+	default Color crossbowStatueFillColor()
+	{
+		return RED_TRANSPARENT;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 6,
+		keyName = "serverTileOutlineColor",
+		name = "Server tile outline",
+		description = "Change the overlay outline color of the player's server tile.",
+		titleSection = "colors"
+	)
+	default Color serverTileOutlineColor()
+	{
+		return Color.CYAN;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 7,
+		keyName = "serverTileFillColor",
+		name = "Server tile  fill",
+		description = "Change the overlay fill color of the player's server tile.",
+		titleSection = "colors"
+	)
+	default Color serverTileFillColor()
+	{
+		return new Color(0, 0, 0, 0);
 	}
 
 	@ConfigItem(
-		position = 2,
-		keyName = "highlightCrossbowStatueColor",
-		name = "Crossbow color",
-		description = "Change the overlay color of the crossbow statues.",
-		titleSection = "colors"
-	)
-	default Color highlightCrossbowStatueColor()
-	{
-		return Color.RED;
-	}
-
-	@ConfigItem(
-		position = 2,
+		position = 8,
 		keyName = "wizardStatueTickCounterColor",
-		name = "Wizard statue color",
+		name = "Tick counter",
 		description = "Change the overlay color of the wizard statue tick counter.",
 		titleSection = "colors"
 	)
 	default Color wizardStatueTickCounterColor()
 	{
 		return Color.RED;
+	}
+
+	@Range(
+		min = 1,
+		max = 20
+	)
+	@ConfigItem(
+		position = 0,
+		keyName = "wizardFontSize",
+		name = "Tick counter font size",
+		description = "Adjust the font size of the wizard statue tick counter.",
+		titleSection = "other"
+	)
+	@Units(Units.POINTS)
+	default int wizardFontSize()
+	{
+		return 12;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "fontStyle",
+		name = "Font style",
+		description = "Bold/Italics/Plain",
+		titleSection = "other"
+
+	)
+	default FontStyle fontStyle()
+	{
+		return FontStyle.PLAIN;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "wizardFontShadow",
+		name = "Tick counter font shadow",
+		description = "Toggle font shadow of the wizard statue tick counter.",
+		titleSection = "other"
+	)
+	default boolean wizardFontShadow()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 5
+	)
+	@ConfigItem(
+		position = 3,
+		keyName = "tileOutlineWidth",
+		name = "Tile outline width",
+		description = "Change width of tile outlines.",
+		titleSection = "other"
+	)
+	@Units(Units.POINTS)
+	default int tileOutlineWidth()
+	{
+		return 1;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum HighlightMode
+	{
+		NONE("None"),
+		OUTLINE("Outline"),
+		TILE("Tile"),
+		BOTH("Both");
+
+		private final String name;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum FontStyle
+	{
+		BOLD("Bold", Font.BOLD),
+		ITALIC("Italic", Font.ITALIC),
+		PLAIN("Plain", Font.PLAIN);
+
+		private final String name;
+		private final int font;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum RenderDistance
+	{
+		SHORT("Short", 2350),
+		MEDIUM("Medium", 3525),
+		FAR("Far", 4700),
+		UNCAPPED("Uncapped", 0);
+
+		private final String name;
+		private final int distance;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }

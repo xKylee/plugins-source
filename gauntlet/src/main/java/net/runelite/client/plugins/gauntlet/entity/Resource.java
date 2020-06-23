@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
@@ -21,34 +22,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.gauntlet;
+
+package net.runelite.client.plugins.gauntlet.entity;
 
 import java.awt.image.BufferedImage;
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.GameObject;
 import net.runelite.api.ObjectID;
 import net.runelite.api.Skill;
-import net.runelite.api.Tile;
 import net.runelite.client.game.SkillIconManager;
+import net.runelite.client.util.ImageUtil;
 
-@Getter(AccessLevel.PACKAGE)
-class Resources
+public class Resource
 {
-	private GameObject gameObject;
-	private Tile tile;
-	private BufferedImage image;
+	@Getter
+	private final GameObject gameObject;
 
-	Resources(GameObject object, Tile tile, SkillIconManager skillIconManager)
+	private final BufferedImage originalIcon;
+
+	private BufferedImage icon;
+
+	private int iconSize;
+
+	public Resource(final GameObject gameObject, final int iconSize, final SkillIconManager skillIconManager)
 	{
-		this.gameObject = object;
-		this.tile = tile;
-		this.image = assignedImage(skillIconManager, object.getId());
+		this.gameObject = gameObject;
+		this.iconSize = iconSize;
+
+		this.originalIcon = getOriginalIcon(skillIconManager, gameObject.getId());
 	}
 
-	private BufferedImage assignedImage(SkillIconManager SkillIconManager, int id)
+	public void setIconSize(final int iconSize)
 	{
-		switch (id)
+		this.iconSize = iconSize;
+		icon = ImageUtil.resizeImage(originalIcon, iconSize, iconSize);
+	}
+
+	public BufferedImage getIcon()
+	{
+		if (icon == null)
+		{
+			icon = ImageUtil.resizeImage(originalIcon, iconSize, iconSize);
+		}
+
+		return icon;
+	}
+
+	private BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int objectId)
+	{
+		switch (objectId)
 		{
 			case ObjectID.CRYSTAL_DEPOSIT:
 			case ObjectID.CORRUPT_DEPOSIT:
@@ -66,7 +88,7 @@ class Resources
 			case ObjectID.LINUM_TIRINUM_36072:
 				return SkillIconManager.getSkillImage(Skill.FARMING);
 			default:
-				return null;
+				throw new IllegalArgumentException("Unsupported gauntlet resource gameobject id: " + objectId);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, ganom <https://github.com/Ganom>
+ * Copyright (c) 2020, T7x <https://github.com/T7x>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,6 +10,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -21,72 +22,67 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.castlewarsextended;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.NONE;
-import static net.runelite.client.plugins.gauntlet.GauntletConfig.CounterDisplay.ONBOSS;
+import net.runelite.api.Client;
+import net.runelite.api.Point;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.components.PanelComponent;
-import net.runelite.client.ui.overlay.components.TitleComponent;
-import net.runelite.client.ui.overlay.components.table.TableAlignment;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
-import net.runelite.client.util.ColorUtil;
+import net.runelite.client.ui.overlay.OverlayUtil;
 
-@Singleton
-public class GauntletCounter extends Overlay
+public class GameTimeOverlay extends Overlay
 {
-	private final GauntletPlugin plugin;
-	private final GauntletConfig config;
-	private final PanelComponent panelComponent = new PanelComponent();
+	private final CastleWarsExtendedConfig config;
+	private final Client client;
 
 	@Inject
-	GauntletCounter(final GauntletPlugin plugin, final GauntletConfig config)
+	private GameTimeOverlay(CastleWarsExtendedConfig config, Client client)
 	{
-		this.plugin = plugin;
 		this.config = config;
-
-		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+		this.client = client;
 		determineLayer();
 		setPriority(OverlayPriority.HIGH);
+		setPosition(OverlayPosition.DYNAMIC);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		panelComponent.getChildren().clear();
-		final Hunllef hunllef = plugin.getHunllef();
-
-		if (!plugin.fightingBoss() ||
-			hunllef == null ||
-			config.countAttacks() == NONE ||
-			config.countAttacks() == ONBOSS)
+		Widget saradominTimeWidget = client.getWidget(58, 25); //Castle Wars saradomin time widget
+		Widget zamorakTimeWidget = client.getWidget(59, 25); //Castle wars zamorak time widget
+		Widget currentWidget = null;
+		if (client.isResized())
 		{
-			return null;
+			if (saradominTimeWidget != null)
+			{
+				currentWidget = saradominTimeWidget;
+			}
+			else
+			{
+				if (zamorakTimeWidget != null)
+				{
+					currentWidget = zamorakTimeWidget;
+				}
+			}
+			if (currentWidget != null)
+			{
+				final String text = currentWidget.getText();
+				final Point point = new Point(488, 332);
+				OverlayUtil.renderTextLocation(graphics, point, text, Color.WHITE);
+				if (text.equals("1 Min"))
+				{
+					OverlayUtil.renderTextLocation(graphics, point, text, Color.RED);
+				}
+			}
 		}
-
-		panelComponent.getChildren().add(TitleComponent.builder()
-			.text("Hunllef")
-			.color(Color.pink)
-			.build());
-
-
-		Color color = hunllef.getPlayerAttacks() == 1 ? Color.RED : Color.WHITE;
-		final String pHits = ColorUtil.prependColorTag(Integer.toString(hunllef.getPlayerAttacks()), color);
-
-		TableComponent tableComponent = new TableComponent();
-		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
-		tableComponent.addRow("Hunllef Hits: ", Integer.toString(hunllef.getBossAttacks()));
-		tableComponent.addRow("Player Hits Left: ", pHits);
-		panelComponent.getChildren().add(tableComponent);
-		return panelComponent.render(graphics);
+		return null;
 	}
 
 	public void determineLayer()
@@ -94,6 +90,10 @@ public class GauntletCounter extends Overlay
 		if (config.mirrorMode())
 		{
 			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		if (!config.mirrorMode())
+		{
+			setLayer(OverlayLayer.ABOVE_WIDGETS);
 		}
 	}
 }

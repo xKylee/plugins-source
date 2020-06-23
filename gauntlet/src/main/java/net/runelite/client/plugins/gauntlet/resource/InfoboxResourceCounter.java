@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019, ganom <https://github.com/Ganom>
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
+ * Copyright (c) 2020, Anthony Alves
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,29 +23,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.resource;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import net.runelite.api.NPC;
+import java.awt.image.BufferedImage;
+import java.util.Map;
+import net.runelite.client.plugins.gauntlet.GauntletConfig;
+import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.ui.overlay.infobox.Counter;
 
-@Getter(AccessLevel.PACKAGE)
-class Tornado
+public class InfoboxResourceCounter extends Counter
 {
-	private NPC npc;
-	private int timeLeft;
+	private final GauntletPlugin plugin;
+	private final GauntletConfig config;
 
-	Tornado(NPC npc)
+	private final Map<Integer, Integer> resourceCounts;
+
+	private final int itemId;
+
+	InfoboxResourceCounter(final BufferedImage bufferedImage, final GauntletPlugin plugin, final GauntletConfig config, final Map<Integer, Integer> resourceCounts, final int itemId, final int itemCount)
 	{
-		this.npc = npc;
-		this.timeLeft = 20;
+		super(bufferedImage, plugin, itemCount);
+		this.plugin = plugin;
+		this.config = config;
+		this.resourceCounts = resourceCounts;
+		this.itemId = itemId;
 	}
 
-	void updateTimeLeft()
+	@Override
+	public int getCount()
 	{
-		if (timeLeft > 0)
-		{
-			timeLeft--;
-		}
+		return resourceCounts.getOrDefault(itemId, 0);
+	}
+
+	@Override
+	public boolean render()
+	{
+		return plugin.isInGauntlet() && config.resourceTracker() && !plugin.isInHunllefRoom();
 	}
 }

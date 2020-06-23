@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
@@ -22,36 +23,65 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntlet.entity;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.Skill;
 import net.runelite.client.game.SkillIconManager;
+import net.runelite.client.util.ImageUtil;
 
-@Getter(AccessLevel.PACKAGE)
-class Missiles
+public class Projectile
 {
-	private Projectile projectile;
-	private int id;
-	private BufferedImage image;
-	private Color color;
+	private static final int PROJECTILE_FILL_ALPHA = 100;
 
-	Missiles(Projectile projectile, SkillIconManager skillIconManager)
+	@Getter
+	private final net.runelite.api.Projectile projectile;
+
+	private final BufferedImage originalIcon;
+
+	@Getter
+	private final Color outlineColor;
+	@Getter
+	private final Color fillColor;
+
+	private BufferedImage icon;
+
+	private int iconSize;
+
+	public Projectile(final net.runelite.api.Projectile projectile, final int iconSize, final SkillIconManager skillIconManager)
 	{
 		this.projectile = projectile;
-		this.id = projectile.getId();
-		this.image = assignedImage(skillIconManager, id);
-		this.color = assignedColor(id);
+		this.iconSize = iconSize;
+
+		this.originalIcon = getOriginalIcon(skillIconManager, projectile.getId());
+
+		this.outlineColor = getOutlineColor(projectile.getId());
+		this.fillColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(),
+			PROJECTILE_FILL_ALPHA);
 	}
 
-	private Color assignedColor(int id)
+	public void setIconSize(final int iconSize)
 	{
-		switch (id)
+		this.iconSize = iconSize;
+		icon = ImageUtil.resizeImage(originalIcon, iconSize, iconSize);
+	}
+
+	public BufferedImage getIcon()
+	{
+		if (icon == null)
+		{
+			icon = ImageUtil.resizeImage(originalIcon, iconSize, iconSize);
+		}
+
+		return icon;
+	}
+
+	private Color getOutlineColor(final int projectileId)
+	{
+		switch (projectileId)
 		{
 			case ProjectileID.HUNLLEF_MAGE_ATTACK:
 			case ProjectileID.HUNLLEF_CORRUPTED_MAGE_ATTACK:
@@ -63,13 +93,13 @@ class Missiles
 			case ProjectileID.HUNLLEF_CORRUPTED_PRAYER_ATTACK:
 				return Color.MAGENTA;
 			default:
-				return null;
+				throw new IllegalArgumentException("Unsupported gauntlet projectile id: " + projectileId);
 		}
 	}
 
-	private BufferedImage assignedImage(SkillIconManager SkillIconManager, int id)
+	private BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int projectileId)
 	{
-		switch (id)
+		switch (projectileId)
 		{
 			case ProjectileID.HUNLLEF_MAGE_ATTACK:
 			case ProjectileID.HUNLLEF_CORRUPTED_MAGE_ATTACK:
@@ -81,7 +111,7 @@ class Missiles
 			case ProjectileID.HUNLLEF_CORRUPTED_PRAYER_ATTACK:
 				return SkillIconManager.getSkillImage(Skill.PRAYER);
 			default:
-				return null;
+				throw new IllegalArgumentException("Unsupported gauntlet projectile id: " + projectileId);
 		}
 	}
 }

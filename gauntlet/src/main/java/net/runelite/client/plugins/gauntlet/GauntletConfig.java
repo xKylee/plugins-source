@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, kThisIsCvpv <https://github.com/kThisIsCvpv>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * Copyright (c) 2019, kyle <https://github.com/Kyleeld>
@@ -27,314 +28,996 @@
 package net.runelite.client.plugins.gauntlet;
 
 import java.awt.Color;
+import java.awt.Font;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.Title;
 import net.runelite.client.config.Units;
 
-@ConfigGroup("Gauntlet")
-
+@ConfigGroup("gauntlet")
 public interface GauntletConfig extends Config
 {
-	@Getter
-	@AllArgsConstructor
-	enum CounterDisplay
-	{
-		ONBOSS("On Boss"),
-		BOX("Box"),
-		BOTH("Both"),
-		NONE("None");
+	// Sections
 
-		private String name;
-
-		@Override
-		public String toString()
-		{
-			return getName();
-		}
-	}
-
-	@Getter
-	@AllArgsConstructor
-	enum PrayerHighlight
-	{
-		PRAYERWIDGET("On Widget"),
-		BOX("Box"),
-		BOTH("Both"),
-		NONE("None");
-
-		private String name;
-
-		@Override
-		public String toString()
-		{
-			return getName();
-		}
-	}
-
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
-		keyName = "resources",
-		position = 0,
+	@ConfigSection(
 		name = "Resources",
-		description = ""
+		description = "Resources section.",
+		position = 0,
+		keyName = "resourcesSection"
 	)
-	default Title resources()
-	{
-		return new Title();
-	}
-
-	@ConfigItem(
-		position = 1,
-		keyName = "highlightResources",
-		name = "Highlight resources (outline)",
-		description = "Overlay resources with a colored outline.",
-		titleSection = "resources"
-	)
-	default boolean highlightResources()
+	default boolean resourcesSection()
 	{
 		return false;
 	}
 
-	@ConfigItem(
-		position = 2,
-		keyName = "highlightResourcesColor",
-		name = "Outline color",
-		description = "Change the color of the resource outline.",
-		titleSection = "resources",
-		hidden = true,
-		unhide = "highlightResources"
+	@ConfigSection(
+		name = "Utilities",
+		description = "Utilities section.",
+		position = 1,
+		keyName = "utilitiesSection"
 	)
-	default Color highlightResourcesColor()
+	default boolean utilitiesSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Npcs",
+		description = "Other npcs section.",
+		position = 2,
+		keyName = "npcSection"
+	)
+	default boolean npcSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Hunllef",
+		description = "Hunllef section.",
+		position = 3,
+		keyName = "hunllefSection"
+	)
+	default boolean hunllefSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Projectiles",
+		description = "Projectiles section.",
+		position = 4,
+		keyName = "projectilesSection"
+	)
+	default boolean projectilesSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Tornadoes",
+		description = "Tornadoes section.",
+		position = 5,
+		keyName = "tornadoesSection"
+	)
+	default boolean tornadoesSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Player",
+		description = "Player section.",
+		position = 6,
+		keyName = "playerSection"
+	)
+	default boolean playerSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Timer",
+		description = "Timer section.",
+		position = 7,
+		keyName = "timerSection"
+	)
+	default boolean timerSection()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Other",
+		description = "Other section.",
+		position = 8,
+		keyName = "otherSection"
+	)
+	default boolean otherSection()
+	{
+		return false;
+	}
+
+	// Resources Section
+
+	@ConfigItem(
+		name = "Overlay resource icon and tile",
+		description = "Overlay resources with a respective icon and tile outline.",
+		position = 0,
+		keyName = "resourceOverlay",
+		section = "resourcesSection"
+	)
+	default boolean resourceOverlay()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Icon size",
+		description = "Change the size of the resource icons.",
+		position = 1,
+		keyName = "resourceIconSize",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOverlay"
+	)
+	@Units(Units.POINTS)
+	default int resourceIconSize()
+	{
+		return 18;
+	}
+
+	@Range(
+		min = 1,
+		max = 8
+	)
+	@ConfigItem(
+		name = "Tile outline width",
+		description = "Change the width of the resource tile outline.",
+		position = 2,
+		keyName = "resourceTileOutlineWidth",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOverlay"
+	)
+	@Units(Units.POINTS)
+	default int resourceTileOutlineWidth()
+	{
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Tile outline color",
+		description = "Change the tile outline color of resources.",
+		position = 3,
+		keyName = "resourceTileOutlineColor",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOverlay"
+	)
+	default Color resourceTileOutlineColor()
 	{
 		return Color.YELLOW;
 	}
 
+	@Alpha
 	@ConfigItem(
-		position = 3,
-		keyName = "highlightResourcesIcons",
-		name = "Highlight resources (icon)",
-		description = "Overlay resources with their respective icons.",
-		titleSection = "resources"
+		name = "Tile fill color",
+		description = "Change the tile fill color of resources.",
+		position = 4,
+		keyName = "resourceTileFillColor",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOverlay"
 	)
-	default boolean highlightResourcesIcons()
+	default Color resourceTileFillColor()
+	{
+		return new Color(255, 255, 255, 50);
+	}
+
+	@ConfigItem(
+		name = "Outline resources",
+		description = "Outline resources with a colored outline.",
+		position = 5,
+		keyName = "resourceOutline",
+		section = "resourcesSection"
+	)
+	default boolean resourceOutline()
 	{
 		return false;
 	}
 
 	@Range(
 		min = 1,
-		max = 50
+		max = 8
 	)
 	@ConfigItem(
-		position = 4,
-		keyName = "resourceIconSize",
-		name = "Icon size",
-		description = "Change the size of the resource icons.",
+		name = "Outline width",
+		description = "Change the width of the resource outline.",
+		position = 6,
+		keyName = "resourceOutlineWidth",
+		section = "resourcesSection",
 		hidden = true,
-		unhide = "highlightResourcesIcons",
-		titleSection = "resources"
+		unhide = "resourceOutline"
 	)
-	default int resourceIconSize()
+	@Units(Units.POINTS)
+	default int resourceOutlineWidth()
+	{
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline color",
+		description = "Change the outline color of resources.",
+		position = 7,
+		keyName = "resourceOutlineColor",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceOutline"
+	)
+	default Color resourceOutlineColor()
+	{
+		return Color.YELLOW;
+	}
+
+	@ConfigItem(
+		name = "Track resources",
+		description = "Track resources in a counter infobox.",
+		position = 8,
+		keyName = "resourceTracker",
+		section = "resourcesSection"
+	)
+	default boolean resourceTracker()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Tracking filter",
+		description = "Filter resources to be tracked." +
+			"<br>All resources includes weapon frames, upgrades, and teleport crystals.",
+		position = 9,
+		keyName = "resourceTrackerFilter",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker"
+	)
+	default ResourceFilter resourceTrackerFilter()
+	{
+		return ResourceFilter.DEFAULT;
+	}
+
+	// Utilities Section
+
+	@ConfigItem(
+		name = "Outline starting room utilities",
+		description = "Outline various utilities in the starting room.",
+		position = 0,
+		keyName = "utilitiesOutline",
+		section = "utilitiesSection"
+	)
+	default boolean utilitiesOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 2,
+		max = 12
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the width of the utilities outline.",
+		position = 1,
+		keyName = "utilitiesOutlineWidth",
+		section = "utilitiesSection",
+		hidden = true,
+		unhide = "utilitiesOutline"
+	)
+	@Units(Units.POINTS)
+	default int utilitiesOutlineWidth()
+	{
+		return 4;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline color",
+		description = "Change the color of the utilities outline.",
+		position = 2,
+		keyName = "utilitiesOutlineColor",
+		section = "utilitiesSection",
+		hidden = true,
+		unhide = "utilitiesOutline"
+	)
+	default Color utilitiesOutlineColor()
+	{
+		return Color.MAGENTA;
+	}
+
+	// Other Npcs Section
+
+	@ConfigItem(
+		name = "Outline demi-bosses",
+		description = "Overlay demi-bosses with a colored outline.",
+		position = 0,
+		keyName = "demibossOutline",
+		section = "npcSection"
+	)
+	default boolean demibossOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 2,
+		max = 12
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the width of the demi-boss outline.",
+		position = 1,
+		keyName = "demibossOutlineWidth",
+		section = "npcSection",
+		hidden = true,
+		unhide = "demibossOutline"
+	)
+	@Units(Units.POINTS)
+	default int demibossOutlineWidth()
+	{
+		return 4;
+	}
+
+	@ConfigItem(
+		name = "Outline strong npcs",
+		description = "Overlay strong npcs with a colored outline.",
+		position = 2,
+		keyName = "strongNpcOutline",
+		section = "npcSection"
+	)
+	default boolean strongNpcOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 2,
+		max = 12
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the width of the strong npcs outline.",
+		position = 3,
+		keyName = "strongNpcOutlineWidth",
+		section = "npcSection",
+		hidden = true,
+		unhide = "strongNpcOutline"
+	)
+	@Units(Units.POINTS)
+	default int strongNpcOutlineWidth()
+	{
+		return 2;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline color",
+		description = "Change the outline color of strong npcs.",
+		position = 4,
+		keyName = "strongNpcOutlineColor",
+		section = "npcSection",
+		hidden = true,
+		unhide = "strongNpcOutline"
+	)
+	default Color strongNpcOutlineColor()
+	{
+		return Color.CYAN;
+	}
+
+	@ConfigItem(
+		name = "Outline weak npcs",
+		description = "Overlay weak npcs with a colored outline.",
+		position = 5,
+		keyName = "weakNpcOutline",
+		section = "npcSection"
+	)
+	default boolean weakNpcOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 2,
+		max = 12
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the width of the weak npcs outline.",
+		position = 6,
+		keyName = "weakNpcOutlineWidth",
+		section = "npcSection",
+		hidden = true,
+		unhide = "weakNpcOutline"
+	)
+	@Units(Units.POINTS)
+	default int weakNpcOutlineWidth()
+	{
+		return 2;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline color",
+		description = "Change the outline color of weak npcs.",
+		position = 7,
+		keyName = "weakNpcOutlineColor",
+		section = "npcSection",
+		hidden = true,
+		unhide = "weakNpcOutline"
+	)
+	default Color weakNpcOutlineColor()
+	{
+		return Color.CYAN;
+	}
+
+	// Hunllef Section
+
+	@ConfigItem(
+		name = "Display counter on Hunllef",
+		description = "Overlay the Hunllef with an attack and prayer counter.",
+		position = 0,
+		keyName = "hunllefOverlayAttackCounter",
+		section = "hunllefSection"
+	)
+	default boolean hunllefOverlayAttackCounter()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Counter font style",
+		description = "Change the font style of the attack and prayer counter.",
+		position = 1,
+		keyName = "hunllefAttackCounterFontStyle",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOverlayAttackCounter"
+	)
+	default FontStyle hunllefAttackCounterFontStyle()
+	{
+		return FontStyle.BOLD;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Counter font size",
+		description = "Adjust the font size of the attack and prayer counter.",
+		position = 2,
+		keyName = "hunllefAttackCounterFontSize",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOverlayAttackCounter"
+	)
+	@Units(Units.POINTS)
+	default int hunllefAttackCounterFontSize()
+	{
+		return 22;
+	}
+
+	@ConfigItem(
+		name = "Outline Hunllef on wrong prayer",
+		description = "Outline the Hunllef when incorrectly praying against its current attack style.",
+		position = 3,
+		keyName = "hunllefOverlayWrongPrayerOutline",
+		section = "hunllefSection"
+	)
+	default boolean hunllefOverlayWrongPrayerOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 2,
+		max = 12
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the width of the wrong prayer outline.",
+		position = 4,
+		keyName = "hunllefWrongPrayerOutlineWidth",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOverlayWrongPrayerOutline"
+	)
+	@Units(Units.POINTS)
+	default int hunllefWrongPrayerOutlineWidth()
+	{
+		return 4;
+	}
+
+	@ConfigItem(
+		name = "Outline Hunllef tile",
+		description = "Outline the Hunllef's tile.",
+		position = 5,
+		keyName = "hunllefOutlineTile",
+		section = "hunllefSection"
+	)
+	default boolean hunllefOutlineTile()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 8
+	)
+	@ConfigItem(
+		name = "Tile outline width",
+		description = "Change the width of the Hunllef's tile outline.",
+		position = 6,
+		keyName = "hunllefTileOutlineWidth",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOutlineTile"
+	)
+	@Units(Units.POINTS)
+	default int hunllefTileOutlineWidth()
+	{
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Tile outline color",
+		description = "Change the outline color of the Hunllef's tile.",
+		position = 7,
+		keyName = "hunllefOutlineColor",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOutlineTile"
+	)
+	default Color hunllefOutlineColor()
+	{
+		return Color.WHITE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Tile fill color",
+		description = "Change the fill color of the Hunllef's tile.",
+		position = 8,
+		keyName = "hunllefFillColor",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOutlineTile"
+	)
+	default Color hunllefFillColor()
+	{
+		return new Color(255, 255, 255, 0);
+	}
+
+	@ConfigItem(
+		name = "Overlay style icon on Hunllef",
+		description = "Overlay a current attack style icon on the Hunllef.",
+		position = 9,
+		keyName = "hunllefOverlayAttackStyleIcon",
+		section = "hunllefSection"
+	)
+	default boolean hunllefOverlayAttackStyleIcon()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Icon size",
+		description = "Change the size of the attack style icon.",
+		position = 10,
+		keyName = "hunllefAttackStyleIconSize",
+		section = "hunllefSection",
+		hidden = true,
+		unhide = "hunllefOverlayAttackStyleIcon"
+	)
+	@Units(Units.POINTS)
+	default int hunllefAttackStyleIconSize()
+	{
+		return 18;
+	}
+
+	@ConfigItem(
+		name = "Play audio on prayer attack",
+		description = "Play an in-game sound when the Hunllef is about to use its prayer attack.",
+		position = 11,
+		keyName = "hunllefPrayerAudio",
+		section = "hunllefSection"
+	)
+	default boolean hunllefPrayerAudio()
+	{
+		return false;
+	}
+
+	// Projectiles Section
+
+	@ConfigItem(
+		name = "Overlay projectile icons",
+		description = "Overlay projectiles with their respective icon.",
+		position = 0,
+		keyName = "overlayProjectileIcon",
+		section = "projectilesSection"
+	)
+	default boolean overlayProjectileIcon()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Icon size",
+		description = "Change the size of the projectile icons.",
+		position = 1,
+		keyName = "projectileIconSize",
+		section = "projectilesSection",
+		hidden = true,
+		unhide = "overlayProjectileIcon"
+	)
+	@Units(Units.POINTS)
+	default int projectileIconSize()
+	{
+		return 18;
+	}
+
+	@ConfigItem(
+		name = "Outline projectiles",
+		description = "Outline projectiles with a blue (magic) or green (range) color.",
+		position = 2,
+		keyName = "outlineProjectile",
+		section = "projectilesSection"
+	)
+	default boolean outlineProjectile()
+	{
+		return false;
+	}
+
+	// Tornadoes Section
+
+	@ConfigItem(
+		name = "Overlay tornado tick counter",
+		description = "Overlay tornadoes with a tick counter.",
+		position = 0,
+		keyName = "tornadoTickCounter",
+		section = "tornadoesSection"
+	)
+	default boolean tornadoTickCounter()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Font style",
+		description = "Bold/Italics/Plain",
+		position = 1,
+		keyName = "tornadoFontStyle",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTickCounter"
+	)
+	default FontStyle tornadoFontStyle()
+	{
+		return FontStyle.BOLD;
+	}
+
+	@ConfigItem(
+		name = "Font shadow",
+		description = "Toggle font shadow of the tornado tick counter.",
+		position = 2,
+		keyName = "tornadoFontShadow",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTickCounter"
+	)
+	default boolean tornadoFontShadow()
+	{
+		return true;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Font size",
+		description = "Adjust the font size of the tornado tick counter.",
+		position = 3,
+		keyName = "tornadoFontSize",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTickCounter"
+	)
+	@Units(Units.POINTS)
+	default int tornadoFontSize()
 	{
 		return 16;
 	}
 
+	@Alpha
 	@ConfigItem(
-		position = 5,
-		keyName = "displayResources",
-		name = "Resource counter (infobox)",
-		description = "Display the count of gathered resources in infoboxes.",
-		titleSection = "resources"
-	)
-	default boolean displayGatheredResources()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
-		keyName = "boss",
-		position = 1,
-		name = "Hunllef Boss",
-		description = ""
-	)
-	default Title boss()
-	{
-		return new Title();
-	}
-
-	@ConfigItem(
-		position = 0,
-		keyName = "countAttacks",
-		name = "Atk/prayer counter",
-		description = "Display a counter for when the Hunllef will switch attacks or prayer.",
-		titleSection = "boss"
-	)
-	default CounterDisplay countAttacks()
-	{
-		return CounterDisplay.NONE;
-	}
-
-	@ConfigItem(
-		position = 1,
-		keyName = "highlightPrayer",
-		name = "Highlight prayer",
-		description = "Highlight the correct prayer to use against the Hunllef's attacks.",
-		titleSection = "boss"
-	)
-	default PrayerHighlight highlightPrayer()
-	{
-		return PrayerHighlight.NONE;
-	}
-
-	@ConfigItem(
-		position = 2,
-		keyName = "attackVisualOutline",
-		name = "Attack projectiles (outline)",
-		description = "Attack projectiles will have a colored outline overlay.",
-		titleSection = "boss"
-	)
-	default boolean attackVisualOutline()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 3,
-		keyName = "uniqueAttackVisual",
-		name = "Attack projectiles (icon)",
-		description = "Attack projectiles will have an icon overlay.",
-		titleSection = "boss"
-	)
-	default boolean uniqueAttackVisual()
-	{
-		return false;
-	}
-
-	@ConfigItem(
+		name = "Font color",
+		description = "Color of the tornado tick counter font.",
 		position = 4,
-		keyName = "overlayBossPrayer",
-		name = "Attack style (icon)",
-		description = "Overlay the Hunllef with an icon denoting its current attack style.",
-		titleSection = "boss"
+		keyName = "tornadoFontColor",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTickCounter"
 	)
-	default boolean overlayBossPrayer()
+	default Color tornadoFontColor()
 	{
-		return false;
+		return Color.WHITE;
 	}
 
 	@ConfigItem(
+		name = "Outline tornado tile",
+		description = "Outline the tiles of tornadoes.",
 		position = 5,
-		keyName = "uniquePrayerAudio",
-		name = "Prayer attack (audio)",
-		description = "Play a sound when the Hunllef is about to use its prayer attack.",
-		titleSection = "boss"
+		keyName = "tornadoTileOutline",
+		section = "tornadoesSection"
 	)
-	default boolean uniquePrayerAudio()
+	default boolean tornadoTileOutline()
 	{
 		return false;
 	}
 
+	@Range(
+		min = 1,
+		max = 8
+	)
 	@ConfigItem(
+		name = "Tile outline width",
+		description = "Change tile outline width of tornadoes.",
 		position = 6,
-		keyName = "overlayBoss",
-		name = "Wrong prayer (outline)",
-		description = "While on the wrong prayer, outline the Hunllef with a color matching its attack style.",
-		titleSection = "boss"
+		keyName = "tornadoTileOutlineWidth",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTileOutline"
 	)
-	default boolean overlayBoss()
+	@Units(Units.POINTS)
+	default int tornadoTileOutlineWidth()
 	{
-		return false;
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Tile outline color",
+		description = "Color to outline the tile of a tornado.",
+		position = 7,
+		keyName = "tornadoOutlineColor",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTileOutline"
+	)
+	default Color tornadoOutlineColor()
+	{
+		return Color.YELLOW;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Tile fill color",
+		description = "Color to fill the tile of a tornado.",
+		position = 8,
+		keyName = "tornadoFillColor",
+		section = "tornadoesSection",
+		hidden = true,
+		unhide = "tornadoTileOutline"
+	)
+	default Color tornadoFillColor()
+	{
+		return new Color(255, 255, 0, 50);
+	}
+
+	// Player Section
+
+	@ConfigItem(
+		name = "Overlay prayer",
+		description = "Overlay the correct prayer to use against the Hunllef's current attack style.",
+		position = 0,
+		keyName = "prayerOverlay",
+		section = "playerSection"
+	)
+	default PrayerHighlightMode prayerOverlay()
+	{
+		return PrayerHighlightMode.NONE;
 	}
 
 	@ConfigItem(
-		position = 7,
+		name = "Flash on wrong attack style",
+		description = "Flash the screen if you use the wrong attack style.",
+		position = 1,
 		keyName = "flashOnWrongAttack",
-		name = "Wrong attack (flash)",
-		description = "While on the wrong attack style, flash the screen.",
-		titleSection = "boss"
+		section = "playerSection"
 	)
 	default boolean flashOnWrongAttack()
 	{
 		return false;
 	}
 
-	@ConfigItem(
-		position = 8,
-		keyName = "overlayTornadoes",
-		name = "Tornado decay counter",
-		description = "Overlay tornadoes with the amount of ticks left until decay.",
-		titleSection = "boss"
-	)
-	default boolean overlayTornadoes()
-	{
-		return false;
-	}
-
 	@Range(
-		min = 1,
+		min = 10,
 		max = 50
 	)
 	@ConfigItem(
-		position = 9,
-		keyName = "projectileIconSize",
-		name = "Proj. icon size",
-		description = "Change the size of projectile icons.",
-		titleSection = "boss"
+		name = "Flash duration",
+		description = "Change the duration of the flash on wrong attack style.",
+		position = 2,
+		keyName = "flashOnWrongAttackDuration",
+		section = "playerSection",
+		hidden = true,
+		unhide = "flashOnWrongAttack"
 	)
-	@Units(Units.PIXELS)
-	default int projectileIconSize()
+	default int flashOnWrongAttackDuration()
 	{
-		return 20;
+		return 25;
 	}
 
-	@ConfigTitleSection(
-		keyName = "timer",
-		position = 2,
-		name = "Timer",
-		description = ""
+	@Alpha
+	@ConfigItem(
+		name = "Flash color",
+		description = "Color of the flash notification.",
+		position = 3,
+		keyName = "flashColor",
+		section = "playerSection",
+		hidden = true,
+		unhide = "flashOnWrongAttack"
 	)
-	default Title timer()
+	default Color flashColor()
 	{
-		return new Title();
+		return new Color(255, 0, 0, 70);
 	}
+
+	// Timer Section
 
 	@ConfigItem(
 		position = 0,
-		keyName = "displayTimerWidget",
-		name = "Gauntlet timer (overlay)",
+		keyName = "timerOverlay",
+		name = "Overlay timer",
 		description = "Display a timer overlay that tracks your gauntlet progress.",
-		titleSection = "timer"
+		section = "timerSection"
 	)
-	default boolean displayTimerWidget()
+	default boolean timerOverlay()
 	{
 		return false;
 	}
 
 	@ConfigItem(
 		position = 1,
-		keyName = "displayTimerChat",
-		name = "Gauntlet timer (chat)",
+		keyName = "timerChatMessage",
+		name = "Chat timer",
 		description = "Display a chat message that tracks your gauntlet progress.",
-		titleSection = "timer"
+		section = "timerSection"
 	)
-	default boolean displayTimerChat()
+	default boolean timerChatMessage()
 	{
 		return false;
+	}
+
+	// Other Section
+
+	@ConfigItem(
+		name = "Render distance",
+		description = "Set render distance of various overlays.",
+		position = 0,
+		keyName = "resourceRenderDistance",
+		section = "otherSection"
+	)
+	default RenderDistance resourceRenderDistance()
+	{
+		return RenderDistance.FAR;
+	}
+
+	@ConfigItem(
+		name = "Disco mode",
+		description = "<b>&nbsp;&nbsp;&nbsp;D<br><br>&nbsp;I<br><br>&nbsp;" +
+			"&nbsp;&nbsp;S<br><br>&nbsp;C<br><br>&nbsp;&nbsp;&nbsp;O</b>",
+		position = 1,
+		keyName = "discoMode",
+		section = "otherSection"
+	)
+	default boolean discoMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Enable mirror mode",
+		description = "Toggle mirror mode compatibility.",
+		position = 2,
+		keyName = "mirrorMode",
+		section = "otherSection"
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	// Constants
+
+	@Getter
+	@AllArgsConstructor
+	enum RenderDistance
+	{
+		SHORT("Short", 2350),
+		MEDIUM("Medium", 3525),
+		FAR("Far", 4700),
+		UNCAPPED("Uncapped", 0);
+
+		private final String name;
+		private final int distance;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum FontStyle
+	{
+		BOLD("Bold", Font.BOLD),
+		ITALIC("Italic", Font.ITALIC),
+		PLAIN("Plain", Font.PLAIN);
+
+		private final String name;
+		private final int font;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	enum PrayerHighlightMode
+	{
+		PRAYERWIDGET("On Widget"),
+		BOX("Box"),
+		BOTH("Both"),
+		NONE("None");
+
+		private final String name;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
+	}
+
+	enum ResourceFilter
+	{
+		DEFAULT, ALL
 	}
 }

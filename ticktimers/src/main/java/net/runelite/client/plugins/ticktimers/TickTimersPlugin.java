@@ -95,7 +95,26 @@ public class TickTimersPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
-		npcContainers.clear();
+		if (client.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+		if (regionCheck())
+		{
+			npcContainers.clear();
+			for (NPC npc : client.getNpcs())
+			{
+				addNpc(npc);
+			}
+			validRegion = true;
+			overlayManager.add(timersOverlay);
+		}
+		else if (!regionCheck())
+		{
+			validRegion = false;
+			overlayManager.remove(timersOverlay);
+			npcContainers.clear();
+		}
 	}
 
 	@Override
@@ -116,6 +135,7 @@ public class TickTimersPlugin extends Plugin
 
 		if (regionCheck())
 		{
+			npcContainers.clear();
 			for (NPC npc : client.getNpcs())
 			{
 				addNpc(npc);
@@ -123,7 +143,7 @@ public class TickTimersPlugin extends Plugin
 			validRegion = true;
 			overlayManager.add(timersOverlay);
 		}
-		else
+		else if (!regionCheck())
 		{
 			validRegion = false;
 			overlayManager.remove(timersOverlay);

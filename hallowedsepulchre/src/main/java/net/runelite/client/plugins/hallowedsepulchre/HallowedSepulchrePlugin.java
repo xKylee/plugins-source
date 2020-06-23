@@ -25,29 +25,32 @@
 package net.runelite.client.plugins.hallowedsepulchre;
 
 import com.google.inject.Provides;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.DynamicObject;
-import net.runelite.api.Entity;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
+import net.runelite.api.LocatableQueryResults;
 import net.runelite.api.NPC;
-import net.runelite.api.events.GameObjectDespawned;
+import net.runelite.api.NullNpcID;
+import net.runelite.api.ObjectID;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import static net.runelite.client.plugins.hallowedsepulchre.HallowedSepulchreIDs.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -55,12 +58,72 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Hallowed Sepulchre",
 	enabledByDefault = false,
-	description = "A plugin for the sepulchre.",
-	tags = {"sepulchre", "hallowed", "darkmyre", "agility"},
+	description = "A plugin for the Hallowed Sepulchre agility minigame.",
+	tags = {"sepulchre", "hallowed", "darkmeyer", "agility", "course", "minigame"},
 	type = PluginType.MINIGAME
 )
 public class HallowedSepulchrePlugin extends Plugin
 {
+	private static final String GAME_MESSAGE_ENTER_LOBBY1 = "You make your way back to the lobby of the Hallowed Sepulchre.";
+	private static final String GAME_MESSAGE_ENTER_LOBBY2 = "The obelisk teleports you back to the lobby of the Hallowed Sepulchre.";
+	private static final String GAME_MESSAGE_ENTER_SEPULCHRE = "You venture further down into the Hallowed Sepulchre.";
+
+	private static final int ANIM_TICK_SPEED_2 = 2;
+	private static final int ANIM_TICK_SPEED_3 = 3;
+
+	private static final int WIZARD_STATUE_ANIM_FIRE = 8658;
+
+	private static final Set<Integer> ARROW_IDS = Set.of(
+		NullNpcID.NULL_9672,
+		NullNpcID.NULL_9673,
+		NullNpcID.NULL_9674
+	);
+
+	private static final Set<Integer> SWORD_IDS = Set.of(
+		NullNpcID.NULL_9669,
+		NullNpcID.NULL_9670,
+		NullNpcID.NULL_9671
+	);
+
+	private static final Set<Integer> CROSSBOWMAN_STATUE_IDS = Set.of(
+		ObjectID.CROSSBOWMAN_STATUE,
+		ObjectID.CROSSBOWMAN_STATUE_38445,
+		ObjectID.CROSSBOWMAN_STATUE_38446
+	);
+
+	private static final Set<Integer> WIZARD_STATUE_2TICK_IDS = Set.of(
+		ObjectID.WIZARD_STATUE_38421,
+		ObjectID.WIZARD_STATUE_38422,
+		ObjectID.WIZARD_STATUE_38423,
+		ObjectID.WIZARD_STATUE_38424,
+		ObjectID.WIZARD_STATUE_38425
+	);
+
+	private static final Set<Integer> WIZARD_STATUE_3TICK_IDS = Set.of(
+		ObjectID.WIZARD_STATUE,
+		ObjectID.WIZARD_STATUE_38410,
+		ObjectID.WIZARD_STATUE_38411,
+		ObjectID.WIZARD_STATUE_38412,
+		ObjectID.WIZARD_STATUE_38416,
+		ObjectID.WIZARD_STATUE_38417,
+		ObjectID.WIZARD_STATUE_38418,
+		ObjectID.WIZARD_STATUE_38419,
+		ObjectID.WIZARD_STATUE_38420
+	);
+
+	private static final Set<Integer> REGION_IDS = Set.of(
+		8794, 8795, 8796, 8797, 8798,
+		9050, 9051, 9052, 9053, 9054,
+		9306, 9307, 9308, 9309, 9310,
+		9562, 9563, 9564, 9565, 9566,
+		9818, 9819, 9820, 9821, 9822,
+		10074, 10075, 10076, 10077, 10078,
+		10330, 10331, 10332, 10333, 10334
+	);
+
+	@Inject
+	private Client client;
+
 	@Inject
 	private HallowedSepulchreConfig config;
 
@@ -71,19 +134,22 @@ public class HallowedSepulchrePlugin extends Plugin
 	private HallowedSepulchreOverlay hallowedSepulchreOverlay;
 
 	@Getter(AccessLevel.PACKAGE)
-	private List<GameObject> crossbowStatues = new ArrayList<>();
+	private final Set<GameObject> crossbowStatues = new HashSet<>();
 
 	@Getter(AccessLevel.PACKAGE)
-	private List<HallowedSepulchreGameObject> wizardStatues = new ArrayList<>();
+	private final Set<HallowedSepulchreWizardStatue> wizardStatues = new HashSet<>();
 
 	@Getter(AccessLevel.PACKAGE)
-	private List<NPC> arrows = new ArrayList<>();
+	private final Set<NPC> arrows = new HashSet<>();
 
 	@Getter(AccessLevel.PACKAGE)
-	private List<NPC> swords = new ArrayList<>();
+	private final Set<NPC> swords = new HashSet<>();
+
+	@Getter(AccessLevel.PACKAGE)
+	private boolean playerInSepulchre = false;
 
 	@Provides
-	HallowedSepulchreConfig getConfig(ConfigManager configManager)
+	HallowedSepulchreConfig getConfig(final ConfigManager configManager)
 	{
 		return configManager.getConfig(HallowedSepulchreConfig.class);
 	}
@@ -91,230 +157,229 @@ public class HallowedSepulchrePlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		overlayManager.add(hallowedSepulchreOverlay);
+		if (client.getGameState() != GameState.LOGGED_IN || !isInSepulchreRegion())
+		{
+			return;
+		}
 
-		resetHallowedSupulchre();
+		locateSepulchreGameObjects();
+		overlayManager.add(hallowedSepulchreOverlay);
+		playerInSepulchre = true;
 	}
 
 	@Override
 	protected void shutDown()
 	{
+		playerInSepulchre = false;
 		overlayManager.remove(hallowedSepulchreOverlay);
-
-		resetHallowedSupulchre();
+		clearSepulchreGameObjects();
 	}
 
 	@Subscribe
-	private void onConfigChanged(ConfigChanged event)
+	private void onConfigChanged(final ConfigChanged event)
 	{
 		if (!event.getGroup().equals("hallowedsepulchre"))
 		{
 			return;
 		}
 
-		switch (event.getKey())
+		if (event.getKey().equals("mirrorMode"))
 		{
-			case "highlightArrows":
-				arrows.clear();
-				break;
-			case "highlightSwords":
-				swords.clear();
-				break;
-			case "highlightCrossbowmanStatue":
-				crossbowStatues.clear();
-				break;
-			case "highlightWizardStatue":
-				wizardStatues.clear();
-				break;
-			case "mirrorMode":
-				hallowedSepulchreOverlay.determineLayer();
+			hallowedSepulchreOverlay.determineLayer();
+
+			if (overlayManager.anyMatch(o -> o instanceof HallowedSepulchreOverlay))
+			{
 				overlayManager.remove(hallowedSepulchreOverlay);
 				overlayManager.add(hallowedSepulchreOverlay);
-				break;
-			default:
-				break;
-		}
-	}
-
-	@Subscribe
-	private void onGameTick(GameTick event)
-	{
-		if (config.highlightWizardStatues() && !wizardStatues.isEmpty())
-		{
-			for (HallowedSepulchreGameObject wizardStatue : wizardStatues)
-			{
-				int ticks = wizardStatue.getTicksUntilNextAnimation();
-
-				if (ticks >= 0)
-				{
-					wizardStatue.setTicksUntilNextAnimation(--ticks);
-				}
-				else
-				{
-					Entity entity = wizardStatue.getGameObject().getEntity();
-
-					if (!(entity instanceof DynamicObject))
-					{
-						return;
-					}
-
-					if (((DynamicObject) entity).getAnimationID() == wizardStatue.getAnimationId())
-					{
-						wizardStatue.setTicksUntilNextAnimation(wizardStatue.getAnimationSpeed());
-					}
-				}
 			}
 		}
 	}
 
 	@Subscribe
-	private void onNpcSpawned(NpcSpawned event)
+	private void onGameTick(final GameTick event)
 	{
-		NPC npc = event.getNpc();
-
-		addNpc(npc);
-	}
-
-	@Subscribe
-	private void onNpcDespawned(NpcDespawned event)
-	{
-		NPC npc = event.getNpc();
-
-		removeNpc(npc);
-	}
-
-	@Subscribe
-	private void onGameObjectSpawned(GameObjectSpawned event)
-	{
-		GameObject gameObject = event.getGameObject();
-
-		addGameObject(gameObject);
-	}
-
-	@Subscribe
-	private void onGameObjectDespawned(GameObjectDespawned event)
-	{
-		GameObject gameObject = event.getGameObject();
-
-		removeGameObject(gameObject);
-	}
-
-	@Subscribe
-	private void onGameStateChanged(GameStateChanged event)
-	{
-		if (event.getGameState() != GameState.LOGGED_IN)
+		if (!playerInSepulchre)
 		{
-			resetHallowedSupulchre();
+			return;
+		}
+
+		updateWizardStatues();
+	}
+
+	@Subscribe
+	private void onNpcSpawned(final NpcSpawned event)
+	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
+		addNpc(event.getNpc());
+	}
+
+	@Subscribe
+	private void onNpcDespawned(final NpcDespawned event)
+	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
+		removeNpc(event.getNpc());
+	}
+
+	@Subscribe
+	private void onGameObjectSpawned(final GameObjectSpawned event)
+	{
+		if (!playerInSepulchre)
+		{
+			return;
+		}
+
+		addGameObject(event.getGameObject());
+	}
+
+	@Subscribe
+	private void onGameStateChanged(final GameStateChanged event)
+	{
+		final GameState gameState = event.getGameState();
+
+		switch (gameState)
+		{
+			case LOGGED_IN:
+				if (isInSepulchreRegion())
+				{
+					playerInSepulchre = true;
+				}
+				else if (playerInSepulchre)
+				{
+					shutDown();
+				}
+				break;
+			case LOGIN_SCREEN:
+				if (playerInSepulchre)
+				{
+					shutDown();
+				}
+				break;
+			default:
+				if (playerInSepulchre)
+				{
+					clearSepulchreGameObjects();
+				}
+				break;
 		}
 	}
 
-	private void addNpc(NPC npc)
+	@Subscribe
+	private void onChatMessage(final ChatMessage message)
 	{
-		switch (npc.getId())
+		if (!playerInSepulchre || message.getType() != ChatMessageType.GAMEMESSAGE)
 		{
-			case ARROW_9672:
-			case ARROW_9673:
-			case ARROW_9674:
-				arrows.add(npc);
+			return;
+		}
+
+		switch (message.getMessage())
+		{
+			case GAME_MESSAGE_ENTER_LOBBY1:
+			case GAME_MESSAGE_ENTER_LOBBY2:
+				clearSepulchreGameObjects();
 				break;
-			case SWORD_9669:
-			case SWORD_9670:
-			case SWORD_9671:
-				swords.add(npc);
+			case GAME_MESSAGE_ENTER_SEPULCHRE:
+				if (!overlayManager.anyMatch(o -> o instanceof HallowedSepulchreOverlay))
+				{
+					overlayManager.add(hallowedSepulchreOverlay);
+				}
 				break;
 			default:
 				break;
 		}
 	}
 
-	private void removeNpc(NPC npc)
+	private void updateWizardStatues()
 	{
-		switch (npc.getId())
+		if (!config.highlightWizardStatues() || wizardStatues.isEmpty())
 		{
-			case ARROW_9672:
-			case ARROW_9673:
-			case ARROW_9674:
-				arrows.remove(npc);
-				break;
-			case SWORD_9669:
-			case SWORD_9670:
-			case SWORD_9671:
-				swords.remove(npc);
-				break;
-			default:
-				break;
+			return;
+		}
+
+		for (final HallowedSepulchreWizardStatue wizardStatue : wizardStatues)
+		{
+			wizardStatue.updateTicksUntilNextAnimation();
 		}
 	}
 
-	private void addGameObject(GameObject gameObject)
+	private void addNpc(final NPC npc)
 	{
-		switch (gameObject.getId())
+		final int id = npc.getId();
+
+		if (ARROW_IDS.contains(id))
 		{
-			case CROSSBOW_STATUE_38444:
-			case CROSSBOW_STATUE_38445:
-			case CROSSBOW_STATUE_38446:
-				crossbowStatues.add(gameObject);
-				break;
-			case WIZARD_STATUE_38409:
-			case WIZARD_STATUE_38410:
-			case WIZARD_STATUE_38411:
-			case WIZARD_STATUE_38412:
-				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_4));
-				break;
-			case WIZARD_STATUE_38416:
-			case WIZARD_STATUE_38417:
-			case WIZARD_STATUE_38418:
-			case WIZARD_STATUE_38419:
-			case WIZARD_STATUE_38420:
-				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_3));
-				break;
-			case WIZARD_STATUE_38421:
-			case WIZARD_STATUE_38422:
-			case WIZARD_STATUE_38423:
-			case WIZARD_STATUE_38424:
-			case WIZARD_STATUE_38425:
-				wizardStatues.add(new HallowedSepulchreGameObject(gameObject, WIZARD_STATUE_ANIM_FIRE, WIZARD_STATUE_ANIM_SPEED_2));
-				break;
-			default:
-				break;
+			arrows.add(npc);
+		}
+		else if (SWORD_IDS.contains(id))
+		{
+			swords.add(npc);
 		}
 	}
 
-	private void removeGameObject(GameObject gameObject)
+	private void removeNpc(final NPC npc)
 	{
-		switch (gameObject.getId())
+		final int id = npc.getId();
+
+		if (ARROW_IDS.contains(id))
 		{
-			case CROSSBOW_STATUE_38444:
-			case CROSSBOW_STATUE_38445:
-			case CROSSBOW_STATUE_38446:
-				crossbowStatues.remove(gameObject);
-				break;
-			case WIZARD_STATUE_38409:
-			case WIZARD_STATUE_38410:
-			case WIZARD_STATUE_38411:
-			case WIZARD_STATUE_38412:
-			case WIZARD_STATUE_38416:
-			case WIZARD_STATUE_38417:
-			case WIZARD_STATUE_38418:
-			case WIZARD_STATUE_38419:
-			case WIZARD_STATUE_38420:
-			case WIZARD_STATUE_38421:
-			case WIZARD_STATUE_38422:
-			case WIZARD_STATUE_38423:
-			case WIZARD_STATUE_38424:
-			case WIZARD_STATUE_38425:
-				wizardStatues.removeIf(o -> o.getGameObject() == gameObject);
-				break;
-			default:
-				break;
+			arrows.remove(npc);
+		}
+		else if (SWORD_IDS.contains(id))
+		{
+			swords.remove(npc);
 		}
 	}
 
-	private void resetHallowedSupulchre()
+	private void addGameObject(final GameObject gameObject)
+	{
+		final int id = gameObject.getId();
+
+		if (CROSSBOWMAN_STATUE_IDS.contains(id))
+		{
+			crossbowStatues.add(gameObject);
+		}
+		else if (WIZARD_STATUE_2TICK_IDS.contains(id))
+		{
+			wizardStatues.add(new HallowedSepulchreWizardStatue(gameObject, WIZARD_STATUE_ANIM_FIRE, ANIM_TICK_SPEED_2));
+		}
+		else if (WIZARD_STATUE_3TICK_IDS.contains(id))
+		{
+			wizardStatues.add(new HallowedSepulchreWizardStatue(gameObject, WIZARD_STATUE_ANIM_FIRE, ANIM_TICK_SPEED_3));
+		}
+	}
+
+	private void clearSepulchreGameObjects()
 	{
 		crossbowStatues.clear();
 		wizardStatues.clear();
 		arrows.clear();
 		swords.clear();
+	}
+
+	private boolean isInSepulchreRegion()
+	{
+		return REGION_IDS.contains(client.getMapRegions()[0]);
+	}
+
+	private void locateSepulchreGameObjects()
+	{
+		final LocatableQueryResults<GameObject> locatableQueryResults = new GameObjectQuery().result(client);
+
+		for (final GameObject gameObject : locatableQueryResults)
+		{
+			addGameObject(gameObject);
+		}
+
+		for (final NPC npc : client.getNpcs())
+		{
+			addNpc(npc);
+		}
 	}
 }
