@@ -130,7 +130,7 @@ public class Olm
 		this.updateCrippleSticks();
 		this.updateSpecials();
 
-		if (this.headAnimations() || this.handAnimations())
+		if (!this.headAnimations() && !this.handAnimations())
 		{
 			this.incrementTickCycle();
 		}
@@ -247,13 +247,14 @@ public class Olm
 			return false;
 		}
 
+		var skipTick = false;
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_MIDDLE:
 				if (this.lastHeadAnimation == OlmID.OLM_RISING_2 || this.lastHeadAnimation == OlmID.OLM_ENRAGED_RISING_2)
 				{
 					this.tickCycle = this.firstPhase ? 4 : 1;
-					return true;
+					skipTick = true;
 				}
 				break;
 			case OlmID.OLM_ENRAGED_LEFT:
@@ -264,7 +265,7 @@ public class Olm
 		}
 
 		this.lastHeadAnimation = currentAnimation;
-		return false;
+		return skipTick;
 	}
 
 	private boolean handAnimations()
@@ -281,6 +282,7 @@ public class Olm
 			return false;
 		}
 
+		var skipTick = false;
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_LEFT_HAND_CRYSTALS:
@@ -288,7 +290,8 @@ public class Olm
 			case OlmID.OLM_LEFT_HAND_PORTALS:
 			case OlmID.OLM_LEFT_HAND_HEAL:
 				this.specialSync(currentAnimation);
-				return true;
+				skipTick = true;
+				break;
 			case OlmID.OLM_LEFT_HAND_CRIPPLING:
 				this.cripple();
 				break;
@@ -299,6 +302,6 @@ public class Olm
 		}
 
 		this.lastHandAnimation = currentAnimation;
-		return false;
+		return skipTick;
 	}
 }
