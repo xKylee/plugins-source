@@ -124,12 +124,22 @@ public class Olm
 		return (int) Math.ceil((double) this.tickCycle / 4);
 	}
 
+	public void update()
+	{
+		this.headAnimations();
+		this.handAnimations();
+		this.updateVictims();
+		this.updateCrippleSticks();
+		this.updateSpecials();
+		this.incrementTickCycle();
+	}
+
 	public void incrementTickCycle()
 	{
 		if (this.tickCycle == 16)
 		{
-			this.tickCycle = 1;
 			this.incrementSpecialCycle();
+			this.tickCycle = 1;
 		}
 		else if (this.tickCycle != -1)
 		{
@@ -155,28 +165,18 @@ public class Olm
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_LEFT_HAND_CRYSTALS:
-				this.specialCycle = 2;
-				break;
-			case OlmID.OLM_LEFT_HAND_LIGHTNING:
-				this.specialCycle = 3;
-				break;
-			case OlmID.OLM_LEFT_HAND_PORTALS:
-				this.specialCycle = this.finalPhase ? 4 : 1;
-				break;
-			case OlmID.OLM_LEFT_HAND_HEAL:
 				this.specialCycle = 1;
 				break;
+			case OlmID.OLM_LEFT_HAND_LIGHTNING:
+				this.specialCycle = 2;
+				break;
+			case OlmID.OLM_LEFT_HAND_PORTALS:
+				this.specialCycle = 3;
+				break;
+			case OlmID.OLM_LEFT_HAND_HEAL:
+				this.specialCycle = 4;
+				break;
 		}
-	}
-
-	public void update()
-	{
-		this.headAnimations();
-		this.handAnimations();
-		this.updateVictims();
-		this.updateCrippleSticks();
-		this.updateSpecials();
-		this.incrementTickCycle();
 	}
 
 	void updateCrippleSticks()
