@@ -93,18 +93,16 @@ import org.pf4j.Extension;
 )
 public class GauntletPlugin extends Plugin
 {
-	private static final int BOW_ATTACK_ANIMATION = 426;
-
 	private static final Set<Integer> MELEE_ANIM_IDS = Set.of(
 		AnimationID.ONEHAND_STAB_SWORD_ANIMATION,
 		AnimationID.ONEHAND_SLASH_SWORD_ANIMATION,
-		395, // ONEHAND_SLASH_AXE_ANIMATION
-		400, // ONEHAND_CRUSH_PICKAXE_ANIMATION
-		401, // ONEHAND_CRUSH_AXE_ANIMATION
-		422, // UNARMED_PUNCH_ANIMATION
-		423, // UNARMED_KICK_ANIMATION
-		428, // ONEHAND_STAB_HALBERD_ANIMATION
-		440  // ONEHAND_SLASH_HALBERD_ANIMATION
+		AnimationID.ONEHAND_SLASH_AXE_ANIMATION,
+		AnimationID.ONEHAND_CRUSH_PICKAXE_ANIMATION,
+		AnimationID.ONEHAND_CRUSH_AXE_ANIMATION,
+		AnimationID.UNARMED_PUNCH_ANIMATION,
+		AnimationID.UNARMED_KICK_ANIMATION,
+		AnimationID.ONEHAND_STAB_HALBERD_ANIMATION,
+		AnimationID.ONEHAND_SLASH_HALBERD_ANIMATION
 	);
 
 	private static final Set<Integer> ATTACK_ANIM_IDS = new HashSet<>();
@@ -112,7 +110,7 @@ public class GauntletPlugin extends Plugin
 	static
 	{
 		ATTACK_ANIM_IDS.addAll(MELEE_ANIM_IDS);
-		ATTACK_ANIM_IDS.add(BOW_ATTACK_ANIMATION);
+		ATTACK_ANIM_IDS.add(AnimationID.BOW_ATTACK_ANIMATION);
 		ATTACK_ANIM_IDS.add(AnimationID.HIGH_LEVEL_MAGIC_ATTACK);
 	}
 
@@ -697,7 +695,7 @@ public class GauntletPlugin extends Plugin
 				}
 				break;
 			case RANGED:
-				if (animationId == BOW_ATTACK_ANIMATION)
+				if (animationId == AnimationID.BOW_ATTACK_ANIMATION)
 				{
 					isValid = false;
 				}
