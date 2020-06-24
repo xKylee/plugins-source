@@ -78,7 +78,7 @@ public class Projectile
 		return icon;
 	}
 
-	private Color getOutlineColor(final int projectileId)
+	private static Color getOutlineColor(final int projectileId)
 	{
 		switch (projectileId)
 		{
@@ -96,7 +96,7 @@ public class Projectile
 		}
 	}
 
-	private BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int projectileId)
+	private static BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int projectileId)
 	{
 		switch (projectileId)
 		{

@@ -68,7 +68,7 @@ public class Resource
 		return icon;
 	}
 
-	private BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int objectId)
+	private static BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int objectId)
 	{
 		switch (objectId)
 		{
