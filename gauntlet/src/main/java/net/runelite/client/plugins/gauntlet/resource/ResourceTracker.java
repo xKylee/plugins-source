@@ -40,6 +40,7 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletPlugin;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
+import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
 
 @Singleton
 public class ResourceTracker
@@ -160,7 +161,7 @@ public class ResourceTracker
 
 		final String quantity = matcher.group("quantity");
 
-		incrementItem(resource.itemId, quantity != null ? Integer.parseInt(quantity) : 1);
+		incrementItem(resource, quantity != null ? Integer.parseInt(quantity) : 1);
 	}
 
 
@@ -181,28 +182,67 @@ public class ResourceTracker
 				continue;
 			}
 
-			incrementItem(resource.itemId, matcher.groupCount() == 1 ? Integer.parseInt(matcher.group(1)) : 1);
+			incrementItem(resource, matcher.groupCount() == 1 ? Integer.parseInt(matcher.group(1)) : 1);
 
 			break;
 		}
 	}
 
-	private void incrementItem(final int itemId, final int itemCount)
+	private void incrementItem(final GauntletResource resource, final int itemCount)
 	{
+		final int itemId = resource.itemId;
+
 		final int count = resourceCounts.computeIfAbsent(itemId, id -> 0);
 
 		if (count == 0)
 		{
-			infoBoxManager.addInfoBox(new InfoboxResourceCounter(itemManager.getImage(itemId),
-				plugin,
-				config,
-				resourceCounts,
-				itemId,
-				itemCount
-			));
+			addInfoBox(resource);
 		}
 
 		resourceCounts.put(itemId, count + itemCount);
+	}
+
+	private void addInfoBox(final GauntletResource resource)
+	{
+		final int itemId = resource.itemId;
+
+		final InfoboxResourceCounter infobox = new InfoboxResourceCounter(itemManager.getImage(itemId), plugin, config,
+			resourceCounts, itemId, -1);
+
+		switch (resource)
+		{
+			case CRYSTAL_ORE:
+			case CORRUPTED_ORE:
+			case PHREN_BARK:
+			case CORRUPTED_PHREN_BARK:
+			case LINUM_TIRINUM:
+			case CORRUPTED_LINUM_TIRINUM:
+				infobox.setPriority(InfoBoxPriority.HIGH);
+				break;
+			case GRYM_LEAF:
+			case CORRUPTED_GRYM_LEAF:
+				infobox.setPriority(InfoBoxPriority.MED);
+				break;
+			case CRYSTAL_SHARDS:
+			case CORRUPTED_SHARDS:
+			case RAW_PADDLEFISH:
+				infobox.setPriority(InfoBoxPriority.NONE);
+				break;
+			case WEAPON_FRAME:
+			case CORRUPTED_WEAPON_FRAME:
+			case TELEPORT_CRYSTAL:
+			case CORRUPTED_TELEPORT_CRYSTAL:
+			case CRYSTALLINE_BOWSTRING:
+			case CORRUPTED_BOWSTRING:
+			case CRYSTAL_SPIKE:
+			case CORRUPTED_SPIKE:
+			case CRYSTAL_ORB:
+			case CORRUPTED_ORB:
+				infobox.setPriority(InfoBoxPriority.LOW);
+				break;
+		}
+
+		infoBoxManager.addInfoBox(infobox);
 	}
 
 	private enum GauntletResource
