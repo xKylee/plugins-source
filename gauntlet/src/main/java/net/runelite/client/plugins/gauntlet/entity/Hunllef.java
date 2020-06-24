@@ -63,15 +63,18 @@ public class Hunllef
 
 	private int iconSize;
 
-	public Hunllef(final NPC npc, final int iconSize, final SkillIconManager skillIconManager)
+	public Hunllef(final NPC npc, final SkillIconManager skillIconManager, final int iconSize)
 	{
 		this.npc = npc;
+
+		this.originalMagicIcon = skillIconManager.getSkillImage(Skill.MAGIC);
+		this.originalRangeIcon = skillIconManager.getSkillImage(Skill.RANGED);
+		this.iconSize = iconSize;
+
 		this.attackCount = MAX_ATTACK_COUNT;
 		this.playerAttackCount = MAX_PLAYER_ATTACK_COUNT;
 		this.ticksUntilNextAttack = 0;
-		this.iconSize = iconSize;
-		this.originalMagicIcon = skillIconManager.getSkillImage(Skill.MAGIC);
-		this.originalRangeIcon = skillIconManager.getSkillImage(Skill.RANGED);
+
 		this.attackPhase = AttackPhase.RANGE;
 	}
 
@@ -85,66 +88,20 @@ public class Hunllef
 
 	public void updatePlayerAttackCount()
 	{
-		playerAttackCount--;
-
-		if (playerAttackCount <= 0)
+		if (--playerAttackCount <= 0)
 		{
 			playerAttackCount = MAX_PLAYER_ATTACK_COUNT;
 		}
 	}
 
-	public void updateAttack(final BossAttack style)
+	public void updateAttack()
 	{
 		ticksUntilNextAttack = ATTACK_TICK_SPEED;
 
-		switch (style)
+		if (--attackCount <= 0)
 		{
-			case PRAYER:
-			case MAGIC:
-				if (attackPhase != AttackPhase.MAGIC)
-				{
-					attackPhase = AttackPhase.MAGIC;
-					attackCount = MAX_ATTACK_COUNT - 1;
-				}
-				else
-				{
-					attackCount--;
-				}
-				break;
-			case RANGE:
-				if (attackPhase != AttackPhase.RANGE)
-				{
-					attackPhase = AttackPhase.RANGE;
-					attackCount = MAX_ATTACK_COUNT - 1;
-				}
-				else
-				{
-					attackCount--;
-				}
-				break;
-			case LIGHTNING:
-				attackCount--;
-				break;
-		}
-
-		if (attackCount <= 0)
-		{
-			final AttackPhase nextPhase;
-
-			switch (attackPhase)
-			{
-				case MAGIC:
-				default:
-					attackCount = MAX_ATTACK_COUNT;
-					nextPhase = AttackPhase.RANGE;
-					break;
-				case RANGE:
-					attackCount = MAX_ATTACK_COUNT;
-					nextPhase = AttackPhase.MAGIC;
-					break;
-			}
-
-			attackPhase = nextPhase;
+			attackPhase = attackPhase == AttackPhase.RANGE ? AttackPhase.MAGIC : AttackPhase.RANGE;
+			attackCount = MAX_ATTACK_COUNT;
 		}
 	}
 
@@ -193,13 +150,5 @@ public class Hunllef
 
 		private final Color color;
 		private final Prayer prayer;
-	}
-
-	public enum BossAttack
-	{
-		MAGIC,
-		RANGE,
-		PRAYER,
-		LIGHTNING
 	}
 }

@@ -71,10 +71,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.gauntlet.entity.Demiboss;
 import net.runelite.client.plugins.gauntlet.entity.Hunllef;
-import static net.runelite.client.plugins.gauntlet.entity.Hunllef.BossAttack.LIGHTNING;
-import static net.runelite.client.plugins.gauntlet.entity.Hunllef.BossAttack.MAGIC;
-import static net.runelite.client.plugins.gauntlet.entity.Hunllef.BossAttack.PRAYER;
-import static net.runelite.client.plugins.gauntlet.entity.Hunllef.BossAttack.RANGE;
 import net.runelite.client.plugins.gauntlet.entity.Projectile;
 import net.runelite.client.plugins.gauntlet.entity.Resource;
 import net.runelite.client.plugins.gauntlet.entity.Tornado;
@@ -596,7 +592,7 @@ public class GauntletPlugin extends Plugin
 
 		if (HUNLLEF_IDS.contains(id))
 		{
-			hunllef = new Hunllef(npc, config.hunllefAttackStyleIconSize(), skillIconManager);
+			hunllef = new Hunllef(npc, skillIconManager, config.hunllefAttackStyleIconSize());
 		}
 		else if (TORNADO_IDS.contains(id))
 		{
@@ -653,22 +649,11 @@ public class GauntletPlugin extends Plugin
 
 		projectiles.add(new Projectile(projectile, config.projectileIconSize(), skillIconManager));
 
-		if (PROJECTILE_MAGIC_IDS.contains(id))
-		{
-			hunllef.updateAttack(MAGIC);
-		}
-		else if (PROJECTILE_RANGE_IDS.contains(id))
-		{
-			hunllef.updateAttack(RANGE);
-		}
-		else if (PROJECTILE_PRAYER_IDS.contains(id))
-		{
-			hunllef.updateAttack(PRAYER);
+		hunllef.updateAttack();
 
-			if (config.hunllefPrayerAudio())
-			{
-				client.playSoundEffect(SoundEffectID.MAGIC_SPLASH_BOING);
-			}
+		if (config.hunllefPrayerAudio() && PROJECTILE_PRAYER_IDS.contains(id))
+		{
+			client.playSoundEffect(SoundEffectID.MAGIC_SPLASH_BOING);
 		}
 	}
 
@@ -689,7 +674,7 @@ public class GauntletPlugin extends Plugin
 		{
 			if (actor.getAnimation() == AnimationID.HUNLEFF_TORNADO)
 			{
-				hunllef.updateAttack(LIGHTNING);
+				hunllef.updateAttack();
 			}
 		}
 	}
