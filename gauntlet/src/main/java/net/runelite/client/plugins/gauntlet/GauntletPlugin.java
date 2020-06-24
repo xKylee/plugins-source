@@ -319,8 +319,6 @@ public class GauntletPlugin extends Plugin
 
 		resourceTracker.setNamedDropMessage(client);
 
-		overlayTimer.initialize();
-
 		overlays.forEach(o -> overlayManager.add(o));
 
 		inGauntlet = true;
@@ -444,9 +442,13 @@ public class GauntletPlugin extends Plugin
 				overlays.forEach(o -> overlayManager.add(o));
 
 				resourceTracker.setNamedDropMessage(client);
-			}
 
-			overlayTimer.updateState();
+				overlayTimer.setGauntletStart();
+			}
+			else
+			{
+				overlayTimer.checkHunllefStart();
+			}
 		}
 		else
 		{
