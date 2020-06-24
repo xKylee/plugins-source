@@ -276,26 +276,12 @@ public interface GauntletConfig extends Config
 		description = "Track resources in a counter infobox.",
 		position = 8,
 		keyName = "resourceTracker",
-		section = "resourcesSection"
-	)
-	default boolean resourceTracker()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		name = "Tracking filter",
-		description = "Filter resources to be tracked." +
-			"<br>All resources includes weapon frames, upgrades, and teleport crystals.",
-		position = 9,
-		keyName = "resourceTrackerFilter",
 		section = "resourcesSection",
-		hidden = true,
-		unhide = "resourceTracker"
+		enumClass = ResourceFilter.class
 	)
-	default ResourceFilter resourceTrackerFilter()
+	default ResourceFilter resourceTracker()
 	{
-		return ResourceFilter.BASIC;
+		return ResourceFilter.OFF;
 	}
 
 	// Utilities Section
@@ -492,7 +478,8 @@ public interface GauntletConfig extends Config
 		keyName = "hunllefAttackCounterFontStyle",
 		section = "hunllefSection",
 		hidden = true,
-		unhide = "hunllefOverlayAttackCounter"
+		unhide = "hunllefOverlayAttackCounter",
+		enumClass = FontStyle.class
 	)
 	default FontStyle hunllefAttackCounterFontStyle()
 	{
@@ -656,9 +643,21 @@ public interface GauntletConfig extends Config
 	// Projectiles Section
 
 	@ConfigItem(
+		name = "Outline projectiles",
+		description = "Outline projectiles with a blue (magic) or green (range) color.",
+		position = 0,
+		keyName = "outlineProjectile",
+		section = "projectilesSection"
+	)
+	default boolean outlineProjectile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		name = "Overlay projectile icons",
 		description = "Overlay projectiles with their respective icon.",
-		position = 0,
+		position = 1,
 		keyName = "overlayProjectileIcon",
 		section = "projectilesSection"
 	)
@@ -674,7 +673,7 @@ public interface GauntletConfig extends Config
 	@ConfigItem(
 		name = "Icon size",
 		description = "Change the size of the projectile icons.",
-		position = 1,
+		position = 2,
 		keyName = "projectileIconSize",
 		section = "projectilesSection",
 		hidden = true,
@@ -684,18 +683,6 @@ public interface GauntletConfig extends Config
 	default int projectileIconSize()
 	{
 		return 18;
-	}
-
-	@ConfigItem(
-		name = "Outline projectiles",
-		description = "Outline projectiles with a blue (magic) or green (range) color.",
-		position = 2,
-		keyName = "outlineProjectile",
-		section = "projectilesSection"
-	)
-	default boolean outlineProjectile()
-	{
-		return false;
 	}
 
 	// Tornadoes Section
@@ -719,7 +706,8 @@ public interface GauntletConfig extends Config
 		keyName = "tornadoFontStyle",
 		section = "tornadoesSection",
 		hidden = true,
-		unhide = "tornadoTickCounter"
+		unhide = "tornadoTickCounter",
+		enumClass = FontStyle.class
 	)
 	default FontStyle tornadoFontStyle()
 	{
@@ -842,7 +830,8 @@ public interface GauntletConfig extends Config
 		description = "Overlay the correct prayer to use against the Hunllef's current attack style.",
 		position = 0,
 		keyName = "prayerOverlay",
-		section = "playerSection"
+		section = "playerSection",
+		enumClass = PrayerHighlightMode.class
 	)
 	default PrayerHighlightMode prayerOverlay()
 	{
@@ -900,7 +889,7 @@ public interface GauntletConfig extends Config
 		position = 0,
 		keyName = "timerOverlay",
 		name = "Overlay timer",
-		description = "Display a timer overlay that tracks your gauntlet progress.",
+		description = "Display an overlay that tracks your gauntlet time.",
 		section = "timerSection"
 	)
 	default boolean timerOverlay()
@@ -912,7 +901,7 @@ public interface GauntletConfig extends Config
 		position = 1,
 		keyName = "timerChatMessage",
 		name = "Chat timer",
-		description = "Display a chat message that tracks your gauntlet progress.",
+		description = "Display a chat message on death with your gauntlet time.",
 		section = "timerSection"
 	)
 	default boolean timerChatMessage()
@@ -927,7 +916,8 @@ public interface GauntletConfig extends Config
 		description = "Set render distance of various overlays.",
 		position = 0,
 		keyName = "resourceRenderDistance",
-		section = "otherSection"
+		section = "otherSection",
+		enumClass = RenderDistance.class
 	)
 	default RenderDistance resourceRenderDistance()
 	{
@@ -936,8 +926,7 @@ public interface GauntletConfig extends Config
 
 	@ConfigItem(
 		name = "Disco mode",
-		description = "<b>&nbsp;&nbsp;&nbsp;D<br><br>&nbsp;I<br><br>&nbsp;" +
-			"&nbsp;&nbsp;S<br><br>&nbsp;C<br><br>&nbsp;&nbsp;&nbsp;O</b>",
+		description = "Kill the Hunllef.",
 		position = 1,
 		keyName = "discoMode",
 		section = "otherSection"
@@ -1018,6 +1007,6 @@ public interface GauntletConfig extends Config
 
 	enum ResourceFilter
 	{
-		BASIC, ALL
+		ALL, BASIC, OFF
 	}
 }

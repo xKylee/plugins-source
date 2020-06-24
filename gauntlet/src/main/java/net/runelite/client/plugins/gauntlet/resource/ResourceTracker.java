@@ -80,7 +80,7 @@ public class ResourceTracker
 
 	public void parseChatMessage(String chatMessage)
 	{
-		if (!config.resourceTracker() || namedDropMessage == null)
+		if (config.resourceTracker() == GauntletConfig.ResourceFilter.OFF || namedDropMessage == null)
 		{
 			return;
 		}
@@ -139,7 +139,7 @@ public class ResourceTracker
 			return;
 		}
 
-		if (config.resourceTrackerFilter() == GauntletConfig.ResourceFilter.BASIC)
+		if (config.resourceTracker() == GauntletConfig.ResourceFilter.BASIC)
 		{
 			switch (resource)
 			{
