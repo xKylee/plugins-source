@@ -245,7 +245,7 @@ public class GauntletPlugin extends Plugin
 	private final Set<Projectile> projectiles = new HashSet<>();
 
 	@Getter
-	private final Set<Tornado> tornados = new HashSet<>();
+	private final Set<Tornado> tornadoes = new HashSet<>();
 
 	@Getter
 	private final Set<Demiboss> demibosses = new HashSet<>();
@@ -321,7 +321,7 @@ public class GauntletPlugin extends Plugin
 		resources.clear();
 		utilities.clear();
 		projectiles.clear();
-		tornados.clear();
+		tornadoes.clear();
 		demibosses.clear();
 		strongNpcs.clear();
 		weakNpcs.clear();
@@ -405,9 +405,9 @@ public class GauntletPlugin extends Plugin
 			projectiles.removeIf(p -> p.getProjectile().getRemainingCycles() <= 0);
 		}
 
-		if (!tornados.isEmpty())
+		if (!tornadoes.isEmpty())
 		{
-			tornados.forEach(Tornado::updateTimeLeft);
+			tornadoes.forEach(Tornado::updateTimeLeft);
 		}
 	}
 
@@ -582,7 +582,7 @@ public class GauntletPlugin extends Plugin
 		}
 		else if (TORNADO_IDS.contains(id))
 		{
-			tornados.add(new Tornado(npc));
+			tornadoes.add(new Tornado(npc));
 		}
 		else if (DEMIBOSS_IDS.contains(id))
 		{
@@ -608,7 +608,7 @@ public class GauntletPlugin extends Plugin
 		}
 		else if (TORNADO_IDS.contains(id))
 		{
-			tornados.removeIf(t -> t.getNpc() == npc);
+			tornadoes.removeIf(t -> t.getNpc() == npc);
 		}
 		else if (DEMIBOSS_IDS.contains(id))
 		{

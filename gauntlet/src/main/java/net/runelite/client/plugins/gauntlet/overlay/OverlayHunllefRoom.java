@@ -156,12 +156,12 @@ public class OverlayHunllefRoom extends Overlay
 
 	private void renderTornadoes(final Graphics2D graphics2D)
 	{
-		if ((!config.tornadoTickCounter() && !config.tornadoTileOutline()) || plugin.getTornados().isEmpty())
+		if ((!config.tornadoTickCounter() && !config.tornadoTileOutline()) || plugin.getTornadoes().isEmpty())
 		{
 			return;
 		}
 
-		for (final Tornado tornado : plugin.getTornados())
+		for (final Tornado tornado : plugin.getTornadoes())
 		{
 			final int timeLeft = tornado.getTimeLeft();
 
