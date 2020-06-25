@@ -32,7 +32,7 @@ import net.runelite.api.NPC;
 @RequiredArgsConstructor
 public class Tornado
 {
-	private static final int TICK_DURATION = 20;
+	private static final int TICK_DURATION = 21;
 
 	@Getter
 	private int timeLeft = TICK_DURATION;
