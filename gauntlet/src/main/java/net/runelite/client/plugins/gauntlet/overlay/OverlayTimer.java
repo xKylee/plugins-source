@@ -54,7 +54,6 @@ import net.runelite.client.ui.overlay.components.table.TableRow;
 @Singleton
 public class OverlayTimer extends Overlay
 {
-	private final GauntletPlugin plugin;
 	private final GauntletConfig config;
 	private final ChatMessageManager chatMessageManager;
 
@@ -75,7 +74,6 @@ public class OverlayTimer extends Overlay
 	{
 		super(plugin);
 
-		this.plugin = plugin;
 		this.config = config;
 
 		this.chatMessageManager = chatMessageManager;
@@ -129,7 +127,7 @@ public class OverlayTimer extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || !config.timerOverlay())
+		if (!config.timerOverlay())
 		{
 			return null;
 		}

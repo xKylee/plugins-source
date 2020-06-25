@@ -107,7 +107,7 @@ public class OverlayHunllefRoom extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || !plugin.isInHunllefRoom())
+		if (!plugin.isInHunllefRoom())
 		{
 			return null;
 		}

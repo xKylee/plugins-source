@@ -62,6 +62,7 @@ import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
@@ -93,6 +94,8 @@ import org.pf4j.Extension;
 )
 public class GauntletPlugin extends Plugin
 {
+	private static final String LIFECYCLE = "gauntlet" + System.currentTimeMillis();
+
 	private static final Set<Integer> MELEE_ANIM_IDS = Set.of(
 		AnimationID.ONEHAND_STAB_SWORD_ANIMATION,
 		AnimationID.ONEHAND_SLASH_SWORD_ANIMATION,
@@ -207,6 +210,9 @@ public class GauntletPlugin extends Plugin
 	private Client client;
 
 	@Inject
+	private EventBus eventBus;
+
+	@Inject
 	private GauntletConfig config;
 
 	@Inject
@@ -276,6 +282,9 @@ public class GauntletPlugin extends Plugin
 	@Getter
 	private boolean inGauntlet;
 
+	@Getter
+	private boolean inHunllefRoom;
+
 	@Provides
 	GauntletConfig getConfig(final ConfigManager configManager)
 	{
@@ -296,34 +305,25 @@ public class GauntletPlugin extends Plugin
 			);
 		}
 
-		if (client.getGameState() != GameState.LOGGED_IN || !isInTheGauntlet())
+		if (client.getGameState() != GameState.LOGGED_IN || !isGauntletVarbitSet())
 		{
 			return;
 		}
 
-		for (final GameObject gameObject : new GameObjectQuery().result(client))
-		{
-			addGameObject(gameObject);
-		}
+		addSpawnedEntities();
 
-		for (final NPC npc : client.getNpcs())
-		{
-			addNpc(npc);
-		}
-
-		resourceTracker.setNamedDropMessage(client);
-
-		overlays.forEach(o -> overlayManager.add(o));
-
-		inGauntlet = true;
+		initializeGauntlet();
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		inGauntlet = false;
+		eventBus.unregister(LIFECYCLE);
 
 		overlays.forEach(o -> overlayManager.remove(o));
+
+		inGauntlet = false;
+		inHunllefRoom = false;
 
 		hunllef = null;
 		wrongAttackStyle = false;
@@ -381,36 +381,149 @@ public class GauntletPlugin extends Plugin
 	@Subscribe
 	private void onGameStateChanged(final GameStateChanged event)
 	{
-		if (!inGauntlet)
-		{
-			return;
-		}
-
 		final GameState gameState = event.getGameState();
 
 		switch (gameState)
 		{
-			case LOGIN_SCREEN:
-			case HOPPING:
-				shutDown();
+			case LOGGED_IN:
+				if (isGauntletVarbitSet())
+				{
+					if (!inGauntlet)
+					{
+						overlayTimer.setGauntletStart();
+						initializeGauntlet();
+					}
+				}
+				else
+				{
+					if (inGauntlet)
+					{
+						shutDown();
+					}
+				}
 				break;
 			case LOADING:
-				resources.clear();
-				utilities.clear();
+				if (inGauntlet)
+				{
+					resources.clear();
+					utilities.clear();
+				}
 				break;
-			default:
+			case LOGIN_SCREEN:
+			case HOPPING:
+				if (inGauntlet)
+				{
+					shutDown();
+				}
 				break;
 		}
 	}
 
-	@Subscribe
-	private void onGameTick(final GameTick event)
+	private void initializeGauntlet()
 	{
-		if (!inGauntlet || hunllef == null || !isInHunllefRoom())
+		inGauntlet = true;
+
+		resourceTracker.setNamedDropMessage(client);
+
+		overlays.forEach(o -> overlayManager.add(o));
+
+		eventBus.subscribe(GameObjectSpawned.class, LIFECYCLE, this::onGameObjectSpawned);
+		eventBus.subscribe(GameObjectDespawned.class, LIFECYCLE, this::onGameObjectDespawned);
+		eventBus.subscribe(NpcSpawned.class, LIFECYCLE, this::onNpcSpawned);
+		eventBus.subscribe(NpcDespawned.class, LIFECYCLE, this::onNpcDespawned);
+		eventBus.subscribe(ChatMessage.class, LIFECYCLE, this::onChatMessage);
+		eventBus.subscribe(VarbitChanged.class, LIFECYCLE, this::onVarbitChanged);
+	}
+
+	private void initializeHunllefRoom()
+	{
+		inHunllefRoom = true;
+
+		resourceTracker.reset();
+
+		overlayTimer.setHunllefStart();
+
+		eventBus.unregister(LIFECYCLE);
+
+		eventBus.subscribe(GameTick.class, LIFECYCLE, this::onGameTick);
+		eventBus.subscribe(ProjectileSpawned.class, LIFECYCLE, this::onProjectileSpawned);
+		eventBus.subscribe(AnimationChanged.class, LIFECYCLE, this::onAnimationChanged);
+		eventBus.subscribe(PlayerDeath.class, LIFECYCLE, this::onPlayerDeath);
+	}
+
+	private boolean isGauntletVarbitSet()
+	{
+		return client.getVar(Varbits.GAUNTLET_ENTERED) == 1;
+	}
+
+	private boolean isHunllefRoomVarbitSet()
+	{
+		return client.getVar(Varbits.GAUNTLET_FINAL_ROOM_ENTERED) == 1;
+	}
+
+	private void addSpawnedEntities()
+	{
+		for (final GameObject gameObject : new GameObjectQuery().result(client))
+		{
+			addGameObject(gameObject);
+		}
+
+		for (final NPC npc : client.getNpcs())
+		{
+			addNpc(npc);
+		}
+	}
+
+	private void onGameObjectSpawned(final GameObjectSpawned event)
+	{
+		final GameObject gameObject = event.getGameObject();
+
+		addGameObject(gameObject);
+	}
+
+	private void onGameObjectDespawned(final GameObjectDespawned event)
+	{
+		final GameObject gameObject = event.getGameObject();
+
+		removeGameObject(gameObject);
+	}
+
+	private void onNpcSpawned(final NpcSpawned event)
+	{
+		final NPC npc = event.getNpc();
+
+		addNpc(npc);
+	}
+
+	private void onNpcDespawned(final NpcDespawned event)
+	{
+		final NPC npc = event.getNpc();
+
+		removeNpc(npc);
+	}
+
+	private void onChatMessage(final ChatMessage event)
+	{
+		if (event.getType() != ChatMessageType.SPAM && event.getType() != ChatMessageType.GAMEMESSAGE)
 		{
 			return;
 		}
 
+		final String chatMessage = event.getMessage();
+
+		resourceTracker.parseChatMessage(chatMessage);
+	}
+
+	private void onVarbitChanged(final VarbitChanged event)
+	{
+		if (!inHunllefRoom && isHunllefRoomVarbitSet())
+		{
+			initializeHunllefRoom();
+		}
+	}
+
+	private void onGameTick(final GameTick event)
+	{
 		hunllef.decrementTicksUntilNextAttack();
 
 		if (!projectiles.isEmpty())
@@ -424,137 +537,23 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	private void onVarbitChanged(final VarbitChanged event)
-	{
-		if (isInHunllefRoom())
-		{
-			overlayTimer.setHunllefStart();
-			resourceTracker.reset();
-		}
-		else if (isInTheGauntlet())
-		{
-			if (!inGauntlet)
-			{
-				overlayTimer.setGauntletStart();
-
-				resourceTracker.setNamedDropMessage(client);
-
-				overlays.forEach(o -> overlayManager.add(o));
-
-				inGauntlet = true;
-			}
-		}
-		else
-		{
-			if (inGauntlet)
-			{
-				shutDown();
-			}
-		}
-	}
-
-	@Subscribe
-	private void onGameObjectSpawned(final GameObjectSpawned event)
-	{
-		if (!inGauntlet)
-		{
-			return;
-		}
-
-		final GameObject gameObject = event.getGameObject();
-
-		addGameObject(gameObject);
-	}
-
-	@Subscribe
-	private void onGameObjectDespawned(final GameObjectDespawned event)
-	{
-		if (!inGauntlet)
-		{
-			return;
-		}
-
-		final GameObject gameObject = event.getGameObject();
-
-		removeGameObject(gameObject);
-	}
-
-	@Subscribe
-	private void onNpcSpawned(final NpcSpawned event)
-	{
-		if (!inGauntlet)
-		{
-			return;
-		}
-
-		final NPC npc = event.getNpc();
-
-		addNpc(npc);
-	}
-
-	@Subscribe
-	private void onNpcDespawned(final NpcDespawned event)
-	{
-		if (!inGauntlet)
-		{
-			return;
-		}
-
-		final NPC npc = event.getNpc();
-
-		removeNpc(npc);
-	}
-
-	@Subscribe
-	private void onPlayerDeath(final PlayerDeath event)
-	{
-		if (!inGauntlet)
-		{
-			return;
-		}
-
-		overlayTimer.onPlayerDeath();
-	}
-
-	@Subscribe
 	private void onProjectileSpawned(final ProjectileSpawned event)
 	{
-		if (!inGauntlet || hunllef == null || !isInHunllefRoom())
-		{
-			return;
-		}
-
 		final net.runelite.api.Projectile projectile = event.getProjectile();
 
 		addProjectile(projectile);
 	}
 
-	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
-		if (!inGauntlet || hunllef == null || !isInHunllefRoom())
-		{
-			return;
-		}
-
 		final Actor actor = event.getActor();
 
 		processAnimation(actor);
 	}
 
-	@Subscribe
-	private void onChatMessage(final ChatMessage event)
+	private void onPlayerDeath(final PlayerDeath event)
 	{
-		if (!inGauntlet || isInHunllefRoom() || (event.getType() != ChatMessageType.SPAM
-			&& event.getType() != ChatMessageType.GAMEMESSAGE))
-		{
-			return;
-		}
-
-		final String chatMessage = event.getMessage();
-
-		resourceTracker.parseChatMessage(chatMessage);
+		overlayTimer.onPlayerDeath();
 	}
 
 	private void addGameObject(final GameObject gameObject)
@@ -741,16 +740,6 @@ public class GauntletPlugin extends Plugin
 		}
 
 		return worldPoint.getRegionID();
-	}
-
-	public boolean isInHunllefRoom()
-	{
-		return client.getVar(Varbits.GAUNTLET_FINAL_ROOM_ENTERED) == 1;
-	}
-
-	private boolean isInTheGauntlet()
-	{
-		return client.getVar(Varbits.GAUNTLET_ENTERED) == 1;
 	}
 
 	public boolean isLootDropNotificationsEnabled()

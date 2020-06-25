@@ -33,7 +33,6 @@ import net.runelite.client.ui.overlay.infobox.Counter;
 
 public class InfoboxResourceCounter extends Counter
 {
-	private final GauntletPlugin plugin;
 	private final GauntletConfig config;
 
 	private final Map<Integer, Integer> resourceCounts;
@@ -43,7 +42,6 @@ public class InfoboxResourceCounter extends Counter
 	InfoboxResourceCounter(final BufferedImage bufferedImage, final GauntletPlugin plugin, final GauntletConfig config, final Map<Integer, Integer> resourceCounts, final int itemId, final int itemCount)
 	{
 		super(bufferedImage, plugin, itemCount);
-		this.plugin = plugin;
 		this.config = config;
 		this.resourceCounts = resourceCounts;
 		this.itemId = itemId;
@@ -58,6 +56,6 @@ public class InfoboxResourceCounter extends Counter
 	@Override
 	public boolean render()
 	{
-		return plugin.isInGauntlet() && config.resourceTracker() != GauntletConfig.ResourceFilter.OFF;
+		return config.resourceTracker() != GauntletConfig.ResourceFilter.OFF;
 	}
 }
