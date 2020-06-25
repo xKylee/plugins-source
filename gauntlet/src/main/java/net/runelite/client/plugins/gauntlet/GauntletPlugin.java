@@ -411,7 +411,7 @@ public class GauntletPlugin extends Plugin
 			return;
 		}
 
-		hunllef.onGameTick();
+		hunllef.decrementTicksUntilNextAttack();
 
 		if (!projectiles.isEmpty())
 		{

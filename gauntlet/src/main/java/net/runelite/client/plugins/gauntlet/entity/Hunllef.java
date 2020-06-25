@@ -78,7 +78,7 @@ public class Hunllef
 		this.attackPhase = AttackPhase.RANGE;
 	}
 
-	public void onGameTick()
+	public void decrementTicksUntilNextAttack()
 	{
 		if (ticksUntilNextAttack > 0)
 		{
