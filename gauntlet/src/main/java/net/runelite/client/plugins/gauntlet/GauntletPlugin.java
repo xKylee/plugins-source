@@ -415,7 +415,7 @@ public class GauntletPlugin extends Plugin
 
 		if (!projectiles.isEmpty())
 		{
-			projectiles.removeIf(p -> p.getProjectile().getRemainingCycles() <= 0);
+			projectiles.removeIf(p -> p.getProjectile().getEndCycle() < client.getGameCycle());
 		}
 
 		if (!tornadoes.isEmpty())
