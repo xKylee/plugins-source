@@ -153,7 +153,7 @@ public class Olm
 		{
 			this.specialCycle = 1;
 		}
-		else if (!this.crippled)
+		else
 		{
 			this.specialCycle++;
 		}
@@ -161,20 +161,20 @@ public class Olm
 
 	public void specialSync(int currentAnimation)
 	{
-		this.tickCycle = 16;
+		this.tickCycle = 1;
 		switch (currentAnimation)
 		{
 			case OlmID.OLM_LEFT_HAND_CRYSTALS:
-				this.specialCycle = 1;
-				break;
-			case OlmID.OLM_LEFT_HAND_LIGHTNING:
 				this.specialCycle = 2;
 				break;
-			case OlmID.OLM_LEFT_HAND_PORTALS:
+			case OlmID.OLM_LEFT_HAND_LIGHTNING:
 				this.specialCycle = 3;
 				break;
+			case OlmID.OLM_LEFT_HAND_PORTALS:
+				this.specialCycle = this.finalPhase ? 4 : 1;
+				break;
 			case OlmID.OLM_LEFT_HAND_HEAL:
-				this.specialCycle = 4;
+				this.specialCycle = 1;
 				break;
 		}
 	}
