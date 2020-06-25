@@ -256,6 +256,16 @@ public class GauntletPlugin extends Plugin
 	@Getter
 	private final Set<NPC> weakNpcs = new HashSet<>();
 
+	private final Set<Set> entitySets = Set.of(
+		resources,
+		utilities,
+		projectiles,
+		tornadoes,
+		demibosses,
+		strongNpcs,
+		weakNpcs
+	);
+
 	@Getter
 	private Hunllef hunllef;
 
@@ -318,13 +328,7 @@ public class GauntletPlugin extends Plugin
 		overlayTimer.reset();
 		resourceTracker.reset();
 
-		resources.clear();
-		utilities.clear();
-		projectiles.clear();
-		tornadoes.clear();
-		demibosses.clear();
-		strongNpcs.clear();
-		weakNpcs.clear();
+		entitySets.forEach(Set::clear);
 	}
 
 	@Subscribe
