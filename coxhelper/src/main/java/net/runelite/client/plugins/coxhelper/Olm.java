@@ -250,7 +250,7 @@ public class Olm
 			case OlmID.OLM_MIDDLE:
 				if (this.lastHeadAnimation == OlmID.OLM_RISING_2 || this.lastHeadAnimation == OlmID.OLM_ENRAGED_RISING_2)
 				{
-					this.tickCycle = this.firstPhase ? 4 : 1;
+					this.tickCycle = this.firstPhase ? 3 : 0;
 				}
 				break;
 			case OlmID.OLM_ENRAGED_LEFT:
