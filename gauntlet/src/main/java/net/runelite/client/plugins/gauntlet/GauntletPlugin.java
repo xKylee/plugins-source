@@ -285,13 +285,16 @@ public class GauntletPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		overlays = Set.of(
-			overlayGauntlet,
-			overlayHunllefRoom,
-			overlayPrayerBox,
-			overlayPrayerWidget,
-			overlayTimer
-		);
+		if (overlays == null)
+		{
+			overlays = Set.of(
+				overlayGauntlet,
+				overlayHunllefRoom,
+				overlayPrayerBox,
+				overlayPrayerWidget,
+				overlayTimer
+			);
+		}
 
 		if (client.getGameState() != GameState.LOGGED_IN || !isInTheGauntlet())
 		{
@@ -342,10 +345,16 @@ public class GauntletPlugin extends Plugin
 		switch (event.getKey())
 		{
 			case "resourceIconSize":
-				resources.forEach(r -> r.setIconSize(config.resourceIconSize()));
+				if (!resources.isEmpty())
+				{
+					resources.forEach(r -> r.setIconSize(config.resourceIconSize()));
+				}
 				break;
 			case "projectileIconSize":
-				projectiles.forEach(p -> p.setIconSize(config.projectileIconSize()));
+				if (!projectiles.isEmpty())
+				{
+					projectiles.forEach(p -> p.setIconSize(config.projectileIconSize()));
+				}
 				break;
 			case "hunllefAttackStyleIconSize":
 				if (hunllef != null)
