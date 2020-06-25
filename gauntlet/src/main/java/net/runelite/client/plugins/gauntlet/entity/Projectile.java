@@ -51,7 +51,7 @@ public class Projectile
 
 	private int iconSize;
 
-	public Projectile(final net.runelite.api.Projectile projectile, final int iconSize, final SkillIconManager skillIconManager)
+	public Projectile(final net.runelite.api.Projectile projectile, final SkillIconManager skillIconManager, final int iconSize)
 	{
 		this.projectile = projectile;
 		this.iconSize = iconSize;

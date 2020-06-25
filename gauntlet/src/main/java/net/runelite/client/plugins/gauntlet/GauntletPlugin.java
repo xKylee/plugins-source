@@ -646,7 +646,7 @@ public class GauntletPlugin extends Plugin
 			return;
 		}
 
-		projectiles.add(new Projectile(projectile, config.projectileIconSize(), skillIconManager));
+		projectiles.add(new Projectile(projectile, skillIconManager, config.projectileIconSize()));
 
 		hunllef.updateAttack();
 
