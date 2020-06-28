@@ -83,11 +83,6 @@ public class OverlayGauntlet extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || plugin.isInHunllefRoom())
-		{
-			return null;
-		}
-
 		player = client.getLocalPlayer();
 
 		if (player == null)

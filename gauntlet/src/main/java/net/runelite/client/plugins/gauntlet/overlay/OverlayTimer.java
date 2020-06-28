@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.time.Instant;
+import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.ChatMessageType;
@@ -39,9 +40,6 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletPlugin;
-import static net.runelite.client.plugins.gauntlet.overlay.OverlayTimer.State.IN_GAUNTLET;
-import static net.runelite.client.plugins.gauntlet.overlay.OverlayTimer.State.IN_HUNLLEF_ROOM;
-import static net.runelite.client.plugins.gauntlet.overlay.OverlayTimer.State.OUTSIDE_GAUNTLET;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -49,37 +47,63 @@ import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 import net.runelite.client.ui.overlay.components.table.TableAlignment;
 import net.runelite.client.ui.overlay.components.table.TableComponent;
+import net.runelite.client.ui.overlay.components.table.TableElement;
+import net.runelite.client.ui.overlay.components.table.TableRow;
 
 @Singleton
 public class OverlayTimer extends Overlay
 {
-	private final GauntletPlugin plugin;
 	private final GauntletConfig config;
 	private final ChatMessageManager chatMessageManager;
 
 	private final PanelComponent panelComponent;
+	private final TableComponent tableComponent;
 
-	private State currentState;
+	private final TableRow rowPrepTime;
+	private final TableRow rowTotalTime;
 
-	private long timeRaidStart;
-	private long timeBossEnter;
+	private long timeGauntletStart;
+	private long timeHunllefStart;
 
 	@Inject
 	public OverlayTimer(final GauntletPlugin plugin, final GauntletConfig config, final ChatMessageManager chatMessageManager)
 	{
 		super(plugin);
 
-		this.plugin = plugin;
 		this.config = config;
 
 		this.chatMessageManager = chatMessageManager;
 
 		this.panelComponent = new PanelComponent();
+		this.tableComponent = new TableComponent();
 
-		this.currentState = OUTSIDE_GAUNTLET;
+		panelComponent.getChildren().add(TitleComponent.builder().text("Gauntlet Timer").build());
+		panelComponent.getChildren().add(tableComponent);
 
-		this.timeRaidStart = -1L;
-		this.timeBossEnter = -1L;
+		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
+
+		this.rowPrepTime = TableRow.builder()
+			.elements(Arrays.asList(
+				TableElement.builder()
+					.content("Prep Time:")
+					.build(),
+				TableElement.builder()
+					.content("")
+					.build()))
+			.build();
+
+		this.rowTotalTime = TableRow.builder()
+			.elements(Arrays.asList(
+				TableElement.builder()
+					.content("Total Time:")
+					.build(),
+				TableElement.builder()
+					.content("")
+					.build()))
+			.build();
+
+		this.timeGauntletStart = -1;
+		this.timeHunllefStart = -1;
 
 		setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
 		setPriority(OverlayPriority.HIGH);
@@ -87,57 +111,20 @@ public class OverlayTimer extends Overlay
 	}
 
 	@Override
-	public Dimension render(final Graphics2D graphics)
+	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || !config.timerOverlay())
+		if (!config.timerOverlay() || timeGauntletStart == -1)
 		{
 			return null;
 		}
 
-		panelComponent.getChildren().clear();
+		final TableRow tableRow = timeHunllefStart == -1 ? rowPrepTime : rowTotalTime;
 
-		panelComponent.getChildren().add(TitleComponent.builder().text("Gauntlet Timer").color(Color.WHITE).build());
+		tableRow.getElements()
+			.get(1)
+			.setContent(calculateElapsedTime(Instant.now().getEpochSecond(), timeGauntletStart));
 
-		final TableComponent tableComponent = new TableComponent();
-
-		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
-
-		if (timeRaidStart == -1L)
-		{
-			tableComponent.addRow("Restart the gauntlet =)", "");
-		}
-		else
-		{
-			final long current = Instant.now().getEpochSecond();
-
-			final String elapsedPrepTime;
-			final String elapsedBossTime;
-			final String elapsedTotalTime;
-
-			switch (currentState)
-			{
-				case IN_GAUNTLET:
-					elapsedPrepTime = calculateElapsedTime(current, timeRaidStart);
-					elapsedBossTime = "00:00";
-					elapsedTotalTime = elapsedPrepTime;
-					break;
-				case IN_HUNLLEF_ROOM:
-					elapsedPrepTime = calculateElapsedTime(timeBossEnter, timeRaidStart);
-					elapsedBossTime = calculateElapsedTime(current, timeBossEnter);
-					elapsedTotalTime = calculateElapsedTime(current, timeRaidStart);
-					break;
-				default:
-					throw new IllegalStateException("Unexpected timer state: " + currentState);
-			}
-
-			tableComponent.addRow("Prep Time:", elapsedPrepTime);
-			tableComponent.addRow("Boss Time:", elapsedBossTime);
-			tableComponent.addRow("Total Time:", elapsedTotalTime);
-		}
-
-		panelComponent.getChildren().add(tableComponent);
-
-		return panelComponent.render(graphics);
+		return panelComponent.render(graphics2D);
 	}
 
 	public void determineLayer()
@@ -145,91 +132,67 @@ public class OverlayTimer extends Overlay
 		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 
-	public void initialize()
-	{
-		timeRaidStart = -1L;
-		timeBossEnter = -1L;
-
-		currentState = plugin.isInHunllefRoom() ? IN_HUNLLEF_ROOM : IN_GAUNTLET;
-	}
-
 	public void reset()
 	{
-		timeRaidStart = -1L;
-		timeBossEnter = -1L;
+		timeGauntletStart = -1;
+		timeHunllefStart = -1;
+		rowPrepTime.getElements().get(1).setContent("");
+		rowTotalTime.getElements().get(1).setContent("");
+		tableComponent.getRows().clear();
+	}
 
-		currentState = OUTSIDE_GAUNTLET;
+	public void setGauntletStart()
+	{
+		timeGauntletStart = Instant.now().getEpochSecond();
+		rowPrepTime.setRowColor(Color.WHITE);
+		tableComponent.setRows(rowPrepTime);
+	}
+
+	public void setHunllefStart()
+	{
+		timeHunllefStart = Instant.now().getEpochSecond();
+		rowPrepTime.setRowColor(Color.LIGHT_GRAY);
+		tableComponent.setRows(rowPrepTime);
+		tableComponent.addRows(rowTotalTime);
 	}
 
 	public void onPlayerDeath()
 	{
-		if (!config.timerChatMessage() || currentState != IN_HUNLLEF_ROOM)
+		if (!config.timerChatMessage())
 		{
 			return;
 		}
 
 		printTime();
-	}
-
-	public void updateState()
-	{
-		switch (currentState)
-		{
-			case OUTSIDE_GAUNTLET:
-				if (plugin.isInHunllefRoom())
-				{
-					currentState = IN_HUNLLEF_ROOM;
-					timeRaidStart = timeBossEnter = Instant.now().getEpochSecond();
-				}
-				else
-				{
-					currentState = IN_GAUNTLET;
-					timeRaidStart = Instant.now().getEpochSecond();
-				}
-				break;
-			case IN_GAUNTLET:
-				if (plugin.isInHunllefRoom())
-				{
-					currentState = IN_HUNLLEF_ROOM;
-					timeBossEnter = Instant.now().getEpochSecond();
-				}
-				break;
-			default:
-				break;
-		}
-	}
-
-	enum State
-	{
-		OUTSIDE_GAUNTLET, IN_GAUNTLET, IN_HUNLLEF_ROOM
+		reset();
 	}
 
 	private void printTime()
 	{
-		if (timeRaidStart == -1L || timeBossEnter == -1L)
+		if (timeGauntletStart == -1 || timeHunllefStart == -1)
 		{
 			return;
 		}
 
 		final long current = Instant.now().getEpochSecond();
 
-		final String elapsedPrepTime = calculateElapsedTime(timeBossEnter, timeRaidStart);
-		final String elapsedBossTime = calculateElapsedTime(current, timeBossEnter);
-		final String elapsedTotalTime = calculateElapsedTime(current, timeRaidStart);
+		final String elapsedPrepTime = calculateElapsedTime(timeHunllefStart, timeGauntletStart);
+		final String elapsedBossTime = calculateElapsedTime(current, timeHunllefStart);
+		final String elapsedTotalTime = calculateElapsedTime(current, timeGauntletStart);
 
 		final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
 			.append(ChatColorType.NORMAL)
-			.append("Prep time: ")
+			.append("Preparation time: ")
 			.append(ChatColorType.HIGHLIGHT)
 			.append(elapsedPrepTime)
 			.append(ChatColorType.NORMAL)
-			.append(" Boss time: ")
+			.append(". Hunllef kill time: ")
 			.append(ChatColorType.HIGHLIGHT)
 			.append(elapsedBossTime)
 			.append(ChatColorType.NORMAL)
-			.append(" Total time: ")
+			.append(". Total time: ")
 			.append(ChatColorType.HIGHLIGHT)
-			.append(elapsedTotalTime);
+			.append(elapsedTotalTime + ".");
 
 		chatMessageManager.queue(QueuedMessage.builder()
 			.type(ChatMessageType.CONSOLE)

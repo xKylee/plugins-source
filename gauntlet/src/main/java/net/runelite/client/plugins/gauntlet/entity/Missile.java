@@ -28,17 +28,18 @@ package net.runelite.client.plugins.gauntlet.entity;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import lombok.Getter;
+import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.Skill;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.util.ImageUtil;
 
-public class Projectile
+public class Missile
 {
-	private static final int PROJECTILE_FILL_ALPHA = 100;
+	private static final int FILL_ALPHA = 100;
 
 	@Getter
-	private final net.runelite.api.Projectile projectile;
+	private final Projectile projectile;
 
 	private final BufferedImage originalIcon;
 
@@ -51,7 +52,7 @@ public class Projectile
 
 	private int iconSize;
 
-	public Projectile(final net.runelite.api.Projectile projectile, final int iconSize, final SkillIconManager skillIconManager)
+	public Missile(final Projectile projectile, final SkillIconManager skillIconManager, final int iconSize)
 	{
 		this.projectile = projectile;
 		this.iconSize = iconSize;
@@ -59,8 +60,7 @@ public class Projectile
 		this.originalIcon = getOriginalIcon(skillIconManager, projectile.getId());
 
 		this.outlineColor = getOutlineColor(projectile.getId());
-		this.fillColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(),
-			PROJECTILE_FILL_ALPHA);
+		this.fillColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), FILL_ALPHA);
 	}
 
 	public void setIconSize(final int iconSize)
@@ -79,7 +79,7 @@ public class Projectile
 		return icon;
 	}
 
-	private Color getOutlineColor(final int projectileId)
+	private static Color getOutlineColor(final int projectileId)
 	{
 		switch (projectileId)
 		{
@@ -97,19 +97,19 @@ public class Projectile
 		}
 	}
 
-	private BufferedImage getOriginalIcon(final SkillIconManager SkillIconManager, final int projectileId)
+	private static BufferedImage getOriginalIcon(final SkillIconManager skillIconManager, final int projectileId)
 	{
 		switch (projectileId)
 		{
 			case ProjectileID.HUNLLEF_MAGE_ATTACK:
 			case ProjectileID.HUNLLEF_CORRUPTED_MAGE_ATTACK:
-				return SkillIconManager.getSkillImage(Skill.MAGIC);
+				return skillIconManager.getSkillImage(Skill.MAGIC);
 			case ProjectileID.HUNLLEF_RANGE_ATTACK:
 			case ProjectileID.HUNLLEF_CORRUPTED_RANGE_ATTACK:
-				return SkillIconManager.getSkillImage(Skill.RANGED);
+				return skillIconManager.getSkillImage(Skill.RANGED);
 			case ProjectileID.HUNLLEF_PRAYER_ATTACK:
 			case ProjectileID.HUNLLEF_CORRUPTED_PRAYER_ATTACK:
-				return SkillIconManager.getSkillImage(Skill.PRAYER);
+				return skillIconManager.getSkillImage(Skill.PRAYER);
 			default:
 				throw new IllegalArgumentException("Unsupported gauntlet projectile id: " + projectileId);
 		}

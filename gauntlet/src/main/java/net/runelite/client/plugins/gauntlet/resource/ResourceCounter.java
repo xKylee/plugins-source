@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
- * Copyright (c) 2020, Anthony Alves
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,38 +25,65 @@
 package net.runelite.client.plugins.gauntlet.resource;
 
 import java.awt.image.BufferedImage;
-import java.util.Map;
-import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletPlugin;
 import net.runelite.client.ui.overlay.infobox.Counter;
+import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
 
-public class InfoboxResourceCounter extends Counter
+class ResourceCounter extends Counter
 {
-	private final GauntletPlugin plugin;
-	private final GauntletConfig config;
+	private final Resource resource;
 
-	private final Map<Integer, Integer> resourceCounts;
+	private int count;
+	private String text;
 
-	private final int itemId;
-
-	InfoboxResourceCounter(final BufferedImage bufferedImage, final GauntletPlugin plugin, final GauntletConfig config, final Map<Integer, Integer> resourceCounts, final int itemId, final int itemCount)
+	ResourceCounter(final GauntletPlugin plugin, final Resource resource, final BufferedImage bufferedImage, final int count)
 	{
-		super(bufferedImage, plugin, itemCount);
-		this.plugin = plugin;
-		this.config = config;
-		this.resourceCounts = resourceCounts;
-		this.itemId = itemId;
+		super(bufferedImage, plugin, count);
+
+		this.resource = resource;
+		this.count = count;
+		this.text = String.valueOf(count);
+
+		setPriority(getPriority(resource));
 	}
 
 	@Override
-	public int getCount()
+	public String getText()
 	{
-		return resourceCounts.getOrDefault(itemId, 0);
+		return text;
 	}
 
-	@Override
-	public boolean render()
+	void onResourceEvent(final ResourceEvent event)
 	{
-		return plugin.isInGauntlet() && config.resourceTracker() && !plugin.isInHunllefRoom();
+		if (resource != event.getResource())
+		{
+			return;
+		}
+
+		count = Math.max(0, count + event.getCount());
+		text = String.valueOf(count);
+	}
+
+	private static InfoBoxPriority getPriority(final Resource resource)
+	{
+		switch (resource)
+		{
+			case CRYSTAL_ORE:
+			case CORRUPTED_ORE:
+			case PHREN_BARK:
+			case CORRUPTED_PHREN_BARK:
+			case LINUM_TIRINUM:
+			case CORRUPTED_LINUM_TIRINUM:
+				return InfoBoxPriority.HIGH;
+			case GRYM_LEAF:
+			case CORRUPTED_GRYM_LEAF:
+				return InfoBoxPriority.MED;
+			case CRYSTAL_SHARDS:
+			case CORRUPTED_SHARDS:
+			case RAW_PADDLEFISH:
+				return InfoBoxPriority.NONE;
+			default:
+				return InfoBoxPriority.LOW;
+		}
 	}
 }

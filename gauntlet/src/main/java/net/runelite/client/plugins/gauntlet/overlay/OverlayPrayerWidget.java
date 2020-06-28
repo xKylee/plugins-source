@@ -70,11 +70,6 @@ public class OverlayPrayerWidget extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || !plugin.isInHunllefRoom())
-		{
-			return null;
-		}
-
 		final PrayerHighlightMode prayerHighlightMode = config.prayerOverlay();
 
 		if (prayerHighlightMode == PrayerHighlightMode.NONE || prayerHighlightMode == PrayerHighlightMode.BOX)
@@ -98,7 +93,7 @@ public class OverlayPrayerWidget extends Overlay
 
 		// Overlay outline on the prayer widget
 
-		final Hunllef.BossAttackPhase phase = hunllef.getCurrentPhase();
+		final Hunllef.AttackPhase phase = hunllef.getAttackPhase();
 
 		final Prayer prayer = phase.getPrayer();
 
@@ -113,7 +108,7 @@ public class OverlayPrayerWidget extends Overlay
 
 		// Overlay tick count on the prayer widget
 
-		final int ticksUntilAttack = hunllef.getTicksUntilAttack();
+		final int ticksUntilAttack = hunllef.getTicksUntilNextAttack();
 
 		final String text = String.valueOf(ticksUntilAttack);
 
