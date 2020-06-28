@@ -294,7 +294,7 @@ public class InfernoPlugin extends Plugin
 		{
 			finalPhaseTick = false;
 		}
-		else if(finalPhase)
+		else if (finalPhase)
 		{
 			ticksSinceFinalPhase++;
 		}
