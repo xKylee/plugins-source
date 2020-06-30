@@ -23,22 +23,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
 import com.google.inject.Inject;
-import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.components.ComponentConstants;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.ProgressBarComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Map;
 
-import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
-
-public class PlayerSidebarOverlay extends OverlayPanel {
+public class PlayerSidebarOverlay extends OverlayPanel
+{
 
     private static final Color HP_FG = new Color(0, 146, 54, 230);
     private static final Color HP_BG = new Color(102, 15, 16, 230);
@@ -56,7 +59,8 @@ public class PlayerSidebarOverlay extends OverlayPanel {
     private final PlayerStatusConfig config;
 
     @Inject
-    private PlayerSidebarOverlay(final PlayerStatusPlugin plugin, final PlayerStatusConfig config) {
+    private PlayerSidebarOverlay(final PlayerStatusPlugin plugin, final PlayerStatusConfig config)
+    {
         super(plugin);
         this.plugin = plugin;
         this.config = config;
@@ -67,17 +71,24 @@ public class PlayerSidebarOverlay extends OverlayPanel {
 
 
     @Override
-    public Dimension render(Graphics2D graphics) {
+    public Dimension render(Graphics2D graphics)
+    {
         final Map<String, PlayerStatus> partyStatus = this.plugin.getPartyStatus();
         if (partyStatus.size() <= 1)
+        {
             return null;
+        }
 
-        if (!this.config.showPlayerHealth() && !this.config.showPlayerPrayer() && !this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
+        if (!this.config.showPlayerHealth() && !this.config.showPlayerPrayer() &&
+                !this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
+        {
             return null; // No options are turned on. Nothing to display.
+        }
 
         panelComponent.setBackgroundColor(null);
 
-        synchronized (partyStatus) {
+        synchronized (partyStatus)
+        {
             partyStatus.forEach((targetName, targetStatus) -> {
                 final PanelComponent panel = targetStatus.getPanel();
                 panel.getChildren().clear();
@@ -88,7 +99,8 @@ public class PlayerSidebarOverlay extends OverlayPanel {
                         .build();
                 panel.getChildren().add(name);
 
-                if (this.config.showPlayerHealth()) {
+                if (this.config.showPlayerHealth())
+                {
                     final ProgressBarComponent hpBar = new ProgressBarComponent();
                     hpBar.setBackgroundColor(HP_BG);
                     hpBar.setForegroundColor(HP_FG);
@@ -98,7 +110,8 @@ public class PlayerSidebarOverlay extends OverlayPanel {
                     panel.getChildren().add(hpBar);
                 }
 
-                if (this.config.showPlayerPrayer()) {
+                if (this.config.showPlayerPrayer())
+                {
                     final ProgressBarComponent prayBar = new ProgressBarComponent();
                     prayBar.setBackgroundColor(PRAY_BG);
                     prayBar.setForegroundColor(PRAY_FG);
@@ -108,7 +121,8 @@ public class PlayerSidebarOverlay extends OverlayPanel {
                     panel.getChildren().add(prayBar);
                 }
 
-                if (this.config.showPlayerRunEnergy()) {
+                if (this.config.showPlayerRunEnergy())
+                {
                     final ProgressBarComponent runBar = new ProgressBarComponent();
                     runBar.setBackgroundColor(RUN_BG);
                     runBar.setForegroundColor(RUN_FG);
@@ -118,7 +132,8 @@ public class PlayerSidebarOverlay extends OverlayPanel {
                     panel.getChildren().add(runBar);
                 }
 
-                if (this.config.showPlayerSpecial()) {
+                if (this.config.showPlayerSpecial())
+                {
                     final ProgressBarComponent specBar = new ProgressBarComponent();
                     specBar.setBackgroundColor(SPEC_BG);
                     specBar.setForegroundColor(SPEC_FG);

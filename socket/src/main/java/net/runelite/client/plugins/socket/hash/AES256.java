@@ -11,10 +11,13 @@ import java.util.Base64;
  *
  * @author https://howtodoinjava.com/security/aes-256-encryption-decryption/
  */
-public class AES256 {
+public class AES256
+{
 
-    public static String encrypt(String secret, String strToEncrypt) {
-        try {
+    public static String encrypt(String secret, String strToEncrypt)
+    {
+        try
+        {
             byte[] key = secret.getBytes("UTF-8");
 
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
@@ -27,14 +30,17 @@ public class AES256 {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
             return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String decrypt(String secret, String strToDecrypt) {
-        try {
+    public static String decrypt(String secret, String strToDecrypt)
+    {
+        try
+        {
             byte[] key = secret.getBytes("UTF-8");
 
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
@@ -47,7 +53,8 @@ public class AES256 {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
 
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }

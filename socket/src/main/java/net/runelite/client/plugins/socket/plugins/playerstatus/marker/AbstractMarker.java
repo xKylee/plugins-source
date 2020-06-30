@@ -22,25 +22,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus.marker;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-public abstract class AbstractMarker {
+public abstract class AbstractMarker
+{
 
     @Setter(AccessLevel.PUBLIC)
     @Getter(AccessLevel.PUBLIC)
     private BufferedImage baseImage;
 
-    public BufferedImage getImage(int size) {
+    public BufferedImage getImage(int size)
+    {
         BufferedImage baseImage = this.getBaseImage();
         if (baseImage == null)
+        {
             return null;
+        }
 
         double height = baseImage.getHeight() > 0 ? baseImage.getHeight() : 1;
         double scale = ((double) size) / height;

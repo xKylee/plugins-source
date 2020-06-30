@@ -10,7 +10,8 @@ import net.runelite.api.events.Event;
  * This event is not triggered on the client thread.
  */
 @AllArgsConstructor
-public class SocketPlayerLeave implements Event {
+public class SocketPlayerLeave implements Event
+{
 
     @Getter(AccessLevel.PUBLIC)
     private String playerName;

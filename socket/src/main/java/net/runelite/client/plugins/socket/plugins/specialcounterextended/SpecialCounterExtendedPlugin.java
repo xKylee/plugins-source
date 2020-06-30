@@ -23,12 +23,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.*;
-import net.runelite.api.events.*;
+import net.runelite.api.Actor;
+import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.GameState;
+import net.runelite.api.Hitsplat;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemContainer;
+import net.runelite.api.NPC;
+import net.runelite.api.Skill;
+import net.runelite.api.VarPlayer;
+import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.HitsplatApplied;
+import net.runelite.api.events.InteractingChanged;
+import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
@@ -59,7 +75,8 @@ import java.util.Set;
         type = PluginType.PVM
 )
 @Slf4j
-public class SpecialCounterExtendedPlugin extends Plugin {
+public class SpecialCounterExtendedPlugin extends Plugin
+{
 
     @Inject
     private Client client;
@@ -86,12 +103,14 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     private SpecialCounterExtendedConfig config;
 
     @Provides
-    SpecialCounterExtendedConfig getConfig(ConfigManager configManager) {
+    SpecialCounterExtendedConfig getConfig(ConfigManager configManager)
+    {
         return configManager.getConfig(SpecialCounterExtendedConfig.class);
     }
 
     @Override
-    protected void startUp() {
+    protected void startUp()
+    {
         currentWorld = -1;
         specialPercentage = -1;
         lastSpecTarget = null;
@@ -106,7 +125,8 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     }
 
     @Override
-    protected void shutDown() {
+    protected void shutDown()
+    {
         removeCounters();
         this.overlayManager.remove(this.overlay);
     }
@@ -114,16 +134,21 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     private int currentWorld;
 
     @Subscribe // If you hop worlds, reset the current spec counter.
-    public void onGameStateChanged(GameStateChanged event) {
+    public void onGameStateChanged(GameStateChanged event)
+    {
         GameState state = event.getGameState();
-        if (state == GameState.LOGGED_IN) {
-            if (currentWorld == -1) {
+        if (state == GameState.LOGGED_IN)
+        {
+            if (currentWorld == -1)
+            {
                 currentWorld = client.getWorld();
-            } else if (currentWorld != client.getWorld()) {
+            } else if (currentWorld != client.getWorld())
+            {
                 currentWorld = client.getWorld();
                 removeCounters();
             }
-        } else if (state == GameState.LOGIN_SCREEN) {
+        } else if (state == GameState.LOGIN_SCREEN)
+        {
             removeCounters();
         }
     }
@@ -142,21 +167,27 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     private long magicExperience = -1;
 
     @Subscribe // Player changed attack targets after queuing special.
-    public void onInteractingChanged(InteractingChanged interactingChanged) {
+    public void onInteractingChanged(InteractingChanged interactingChanged)
+    {
         Actor source = interactingChanged.getSource();
         Actor target = interactingChanged.getTarget();
 
-        if (lastSpecTick != client.getTickCount() || source != client.getLocalPlayer() || target == null)
+        if (lastSpecTick != client.getTickCount() || source != client.getLocalPlayer() ||
+                target == null)
+        {
             return;
+        }
 
         lastSpecTarget = target;
     }
 
     @Subscribe // Player queues special attack.
-    public void onVarbitChanged(VarbitChanged event) {
+    public void onVarbitChanged(VarbitChanged event)
+    {
         int specialPercentage = client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT);
 
-        if (this.specialPercentage == -1 || specialPercentage >= this.specialPercentage) {
+        if (this.specialPercentage == -1 || specialPercentage >= this.specialPercentage)
+        {
             this.specialPercentage = specialPercentage;
             return;
         }
@@ -173,14 +204,21 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     }
 
     @Subscribe // For Dawnbringer, EXP tracked.
-    public void onGameTick(GameTick event) {
+    public void onGameTick(GameTick event)
+    {
         if (client.getGameState() != GameState.LOGGED_IN)
+        {
             return;
+        }
 
         if (!this.config.guessDawnbringer()) // They want to wait for the Hitsplat instead.
+        {
             return;
+        }
 
-        if (this.specialExperience != -1 && this.specialUsed && this.lastSpecTarget != null && this.lastSpecTarget instanceof NPC) {
+        if (this.specialExperience != -1 && this.specialUsed && this.lastSpecTarget != null &&
+                this.lastSpecTarget instanceof NPC)
+        {
             this.specialUsed = false;
 
             long deltaExp = this.client.getOverallExperience() - this.specialExperience;
@@ -189,14 +227,17 @@ public class SpecialCounterExtendedPlugin extends Plugin {
             long deltaMagicExp = this.client.getSkillExperience(Skill.MAGIC) - this.magicExperience;
             this.magicExperience = -1;
 
-            if (this.specialWeapon != null && this.specialWeapon == SpecialWeapon.DAWNBRINGER) {
+            if (this.specialWeapon != null && this.specialWeapon == SpecialWeapon.DAWNBRINGER)
+            {
                 int currentAttackStyleVarbit = client.getVar(VarPlayer.ATTACK_STYLE);
 
                 // This formula causes a 1-off error (sometimes) as exp is a float on Jagex's servers.
                 int damage;
-                if (currentAttackStyleVarbit == 3) { // Defensive Casting
+                if (currentAttackStyleVarbit == 3)
+                { // Defensive Casting
                     damage = (int) Math.round(((double) deltaMagicExp) / 1.4d);
-                } else { // Agressive Casting
+                } else
+                { // Agressive Casting
                     damage = (int) Math.round(((double) deltaExp) / 3.5d);
                 }
 
@@ -219,20 +260,25 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onHitsplatApplied(HitsplatApplied hitsplatApplied) {
+    public void onHitsplatApplied(HitsplatApplied hitsplatApplied)
+    {
         Actor target = hitsplatApplied.getActor();
         Hitsplat hitsplat = hitsplatApplied.getHitsplat();
         Hitsplat.HitsplatType hitsplatType = hitsplat.getHitsplatType();
 
         // Ignore all hitsplats other than mine
         if (!hitsplat.isMine() || target == client.getLocalPlayer())
+        {
             return;
+        }
 
         log.debug("Hitsplat target: {} spec target: {}", target, lastSpecTarget);
 
         // If waiting for a spec, ignore hitsplats not on the actor we specced
         if (lastSpecTarget != null && lastSpecTarget != target)
+        {
             return;
+        }
 
         boolean wasSpec = lastSpecTarget != null;
         lastSpecTarget = null;
@@ -241,20 +287,25 @@ public class SpecialCounterExtendedPlugin extends Plugin {
         magicExperience = -1L;
 
         if (!(target instanceof NPC))
+        {
             return;
+        }
 
         NPC npc = (NPC) target;
         int interactingId = npc.getId();
 
         // If this is a new NPC reset the counters
-        if (!interactedNpcIds.contains(interactingId)) {
+        if (!interactedNpcIds.contains(interactingId))
+        {
             removeCounters();
             addInteracting(interactingId);
         }
 
-        if (wasSpec && specialWeapon != null && hitsplat.getAmount() > 0) {
+        if (wasSpec && specialWeapon != null && hitsplat.getAmount() > 0)
+        {
             int hit = getHit(specialWeapon, hitsplat);
-            log.debug("Special attack target: id: {} - target: {} - weapon: {} - amount: {}", interactingId, target, specialWeapon, hit);
+            log.debug("Special attack target: id: {} - target: {} - weapon: {} - amount: {}",
+                    interactingId, target, specialWeapon, hit);
 
             final String pName = this.client.getLocalPlayer().getName();
             updateCounter(pName, specialWeapon, null, hit);
@@ -272,20 +323,28 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onSocketReceivePacket(SocketReceivePacket event) {
-        try {
+    public void onSocketReceivePacket(SocketReceivePacket event)
+    {
+        try
+        {
             if (this.client.getGameState() != GameState.LOGGED_IN)
+            {
                 return;
+            }
 
             JSONObject payload = event.getPayload();
             if (!payload.has("special-extended"))
+            {
                 return;
+            }
 
             final String pName = this.client.getLocalPlayer().getName();
 
             final JSONObject data = payload.getJSONObject("special-extended");
             if (data.getString("player").equals(pName))
+            {
                 return; // We ignore self.
+            }
 
             clientThread.invoke(() -> {
                 SpecialWeapon weapon = SpecialWeapon.values()[data.getInt("weapon")];
@@ -293,84 +352,111 @@ public class SpecialCounterExtendedPlugin extends Plugin {
                 int targetId = data.getInt("target");
 
                 // If this is a new NPC reset the counters
-                if (!interactedNpcIds.contains(targetId)) {
+                if (!interactedNpcIds.contains(targetId))
+                {
                     removeCounters();
                     addInteracting(targetId);
                 }
 
                 updateCounter(attacker, weapon, attacker, data.getInt("hit"));
             });
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    private void addInteracting(int npcId) {
+    private void addInteracting(int npcId)
+    {
         interactedNpcIds.add(npcId);
 
         // Add alternate forms of bosses
         final Boss boss = Boss.getBoss(npcId);
         if (boss != null)
+        {
             interactedNpcIds.addAll(boss.getIds());
+        }
     }
 
-    private int getHit(SpecialWeapon specialWeapon, Hitsplat hitsplat) {
+    private int getHit(SpecialWeapon specialWeapon, Hitsplat hitsplat)
+    {
         return specialWeapon.isDamage() ? hitsplat.getAmount() : 1;
     }
 
-    private SpecialWeapon usedSpecialWeapon() {
+    private SpecialWeapon usedSpecialWeapon()
+    {
         ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
 
         if (equipment == null)
+        {
             return null;
+        }
 
         Item[] items = equipment.getItems();
         int weaponIdx = EquipmentInventorySlot.WEAPON.getSlotIdx();
 
         if (items == null || weaponIdx >= items.length)
+        {
             return null;
+        }
 
         Item weapon = items[weaponIdx];
 
         for (SpecialWeapon specialWeapon : SpecialWeapon.values())
+        {
             if (specialWeapon.getItemID() == weapon.getId())
+            {
                 return specialWeapon;
+            }
+        }
 
         return null;
     }
 
-    private void updateCounter(String player, SpecialWeapon specialWeapon, String name, int hit) {
+    private void updateCounter(String player, SpecialWeapon specialWeapon, String name, int hit)
+    {
         // Hotfix for Bandos Godsword (OR)
         if (specialWeapon == SpecialWeapon.BANDOS_GODSWORD_OR)
+        {
             specialWeapon = SpecialWeapon.BANDOS_GODSWORD;
+        }
 
         SpecialCounter counter = specialCounter[specialWeapon.ordinal()];
 
         BufferedImage image = itemManager.getImage(specialWeapon.getItemID());
-        this.overlay.addOverlay(player, new SpecialIcon(image, Integer.toString(hit), System.currentTimeMillis()));
+        this.overlay.addOverlay(player,
+                new SpecialIcon(image, Integer.toString(hit), System.currentTimeMillis()));
 
-        if (counter == null) {
+        if (counter == null)
+        {
             counter = new SpecialCounter(image, this,
                     hit, specialWeapon);
             infoBoxManager.addInfoBox(counter);
             specialCounter[specialWeapon.ordinal()] = counter;
         } else
+        {
             counter.addHits(hit);
+        }
 
         // If in a party, add hit to partySpecs for the infobox tooltip
         Map<String, Integer> partySpecs = counter.getPartySpecs();
-        if (partySpecs.containsKey(name)) {
+        if (partySpecs.containsKey(name))
+        {
             partySpecs.put(name, hit + partySpecs.get(name));
-        } else {
+        } else
+        {
             partySpecs.put(name, hit);
         }
     }
 
-    private void removeCounters() {
+    private void removeCounters()
+    {
         interactedNpcIds.clear();
-        for (int i = 0; i < specialCounter.length; ++i) {
+        for (int i = 0; i < specialCounter.length; ++i)
+        {
             SpecialCounter counter = specialCounter[i];
-            if (counter != null) {
+            if (counter != null)
+            {
                 infoBoxManager.removeInfoBox(counter);
                 specialCounter[i] = null;
             }
@@ -378,13 +464,18 @@ public class SpecialCounterExtendedPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onNpcDespawned(NpcDespawned npcDespawned) {
+    public void onNpcDespawned(NpcDespawned npcDespawned)
+    {
         NPC actor = npcDespawned.getNpc();
 
         if (lastSpecTarget == actor)
+        {
             lastSpecTarget = null;
+        }
 
         if (actor.isDead() && interactedNpcIds.contains(actor.getId()))
+        {
             removeCounters();
+        }
     }
 }

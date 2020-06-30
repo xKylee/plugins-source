@@ -22,18 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-import static net.runelite.client.plugins.socket.SocketPlugin.CONFIG_VERSION;
-
 import java.util.UUID;
 
+import static net.runelite.client.plugins.socket.SocketPlugin.CONFIG_VERSION;
+
 @ConfigGroup(CONFIG_VERSION)
-public interface SocketConfig extends Config {
+public interface SocketConfig extends Config
+{
 
     @ConfigItem(
             position = 0,
@@ -41,7 +43,8 @@ public interface SocketConfig extends Config {
             name = "Server Host Address",
             description = "The host address of the server to connect to."
     )
-    default String getServerAddress() {
+    default String getServerAddress()
+    {
         return "localhost";
     }
 
@@ -51,7 +54,8 @@ public interface SocketConfig extends Config {
             name = "Server Port Number",
             description = "The port number of the server to connect to."
     )
-    default int getServerPort() {
+    default int getServerPort()
+    {
         return 26388;
     }
 
@@ -61,7 +65,8 @@ public interface SocketConfig extends Config {
             name = "Shared Password",
             description = "Used to encrypt and decrypt data sent to the server."
     )
-    default String getPassword() {
+    default String getPassword()
+    {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

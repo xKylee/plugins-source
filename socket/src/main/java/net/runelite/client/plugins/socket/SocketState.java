@@ -22,12 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket;
 
 /**
  * An enum class that identifies the state of the socket connection.
  */
-public enum SocketState {
+public enum SocketState
+{
 
     // Connection has not been attempted yet. Default state.
     DISCONNECTED,

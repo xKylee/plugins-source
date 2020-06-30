@@ -22,12 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket;
 
 /**
  * Identify the String headers of each packet broadcast type.
  */
-public class SocketPacket {
+public class SocketPacket
+{
 
     public static final String JOIN = "JOIN";
     public static final String LEAVE = "LEAVE";

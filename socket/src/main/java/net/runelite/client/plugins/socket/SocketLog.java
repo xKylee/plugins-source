@@ -22,19 +22,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket;
 
 /**
  * Enum message types for broadcasting a message to the user's chatbox.
  * SocketLog identifies a color prefix to use in each scenario.
  */
-public enum SocketLog {
+public enum SocketLog
+{
 
     INFO("<col=008000>"), ERROR("<col=b4281e>");
 
     private String prefix;
 
-    SocketLog(String prefix) {
+    SocketLog(String prefix)
+    {
         this.prefix = prefix;
     }
 
@@ -43,7 +46,8 @@ public enum SocketLog {
      *
      * @return String hex tag.
      */
-    public String getPrefix() {
+    public String getPrefix()
+    {
         return this.prefix;
     }
 }

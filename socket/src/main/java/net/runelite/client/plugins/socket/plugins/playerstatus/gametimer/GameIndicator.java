@@ -22,16 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus.gametimer;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.SpriteID;
 
-import java.awt.*;
+import java.awt.Color;
 
 @Getter(AccessLevel.PUBLIC)
-public enum GameIndicator {
+public enum GameIndicator
+{
 
     VENGEANCE_ACTIVE(SpriteID.SPELL_VENGEANCE_OTHER, GameTimerImageType.SPRITE, "Vengeance active");
 
@@ -41,7 +43,9 @@ public enum GameIndicator {
     private final int imageId;
     private final GameTimerImageType imageType;
 
-    GameIndicator(int imageId, GameTimerImageType idType, String description, String text, Color textColor) {
+    GameIndicator(int imageId, GameTimerImageType idType, String description, String text,
+                  Color textColor)
+    {
         this.imageId = imageId;
         this.imageType = idType;
         this.description = description;
@@ -49,7 +53,8 @@ public enum GameIndicator {
         this.textColor = textColor;
     }
 
-    GameIndicator(int imageId, GameTimerImageType idType, String description) {
+    GameIndicator(int imageId, GameTimerImageType idType, String description)
+    {
         this(imageId, idType, description, "", null);
     }
 }

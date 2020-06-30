@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus.marker;
 
 import lombok.AccessLevel;
@@ -29,11 +30,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
 @AllArgsConstructor
-public class IndicatorMarker extends AbstractMarker {
+public class IndicatorMarker extends AbstractMarker
+{
 
     @Getter(AccessLevel.PUBLIC)
     private GameIndicator indicator;

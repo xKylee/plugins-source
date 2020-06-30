@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
 import net.runelite.api.Client;
@@ -41,13 +42,18 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 
 import javax.inject.Inject;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerStatusOverlay extends Overlay {
+public class PlayerStatusOverlay extends Overlay
+{
 
     private final Client client;
     private final PlayerStatusPlugin plugin;
@@ -57,7 +63,9 @@ public class PlayerStatusOverlay extends Overlay {
     private final SpriteManager spriteManager;
 
     @Inject
-    public PlayerStatusOverlay(Client client, PlayerStatusPlugin plugin, PlayerStatusConfig config, ItemManager itemManager, SpriteManager spriteManager) {
+    public PlayerStatusOverlay(Client client, PlayerStatusPlugin plugin, PlayerStatusConfig config,
+                               ItemManager itemManager, SpriteManager spriteManager)
+    {
         this.client = client;
         this.plugin = plugin;
         this.config = config;
@@ -70,21 +78,28 @@ public class PlayerStatusOverlay extends Overlay {
         this.setLayer(OverlayLayer.ALWAYS_ON_TOP);
     }
 
-    private boolean ignoreMarker(AbstractMarker marker) {
+    private boolean ignoreMarker(AbstractMarker marker)
+    {
         if (marker == null)
+        {
             return true;
+        }
 
-        if (marker instanceof IndicatorMarker) {
+        if (marker instanceof IndicatorMarker)
+        {
             GameIndicator indicator = ((IndicatorMarker) marker).getIndicator();
-            switch (indicator) {
+            switch (indicator)
+            {
                 case VENGEANCE_ACTIVE:
                     return !this.config.showVengeanceActive();
                 default:
                     return true;
             }
-        } else if (marker instanceof TimerMarker) {
+        } else if (marker instanceof TimerMarker)
+        {
             GameTimer timer = ((TimerMarker) marker).getTimer();
-            switch (timer) {
+            switch (timer)
+            {
                 case VENGEANCE:
                     return !this.config.showVengeanceCooldown();
                 case IMBUED_HEART:
@@ -104,28 +119,38 @@ public class PlayerStatusOverlay extends Overlay {
         return true;
     }
 
-    private List<AbstractMarker> renderPlayer(Graphics graphics, Player p, List<AbstractMarker> markers) {
+    private List<AbstractMarker> renderPlayer(Graphics graphics, Player p,
+                                              List<AbstractMarker> markers)
+    {
         List<AbstractMarker> toRemove = new ArrayList<AbstractMarker>();
 
         int size = this.config.getIndicatorSize();
         int margin = this.config.getIndicatorPadding();
         graphics.setFont(new Font("SansSerif", Font.BOLD, (int) (0.75d * size)));
 
-        Point base = Perspective.localToCanvas(this.client, p.getLocalLocation(), this.client.getPlane(), p.getLogicalHeight());
+        Point base = Perspective
+                .localToCanvas(this.client, p.getLocalLocation(), this.client.getPlane(),
+                        p.getLogicalHeight());
         int zOffset = 0;
         int xOffset = this.config.getIndicatorXOffset() - (size / 2);
 
-        for (AbstractMarker marker : markers) {
+        for (AbstractMarker marker : markers)
+        {
             if (this.ignoreMarker(marker))
+            {
                 continue;
+            }
 
-            if (marker instanceof TimerMarker) {
+            if (marker instanceof TimerMarker)
+            {
                 TimerMarker timer = (TimerMarker) marker;
                 long elapsedTime = System.currentTimeMillis() - timer.getStartTime();
                 double timeRemaining = timer.getTimer().getDuration().toMillis() - elapsedTime;
                 if (timeRemaining < 0)
+                {
                     toRemove.add(marker);
-                else {
+                } else
+                {
                     BufferedImage icon = timer.getImage(size);
                     graphics.drawImage(icon, base.getX() + xOffset, base.getY() + zOffset, null);
                     zOffset += size;
@@ -133,9 +158,12 @@ public class PlayerStatusOverlay extends Overlay {
                     int xDelta = icon.getWidth() + margin; // +5 for padding
                     String text;
                     if (timeRemaining > (100 * 1000))
+                    {
                         text = String.format("%d", (long) (timeRemaining / 1000));
-                    else
+                    } else
+                    {
                         text = String.format("%.1f", timeRemaining / 1000);
+                    }
 
                     graphics.setColor(Color.BLACK);
                     graphics.drawString(text, base.getX() + xOffset + xDelta + 1, base.getY() + zOffset);
@@ -144,7 +172,8 @@ public class PlayerStatusOverlay extends Overlay {
                     graphics.drawString(text, base.getX() + xOffset + xDelta, base.getY() + zOffset);
                     zOffset += margin;
                 }
-            } else if (marker instanceof IndicatorMarker) {
+            } else if (marker instanceof IndicatorMarker)
+            {
                 IndicatorMarker timer = (IndicatorMarker) marker;
                 BufferedImage icon = timer.getImage(size);
                 graphics.drawImage(icon, base.getX() + xOffset, base.getY() + zOffset, null);
@@ -156,40 +185,58 @@ public class PlayerStatusOverlay extends Overlay {
     }
 
     @Override
-    public Dimension render(Graphics2D graphics) {
+    public Dimension render(Graphics2D graphics)
+    {
         Map<String, List<AbstractMarker>> effects = this.plugin.getStatusEffects();
         Player p = this.client.getLocalPlayer();
 
         List<AbstractMarker> localMarkers = effects.get(null);
-        if (localMarkers != null) {
+        if (localMarkers != null)
+        {
             List<AbstractMarker> toRemove = this.renderPlayer(graphics, p, localMarkers);
 
-            if (!toRemove.isEmpty()) {
-                synchronized (effects) {
+            if (!toRemove.isEmpty())
+            {
+                synchronized (effects)
+                {
                     for (AbstractMarker marker : toRemove)
+                    {
                         localMarkers.remove(marker);
+                    }
 
                     if (localMarkers.isEmpty())
+                    {
                         effects.remove(null);
+                    }
                 }
             }
         }
 
-        for (Player t : this.client.getPlayers()) {
+        for (Player t : this.client.getPlayers())
+        {
             if (p == t)
+            {
                 continue;
+            }
 
             List<AbstractMarker> markers = effects.get(t.getName());
-            if (markers != null) {
+            if (markers != null)
+            {
                 List<AbstractMarker> toRemove = this.renderPlayer(graphics, t, markers);
 
-                if (!toRemove.isEmpty()) {
-                    synchronized (markers) {
+                if (!toRemove.isEmpty())
+                {
+                    synchronized (markers)
+                    {
                         for (AbstractMarker marker : toRemove)
+                        {
                             markers.remove(marker);
+                        }
 
                         if (markers.isEmpty())
+                        {
                             effects.remove(t.getName());
+                        }
                     }
                 }
             }

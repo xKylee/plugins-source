@@ -28,12 +28,16 @@ import java.util.Iterator;
 
 /**
  * Convert an HTTP header to a JSONObject and back.
+ *
  * @author JSON.org
  * @version 2014-05-03
  */
-public class HTTP {
+public class HTTP
+{
 
-    /** Carriage return/line feed. */
+    /**
+     * Carriage return/line feed.
+     */
     public static final String CRLF = "\r\n";
 
     /**
@@ -63,18 +67,21 @@ public class HTTP {
      * ...}</pre>
      * It does no further checking or conversion. It does not parse dates.
      * It does not do '%' transforms on URLs.
+     *
      * @param string An HTTP header string.
      * @return A JSONObject containing the elements and attributes
      * of the XML string.
      * @throws JSONException
      */
-    public static JSONObject toJSONObject(String string) throws JSONException {
-        JSONObject     jo = new JSONObject();
-        HTTPTokener    x = new HTTPTokener(string);
-        String         token;
+    public static JSONObject toJSONObject(String string) throws JSONException
+    {
+        JSONObject jo = new JSONObject();
+        HTTPTokener x = new HTTPTokener(string);
+        String token;
 
         token = x.nextToken();
-        if (token.toUpperCase().startsWith("HTTP")) {
+        if (token.toUpperCase().startsWith("HTTP"))
+        {
 
 // Response
 
@@ -83,7 +90,8 @@ public class HTTP {
             jo.put("Reason-Phrase", x.nextTo('\0'));
             x.next();
 
-        } else {
+        } else
+        {
 
 // Request
 
@@ -94,7 +102,8 @@ public class HTTP {
 
 // Fields
 
-        while (x.more()) {
+        while (x.more())
+        {
             String name = x.nextTo(':');
             x.next(':');
             jo.put(name, x.nextTo('\0'));
@@ -119,22 +128,26 @@ public class HTTP {
      * }</pre>
      * Any other members of the JSONObject will be output as HTTP fields.
      * The result will end with two CRLF pairs.
+     *
      * @param jo A JSONObject
      * @return An HTTP header string.
      * @throws JSONException if the object does not contain enough
-     *  information.
+     *                       information.
      */
-    public static String toString(JSONObject jo) throws JSONException {
-        Iterator<String>    keys = jo.keys();
-        String              string;
-        StringBuilder       sb = new StringBuilder();
-        if (jo.has("Status-Code") && jo.has("Reason-Phrase")) {
+    public static String toString(JSONObject jo) throws JSONException
+    {
+        Iterator<String> keys = jo.keys();
+        String string;
+        StringBuilder sb = new StringBuilder();
+        if (jo.has("Status-Code") && jo.has("Reason-Phrase"))
+        {
             sb.append(jo.getString("HTTP-Version"));
             sb.append(' ');
             sb.append(jo.getString("Status-Code"));
             sb.append(' ');
             sb.append(jo.getString("Reason-Phrase"));
-        } else if (jo.has("Method") && jo.has("Request-URI")) {
+        } else if (jo.has("Method") && jo.has("Request-URI"))
+        {
             sb.append(jo.getString("Method"));
             sb.append(' ');
             sb.append('"');
@@ -142,15 +155,18 @@ public class HTTP {
             sb.append('"');
             sb.append(' ');
             sb.append(jo.getString("HTTP-Version"));
-        } else {
+        } else
+        {
             throw new JSONException("Not enough material for an HTTP header.");
         }
         sb.append(CRLF);
-        while (keys.hasNext()) {
+        while (keys.hasNext())
+        {
             string = keys.next();
-            if (!"HTTP-Version".equals(string)      && !"Status-Code".equals(string) &&
+            if (!"HTTP-Version".equals(string) && !"Status-Code".equals(string) &&
                     !"Reason-Phrase".equals(string) && !"Method".equals(string) &&
-                    !"Request-URI".equals(string)   && !jo.isNull(string)) {
+                    !"Request-URI".equals(string) && !jo.isNull(string))
+            {
                 sb.append(string);
                 sb.append(": ");
                 sb.append(jo.getString(string));

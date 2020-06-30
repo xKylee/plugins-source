@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
 import lombok.AccessLevel;
@@ -34,7 +35,8 @@ import net.runelite.client.ui.overlay.components.PanelComponent;
 @Setter(AccessLevel.PUBLIC)
 @Getter(AccessLevel.PUBLIC)
 @AllArgsConstructor
-public class PlayerStatus {
+public class PlayerStatus
+{
 
     private final PanelComponent panel = new PanelComponent();
 
@@ -47,9 +49,12 @@ public class PlayerStatus {
     private int run;
     private int special;
 
-    private PlayerStatus() {}
+    private PlayerStatus()
+    {
+    }
 
-    public JSONObject toJSON() {
+    public JSONObject toJSON()
+    {
         JSONObject json = new JSONObject();
         json.put("health", this.health);
         json.put("max-health", this.maxHealth);
@@ -60,7 +65,8 @@ public class PlayerStatus {
         return json;
     }
 
-    public void parseJSON(JSONObject json) {
+    public void parseJSON(JSONObject json)
+    {
         this.health = json.getInt("health");
         this.maxHealth = json.getInt("max-health");
         this.prayer = json.getInt("prayer");
@@ -69,7 +75,8 @@ public class PlayerStatus {
         this.special = json.getInt("special");
     }
 
-    public static PlayerStatus fromJSON(JSONObject json) {
+    public static PlayerStatus fromJSON(JSONObject json)
+    {
         PlayerStatus ps = new PlayerStatus();
         ps.parseJSON(json);
         return ps;

@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +31,8 @@ import net.runelite.api.ItemID;
 
 @AllArgsConstructor
 @Getter
-enum SpecialWeapon {
+enum SpecialWeapon
+{
 
     DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
     ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),

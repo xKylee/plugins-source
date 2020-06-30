@@ -23,6 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import lombok.AccessLevel;
@@ -32,7 +33,8 @@ import lombok.Getter;
 import java.awt.image.BufferedImage;
 
 @AllArgsConstructor
-public class SpecialIcon {
+public class SpecialIcon
+{
 
     @Getter(AccessLevel.PUBLIC)
     private BufferedImage image;

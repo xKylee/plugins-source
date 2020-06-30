@@ -23,6 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import lombok.AccessLevel;
@@ -33,7 +34,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-class SpecialCounter extends Counter {
+class SpecialCounter extends Counter
+{
 
     private final SpecialCounterExtendedPlugin plugin;
     private SpecialWeapon weapon;
@@ -41,42 +43,57 @@ class SpecialCounter extends Counter {
     @Getter(AccessLevel.PACKAGE)
     private final Map<String, Integer> partySpecs = new HashMap<>();
 
-    SpecialCounter(BufferedImage image, SpecialCounterExtendedPlugin plugin, int hitValue, SpecialWeapon weapon) {
+    SpecialCounter(BufferedImage image, SpecialCounterExtendedPlugin plugin, int hitValue,
+                   SpecialWeapon weapon)
+    {
         super(image, plugin, hitValue);
         this.plugin = plugin;
         this.weapon = weapon;
     }
 
-    void addHits(double hit) {
+    void addHits(double hit)
+    {
         int count = getCount();
         setCount(count + (int) hit);
     }
 
     @Override
-    public String getTooltip() {
+    public String getTooltip()
+    {
         int hitValue = getCount();
 
         if (partySpecs.isEmpty())
+        {
             return buildTooltip(hitValue);
+        }
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(buildTooltip(hitValue));
 
         for (Map.Entry<String, Integer> entry : partySpecs.entrySet())
+        {
             stringBuilder.append("</br>")
                     .append(entry.getKey() == null ? "You" : entry.getKey()).append(": ")
                     .append(buildTooltip(entry.getValue()));
+        }
 
         return stringBuilder.toString();
     }
 
-    private String buildTooltip(int hitValue) {
+    private String buildTooltip(int hitValue)
+    {
         if (!weapon.isDamage())
+        {
             if (hitValue == 1)
+            {
                 return weapon.getName() + " special has hit " + hitValue + " time.";
-            else
+            } else
+            {
                 return weapon.getName() + " special has hit " + hitValue + " times.";
-        else
+            }
+        } else
+        {
             return weapon.getName() + " special has hit " + hitValue + " total.";
+        }
     }
 }

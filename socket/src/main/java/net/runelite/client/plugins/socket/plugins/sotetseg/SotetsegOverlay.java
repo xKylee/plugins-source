@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.sotetseg;
 
 import net.runelite.api.Client;
@@ -32,19 +33,25 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 import javax.inject.Inject;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Stroke;
 
-public class SotetsegOverlay extends Overlay {
+public class SotetsegOverlay extends Overlay
+{
 
     private final Client client;
     private final SotetsegPlugin plugin;
     private final SotetsegConfig config;
 
     @Inject
-    private SotetsegOverlay(Client client, SotetsegPlugin plugin, SotetsegConfig config) {
+    private SotetsegOverlay(Client client, SotetsegPlugin plugin, SotetsegConfig config)
+    {
         this.client = client;
         this.plugin = plugin;
         this.config = config;
@@ -56,14 +63,20 @@ public class SotetsegOverlay extends Overlay {
 
 
     @Override
-    public Dimension render(Graphics2D graphics) {
-        if (this.plugin.isSotetsegActive()) {
-            for (final WorldPoint next : this.plugin.getMazePings()) {
+    public Dimension render(Graphics2D graphics)
+    {
+        if (this.plugin.isSotetsegActive())
+        {
+            for (final WorldPoint next : this.plugin.getMazePings())
+            {
                 final LocalPoint localPoint = LocalPoint.fromWorld(this.client, next);
-                if (localPoint != null) {
+                if (localPoint != null)
+                {
                     Polygon poly = Perspective.getCanvasTilePoly(this.client, localPoint);
                     if (poly == null)
+                    {
                         continue;
+                    }
 
                     Color color = this.config.getTileOutline();
                     graphics.setColor(color);

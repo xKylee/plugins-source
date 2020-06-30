@@ -22,17 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.sotetseg;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-import java.awt.*;
-import java.util.UUID;
+import java.awt.Color;
 
 @ConfigGroup("Socket Sotetseg Config")
-public interface SotetsegConfig extends Config {
+public interface SotetsegConfig extends Config
+{
 
     @ConfigItem(
             position = 0,
@@ -40,7 +41,8 @@ public interface SotetsegConfig extends Config {
             name = "Tile Color",
             description = "The color of the tiles."
     )
-    default Color getTileColor() {
+    default Color getTileColor()
+    {
         return new Color(0, 0, 0);
     }
 
@@ -50,7 +52,8 @@ public interface SotetsegConfig extends Config {
             name = "Tile Transparency",
             description = "The color transparency of the tiles. Ranges from 0 to 255, inclusive."
     )
-    default int getTileTransparency() {
+    default int getTileTransparency()
+    {
         return 50;
     }
 
@@ -60,7 +63,8 @@ public interface SotetsegConfig extends Config {
             name = "Tile Outline Color",
             description = "The color of the outline of the tiles."
     )
-    default Color getTileOutline() {
+    default Color getTileOutline()
+    {
         return Color.GREEN;
     }
 
@@ -70,7 +74,8 @@ public interface SotetsegConfig extends Config {
             name = "Tile Outline Size",
             description = "The size of the outline of the tiles."
     )
-    default int getTileOutlineSize() {
+    default int getTileOutlineSize()
+    {
         return 1;
     }
 }

@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
 import net.runelite.client.config.Config;
@@ -29,7 +30,8 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
 @ConfigGroup("Socket Player Status Config v2")
-public interface PlayerStatusConfig extends Config {
+public interface PlayerStatusConfig extends Config
+{
 
     @ConfigItem(
             position = 0,
@@ -37,7 +39,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Indicator Font Size",
             description = "This is the size of the indicator and it's containing text."
     )
-    default int getIndicatorSize() {
+    default int getIndicatorSize()
+    {
         return 15;
     }
 
@@ -47,7 +50,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Indicator X Offset",
             description = "This is horizontal offset of the indicators."
     )
-    default int getIndicatorXOffset() {
+    default int getIndicatorXOffset()
+    {
         return 5;
     }
 
@@ -57,7 +61,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Indicator Border Padding",
             description = "This is the border around each indicator entry."
     )
-    default int getIndicatorPadding() {
+    default int getIndicatorPadding()
+    {
         return 3;
     }
 
@@ -67,7 +72,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Vengeance Cooldown",
             description = "Show players who have vengeance on cooldown."
     )
-    default boolean showVengeanceCooldown() {
+    default boolean showVengeanceCooldown()
+    {
         return false;
     }
 
@@ -77,7 +83,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Vengeance Active",
             description = "Show players with an active vengeance."
     )
-    default boolean showVengeanceActive() {
+    default boolean showVengeanceActive()
+    {
         return false;
     }
 
@@ -87,7 +94,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Stamina",
             description = "Show players who drank a stamina."
     )
-    default boolean showStamina() {
+    default boolean showStamina()
+    {
         return false;
     }
 
@@ -97,7 +105,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Overload",
             description = "Show players who drank an overload."
     )
-    default boolean showOverload() {
+    default boolean showOverload()
+    {
         return true;
     }
 
@@ -107,7 +116,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Prayer Enhance",
             description = "Show players who drank a prayer enhance."
     )
-    default boolean showPrayerEnhance() {
+    default boolean showPrayerEnhance()
+    {
         return false;
     }
 
@@ -117,7 +127,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Imbued Heart",
             description = "Show players who invigorated their imbued heart."
     )
-    default boolean showImbuedHeart() {
+    default boolean showImbuedHeart()
+    {
         return false;
     }
 
@@ -127,7 +138,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Stats Refresh Rate",
             description = "The amount of ticks to wait in-between each stat request. I wouldn't touch this variable."
     )
-    default int getStatsRefreshRate() {
+    default int getStatsRefreshRate()
+    {
         return 3;
     }
 
@@ -137,7 +149,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Team Health",
             description = "Show player's health level."
     )
-    default boolean showPlayerHealth() {
+    default boolean showPlayerHealth()
+    {
         return true;
     }
 
@@ -147,7 +160,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Team Prayer",
             description = "Show player's prayer level."
     )
-    default boolean showPlayerPrayer() {
+    default boolean showPlayerPrayer()
+    {
         return false;
     }
 
@@ -157,7 +171,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Team Run Energy",
             description = "Show player's run energy level."
     )
-    default boolean showPlayerRunEnergy() {
+    default boolean showPlayerRunEnergy()
+    {
         return false;
     }
 
@@ -167,7 +182,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Team Special",
             description = "Show player's special attack bar level."
     )
-    default boolean showPlayerSpecial() {
+    default boolean showPlayerSpecial()
+    {
         return false;
     }
 }

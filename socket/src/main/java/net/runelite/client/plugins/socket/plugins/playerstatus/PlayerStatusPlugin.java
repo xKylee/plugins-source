@@ -24,14 +24,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
 import com.google.inject.Provides;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.*;
-import net.runelite.api.events.*;
+import net.runelite.api.Actor;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.ItemID;
+import net.runelite.api.Player;
+import net.runelite.api.Skill;
+import net.runelite.api.VarPlayer;
+import net.runelite.api.Varbits;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.PlayerDeath;
+import net.runelite.api.events.SpotAnimationChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -53,7 +68,12 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator.VENGEANCE_ACTIVE;
 import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.*;
@@ -63,12 +83,14 @@ import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.
 @PluginDescriptor(
         name = "Socket - Player Status",
         description = "Socket extension for displaying player status to members in your party.",
-        tags = {"socket", "server", "discord", "connection", "broadcast", "player", "status", "venge", "vengeance"},
+        tags = {"socket", "server", "discord", "connection", "broadcast", "player", "status", "venge",
+                "vengeance"},
         enabledByDefault = true,
         type = PluginType.UTILITY
 )
 @Slf4j
-public class PlayerStatusPlugin extends Plugin {
+public class PlayerStatusPlugin extends Plugin
+{
 
     @Inject
     private Client client;
@@ -95,12 +117,14 @@ public class PlayerStatusPlugin extends Plugin {
     private PlayerStatusConfig config;
 
     @Provides
-    PlayerStatusConfig getConfig(ConfigManager configManager) {
+    PlayerStatusConfig getConfig(ConfigManager configManager)
+    {
         return configManager.getConfig(PlayerStatusConfig.class);
     }
 
     @Getter(AccessLevel.PUBLIC)
-    private Map<String, List<AbstractMarker>> statusEffects = new HashMap<String, List<AbstractMarker>>();
+    private Map<String, List<AbstractMarker>> statusEffects =
+            new HashMap<String, List<AbstractMarker>>();
 
     @Getter(AccessLevel.PUBLIC)
     private Map<String, PlayerStatus> partyStatus = new TreeMap<String, PlayerStatus>();
@@ -111,15 +135,18 @@ public class PlayerStatusPlugin extends Plugin {
     private int lastRefresh;
 
     @Override
-    protected void startUp() {
+    protected void startUp()
+    {
         this.lastRaidVarb = -1;
         this.lastRefresh = 0;
 
-        synchronized (this.statusEffects) {
+        synchronized (this.statusEffects)
+        {
             this.statusEffects.clear();
         }
 
-        synchronized (this.partyStatus) {
+        synchronized (this.partyStatus)
+        {
             this.partyStatus.clear();
         }
 
@@ -128,37 +155,46 @@ public class PlayerStatusPlugin extends Plugin {
     }
 
     @Override
-    protected void shutDown() {
+    protected void shutDown()
+    {
         this.overlayManager.remove(this.overlay);
         this.overlayManager.remove(this.sidebar);
     }
 
     @Subscribe
-    public void onVarbitChanged(VarbitChanged event) {
+    public void onVarbitChanged(VarbitChanged event)
+    {
         int raidVarb = client.getVar(Varbits.IN_RAID);
         int vengCooldownVarb = client.getVar(Varbits.VENGEANCE_COOLDOWN);
         int isVengeancedVarb = client.getVar(Varbits.VENGEANCE_ACTIVE);
 
-        if (lastRaidVarb != raidVarb) {
+        if (lastRaidVarb != raidVarb)
+        {
             removeGameTimer(OVERLOAD_RAID);
             removeGameTimer(PRAYER_ENHANCE);
             lastRaidVarb = raidVarb;
         }
 
-        if (lastVengCooldownVarb != vengCooldownVarb) {
-            if (vengCooldownVarb == 1) {
+        if (lastVengCooldownVarb != vengCooldownVarb)
+        {
+            if (vengCooldownVarb == 1)
+            {
                 createGameTimer(VENGEANCE);
-            } else {
+            } else
+            {
                 removeGameTimer(VENGEANCE);
             }
 
             lastVengCooldownVarb = vengCooldownVarb;
         }
 
-        if (lastIsVengeancedVarb != isVengeancedVarb) {
-            if (isVengeancedVarb == 1) {
+        if (lastIsVengeancedVarb != isVengeancedVarb)
+        {
+            if (isVengeancedVarb == 1)
+            {
                 createGameIndicator(VENGEANCE_ACTIVE);
-            } else {
+            } else
+            {
                 removeGameIndicator(VENGEANCE_ACTIVE);
             }
 
@@ -167,7 +203,8 @@ public class PlayerStatusPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onMenuOptionClicked(MenuOptionClicked event) {
+    public void onMenuOptionClicked(MenuOptionClicked event)
+    {
         if (config.showStamina()
                 && event.getOption().contains("Drink")
                 && (event.getIdentifier() == ItemID.STAMINA_MIX1
@@ -175,7 +212,8 @@ public class PlayerStatusPlugin extends Plugin {
                 || event.getIdentifier() == ItemID.EGNIOL_POTION_1
                 || event.getIdentifier() == ItemID.EGNIOL_POTION_2
                 || event.getIdentifier() == ItemID.EGNIOL_POTION_3
-                || event.getIdentifier() == ItemID.EGNIOL_POTION_4)) {
+                || event.getIdentifier() == ItemID.EGNIOL_POTION_4))
+        {
             // Needs menu option hook because mixes use a common drink message, distinct from their standard potion messages
             createGameTimer(STAMINA);
             return;
@@ -183,87 +221,123 @@ public class PlayerStatusPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onChatMessage(ChatMessage event) {
-        if (event.getType() != ChatMessageType.SPAM && event.getType() != ChatMessageType.GAMEMESSAGE) {
+    public void onChatMessage(ChatMessage event)
+    {
+        if (event.getType() != ChatMessageType.SPAM && event.getType() != ChatMessageType.GAMEMESSAGE)
+        {
             return;
         }
 
-        if (event.getMessage().equals(STAMINA_DRINK_MESSAGE) || event.getMessage().equals(STAMINA_SHARED_DRINK_MESSAGE)) {
+        if (event.getMessage().equals(STAMINA_DRINK_MESSAGE) ||
+                event.getMessage().equals(STAMINA_SHARED_DRINK_MESSAGE))
+        {
             createGameTimer(STAMINA);
         }
 
-        if (event.getMessage().equals(STAMINA_EXPIRED_MESSAGE)) {
+        if (event.getMessage().equals(STAMINA_EXPIRED_MESSAGE))
+        {
             removeGameTimer(STAMINA);
         }
 
-        if (event.getMessage().startsWith("You drink some of your") && event.getMessage().contains("overload")) {
-            if (client.getVar(Varbits.IN_RAID) == 1) {
+        if (event.getMessage().startsWith("You drink some of your") &&
+                event.getMessage().contains("overload"))
+        {
+            if (client.getVar(Varbits.IN_RAID) == 1)
+            {
                 createGameTimer(OVERLOAD_RAID);
-            } else {
+            } else
+            {
                 createGameTimer(OVERLOAD);
             }
 
         }
 
-        if (event.getMessage().startsWith("You drink some of your") && event.getMessage().contains("prayer enhance")) {
+        if (event.getMessage().startsWith("You drink some of your") &&
+                event.getMessage().contains("prayer enhance"))
+        {
             createGameTimer(PRAYER_ENHANCE);
         }
 
-        if (event.getMessage().equals(IMBUED_HEART_READY_MESSAGE)) {
+        if (event.getMessage().equals(IMBUED_HEART_READY_MESSAGE))
+        {
             removeGameTimer(IMBUED_HEART);
         }
     }
 
     @Subscribe
-    private void onSpotAnimationChanged(SpotAnimationChanged event) {
+    private void onSpotAnimationChanged(SpotAnimationChanged event)
+    {
         Actor actor = event.getActor();
         Player player = client.getLocalPlayer();
 
-        if (player == null || actor != client.getLocalPlayer()) {
+        if (player == null || actor != client.getLocalPlayer())
+        {
             return;
         }
 
-        if (config.showImbuedHeart() && actor.getSpotAnimation() == IMBUED_HEART.getGraphicId()) {
+        if (config.showImbuedHeart() && actor.getSpotAnimation() == IMBUED_HEART.getGraphicId())
+        {
             createGameTimer(IMBUED_HEART);
         }
     }
 
     @Subscribe
-    public void onPlayerDeath(PlayerDeath event) {
+    public void onPlayerDeath(PlayerDeath event)
+    {
         if (event.getPlayer() != this.client.getLocalPlayer())
+        {
             return;
+        }
 
-        synchronized (this.statusEffects) {
+        synchronized (this.statusEffects)
+        {
             List<AbstractMarker> activeEffects = this.statusEffects.get(null);
             if (activeEffects == null)
+            {
                 return;
+            }
 
-            for (AbstractMarker marker : new ArrayList<AbstractMarker>(activeEffects)) {
-                if (marker instanceof TimerMarker) {
+            for (AbstractMarker marker : new ArrayList<AbstractMarker>(activeEffects))
+            {
+                if (marker instanceof TimerMarker)
+                {
                     TimerMarker timer = (TimerMarker) marker;
                     if (timer.getTimer().isRemovedOnDeath())
+                    {
                         activeEffects.remove(marker);
+                    }
                 }
             }
 
             if (activeEffects.isEmpty())
+            {
                 this.statusEffects.remove(null);
+            }
         }
     }
 
     @Subscribe
-    public void onGameStateChanged(GameStateChanged event) {
-        switch (event.getGameState()) {
+    public void onGameStateChanged(GameStateChanged event)
+    {
+        switch (event.getGameState())
+        {
             case HOPPING:
             case LOGIN_SCREEN:
-            case LOGIN_SCREEN_AUTHENTICATOR: {
-                synchronized (this.statusEffects) { // Remove all party member trackers after you log out.
+            case LOGIN_SCREEN_AUTHENTICATOR:
+            {
+                synchronized (this.statusEffects)
+                { // Remove all party member trackers after you log out.
                     for (String s : new ArrayList<String>(this.statusEffects.keySet()))
+                    {
                         if (s != null) // s == null is local player, so we ignore
+                        {
                             this.statusEffects.remove(s);
+                        }
+                    }
                 }
 
-                synchronized (this.partyStatus) {
+                synchronized (this.partyStatus)
+                {
                     this.partyStatus.clear();
                 }
 
@@ -276,26 +350,34 @@ public class PlayerStatusPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onGameTick(GameTick event) {
+    public void onGameTick(GameTick event)
+    {
         if (this.client.getGameState() != GameState.LOGGED_IN)
+        {
             return;
+        }
 
         int currentHealth = client.getBoostedSkillLevel(Skill.HITPOINTS);
         int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
         int maxHealth = client.getRealSkillLevel(Skill.HITPOINTS);
         int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
-        int specialAttack = this.client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT) / 10; // This variable is in [0, 1000]. So we divide by 10.
+        int specialAttack = this.client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT) /
+                10; // This variable is in [0, 1000]. So we divide by 10.
         int runEnergy = this.client.getEnergy();
 
         String name = this.client.getLocalPlayer().getName();
 
         PlayerStatus status;
-        synchronized (this.partyStatus) {
+        synchronized (this.partyStatus)
+        {
             status = this.partyStatus.get(name);
-            if (status == null) {
-                status = new PlayerStatus(currentHealth, maxHealth, currentPrayer, maxPrayer, runEnergy, specialAttack);
+            if (status == null)
+            {
+                status = new PlayerStatus(currentHealth, maxHealth, currentPrayer, maxPrayer, runEnergy,
+                        specialAttack);
                 this.partyStatus.put(name, status);
-            } else {
+            } else
+            {
                 status.setHealth(currentHealth);
                 status.setMaxHealth(maxHealth);
                 status.setPrayer(currentPrayer);
@@ -306,7 +388,8 @@ public class PlayerStatusPlugin extends Plugin {
         }
 
         this.lastRefresh++;
-        if (this.lastRefresh >= Math.max(1, this.config.getStatsRefreshRate())) {
+        if (this.lastRefresh >= Math.max(1, this.config.getStatsRefreshRate()))
+        {
             JSONObject packet = new JSONObject();
             packet.put("name", name);
             packet.put("player-stats", status.toJSON());
@@ -315,29 +398,40 @@ public class PlayerStatusPlugin extends Plugin {
         }
     }
 
-    private void sortMarkers(List<AbstractMarker> markers) {
-        markers.sort(new Comparator<AbstractMarker>() {
+    private void sortMarkers(List<AbstractMarker> markers)
+    {
+        markers.sort(new Comparator<AbstractMarker>()
+        {
             @Override
-            public int compare(AbstractMarker o1, AbstractMarker o2) {
+            public int compare(AbstractMarker o1, AbstractMarker o2)
+            {
                 return Integer.compare(getMarkerOrdinal(o1), getMarkerOrdinal(o2));
             }
 
-            private int getMarkerOrdinal(AbstractMarker marker) {
+            private int getMarkerOrdinal(AbstractMarker marker)
+            {
                 if (marker == null)
+                {
                     return -1;
+                }
 
                 if (marker instanceof IndicatorMarker)
+                {
                     return ((IndicatorMarker) marker).getIndicator().ordinal();
+                }
 
                 if (marker instanceof TimerMarker)
+                {
                     return ((TimerMarker) marker).getTimer().ordinal();
+                }
 
                 return -1;
             }
         });
     }
 
-    private void createGameTimer(GameTimer timer) {
+    private void createGameTimer(GameTimer timer)
+    {
         this.createGameTimer(timer, null);
 
         JSONObject packet = new JSONObject();
@@ -347,9 +441,11 @@ public class PlayerStatusPlugin extends Plugin {
         this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
     }
 
-    private void createGameTimer(final GameTimer timer, String name) {
+    private void createGameTimer(final GameTimer timer, String name)
+    {
         TimerMarker marker = new TimerMarker(timer, System.currentTimeMillis());
-        switch (timer.getImageType()) {
+        switch (timer.getImageType())
+        {
             case SPRITE:
                 marker.setBaseImage(spriteManager.getSprite(timer.getImageId(), 0));
                 break;
@@ -360,10 +456,12 @@ public class PlayerStatusPlugin extends Plugin {
 
         removeGameTimer(timer, name);
 
-        synchronized (this.statusEffects) {
+        synchronized (this.statusEffects)
+        {
             List<AbstractMarker> activeEffects = this.statusEffects.get(name);
 
-            if (activeEffects == null) {
+            if (activeEffects == null)
+            {
                 activeEffects = new ArrayList<AbstractMarker>();
                 this.statusEffects.put(name, activeEffects);
             }
@@ -373,11 +471,14 @@ public class PlayerStatusPlugin extends Plugin {
         }
     }
 
-    private void removeGameTimer(GameTimer timer) {
+    private void removeGameTimer(GameTimer timer)
+    {
         this.removeGameTimer(timer, null);
 
         if (this.client.getLocalPlayer() == null)
+        {
             return;
+        }
 
         JSONObject packet = new JSONObject();
         packet.put("player-status-game-remove", this.client.getLocalPlayer().getName());
@@ -386,30 +487,43 @@ public class PlayerStatusPlugin extends Plugin {
         this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
     }
 
-    private void removeGameTimer(GameTimer timer, String name) {
-        synchronized (this.statusEffects) {
+    private void removeGameTimer(GameTimer timer, String name)
+    {
+        synchronized (this.statusEffects)
+        {
             List<AbstractMarker> activeEffects = this.statusEffects.get(name);
             if (activeEffects == null)
+            {
                 return;
+            }
 
-            for (AbstractMarker marker : new ArrayList<AbstractMarker>(activeEffects)) {
-                if (marker instanceof TimerMarker) {
+            for (AbstractMarker marker : new ArrayList<AbstractMarker>(activeEffects))
+            {
+                if (marker instanceof TimerMarker)
+                {
                     TimerMarker instance = (TimerMarker) marker;
                     if (instance.getTimer() == timer)
+                    {
                         activeEffects.remove(marker);
+                    }
                 }
             }
 
             if (activeEffects.isEmpty())
+            {
                 this.statusEffects.remove(name);
+            }
         }
     }
 
-    private void createGameIndicator(GameIndicator gameIndicator) {
+    private void createGameIndicator(GameIndicator gameIndicator)
+    {
         this.createGameIndicator(gameIndicator, null);
 
         if (this.client.getLocalPlayer() == null)
+        {
             return;
+        }
 
         JSONObject packet = new JSONObject();
         packet.put("player-status-indicator-add", this.client.getLocalPlayer().getName());
@@ -418,9 +532,11 @@ public class PlayerStatusPlugin extends Plugin {
         this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
     }
 
-    private void createGameIndicator(GameIndicator gameIndicator, String name) {
+    private void createGameIndicator(GameIndicator gameIndicator, String name)
+    {
         IndicatorMarker marker = new IndicatorMarker(gameIndicator);
-        switch (gameIndicator.getImageType()) {
+        switch (gameIndicator.getImageType())
+        {
             case SPRITE:
                 marker.setBaseImage(spriteManager.getSprite(gameIndicator.getImageId(), 0));
                 break;
@@ -431,10 +547,12 @@ public class PlayerStatusPlugin extends Plugin {
 
         removeGameIndicator(gameIndicator, name);
 
-        synchronized (this.statusEffects) {
+        synchronized (this.statusEffects)
+        {
             List<AbstractMarker> activeEffects = this.statusEffects.get(name);
 
-            if (activeEffects == null) {
+            if (activeEffects == null)
+            {
                 activeEffects = new ArrayList<AbstractMarker>();
                 this.statusEffects.put(name, activeEffects);
             }
@@ -444,7 +562,8 @@ public class PlayerStatusPlugin extends Plugin {
         }
     }
 
-    private void removeGameIndicator(GameIndicator indicator) {
+    private void removeGameIndicator(GameIndicator indicator)
+    {
         this.removeGameIndicator(indicator, null);
 
         JSONObject packet = new JSONObject();
@@ -454,101 +573,138 @@ public class PlayerStatusPlugin extends Plugin {
         this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
     }
 
-    private void removeGameIndicator(GameIndicator indicator, String name) {
-        synchronized (this.statusEffects) {
+    private void removeGameIndicator(GameIndicator indicator, String name)
+    {
+        synchronized (this.statusEffects)
+        {
             List<AbstractMarker> activeEffects = this.statusEffects.get(name);
             if (activeEffects == null)
+            {
                 return;
+            }
 
-            for (AbstractMarker marker : new ArrayList<AbstractMarker>(activeEffects)) {
-                if (marker instanceof IndicatorMarker) {
+            for (AbstractMarker marker : new ArrayList<AbstractMarker>(activeEffects))
+            {
+                if (marker instanceof IndicatorMarker)
+                {
                     IndicatorMarker instance = (IndicatorMarker) marker;
                     if (instance.getIndicator() == indicator)
+                    {
                         activeEffects.remove(marker);
+                    }
                 }
             }
 
             if (activeEffects.isEmpty())
+            {
                 this.statusEffects.remove(name);
+            }
         }
     }
 
     @Subscribe
-    public void onSocketReceivePacket(SocketReceivePacket event) {
-        try {
+    public void onSocketReceivePacket(SocketReceivePacket event)
+    {
+        try
+        {
             JSONObject payload = event.getPayload();
             String localName = this.client.getLocalPlayer().getName();
 
-            if (payload.has("player-stats")) {
+            if (payload.has("player-stats"))
+            {
                 String targetName = payload.getString("name");
                 if (targetName.equals(localName))
+                {
                     return;
+                }
 
                 JSONObject statusJson = payload.getJSONObject("player-stats");
 
                 PlayerStatus status;
-                synchronized (this.partyStatus) {
+                synchronized (this.partyStatus)
+                {
                     status = this.partyStatus.get(targetName);
-                    if (status == null) {
+                    if (status == null)
+                    {
                         status = PlayerStatus.fromJSON(statusJson);
                         this.partyStatus.put(targetName, status);
                     } else
+                    {
                         status.parseJSON(statusJson);
+                    }
                 }
 
-            } else if (payload.has("player-status-game-add")) {
+            } else if (payload.has("player-status-game-add"))
+            {
                 String targetName = payload.getString("player-status-game-add");
                 if (targetName.equals(localName))
+                {
                     return;
+                }
 
                 String effectName = payload.getString("effect-name");
                 GameTimer timer = GameTimer.valueOf(effectName);
                 this.createGameTimer(timer, targetName);
 
-            } else if (payload.has("player-status-game-remove")) {
+            } else if (payload.has("player-status-game-remove"))
+            {
                 String targetName = payload.getString("player-status-game-remove");
                 if (targetName.equals(localName))
+                {
                     return;
+                }
 
                 String effectName = payload.getString("effect-name");
                 GameTimer timer = GameTimer.valueOf(effectName);
                 this.removeGameTimer(timer, targetName);
 
-            } else if (payload.has("player-status-indicator-add")) {
+            } else if (payload.has("player-status-indicator-add"))
+            {
                 String targetName = payload.getString("player-status-indicator-add");
                 if (targetName.equals(localName))
+                {
                     return;
+                }
 
                 String effectName = payload.getString("effect-name");
                 GameIndicator indicator = GameIndicator.valueOf(effectName);
                 this.createGameIndicator(indicator, targetName);
 
-            } else if (payload.has("player-status-indicator-remove")) {
+            } else if (payload.has("player-status-indicator-remove"))
+            {
                 String targetName = payload.getString("player-status-indicator-remove");
                 if (targetName.equals(localName))
+                {
                     return;
+                }
 
                 String effectName = payload.getString("effect-name");
                 GameIndicator indicator = GameIndicator.valueOf(effectName);
                 this.removeGameIndicator(indicator, targetName);
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
     @Subscribe
-    public void onSocketPlayerLeave(SocketPlayerLeave event) {
+    public void onSocketPlayerLeave(SocketPlayerLeave event)
+    {
         String target = event.getPlayerName();
 
-        synchronized (this.statusEffects) {
-            if (this.statusEffects.containsKey(target)) {
+        synchronized (this.statusEffects)
+        {
+            if (this.statusEffects.containsKey(target))
+            {
                 this.statusEffects.remove(target);
             }
         }
 
-        synchronized (this.partyStatus) {
-            if (this.partyStatus.containsKey(target)) {
+        synchronized (this.partyStatus)
+        {
+            if (this.partyStatus.containsKey(target))
+            {
                 this.partyStatus.remove(target);
             }
         }

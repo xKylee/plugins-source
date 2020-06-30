@@ -25,7 +25,8 @@
 
 package net.runelite.client.plugins.socket.plugins.playerstatus.gametimer;
 
-public enum GameTimerImageType {
+public enum GameTimerImageType
+{
 
     ITEM,
     SPRITE

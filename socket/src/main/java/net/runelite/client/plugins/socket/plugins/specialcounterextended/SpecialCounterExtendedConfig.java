@@ -22,16 +22,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-import java.awt.*;
-
 @ConfigGroup("Socket Special Counter Config")
-public interface SpecialCounterExtendedConfig extends Config {
+public interface SpecialCounterExtendedConfig extends Config
+{
 
     @ConfigItem(
             position = 0,
@@ -39,7 +39,8 @@ public interface SpecialCounterExtendedConfig extends Config {
             name = "Hit Overlay",
             description = "Show the special attack overlay."
     )
-    default boolean showHitOverlay() {
+    default boolean showHitOverlay()
+    {
         return true;
     }
 
@@ -49,7 +50,8 @@ public interface SpecialCounterExtendedConfig extends Config {
             name = "Fade Delay",
             description = "Delay, in milliseconds, until the icon disappears."
     )
-    default int getFadeDelay() {
+    default int getFadeDelay()
+    {
         return 5000;
     }
 
@@ -59,7 +61,8 @@ public interface SpecialCounterExtendedConfig extends Config {
             name = "Travel Height",
             description = "Maximum height, in pixels, for the icon to travel."
     )
-    default int getMaxHeight() {
+    default int getMaxHeight()
+    {
         return 200;
     }
 
@@ -69,7 +72,8 @@ public interface SpecialCounterExtendedConfig extends Config {
             name = "Guess Dawnbringer Hit",
             description = "Guess Dawnbringer based on XP drop. Provides faster results."
     )
-    default boolean guessDawnbringer() {
+    default boolean guessDawnbringer()
+    {
         return true;
     }
 }
