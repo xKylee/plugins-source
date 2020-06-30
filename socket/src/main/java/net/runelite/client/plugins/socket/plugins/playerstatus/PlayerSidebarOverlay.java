@@ -43,110 +43,110 @@ import java.util.Map;
 public class PlayerSidebarOverlay extends OverlayPanel
 {
 
-    private static final Color HP_FG = new Color(0, 146, 54, 230);
-    private static final Color HP_BG = new Color(102, 15, 16, 230);
+	private static final Color HP_FG = new Color(0, 146, 54, 230);
+	private static final Color HP_BG = new Color(102, 15, 16, 230);
 
-    private static final Color PRAY_FG = new Color(0, 149, 151);
-    private static final Color PRAY_BG = Color.black;
+	private static final Color PRAY_FG = new Color(0, 149, 151);
+	private static final Color PRAY_BG = Color.black;
 
-    private static final Color RUN_FG = new Color(200, 90, 0);
-    private static final Color RUN_BG = Color.black;
+	private static final Color RUN_FG = new Color(200, 90, 0);
+	private static final Color RUN_BG = Color.black;
 
-    private static final Color SPEC_FG = new Color(200, 180, 0);
-    private static final Color SPEC_BG = Color.black;
+	private static final Color SPEC_FG = new Color(200, 180, 0);
+	private static final Color SPEC_BG = Color.black;
 
-    private final PlayerStatusPlugin plugin;
-    private final PlayerStatusConfig config;
+	private final PlayerStatusPlugin plugin;
+	private final PlayerStatusConfig config;
 
-    @Inject
-    private PlayerSidebarOverlay(final PlayerStatusPlugin plugin, final PlayerStatusConfig config)
-    {
-        super(plugin);
-        this.plugin = plugin;
-        this.config = config;
+	@Inject
+	private PlayerSidebarOverlay(final PlayerStatusPlugin plugin, final PlayerStatusConfig config)
+	{
+		super(plugin);
+		this.plugin = plugin;
+		this.config = config;
 
-        panelComponent.setBorder(new Rectangle());
-        panelComponent.setGap(new Point(0, ComponentConstants.STANDARD_BORDER / 2));
-    }
+		panelComponent.setBorder(new Rectangle());
+		panelComponent.setGap(new Point(0, ComponentConstants.STANDARD_BORDER / 2));
+	}
 
 
-    @Override
-    public Dimension render(Graphics2D graphics)
-    {
-        final Map<String, PlayerStatus> partyStatus = this.plugin.getPartyStatus();
-        if (partyStatus.size() <= 1)
-        {
-            return null;
-        }
+	@Override
+	public Dimension render(Graphics2D graphics)
+	{
+		final Map<String, PlayerStatus> partyStatus = this.plugin.getPartyStatus();
+		if (partyStatus.size() <= 1)
+		{
+			return null;
+		}
 
-        if (!this.config.showPlayerHealth() && !this.config.showPlayerPrayer() &&
-                !this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
-        {
-            return null; // No options are turned on. Nothing to display.
-        }
+		if (!this.config.showPlayerHealth() && !this.config.showPlayerPrayer() &&
+				!this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
+		{
+			return null; // No options are turned on. Nothing to display.
+		}
 
-        panelComponent.setBackgroundColor(null);
+		panelComponent.setBackgroundColor(null);
 
-        synchronized (partyStatus)
-        {
-            partyStatus.forEach((targetName, targetStatus) -> {
-                final PanelComponent panel = targetStatus.getPanel();
-                panel.getChildren().clear();
+		synchronized (partyStatus)
+		{
+			partyStatus.forEach((targetName, targetStatus) -> {
+				final PanelComponent panel = targetStatus.getPanel();
+				panel.getChildren().clear();
 
-                final TitleComponent name = TitleComponent.builder()
-                        .text(targetName)
-                        .color(Color.WHITE)
-                        .build();
-                panel.getChildren().add(name);
+				final TitleComponent name = TitleComponent.builder()
+						.text(targetName)
+						.color(Color.WHITE)
+						.build();
+				panel.getChildren().add(name);
 
-                if (this.config.showPlayerHealth())
-                {
-                    final ProgressBarComponent hpBar = new ProgressBarComponent();
-                    hpBar.setBackgroundColor(HP_BG);
-                    hpBar.setForegroundColor(HP_FG);
-                    hpBar.setMaximum(targetStatus.getMaxHealth());
-                    hpBar.setValue(targetStatus.getHealth());
-                    hpBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.FULL);
-                    panel.getChildren().add(hpBar);
-                }
+				if (this.config.showPlayerHealth())
+				{
+					final ProgressBarComponent hpBar = new ProgressBarComponent();
+					hpBar.setBackgroundColor(HP_BG);
+					hpBar.setForegroundColor(HP_FG);
+					hpBar.setMaximum(targetStatus.getMaxHealth());
+					hpBar.setValue(targetStatus.getHealth());
+					hpBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.FULL);
+					panel.getChildren().add(hpBar);
+				}
 
-                if (this.config.showPlayerPrayer())
-                {
-                    final ProgressBarComponent prayBar = new ProgressBarComponent();
-                    prayBar.setBackgroundColor(PRAY_BG);
-                    prayBar.setForegroundColor(PRAY_FG);
-                    prayBar.setMaximum(targetStatus.getMaxPrayer());
-                    prayBar.setValue(targetStatus.getPrayer());
-                    prayBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.FULL);
-                    panel.getChildren().add(prayBar);
-                }
+				if (this.config.showPlayerPrayer())
+				{
+					final ProgressBarComponent prayBar = new ProgressBarComponent();
+					prayBar.setBackgroundColor(PRAY_BG);
+					prayBar.setForegroundColor(PRAY_FG);
+					prayBar.setMaximum(targetStatus.getMaxPrayer());
+					prayBar.setValue(targetStatus.getPrayer());
+					prayBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.FULL);
+					panel.getChildren().add(prayBar);
+				}
 
-                if (this.config.showPlayerRunEnergy())
-                {
-                    final ProgressBarComponent runBar = new ProgressBarComponent();
-                    runBar.setBackgroundColor(RUN_BG);
-                    runBar.setForegroundColor(RUN_FG);
-                    runBar.setMaximum(100);
-                    runBar.setValue(targetStatus.getRun());
-                    runBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.PERCENTAGE);
-                    panel.getChildren().add(runBar);
-                }
+				if (this.config.showPlayerRunEnergy())
+				{
+					final ProgressBarComponent runBar = new ProgressBarComponent();
+					runBar.setBackgroundColor(RUN_BG);
+					runBar.setForegroundColor(RUN_FG);
+					runBar.setMaximum(100);
+					runBar.setValue(targetStatus.getRun());
+					runBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.PERCENTAGE);
+					panel.getChildren().add(runBar);
+				}
 
-                if (this.config.showPlayerSpecial())
-                {
-                    final ProgressBarComponent specBar = new ProgressBarComponent();
-                    specBar.setBackgroundColor(SPEC_BG);
-                    specBar.setForegroundColor(SPEC_FG);
-                    specBar.setMaximum(100);
-                    specBar.setValue(targetStatus.getSpecial());
-                    specBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.PERCENTAGE);
-                    panel.getChildren().add(specBar);
-                }
+				if (this.config.showPlayerSpecial())
+				{
+					final ProgressBarComponent specBar = new ProgressBarComponent();
+					specBar.setBackgroundColor(SPEC_BG);
+					specBar.setForegroundColor(SPEC_FG);
+					specBar.setMaximum(100);
+					specBar.setValue(targetStatus.getSpecial());
+					specBar.setLabelDisplayMode(ProgressBarComponent.LabelDisplayMode.PERCENTAGE);
+					panel.getChildren().add(specBar);
+				}
 
-                panelComponent.getChildren().add(panel);
-            });
-        }
+				panelComponent.getChildren().add(panel);
+			});
+		}
 
-        return super.render(graphics);
-    }
+		return super.render(graphics);
+	}
 }

@@ -34,10 +34,10 @@ import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTim
 public class TimerMarker extends AbstractMarker
 {
 
-    @Getter(AccessLevel.PUBLIC)
-    private GameTimer timer;
+	@Getter(AccessLevel.PUBLIC)
+	private GameTimer timer;
 
-    @Getter(AccessLevel.PUBLIC)
-    private long startTime;
+	@Getter(AccessLevel.PUBLIC)
+	private long startTime;
 
 }

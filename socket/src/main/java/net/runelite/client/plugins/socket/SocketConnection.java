@@ -57,313 +57,321 @@ import static net.runelite.client.plugins.socket.SocketPlugin.PASSWORD_SALT;
 public class SocketConnection implements Runnable
 {
 
-    private SocketPlugin plugin;
-    private SocketConfig config;
+	private SocketPlugin plugin;
+	private SocketConfig config;
 
-    private Client client;
-    private ClientThread clientThread;
+	private Client client;
+	private ClientThread clientThread;
 
-    private EventBus eventBus;
+	private EventBus eventBus;
 
-    private String playerName;
+	private String playerName;
 
-    // Variable that identifies the state of the socket connection.
-    @Getter(AccessLevel.PUBLIC)
-    private SocketState state;
+	// Variable that identifies the state of the socket connection.
+	@Getter(AccessLevel.PUBLIC)
+	private SocketState state;
 
-    // Socket IO Variables
-    @Getter(AccessLevel.PUBLIC)
-    private Socket socket;
+	// Socket IO Variables
+	@Getter(AccessLevel.PUBLIC)
+	private Socket socket;
 
-    @Getter(AccessLevel.PUBLIC)
-    private BufferedReader inputStream;
+	@Getter(AccessLevel.PUBLIC)
+	private BufferedReader inputStream;
 
-    @Getter(AccessLevel.PUBLIC)
-    private PrintWriter outputStream;
+	@Getter(AccessLevel.PUBLIC)
+	private PrintWriter outputStream;
 
-    // The last time a heartbeat was sent to the server.
-    // We want to send a heartbeat periodically to validate that the connection is still valid.
-    private long lastHeartbeat;
+	// The last time a heartbeat was sent to the server.
+	// We want to send a heartbeat periodically to validate that the connection is still valid.
+	private long lastHeartbeat;
 
-    public SocketConnection(SocketPlugin plugin, String playerName)
-    {
-        this.plugin = plugin;
-        this.config = this.plugin.getConfig();
+	public SocketConnection(SocketPlugin plugin, String playerName)
+	{
+		this.plugin = plugin;
+		this.config = this.plugin.getConfig();
 
-        this.client = this.plugin.getClient();
-        this.clientThread = this.plugin.getClientThread();
+		this.client = this.plugin.getClient();
+		this.clientThread = this.plugin.getClientThread();
 
-        this.eventBus = this.plugin.getEventBus();
+		this.eventBus = this.plugin.getEventBus();
 
-        this.playerName = playerName;
-        this.lastHeartbeat = 0L;
+		this.playerName = playerName;
+		this.lastHeartbeat = 0L;
 
-        this.state = SocketState.DISCONNECTED;
-    }
+		this.state = SocketState.DISCONNECTED;
+	}
 
-    @Override
-    public void run()
-    {
+	@Override
+	public void run()
+	{
 
-        // Socket can only be started once. If the state isn't originally disconnected, ignore everything.
-        if (this.state != SocketState.DISCONNECTED)
-        {
-            throw new IllegalStateException(
-                    "Socket connection is already in state " + this.state.name() + ".");
-        }
+		// Socket can only be started once. If the state isn't originally disconnected, ignore everything.
+		if (this.state != SocketState.DISCONNECTED)
+		{
+			throw new IllegalStateException(
+					"Socket connection is already in state " + this.state.name() + ".");
+		}
 
-        // Let's start a new connection.
-        this.state = SocketState.CONNECTING;
-        log.info("Attempting to establish socket connection to {}:{}", this.config.getServerAddress(),
-                this.config.getServerPort());
+		// Let's start a new connection.
+		this.state = SocketState.CONNECTING;
+		log.info("Attempting to establish socket connection to {}:{}", this.config.getServerAddress(),
+				this.config.getServerPort());
 
-        // Apply the salt to the password.
-        final String secret = new String(this.config.getPassword() + PASSWORD_SALT);
+		// Apply the salt to the password.
+		final String secret = new String(this.config.getPassword() + PASSWORD_SALT);
 
-        try
-        {
+		try
+		{
 
-            // Attempt to establish a connection.
-            InetSocketAddress address =
-                    new InetSocketAddress(this.config.getServerAddress(), this.config.getServerPort());
+			// Attempt to establish a connection.
+			InetSocketAddress address =
+					new InetSocketAddress(this.config.getServerAddress(), this.config.getServerPort());
 
-            this.socket = new Socket();
-            this.socket.connect(address, 10000);
+			this.socket = new Socket();
+			this.socket.connect(address, 10000);
 
-            this.inputStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.outputStream = new PrintWriter(this.socket.getOutputStream(), true);
+			this.inputStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			this.outputStream = new PrintWriter(this.socket.getOutputStream(), true);
 
-            // Notify the server about your connection credentials. This establishes the necessary handshake.
-            JSONObject joinPacket = new JSONObject();
-            joinPacket.put("header", SocketPacket.JOIN);
-            joinPacket.put("room", SHA256.encrypt(secret));
-            joinPacket.put("name", AES256.encrypt(secret, this.playerName));
-            this.outputStream.println(joinPacket.toString());
+			// Notify the server about your connection credentials. This establishes the necessary handshake.
+			JSONObject joinPacket = new JSONObject();
+			joinPacket.put("header", SocketPacket.JOIN);
+			joinPacket.put("room", SHA256.encrypt(secret));
+			joinPacket.put("name", AES256.encrypt(secret, this.playerName));
+			this.outputStream.println(joinPacket.toString());
 
-            // Start listening for input.
-            while (true)
-            {
-                if (this.state == SocketState.DISCONNECTED || this.state == SocketState.TERMINATED)
-                {
-                    break; // If object was terminated, stop loop.
-                }
+			// Start listening for input.
+			while (true)
+			{
+				if (this.state == SocketState.DISCONNECTED || this.state == SocketState.TERMINATED)
+				{
+					break; // If object was terminated, stop loop.
+				}
 
-                if (!this.socket.isConnected() || this.socket.isClosed())
-                {
-                    break; // Socket was disconnected, stop loop.
-                }
+				if (!this.socket.isConnected() || this.socket.isClosed())
+				{
+					break; // Socket was disconnected, stop loop.
+				}
 
-                if (this.outputStream.checkError())
-                {
-                    throw new IOException("Broken transmission stream");
-                }
+				if (this.outputStream.checkError())
+				{
+					throw new IOException("Broken transmission stream");
+				}
 
-                if (!this.inputStream.ready())
-                { // If there is no data ready, ping (heartbeat) the server.
-                    long elapsedTime = System.currentTimeMillis() - this.lastHeartbeat;
-                    if (elapsedTime >= 30000)
-                    { // Maintain a heartbeat with the server every 30 seconds.
-                        this.lastHeartbeat = System.currentTimeMillis();
-                        synchronized (this.outputStream)
-                        {
-                            this.outputStream.println();
-                        }
-                    }
+				if (!this.inputStream.ready())
+				{ // If there is no data ready, ping (heartbeat) the server.
+					long elapsedTime = System.currentTimeMillis() - this.lastHeartbeat;
+					if (elapsedTime >= 30000)
+					{ // Maintain a heartbeat with the server every 30 seconds.
+						this.lastHeartbeat = System.currentTimeMillis();
+						synchronized (this.outputStream)
+						{
+							this.outputStream.println();
+						}
+					}
 
-                    Thread.sleep(20L);
-                    continue;
-                }
+					Thread.sleep(20L);
+					continue;
+				}
 
-                // Read the input line.
-                String packet = this.inputStream.readLine();
-                if (packet == null || packet.isEmpty())
-                {
-                    continue;
-                }
+				// Read the input line.
+				String packet = this.inputStream.readLine();
+				if (packet == null || packet.isEmpty())
+				{
+					continue;
+				}
 
-                log.debug("Received packet from server: {}", packet);
+				log.debug("Received packet from server: {}", packet);
 
-                JSONObject data;
-                try
-                {
-                    data = new JSONObject(packet);
-                    log.debug("Decoded packet as JSON.");
-                } catch (JSONException e)
-                {
-                    log.error("Bad packet. Unable to decode: {}", packet);
-                    continue;
-                }
+				JSONObject data;
+				try
+				{
+					data = new JSONObject(packet);
+					log.debug("Decoded packet as JSON.");
+				}
+				catch (JSONException e)
+				{
+					log.error("Bad packet. Unable to decode: {}", packet);
+					continue;
+				}
 
-                // The header will determine the packet type.
-                if (!data.has("header"))
-                {
-                    throw new NullPointerException("Packet missing header");
-                }
+				// The header will determine the packet type.
+				if (!data.has("header"))
+				{
+					throw new NullPointerException("Packet missing header");
+				}
 
-                String header = data.getString("header");
+				String header = data.getString("header");
 
-                try
-                { // Read and decode the packet based on the header.
-                    if (header
-                            .equals(SocketPacket.BROADCAST))
-                    { // Player is broadcasting a packet to all members.
-                        String message = AES256.decrypt(secret, data.getString("payload"));
-                        JSONObject payload = new JSONObject(message);
-                        this.clientThread.invoke(
-                                () -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
+				try
+				{ // Read and decode the packet based on the header.
+					if (header
+							.equals(SocketPacket.BROADCAST))
+					{ // Player is broadcasting a packet to all members.
+						String message = AES256.decrypt(secret, data.getString("payload"));
+						JSONObject payload = new JSONObject(message);
+						this.clientThread.invoke(
+								() -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
 
-                    } else if (header.equals(SocketPacket.JOIN))
-                    { // Player has joined the party.
-                        String targetName = AES256.decrypt(secret, data.getString("player"));
-                        this.logMessage(SocketLog.INFO, targetName + " has joined the party.");
+					} else if (header.equals(SocketPacket.JOIN))
+					{ // Player has joined the party.
+						String targetName = AES256.decrypt(secret, data.getString("player"));
+						this.logMessage(SocketLog.INFO, targetName + " has joined the party.");
 
-                        if (targetName.equals(this.playerName))
-                        { // You have joined the party.
-                            this.state = SocketState.CONNECTED;
-                            log.info("You have successfully joined the socket party.");
-                        }
+						if (targetName.equals(this.playerName))
+						{ // You have joined the party.
+							this.state = SocketState.CONNECTED;
+							log.info("You have successfully joined the socket party.");
+						}
 
-                        JSONArray membersArray = data.getJSONArray("party");
-                        this.logMessage(SocketLog.INFO, this.mergeMembers(membersArray, secret));
+						JSONArray membersArray = data.getJSONArray("party");
+						this.logMessage(SocketLog.INFO, this.mergeMembers(membersArray, secret));
 
-                        try
-                        {
-                            this.eventBus.post(SocketPlayerJoin.class, new SocketPlayerJoin(targetName));
-                        } catch (Exception ignored)
-                        {
-                        }
+						try
+						{
+							this.eventBus.post(SocketPlayerJoin.class, new SocketPlayerJoin(targetName));
+						}
+						catch (Exception ignored)
+						{
+						}
 
-                    } else if (header.equals(SocketPacket.LEAVE))
-                    { // Player has left the party.
-                        String targetName = AES256.decrypt(secret, data.getString("player"));
-                        this.logMessage(SocketLog.ERROR, targetName + " has left the party.");
+					} else if (header.equals(SocketPacket.LEAVE))
+					{ // Player has left the party.
+						String targetName = AES256.decrypt(secret, data.getString("player"));
+						this.logMessage(SocketLog.ERROR, targetName + " has left the party.");
 
-                        JSONArray membersArray = data.getJSONArray("party");
-                        this.logMessage(SocketLog.ERROR, this.mergeMembers(membersArray, secret));
+						JSONArray membersArray = data.getJSONArray("party");
+						this.logMessage(SocketLog.ERROR, this.mergeMembers(membersArray, secret));
 
-                        try
-                        {
-                            this.eventBus.post(SocketPlayerLeave.class, new SocketPlayerLeave(targetName));
-                        } catch (Exception ignored)
-                        {
-                        }
+						try
+						{
+							this.eventBus.post(SocketPlayerLeave.class, new SocketPlayerLeave(targetName));
+						}
+						catch (Exception ignored)
+						{
+						}
 
-                    } else if (header
-                            .equals(SocketPacket.MESSAGE))
-                    { // Socket server wishes to send you a message.
-                        String message = data.getString("message");
-                        this.clientThread.invoke(
-                                () -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", message, null));
+					} else if (header
+							.equals(SocketPacket.MESSAGE))
+					{ // Socket server wishes to send you a message.
+						String message = data.getString("message");
+						this.clientThread.invoke(
+								() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", message, null));
 
-                    }
-                } catch (JSONException e)
-                {
-                    log.warn("Bad packet contents. Unable to decode.");
-                    continue;
-                }
-            }
-        } catch (Exception ex)
-        {
-            // Oh no, something went wrong! Terminate the connection and log.
-            log.error("Unable to establish connection with the server.", ex);
-            this.terminate(false);
+					}
+				}
+				catch (JSONException e)
+				{
+					log.warn("Bad packet contents. Unable to decode.");
+					continue;
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			// Oh no, something went wrong! Terminate the connection and log.
+			log.error("Unable to establish connection with the server.", ex);
+			this.terminate(false);
 
-            this.logMessage(SocketLog.ERROR,
-                    "Socket terminated. " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+			this.logMessage(SocketLog.ERROR,
+					"Socket terminated. " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
 
-            // Try to reconnect in 30 seconds.
-            this.plugin.setNextConnection(System.currentTimeMillis() + 30000L);
-            this.logMessage(SocketLog.ERROR, "Reconnecting in 30 seconds...");
-            return;
-        }
-    }
+			// Try to reconnect in 30 seconds.
+			this.plugin.setNextConnection(System.currentTimeMillis() + 30000L);
+			this.logMessage(SocketLog.ERROR, "Reconnecting in 30 seconds...");
+			return;
+		}
+	}
 
-    /**
-     * Terminate the connection to the server.
-     *
-     * @param verbose Whether or not to log to the user's chatbox.
-     */
-    public void terminate(boolean verbose)
-    {
-        if (this.state == SocketState.TERMINATED)
-        {
-            return;
-        }
+	/**
+	 * Terminate the connection to the server.
+	 *
+	 * @param verbose Whether or not to log to the user's chatbox.
+	 */
+	public void terminate(boolean verbose)
+	{
+		if (this.state == SocketState.TERMINATED)
+		{
+			return;
+		}
 
-        this.state = SocketState.TERMINATED;
+		this.state = SocketState.TERMINATED;
 
-        try
-        { // Close the socket output stream.
-            if (this.outputStream != null)
-            {
-                this.outputStream.close();
-            }
-        } catch (Exception ignored)
-        {
-        }
+		try
+		{ // Close the socket output stream.
+			if (this.outputStream != null)
+			{
+				this.outputStream.close();
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
 
-        try
-        { // Close the socket input stream.
-            if (this.inputStream != null)
-            {
-                this.inputStream.close();
-            }
-        } catch (Exception ignored)
-        {
-        }
+		try
+		{ // Close the socket input stream.
+			if (this.inputStream != null)
+			{
+				this.inputStream.close();
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
 
-        try
-        { // Close the actual socket.
-            if (this.socket != null)
-            {
-                this.socket.close();
-                this.socket.shutdownOutput();
-                this.socket.shutdownInput();
-            }
-        } catch (Exception ignored)
-        {
-        }
+		try
+		{ // Close the actual socket.
+			if (this.socket != null)
+			{
+				this.socket.close();
+				this.socket.shutdownOutput();
+				this.socket.shutdownInput();
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
 
-        log.info("Terminated connections with the socket server.");
-        if (verbose)
-        {
-            this.logMessage(SocketLog.INFO, "Any active socket server connections were closed.");
-        }
-    }
+		log.info("Terminated connections with the socket server.");
+		if (verbose)
+		{
+			this.logMessage(SocketLog.INFO, "Any active socket server connections were closed.");
+		}
+	}
 
-    /**
-     * Given a JSONArray of a list of encrypted member names, decrypt the list using the symmetrical key.
-     *
-     * @param membersArray JSONArray of encrypted member names
-     * @param secret       AES symmetrical password
-     * @return String of member names, delimited by a comma.
-     */
-    private String mergeMembers(JSONArray membersArray, String secret)
-    {
-        int count = membersArray.length();
-        String members = String.format("Member%s (%d): ", count != 1 ? "s" : "", count);
+	/**
+	 * Given a JSONArray of a list of encrypted member names, decrypt the list using the symmetrical key.
+	 *
+	 * @param membersArray JSONArray of encrypted member names
+	 * @param secret       AES symmetrical password
+	 * @return String of member names, delimited by a comma.
+	 */
+	private String mergeMembers(JSONArray membersArray, String secret)
+	{
+		int count = membersArray.length();
+		String members = String.format("Member%s (%d): ", count != 1 ? "s" : "", count);
 
-        for (int i = 0; i < count; i++)
-        {
-            if (i > 0)
-            {
-                members += ", ";
-            }
-            members += AES256.decrypt(secret, membersArray.getString(i));
-        }
+		for (int i = 0; i < count; i++)
+		{
+			if (i > 0)
+			{
+				members += ", ";
+			}
+			members += AES256.decrypt(secret, membersArray.getString(i));
+		}
 
-        return members;
-    }
+		return members;
+	}
 
-    /**
-     * Logs a message inside the player's in-game chatbox.
-     *
-     * @param level   Log level, for color coding.
-     * @param message The message to log, as a string.
-     */
-    private void logMessage(SocketLog level, String message)
-    {
-        this.clientThread.invoke(() -> this.client
-                .addChatMessage(ChatMessageType.GAMEMESSAGE, "", level.getPrefix() + message, null));
-    }
+	/**
+	 * Logs a message inside the player's in-game chatbox.
+	 *
+	 * @param level   Log level, for color coding.
+	 * @param message The message to log, as a string.
+	 */
+	private void logMessage(SocketLog level, String message)
+	{
+		this.clientThread.invoke(() -> this.client
+				.addChatMessage(ChatMessageType.GAMEMESSAGE, "", level.getPrefix() + message, null));
+	}
 }

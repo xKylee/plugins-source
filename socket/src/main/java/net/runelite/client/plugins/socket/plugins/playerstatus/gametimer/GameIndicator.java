@@ -35,26 +35,26 @@ import java.awt.Color;
 public enum GameIndicator
 {
 
-    VENGEANCE_ACTIVE(SpriteID.SPELL_VENGEANCE_OTHER, GameTimerImageType.SPRITE, "Vengeance active");
+	VENGEANCE_ACTIVE(SpriteID.SPELL_VENGEANCE_OTHER, GameTimerImageType.SPRITE, "Vengeance active");
 
-    private final String description;
-    private String text;
-    private Color textColor;
-    private final int imageId;
-    private final GameTimerImageType imageType;
+	private final String description;
+	private String text;
+	private Color textColor;
+	private final int imageId;
+	private final GameTimerImageType imageType;
 
-    GameIndicator(int imageId, GameTimerImageType idType, String description, String text,
-                  Color textColor)
-    {
-        this.imageId = imageId;
-        this.imageType = idType;
-        this.description = description;
-        this.text = text;
-        this.textColor = textColor;
-    }
+	GameIndicator(int imageId, GameTimerImageType idType, String description, String text,
+	              Color textColor)
+	{
+		this.imageId = imageId;
+		this.imageType = idType;
+		this.description = description;
+		this.text = text;
+		this.textColor = textColor;
+	}
 
-    GameIndicator(int imageId, GameTimerImageType idType, String description)
-    {
-        this(imageId, idType, description, "", null);
-    }
+	GameIndicator(int imageId, GameTimerImageType idType, String description)
+	{
+		this(imageId, idType, description, "", null);
+	}
 }

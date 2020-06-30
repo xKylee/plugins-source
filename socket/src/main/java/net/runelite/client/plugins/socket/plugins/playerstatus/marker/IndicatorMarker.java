@@ -34,7 +34,7 @@ import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameInd
 public class IndicatorMarker extends AbstractMarker
 {
 
-    @Getter(AccessLevel.PUBLIC)
-    private GameIndicator indicator;
+	@Getter(AccessLevel.PUBLIC)
+	private GameIndicator indicator;
 
 }

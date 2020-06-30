@@ -31,16 +31,16 @@ package net.runelite.client.plugins.socket;
 public enum SocketState
 {
 
-    // Connection has not been attempted yet. Default state.
-    DISCONNECTED,
+	// Connection has not been attempted yet. Default state.
+	DISCONNECTED,
 
-    // Connection is being established.
-    CONNECTING,
+	// Connection is being established.
+	CONNECTING,
 
-    // Connection has been established.
-    CONNECTED,
+	// Connection has been established.
+	CONNECTED,
 
-    // Connection was terminated, either by the user or due to an error.
-    TERMINATED;
+	// Connection was terminated, either by the user or due to an error.
+	TERMINATED;
 
 }

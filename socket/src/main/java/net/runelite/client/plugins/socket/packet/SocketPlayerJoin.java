@@ -13,7 +13,7 @@ import net.runelite.api.events.Event;
 public class SocketPlayerJoin implements Event
 {
 
-    @Getter(AccessLevel.PUBLIC)
-    private String playerName;
+	@Getter(AccessLevel.PUBLIC)
+	private String playerName;
 
 }

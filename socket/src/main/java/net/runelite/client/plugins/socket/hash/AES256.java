@@ -14,49 +14,51 @@ import java.util.Base64;
 public class AES256
 {
 
-    public static String encrypt(String secret, String strToEncrypt)
-    {
-        try
-        {
-            byte[] key = secret.getBytes("UTF-8");
+	public static String encrypt(String secret, String strToEncrypt)
+	{
+		try
+		{
+			byte[] key = secret.getBytes("UTF-8");
 
-            MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            key = sha.digest(key);
-            key = Arrays.copyOf(key, 16);
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+			key = sha.digest(key);
+			key = Arrays.copyOf(key, 16);
 
-            SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+			SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
 
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
+			return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
 
-    public static String decrypt(String secret, String strToDecrypt)
-    {
-        try
-        {
-            byte[] key = secret.getBytes("UTF-8");
+	public static String decrypt(String secret, String strToDecrypt)
+	{
+		try
+		{
+			byte[] key = secret.getBytes("UTF-8");
 
-            MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            key = sha.digest(key);
-            key = Arrays.copyOf(key, 16);
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+			key = sha.digest(key);
+			key = Arrays.copyOf(key, 16);
 
-            SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+			SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
 
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+			cipher.init(Cipher.DECRYPT_MODE, secretKey);
 
-            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
+			return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

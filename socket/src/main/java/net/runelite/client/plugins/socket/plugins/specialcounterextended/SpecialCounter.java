@@ -37,63 +37,63 @@ import java.util.Map;
 class SpecialCounter extends Counter
 {
 
-    private final SpecialCounterExtendedPlugin plugin;
-    private SpecialWeapon weapon;
+	private final SpecialCounterExtendedPlugin plugin;
+	private SpecialWeapon weapon;
 
-    @Getter(AccessLevel.PACKAGE)
-    private final Map<String, Integer> partySpecs = new HashMap<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<String, Integer> partySpecs = new HashMap<>();
 
-    SpecialCounter(BufferedImage image, SpecialCounterExtendedPlugin plugin, int hitValue,
-                   SpecialWeapon weapon)
-    {
-        super(image, plugin, hitValue);
-        this.plugin = plugin;
-        this.weapon = weapon;
-    }
+	SpecialCounter(BufferedImage image, SpecialCounterExtendedPlugin plugin, int hitValue,
+	               SpecialWeapon weapon)
+	{
+		super(image, plugin, hitValue);
+		this.plugin = plugin;
+		this.weapon = weapon;
+	}
 
-    void addHits(double hit)
-    {
-        int count = getCount();
-        setCount(count + (int) hit);
-    }
+	void addHits(double hit)
+	{
+		int count = getCount();
+		setCount(count + (int) hit);
+	}
 
-    @Override
-    public String getTooltip()
-    {
-        int hitValue = getCount();
+	@Override
+	public String getTooltip()
+	{
+		int hitValue = getCount();
 
-        if (partySpecs.isEmpty())
-        {
-            return buildTooltip(hitValue);
-        }
+		if (partySpecs.isEmpty())
+		{
+			return buildTooltip(hitValue);
+		}
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(buildTooltip(hitValue));
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(buildTooltip(hitValue));
 
-        for (Map.Entry<String, Integer> entry : partySpecs.entrySet())
-        {
-            stringBuilder.append("</br>")
-                    .append(entry.getKey() == null ? "You" : entry.getKey()).append(": ")
-                    .append(buildTooltip(entry.getValue()));
-        }
+		for (Map.Entry<String, Integer> entry : partySpecs.entrySet())
+		{
+			stringBuilder.append("</br>")
+					.append(entry.getKey() == null ? "You" : entry.getKey()).append(": ")
+					.append(buildTooltip(entry.getValue()));
+		}
 
-        return stringBuilder.toString();
-    }
+		return stringBuilder.toString();
+	}
 
-    private String buildTooltip(int hitValue)
-    {
-        if (!weapon.isDamage())
-        {
-            if (hitValue == 1)
-            {
-                return weapon.getName() + " special has hit " + hitValue + " time.";
-            } else
-            {
-                return weapon.getName() + " special has hit " + hitValue + " times.";
-            }
-        } else
-        {
-            return weapon.getName() + " special has hit " + hitValue + " total.";
-        }
-    }
+	private String buildTooltip(int hitValue)
+	{
+		if (!weapon.isDamage())
+		{
+			if (hitValue == 1)
+			{
+				return weapon.getName() + " special has hit " + hitValue + " time.";
+			} else
+			{
+				return weapon.getName() + " special has hit " + hitValue + " times.";
+			}
+		} else
+		{
+			return weapon.getName() + " special has hit " + hitValue + " total.";
+		}
+	}
 }

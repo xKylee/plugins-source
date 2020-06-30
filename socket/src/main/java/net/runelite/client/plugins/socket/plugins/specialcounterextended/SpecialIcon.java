@@ -36,13 +36,13 @@ import java.awt.image.BufferedImage;
 public class SpecialIcon
 {
 
-    @Getter(AccessLevel.PUBLIC)
-    private BufferedImage image;
+	@Getter(AccessLevel.PUBLIC)
+	private BufferedImage image;
 
-    @Getter(AccessLevel.PUBLIC)
-    private String text;
+	@Getter(AccessLevel.PUBLIC)
+	private String text;
 
-    @Getter(AccessLevel.PUBLIC)
-    private long startTime;
+	@Getter(AccessLevel.PUBLIC)
+	private long startTime;
 
 }
