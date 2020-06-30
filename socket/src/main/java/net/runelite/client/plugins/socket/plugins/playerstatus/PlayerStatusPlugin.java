@@ -53,8 +53,11 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
@@ -87,6 +90,7 @@ import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.
 		type = PluginType.UTILITY
 )
 @Slf4j
+@PluginDependency(SocketPlugin.class)
 public class PlayerStatusPlugin extends Plugin
 {
 
@@ -104,6 +108,12 @@ public class PlayerStatusPlugin extends Plugin
 
 	@Inject
 	private SpriteManager spriteManager;
+
+	@Inject
+	private PluginManager pluginManager;
+
+	@Inject
+	private SocketPlugin socketPlugin;
 
 	@Inject
 	private PlayerStatusOverlay overlay;
@@ -392,10 +402,14 @@ public class PlayerStatusPlugin extends Plugin
 		this.lastRefresh++;
 		if (this.lastRefresh >= Math.max(1, this.config.getStatsRefreshRate()))
 		{
-			JSONObject packet = new JSONObject();
-			packet.put("name", name);
-			packet.put("player-stats", status.toJSON());
-			this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			if (pluginManager.isPluginEnabled(socketPlugin))
+			{
+				JSONObject packet = new JSONObject();
+				packet.put("name", name);
+				packet.put("player-stats", status.toJSON());
+				this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			}
+
 			this.lastRefresh = 0;
 		}
 	}
@@ -436,11 +450,14 @@ public class PlayerStatusPlugin extends Plugin
 	{
 		this.createGameTimer(timer, null);
 
-		JSONObject packet = new JSONObject();
-		packet.put("player-status-game-add", this.client.getLocalPlayer().getName());
-		packet.put("effect-name", timer.name());
+		if (pluginManager.isPluginEnabled(socketPlugin))
+		{
+			JSONObject packet = new JSONObject();
+			packet.put("player-status-game-add", this.client.getLocalPlayer().getName());
+			packet.put("effect-name", timer.name());
 
-		this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+		}
 	}
 
 	private void createGameTimer(final GameTimer timer, String name)
@@ -482,11 +499,14 @@ public class PlayerStatusPlugin extends Plugin
 			return;
 		}
 
-		JSONObject packet = new JSONObject();
-		packet.put("player-status-game-remove", this.client.getLocalPlayer().getName());
-		packet.put("effect-name", timer.name());
+		if (pluginManager.isPluginEnabled(socketPlugin))
+		{
+			JSONObject packet = new JSONObject();
+			packet.put("player-status-game-remove", this.client.getLocalPlayer().getName());
+			packet.put("effect-name", timer.name());
 
-		this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+		}
 	}
 
 	private void removeGameTimer(GameTimer timer, String name)
@@ -527,11 +547,14 @@ public class PlayerStatusPlugin extends Plugin
 			return;
 		}
 
-		JSONObject packet = new JSONObject();
-		packet.put("player-status-indicator-add", this.client.getLocalPlayer().getName());
-		packet.put("effect-name", gameIndicator.name());
+		if (pluginManager.isPluginEnabled(socketPlugin))
+		{
+			JSONObject packet = new JSONObject();
+			packet.put("player-status-indicator-add", this.client.getLocalPlayer().getName());
+			packet.put("effect-name", gameIndicator.name());
 
-		this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+		}
 	}
 
 	private void createGameIndicator(GameIndicator gameIndicator, String name)
@@ -568,11 +591,14 @@ public class PlayerStatusPlugin extends Plugin
 	{
 		this.removeGameIndicator(indicator, null);
 
-		JSONObject packet = new JSONObject();
-		packet.put("player-status-indicator-remove", this.client.getLocalPlayer().getName());
-		packet.put("effect-name", indicator.name());
+		if (pluginManager.isPluginEnabled(socketPlugin))
+		{
+			JSONObject packet = new JSONObject();
+			packet.put("player-status-indicator-remove", this.client.getLocalPlayer().getName());
+			packet.put("effect-name", indicator.name());
 
-		this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			this.eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+		}
 	}
 
 	private void removeGameIndicator(GameIndicator indicator, String name)

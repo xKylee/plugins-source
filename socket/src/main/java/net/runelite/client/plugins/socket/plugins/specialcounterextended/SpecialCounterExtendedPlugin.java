@@ -51,11 +51,16 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginInstantiationException;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
+import net.runelite.client.plugins.specialcounter.SpecialCounterPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import org.pf4j.Extension;
@@ -74,6 +79,8 @@ import java.util.Set;
 		type = PluginType.PVM
 )
 @Slf4j
+@PluginDependency(SpecialCounterPlugin.class)
+@PluginDependency(SocketPlugin.class)
 public class SpecialCounterExtendedPlugin extends Plugin
 {
 
@@ -91,6 +98,15 @@ public class SpecialCounterExtendedPlugin extends Plugin
 
 	@Inject
 	private OverlayManager overlayManager;
+
+	@Inject
+	private PluginManager pluginManager;
+
+	@Inject
+	private SocketPlugin socketPlugin;
+
+	@Inject
+	private SpecialCounterPlugin specialCounterPlugin;
 
 	@Inject
 	private EventBus eventBus;
@@ -121,6 +137,16 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		magicExperience = -1;
 
 		this.overlayManager.add(this.overlay);
+
+		try
+		{
+			pluginManager.setPluginEnabled(specialCounterPlugin, false);
+			pluginManager.stopPlugin(specialCounterPlugin);
+		}
+		catch (PluginInstantiationException ex)
+		{
+			log.error("An error occured when trying to stop duplicate plugin Special Counter Plugin", ex);
+		}
 	}
 
 	@Override
@@ -246,15 +272,18 @@ public class SpecialCounterExtendedPlugin extends Plugin
 				String pName = this.client.getLocalPlayer().getName();
 				updateCounter(pName, this.specialWeapon, null, damage);
 
-				JSONObject data = new JSONObject();
-				data.put("player", pName);
-				data.put("target", ((NPC) this.lastSpecTarget).getId());
-				data.put("weapon", specialWeapon.ordinal());
-				data.put("hit", damage);
+				if (pluginManager.isPluginEnabled(socketPlugin))
+				{
+					JSONObject data = new JSONObject();
+					data.put("player", pName);
+					data.put("target", ((NPC) this.lastSpecTarget).getId());
+					data.put("weapon", specialWeapon.ordinal());
+					data.put("hit", damage);
 
-				JSONObject payload = new JSONObject();
-				payload.put("special-extended", data);
-				eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
+					JSONObject payload = new JSONObject();
+					payload.put("special-extended", data);
+					eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
+				}
 
 				this.lastSpecTarget = null;
 			}
@@ -312,15 +341,18 @@ public class SpecialCounterExtendedPlugin extends Plugin
 			final String pName = this.client.getLocalPlayer().getName();
 			updateCounter(pName, specialWeapon, null, hit);
 
-			JSONObject data = new JSONObject();
-			data.put("player", pName);
-			data.put("target", interactingId);
-			data.put("weapon", specialWeapon.ordinal());
-			data.put("hit", hit);
+			if (pluginManager.isPluginEnabled(socketPlugin))
+			{
+				JSONObject data = new JSONObject();
+				data.put("player", pName);
+				data.put("target", interactingId);
+				data.put("weapon", specialWeapon.ordinal());
+				data.put("hit", hit);
 
-			JSONObject payload = new JSONObject();
-			payload.put("special-extended", data);
-			eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
+				JSONObject payload = new JSONObject();
+				payload.put("special-extended", data);
+				eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
+			}
 		}
 	}
 

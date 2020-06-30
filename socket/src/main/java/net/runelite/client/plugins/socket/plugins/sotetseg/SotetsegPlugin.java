@@ -43,8 +43,11 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
@@ -65,6 +68,7 @@ import java.util.Set;
 		enabledByDefault = false,
 		type = PluginType.PVM
 )
+@PluginDependency(SocketPlugin.class)
 public class SotetsegPlugin extends Plugin
 {
 
@@ -76,6 +80,12 @@ public class SotetsegPlugin extends Plugin
 
 	@Inject
 	private EventBus eventBus;
+
+	@Inject
+	private PluginManager pluginManager;
+
+	@Inject
+	private SocketPlugin socketPlugin;
 
 	@Inject
 	private SotetsegConfig config;
@@ -198,24 +208,27 @@ public class SotetsegPlugin extends Plugin
 				{ // Ensure we only send the data a couple times.
 					this.dispatchCount--;
 
-					JSONArray data = new JSONArray();
-
-					for (final Point p : this.redTiles)
+					if (pluginManager.isPluginEnabled(socketPlugin))
 					{
-						WorldPoint wp = this.translateMazePoint(p);
+						JSONArray data = new JSONArray();
 
-						JSONObject jsonwp = new JSONObject();
-						jsonwp.put("x", wp.getX());
-						jsonwp.put("y", wp.getY());
-						jsonwp.put("plane", wp.getPlane());
+						for (final Point p : this.redTiles)
+						{
+							WorldPoint wp = this.translateMazePoint(p);
 
-						data.put(jsonwp);
+							JSONObject jsonwp = new JSONObject();
+							jsonwp.put("x", wp.getX());
+							jsonwp.put("y", wp.getY());
+							jsonwp.put("plane", wp.getPlane());
+
+							data.put(jsonwp);
+						}
+
+						JSONObject payload = new JSONObject();
+						payload.put("sotetseg-extended", data);
+
+						eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
 					}
-
-					JSONObject payload = new JSONObject();
-					payload.put("sotetseg-extended", data);
-
-					eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
 				}
 			}
 		}
