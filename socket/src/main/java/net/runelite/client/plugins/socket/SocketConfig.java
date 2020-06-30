@@ -42,7 +42,7 @@ public interface SocketConfig extends Config {
             description = "The host address of the server to connect to."
     )
     default String getServerAddress() {
-        return "socket.kthisiscvpv.com";
+        return "localhost";
     }
 
     @ConfigItem(
