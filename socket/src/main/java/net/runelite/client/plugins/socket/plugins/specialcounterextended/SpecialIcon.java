@@ -29,7 +29,6 @@ package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import java.awt.image.BufferedImage;
 
 @AllArgsConstructor

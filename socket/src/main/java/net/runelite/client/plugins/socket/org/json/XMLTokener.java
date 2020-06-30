@@ -127,7 +127,8 @@ public class XMLTokener extends JSONTokener
 			if (c == '&')
 			{
 				sb.append(nextEntity(c));
-			} else
+			}
+			else
 			{
 				sb.append(c);
 			}
@@ -153,10 +154,12 @@ public class XMLTokener extends JSONTokener
 			if (Character.isLetterOrDigit(c) || c == '#')
 			{
 				sb.append(Character.toLowerCase(c));
-			} else if (c == ';')
+			}
+			else if (c == ';')
 			{
 				break;
-			} else
+			}
+			else
 			{
 				throw syntaxError("Missing ';' in XML entity: &" + sb);
 			}
@@ -298,7 +301,8 @@ public class XMLTokener extends JSONTokener
 					if (c == '&')
 					{
 						sb.append(nextEntity(c));
-					} else
+					}
+					else
 					{
 						sb.append(c);
 					}

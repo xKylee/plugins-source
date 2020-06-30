@@ -28,9 +28,7 @@ package net.runelite.client.plugins.socket;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-
 import java.util.UUID;
-
 import static net.runelite.client.plugins.socket.SocketPlugin.CONFIG_VERSION;
 
 @ConfigGroup(CONFIG_VERSION)

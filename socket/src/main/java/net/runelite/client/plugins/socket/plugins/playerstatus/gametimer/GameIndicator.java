@@ -28,7 +28,6 @@ package net.runelite.client.plugins.socket.plugins.playerstatus.gametimer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.SpriteID;
-
 import java.awt.Color;
 
 @Getter(AccessLevel.PUBLIC)
@@ -43,8 +42,7 @@ public enum GameIndicator
 	private final int imageId;
 	private final GameTimerImageType imageType;
 
-	GameIndicator(int imageId, GameTimerImageType idType, String description, String text,
-	              Color textColor)
+	GameIndicator(int imageId, GameTimerImageType idType, String description, String text, Color textColor)
 	{
 		this.imageId = imageId;
 		this.imageType = idType;

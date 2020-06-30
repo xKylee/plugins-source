@@ -50,7 +50,6 @@ import net.runelite.client.plugins.socket.packet.SocketPlayerJoin;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import org.pf4j.Extension;
-
 import javax.inject.Inject;
 import java.io.PrintWriter;
 

@@ -348,7 +348,7 @@ public class JSONWriter
 	 */
 	public JSONWriter value(double d) throws JSONException
 	{
-		return this.value(new Double(d));
+		return this.value(Double.valueOf(d));
 	}
 
 	/**

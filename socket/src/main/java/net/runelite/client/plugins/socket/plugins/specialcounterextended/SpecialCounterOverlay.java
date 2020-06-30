@@ -35,7 +35,6 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
-
 import javax.inject.Inject;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -56,8 +55,7 @@ public class SpecialCounterOverlay extends Overlay
 	private Map<String, ArrayList<SpecialIcon>> drawings = new HashMap<>();
 
 	@Inject
-	private SpecialCounterOverlay(Client client, SpecialCounterExtendedPlugin plugin,
-	                              SpecialCounterExtendedConfig config)
+	private SpecialCounterOverlay(Client client, SpecialCounterExtendedPlugin plugin, SpecialCounterExtendedConfig config)
 	{
 		this.client = client;
 		this.plugin = plugin;
@@ -156,7 +154,8 @@ public class SpecialCounterOverlay extends Overlay
 				{
 					removePlayers.add(playerName);
 				}
-			} else
+			}
+			else
 			{
 				removePlayers.add(playerName);
 			}

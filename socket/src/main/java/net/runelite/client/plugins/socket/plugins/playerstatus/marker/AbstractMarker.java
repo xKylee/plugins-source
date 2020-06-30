@@ -28,7 +28,6 @@ package net.runelite.client.plugins.socket.plugins.playerstatus.marker;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 

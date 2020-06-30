@@ -32,7 +32,6 @@ import lombok.Getter;
 import net.runelite.api.GraphicID;
 import net.runelite.api.ItemID;
 import net.runelite.api.SpriteID;
-
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
@@ -59,8 +58,7 @@ public enum GameTimer
 	private final int imageId;
 	private final GameTimerImageType imageType;
 
-	GameTimer(int imageId, GameTimerImageType idType, String description, Integer graphicId,
-	          long time, ChronoUnit unit, long delay, boolean removedOnDeath)
+	GameTimer(int imageId, GameTimerImageType idType, String description, Integer graphicId, long time, ChronoUnit unit, long delay, boolean removedOnDeath)
 	{
 		this.description = description;
 		this.graphicId = graphicId;
@@ -71,26 +69,22 @@ public enum GameTimer
 		this.initialDelay = Duration.of(delay, unit);
 	}
 
-	GameTimer(int imageId, GameTimerImageType idType, String description, Integer graphicId,
-	          long time, ChronoUnit unit, boolean removedOnDeath)
+	GameTimer(int imageId, GameTimerImageType idType, String description, Integer graphicId, long time, ChronoUnit unit, boolean removedOnDeath)
 	{
 		this(imageId, idType, description, graphicId, time, unit, 0, removedOnDeath);
 	}
 
-	GameTimer(int imageId, GameTimerImageType idType, String description, long time, ChronoUnit unit,
-	          boolean removeOnDeath)
+	GameTimer(int imageId, GameTimerImageType idType, String description, long time, ChronoUnit unit, boolean removeOnDeath)
 	{
 		this(imageId, idType, description, null, time, unit, removeOnDeath);
 	}
 
-	GameTimer(int imageId, GameTimerImageType idType, String description, long time,
-	          ChronoUnit unit)
+	GameTimer(int imageId, GameTimerImageType idType, String description, long time, ChronoUnit unit)
 	{
 		this(imageId, idType, description, null, time, unit, false);
 	}
 
-	GameTimer(int imageId, GameTimerImageType idType, String description, Integer graphicId,
-	          long time, ChronoUnit unit)
+	GameTimer(int imageId, GameTimerImageType idType, String description, Integer graphicId, long time, ChronoUnit unit)
 	{
 		this(imageId, idType, description, graphicId, time, unit, false);
 	}

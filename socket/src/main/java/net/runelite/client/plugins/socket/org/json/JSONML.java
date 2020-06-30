@@ -98,7 +98,8 @@ public class JSONML
 							throw x.syntaxError("Misshaped close tag");
 						}
 						return token;
-					} else if (token == XML.BANG)
+					}
+					else if (token == XML.BANG)
 					{
 
 // <!
@@ -109,11 +110,13 @@ public class JSONML
 							if (x.next() == '-')
 							{
 								x.skipPast("-->");
-							} else
+							}
+							else
 							{
 								x.back();
 							}
-						} else if (c == '[')
+						}
+						else if (c == '[')
 						{
 							token = x.nextToken();
 							if (token.equals("CDATA") && x.next() == '[')
@@ -122,11 +125,13 @@ public class JSONML
 								{
 									ja.put(x.nextCDATA());
 								}
-							} else
+							}
+							else
 							{
 								throw x.syntaxError("Expected 'CDATA['");
 							}
-						} else
+						}
+						else
 						{
 							i = 1;
 							do
@@ -135,29 +140,34 @@ public class JSONML
 								if (token == null)
 								{
 									throw x.syntaxError("Missing '>' after '<!'.");
-								} else if (token == XML.LT)
+								}
+								else if (token == XML.LT)
 								{
 									i += 1;
-								} else if (token == XML.GT)
+								}
+								else if (token == XML.GT)
 								{
 									i -= 1;
 								}
 							} while (i > 0);
 						}
-					} else if (token == XML.QUEST)
+					}
+					else if (token == XML.QUEST)
 					{
 
 // <?
 
 						x.skipPast("?>");
-					} else
+					}
+					else
 					{
 						throw x.syntaxError("Misshaped tag");
 					}
 
 // Open tag <
 
-				} else
+				}
+				else
 				{
 					if (!(token instanceof String))
 					{
@@ -173,7 +183,8 @@ public class JSONML
 						{
 							ja.put(newja);
 						}
-					} else
+					}
+					else
 					{
 						newjo.put("tagName", tagName);
 						if (ja != null)
@@ -214,7 +225,8 @@ public class JSONML
 							}
 							newjo.accumulate(attribute, XML.stringToValue((String) token));
 							token = null;
-						} else
+						}
+						else
 						{
 							newjo.accumulate(attribute, "");
 						}
@@ -237,7 +249,8 @@ public class JSONML
 							if (arrayForm)
 							{
 								return newja;
-							} else
+							}
+							else
 							{
 								return newjo;
 							}
@@ -245,7 +258,8 @@ public class JSONML
 
 // Content, between <...> and </...>
 
-					} else
+					}
+					else
 					{
 						if (token != XML.GT)
 						{
@@ -269,7 +283,8 @@ public class JSONML
 								if (arrayForm)
 								{
 									return newja;
-								} else
+								}
+								else
 								{
 									return newjo;
 								}
@@ -277,7 +292,8 @@ public class JSONML
 						}
 					}
 				}
-			} else
+			}
+			else
 			{
 				if (ja != null)
 				{
@@ -419,7 +435,8 @@ public class JSONML
 					sb.append('"');
 				}
 			}
-		} else
+		}
+		else
 		{
 			i = 1;
 		}
@@ -431,7 +448,8 @@ public class JSONML
 		{
 			sb.append('/');
 			sb.append('>');
-		} else
+		}
+		else
 		{
 			sb.append('>');
 			do
@@ -443,13 +461,16 @@ public class JSONML
 					if (object instanceof String)
 					{
 						sb.append(XML.escape(object.toString()));
-					} else if (object instanceof JSONObject)
+					}
+					else if (object instanceof JSONObject)
 					{
 						sb.append(toString((JSONObject) object));
-					} else if (object instanceof JSONArray)
+					}
+					else if (object instanceof JSONArray)
 					{
 						sb.append(toString((JSONArray) object));
-					} else
+					}
+					else
 					{
 						sb.append(object.toString());
 					}
@@ -526,7 +547,8 @@ public class JSONML
 		{
 			sb.append('/');
 			sb.append('>');
-		} else
+		}
+		else
 		{
 			sb.append('>');
 			length = ja.length();
@@ -538,13 +560,16 @@ public class JSONML
 					if (object instanceof String)
 					{
 						sb.append(XML.escape(object.toString()));
-					} else if (object instanceof JSONObject)
+					}
+					else if (object instanceof JSONObject)
 					{
 						sb.append(toString((JSONObject) object));
-					} else if (object instanceof JSONArray)
+					}
+					else if (object instanceof JSONArray)
 					{
 						sb.append(toString((JSONArray) object));
-					} else
+					}
+					else
 					{
 						sb.append(object.toString());
 					}

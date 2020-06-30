@@ -115,7 +115,8 @@ public class JSONArray implements Iterable<Object>
 				{
 					x.back();
 					this.myArrayList.add(JSONObject.NULL);
-				} else
+				}
+				else
 				{
 					x.back();
 					this.myArrayList.add(x.nextValue());
@@ -184,7 +185,8 @@ public class JSONArray implements Iterable<Object>
 			{
 				this.put(JSONObject.wrap(Array.get(array, i)));
 			}
-		} else
+		}
+		else
 		{
 			throw new JSONException(
 					"JSONArray initial value should be a string or collection or array.");
@@ -231,7 +233,8 @@ public class JSONArray implements Iterable<Object>
 				.equalsIgnoreCase("false")))
 		{
 			return false;
-		} else if (object.equals(Boolean.TRUE)
+		}
+		else if (object.equals(Boolean.TRUE)
 				|| (object instanceof String && ((String) object)
 				.equalsIgnoreCase("true")))
 		{
@@ -641,7 +644,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public JSONArray put(double value) throws JSONException
 	{
-		Double d = new Double(value);
+		Double d = Double.valueOf(value);
 		JSONObject.testValidity(d);
 		this.put(d);
 		return this;
@@ -655,7 +658,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public JSONArray put(int value)
 	{
-		this.put(new Integer(value));
+		this.put(Integer.valueOf(value));
 		return this;
 	}
 
@@ -667,7 +670,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public JSONArray put(long value)
 	{
-		this.put(new Long(value));
+		this.put(Long.valueOf(value));
 		return this;
 	}
 
@@ -741,7 +744,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public JSONArray put(int index, double value) throws JSONException
 	{
-		this.put(index, new Double(value));
+		this.put(index, Double.valueOf(value));
 		return this;
 	}
 
@@ -757,7 +760,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public JSONArray put(int index, int value) throws JSONException
 	{
-		this.put(index, new Integer(value));
+		this.put(index, Integer.valueOf(value));
 		return this;
 	}
 
@@ -773,7 +776,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public JSONArray put(int index, long value) throws JSONException
 	{
-		this.put(index, new Long(value));
+		this.put(index, Long.valueOf(value));
 		return this;
 	}
 
@@ -816,7 +819,8 @@ public class JSONArray implements Iterable<Object>
 		if (index < this.length())
 		{
 			this.myArrayList.set(index, value);
-		} else
+		}
+		else
 		{
 			while (index != this.length())
 			{
@@ -869,13 +873,15 @@ public class JSONArray implements Iterable<Object>
 				{
 					return false;
 				}
-			} else if (valueThis instanceof JSONArray)
+			}
+			else if (valueThis instanceof JSONArray)
 			{
 				if (!((JSONArray) valueThis).similar(valueOther))
 				{
 					return false;
 				}
-			} else if (!valueThis.equals(valueOther))
+			}
+			else if (!valueThis.equals(valueOther))
 			{
 				return false;
 			}
@@ -988,7 +994,8 @@ public class JSONArray implements Iterable<Object>
 			{
 				JSONObject.writeValue(writer, this.myArrayList.get(0),
 						indentFactor, indent);
-			} else if (length != 0)
+			}
+			else if (length != 0)
 			{
 				final int newindent = indent + indentFactor;
 

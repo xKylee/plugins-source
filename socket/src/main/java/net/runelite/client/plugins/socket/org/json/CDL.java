@@ -59,7 +59,7 @@ public class CDL
 	{
 		char c;
 		char q;
-		StringBuffer sb;
+		StringBuilder sb;
 		do
 		{
 			c = x.next();
@@ -71,7 +71,7 @@ public class CDL
 			case '"':
 			case '\'':
 				q = c;
-				sb = new StringBuffer();
+				sb = new StringBuilder();
 				for (; ; )
 				{
 					c = x.next();
@@ -189,7 +189,8 @@ public class CDL
 						}
 					}
 					sb.append('"');
-				} else
+				}
+				else
 				{
 					sb.append(string);
 				}
@@ -314,7 +315,7 @@ public class CDL
 		{
 			return null;
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < ja.length(); i += 1)
 		{
 			JSONObject jo = ja.optJSONObject(i);

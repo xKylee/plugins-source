@@ -59,7 +59,6 @@ import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import org.pf4j.Extension;
-
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
@@ -142,12 +141,14 @@ public class SpecialCounterExtendedPlugin extends Plugin
 			if (currentWorld == -1)
 			{
 				currentWorld = client.getWorld();
-			} else if (currentWorld != client.getWorld())
+			}
+			else if (currentWorld != client.getWorld())
 			{
 				currentWorld = client.getWorld();
 				removeCounters();
 			}
-		} else if (state == GameState.LOGIN_SCREEN)
+		}
+		else if (state == GameState.LOGIN_SCREEN)
 		{
 			removeCounters();
 		}
@@ -236,7 +237,8 @@ public class SpecialCounterExtendedPlugin extends Plugin
 				if (currentAttackStyleVarbit == 3)
 				{ // Defensive Casting
 					damage = (int) Math.round(((double) deltaMagicExp) / 1.4d);
-				} else
+				}
+				else
 				{ // Agressive Casting
 					damage = (int) Math.round(((double) deltaExp) / 3.5d);
 				}
@@ -434,7 +436,8 @@ public class SpecialCounterExtendedPlugin extends Plugin
 					hit, specialWeapon);
 			infoBoxManager.addInfoBox(counter);
 			specialCounter[specialWeapon.ordinal()] = counter;
-		} else
+		}
+		else
 		{
 			counter.addHits(hit);
 		}
@@ -444,7 +447,8 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		if (partySpecs.containsKey(name))
 		{
 			partySpecs.put(name, hit + partySpecs.get(name));
-		} else
+		}
+		else
 		{
 			partySpecs.put(name, hit);
 		}

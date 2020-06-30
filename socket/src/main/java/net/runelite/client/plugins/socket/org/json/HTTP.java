@@ -90,7 +90,8 @@ public class HTTP
 			jo.put("Reason-Phrase", x.nextTo('\0'));
 			x.next();
 
-		} else
+		}
+		else
 		{
 
 // Request
@@ -146,7 +147,8 @@ public class HTTP
 			sb.append(jo.getString("Status-Code"));
 			sb.append(' ');
 			sb.append(jo.getString("Reason-Phrase"));
-		} else if (jo.has("Method") && jo.has("Request-URI"))
+		}
+		else if (jo.has("Method") && jo.has("Request-URI"))
 		{
 			sb.append(jo.getString("Method"));
 			sb.append(' ');
@@ -155,7 +157,8 @@ public class HTTP
 			sb.append('"');
 			sb.append(' ');
 			sb.append(jo.getString("HTTP-Version"));
-		} else
+		}
+		else
 		{
 			throw new JSONException("Not enough material for an HTTP header.");
 		}

@@ -40,7 +40,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-
 import javax.inject.Inject;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -63,8 +62,7 @@ public class PlayerStatusOverlay extends Overlay
 	private final SpriteManager spriteManager;
 
 	@Inject
-	public PlayerStatusOverlay(Client client, PlayerStatusPlugin plugin, PlayerStatusConfig config,
-	                           ItemManager itemManager, SpriteManager spriteManager)
+	public PlayerStatusOverlay(Client client, PlayerStatusPlugin plugin, PlayerStatusConfig config, ItemManager itemManager, SpriteManager spriteManager)
 	{
 		this.client = client;
 		this.plugin = plugin;
@@ -95,7 +93,8 @@ public class PlayerStatusOverlay extends Overlay
 				default:
 					return true;
 			}
-		} else if (marker instanceof TimerMarker)
+		}
+		else if (marker instanceof TimerMarker)
 		{
 			GameTimer timer = ((TimerMarker) marker).getTimer();
 			switch (timer)
@@ -119,8 +118,7 @@ public class PlayerStatusOverlay extends Overlay
 		return true;
 	}
 
-	private List<AbstractMarker> renderPlayer(Graphics graphics, Player p,
-	                                          List<AbstractMarker> markers)
+	private List<AbstractMarker> renderPlayer(Graphics graphics, Player p, List<AbstractMarker> markers)
 	{
 		List<AbstractMarker> toRemove = new ArrayList<AbstractMarker>();
 
@@ -149,7 +147,8 @@ public class PlayerStatusOverlay extends Overlay
 				if (timeRemaining < 0)
 				{
 					toRemove.add(marker);
-				} else
+				}
+				else
 				{
 					BufferedImage icon = timer.getImage(size);
 					graphics.drawImage(icon, base.getX() + xOffset, base.getY() + zOffset, null);
@@ -160,7 +159,8 @@ public class PlayerStatusOverlay extends Overlay
 					if (timeRemaining > (100 * 1000))
 					{
 						text = String.format("%d", (long) (timeRemaining / 1000));
-					} else
+					}
+					else
 					{
 						text = String.format("%.1f", timeRemaining / 1000);
 					}
@@ -172,7 +172,8 @@ public class PlayerStatusOverlay extends Overlay
 					graphics.drawString(text, base.getX() + xOffset + xDelta, base.getY() + zOffset);
 					zOffset += margin;
 				}
-			} else if (marker instanceof IndicatorMarker)
+			}
+			else if (marker instanceof IndicatorMarker)
 			{
 				IndicatorMarker timer = (IndicatorMarker) marker;
 				BufferedImage icon = timer.getImage(size);

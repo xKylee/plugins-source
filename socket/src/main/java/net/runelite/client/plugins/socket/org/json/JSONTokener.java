@@ -170,7 +170,8 @@ public class JSONTokener
 		{
 			this.usePrevious = false;
 			c = this.previous;
-		} else
+		}
+		else
 		{
 			try
 			{
@@ -192,11 +193,13 @@ public class JSONTokener
 		{
 			this.line += 1;
 			this.character = c == '\n' ? 0 : 1;
-		} else if (c == '\n')
+		}
+		else if (c == '\n')
 		{
 			this.line += 1;
 			this.character = 0;
-		} else
+		}
+		else
 		{
 			this.character += 1;
 		}

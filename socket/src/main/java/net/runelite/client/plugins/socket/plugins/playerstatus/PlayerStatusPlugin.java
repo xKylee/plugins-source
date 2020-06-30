@@ -66,7 +66,6 @@ import net.runelite.client.plugins.socket.plugins.playerstatus.marker.IndicatorM
 import net.runelite.client.plugins.socket.plugins.playerstatus.marker.TimerMarker;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
-
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -74,7 +73,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator.VENGEANCE_ACTIVE;
 import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.*;
 import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimerConstant.*;
@@ -180,7 +178,8 @@ public class PlayerStatusPlugin extends Plugin
 			if (vengCooldownVarb == 1)
 			{
 				createGameTimer(VENGEANCE);
-			} else
+			}
+			else
 			{
 				removeGameTimer(VENGEANCE);
 			}
@@ -193,7 +192,8 @@ public class PlayerStatusPlugin extends Plugin
 			if (isVengeancedVarb == 1)
 			{
 				createGameIndicator(VENGEANCE_ACTIVE);
-			} else
+			}
+			else
 			{
 				removeGameIndicator(VENGEANCE_ACTIVE);
 			}
@@ -245,7 +245,8 @@ public class PlayerStatusPlugin extends Plugin
 			if (client.getVar(Varbits.IN_RAID) == 1)
 			{
 				createGameTimer(OVERLOAD_RAID);
-			} else
+			}
+			else
 			{
 				createGameTimer(OVERLOAD);
 			}
@@ -376,7 +377,8 @@ public class PlayerStatusPlugin extends Plugin
 				status = new PlayerStatus(currentHealth, maxHealth, currentPrayer, maxPrayer, runEnergy,
 						specialAttack);
 				this.partyStatus.put(name, status);
-			} else
+			}
+			else
 			{
 				status.setHealth(currentHealth);
 				status.setMaxHealth(maxHealth);
@@ -628,13 +630,15 @@ public class PlayerStatusPlugin extends Plugin
 					{
 						status = PlayerStatus.fromJSON(statusJson);
 						this.partyStatus.put(targetName, status);
-					} else
+					}
+					else
 					{
 						status.parseJSON(statusJson);
 					}
 				}
 
-			} else if (payload.has("player-status-game-add"))
+			}
+			else if (payload.has("player-status-game-add"))
 			{
 				String targetName = payload.getString("player-status-game-add");
 				if (targetName.equals(localName))
@@ -646,7 +650,8 @@ public class PlayerStatusPlugin extends Plugin
 				GameTimer timer = GameTimer.valueOf(effectName);
 				this.createGameTimer(timer, targetName);
 
-			} else if (payload.has("player-status-game-remove"))
+			}
+			else if (payload.has("player-status-game-remove"))
 			{
 				String targetName = payload.getString("player-status-game-remove");
 				if (targetName.equals(localName))
@@ -658,7 +663,8 @@ public class PlayerStatusPlugin extends Plugin
 				GameTimer timer = GameTimer.valueOf(effectName);
 				this.removeGameTimer(timer, targetName);
 
-			} else if (payload.has("player-status-indicator-add"))
+			}
+			else if (payload.has("player-status-indicator-add"))
 			{
 				String targetName = payload.getString("player-status-indicator-add");
 				if (targetName.equals(localName))
@@ -670,7 +676,8 @@ public class PlayerStatusPlugin extends Plugin
 				GameIndicator indicator = GameIndicator.valueOf(effectName);
 				this.createGameIndicator(indicator, targetName);
 
-			} else if (payload.has("player-status-indicator-remove"))
+			}
+			else if (payload.has("player-status-indicator-remove"))
 			{
 				String targetName = payload.getString("player-status-indicator-remove");
 				if (targetName.equals(localName))

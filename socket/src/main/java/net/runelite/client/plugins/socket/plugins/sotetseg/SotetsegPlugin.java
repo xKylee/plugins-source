@@ -51,7 +51,6 @@ import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
-
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;

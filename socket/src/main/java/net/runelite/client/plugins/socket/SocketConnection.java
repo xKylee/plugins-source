@@ -40,14 +40,12 @@ import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketPlayerJoin;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
 import static net.runelite.client.plugins.socket.SocketPlugin.PASSWORD_SALT;
 
 /**
@@ -213,7 +211,8 @@ public class SocketConnection implements Runnable
 						this.clientThread.invoke(
 								() -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
 
-					} else if (header.equals(SocketPacket.JOIN))
+					}
+					else if (header.equals(SocketPacket.JOIN))
 					{ // Player has joined the party.
 						String targetName = AES256.decrypt(secret, data.getString("player"));
 						this.logMessage(SocketLog.INFO, targetName + " has joined the party.");
@@ -235,7 +234,8 @@ public class SocketConnection implements Runnable
 						{
 						}
 
-					} else if (header.equals(SocketPacket.LEAVE))
+					}
+					else if (header.equals(SocketPacket.LEAVE))
 					{ // Player has left the party.
 						String targetName = AES256.decrypt(secret, data.getString("player"));
 						this.logMessage(SocketLog.ERROR, targetName + " has left the party.");
@@ -251,7 +251,8 @@ public class SocketConnection implements Runnable
 						{
 						}
 
-					} else if (header
+					}
+					else if (header
 							.equals(SocketPacket.MESSAGE))
 					{ // Socket server wishes to send you a message.
 						String message = data.getString("message");

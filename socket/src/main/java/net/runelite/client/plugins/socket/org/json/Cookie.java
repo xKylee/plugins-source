@@ -61,7 +61,8 @@ public class Cookie
 				sb.append('%');
 				sb.append(Character.forDigit((char) ((c >>> 4) & 0x0f), 16));
 				sb.append(Character.forDigit((char) (c & 0x0f), 16));
-			} else
+			}
+			else
 			{
 				sb.append(c);
 			}
@@ -104,11 +105,13 @@ public class Cookie
 				if (name.equals("secure"))
 				{
 					value = Boolean.TRUE;
-				} else
+				}
+				else
 				{
 					throw x.syntaxError("Missing '=' in cookie parameter.");
 				}
-			} else
+			}
+			else
 			{
 				value = unescape(x.nextTo(';'));
 				x.next();
@@ -178,7 +181,8 @@ public class Cookie
 			if (c == '+')
 			{
 				c = ' ';
-			} else if (c == '%' && i + 2 < length)
+			}
+			else if (c == '%' && i + 2 < length)
 			{
 				int d = JSONTokener.dehexchar(string.charAt(i + 1));
 				int e = JSONTokener.dehexchar(string.charAt(i + 2));

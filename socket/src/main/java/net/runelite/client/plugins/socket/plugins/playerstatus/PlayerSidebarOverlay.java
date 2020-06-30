@@ -32,7 +32,6 @@ import net.runelite.client.ui.overlay.components.ComponentConstants;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.ProgressBarComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;

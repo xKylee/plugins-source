@@ -29,7 +29,6 @@ package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.client.ui.overlay.infobox.Counter;
-
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +42,7 @@ class SpecialCounter extends Counter
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<String, Integer> partySpecs = new HashMap<>();
 
-	SpecialCounter(BufferedImage image, SpecialCounterExtendedPlugin plugin, int hitValue,
-	               SpecialWeapon weapon)
+	SpecialCounter(BufferedImage image, SpecialCounterExtendedPlugin plugin, int hitValue, SpecialWeapon weapon)
 	{
 		super(image, plugin, hitValue);
 		this.plugin = plugin;
@@ -87,11 +85,13 @@ class SpecialCounter extends Counter
 			if (hitValue == 1)
 			{
 				return weapon.getName() + " special has hit " + hitValue + " time.";
-			} else
+			}
+			else
 			{
 				return weapon.getName() + " special has hit " + hitValue + " times.";
 			}
-		} else
+		}
+		else
 		{
 			return weapon.getName() + " special has hit " + hitValue + " total.";
 		}

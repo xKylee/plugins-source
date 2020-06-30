@@ -30,7 +30,6 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.ToString;
 import net.runelite.api.NpcID;
-
 import java.util.Set;
 
 @Getter
