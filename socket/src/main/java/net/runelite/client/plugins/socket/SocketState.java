@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,34 +22,23 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.socket;
 
-version = "2.0.7"
+/**
+ * An enum class that identifies the state of the socket connection.
+ */
+public enum SocketState {
 
-project.extra["PluginName"] = "Socket"
-project.extra["PluginDescription"] = "Socket connection for broadcasting messages across clients."
+    // Connection has not been attempted yet. Default state.
+    DISCONNECTED,
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+    // Connection is being established.
+    CONNECTING,
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+    // Connection has been established.
+    CONNECTED,
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-}
+    // Connection was terminated, either by the user or due to an error.
+    TERMINATED;
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
 }

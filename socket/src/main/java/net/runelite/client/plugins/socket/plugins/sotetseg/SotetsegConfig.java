@@ -22,46 +22,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socket.plugins.sotetseg;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-import static net.runelite.client.plugins.socket.SocketPlugin.CONFIG_VERSION;
-
+import java.awt.*;
 import java.util.UUID;
 
-@ConfigGroup(CONFIG_VERSION)
-public interface SocketConfig extends Config {
+@ConfigGroup("Socket Sotetseg Config")
+public interface SotetsegConfig extends Config {
 
     @ConfigItem(
             position = 0,
-            keyName = "getHost",
-            name = "Server Host Address",
-            description = "The host address of the server to connect to."
+            keyName = "getTileColor",
+            name = "Tile Color",
+            description = "The color of the tiles."
     )
-    default String getServerAddress() {
-        return "socket.kthisiscvpv.com";
+    default Color getTileColor() {
+        return new Color(0, 0, 0);
     }
 
     @ConfigItem(
             position = 1,
-            keyName = "getPort",
-            name = "Server Port Number",
-            description = "The port number of the server to connect to."
+            keyName = "getTileTransparency",
+            name = "Tile Transparency",
+            description = "The color transparency of the tiles. Ranges from 0 to 255, inclusive."
     )
-    default int getServerPort() {
-        return 26388;
+    default int getTileTransparency() {
+        return 50;
     }
 
     @ConfigItem(
             position = 2,
-            keyName = "getPassword",
-            name = "Shared Password",
-            description = "Used to encrypt and decrypt data sent to the server."
+            keyName = "getTileOutline",
+            name = "Tile Outline Color",
+            description = "The color of the outline of the tiles."
     )
-    default String getPassword() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
+    default Color getTileOutline() {
+        return Color.GREEN;
+    }
+
+    @ConfigItem(
+            position = 3,
+            keyName = "getTileOutlineSize",
+            name = "Tile Outline Size",
+            description = "The size of the outline of the tiles."
+    )
+    default int getTileOutlineSize() {
+        return 1;
     }
 }

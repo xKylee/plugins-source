@@ -7,13 +7,13 @@ import net.runelite.api.events.Event;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 
 /**
- * Event triggered by Socket, notifying plugins that a packet has been received.
- * This event is triggered on the client thread.
+ * Event triggered by Socket, notifying plugins that a player has joined the party.
+ * This event is not triggered on the client thread.
  */
 @AllArgsConstructor
-public class SocketReceivePacket implements Event {
+public class SocketPlayerJoin implements Event {
 
     @Getter(AccessLevel.PUBLIC)
-    private JSONObject payload;
+    private String playerName;
 
 }

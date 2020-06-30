@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.specialcounterextended;
+package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,29 +30,16 @@ import net.runelite.api.ItemID;
 
 @AllArgsConstructor
 @Getter
-enum SpecialWeapon
-{
-	DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
-	ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
-	DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
-	BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
-	BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
-	DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true),
-	SARADOMIN_GODSWORD("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD, true),
-	SARADOMIN_GODSWORD_OR("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD_OR, true),
-	BLOWPIPE_FULL("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE, true),
-	BLOWPIPE_EMPTY("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE_EMPTY, true),
-	VOLATILE_NIGHTMARE_STAFF("Volatile Nightmare Staff", ItemID.VOLATILE_NIGHTMARE_STAFF, true),
-	ANCIENT_MACE("Ancient Mace", ItemID.ANCIENT_MACE, true),
-	ELDRITCH_NIGHTMARE_STAFF("Eldritch Nightmare Staff", ItemID.ELDRITCH_NIGHTMARE_STAFF, true),
-	DRAGON_CLAWS("Dragon Claws", ItemID.DRAGON_CLAWS, true),
-	DRAGON_DAGGER("Dragon Dagger", ItemID.DRAGON_DAGGER, true),
-	DRAGON_DAGGER_P("Dragon Dagger", ItemID.DRAGON_DAGGERP, true),
-	DRAGON_DAGGER_PPLUS("Dragon Dagger", ItemID.DRAGON_DAGGERP_5680, true),
-	DRAGON_DAGGER_PPLUSPLUS("Dragon Dagger", ItemID.DRAGON_DAGGERP_5698, true),
-	CRYSTAL_HALBERD("Crystal Halberd", ItemID.CRYSTAL_HALBERD, true);
+enum SpecialWeapon {
 
-	private final String name;
-	private final int itemID;
-	private final boolean damage;
+    DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
+    ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
+    DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
+    BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
+    BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
+    DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true);
+
+    private final String name;
+    private final int itemID;
+    private final boolean damage;
 }

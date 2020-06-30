@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
+ * Copyright (c) 2020, Charles <github.com/kthisiscvpv>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,46 +22,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-import static net.runelite.client.plugins.socket.SocketPlugin.CONFIG_VERSION;
+import java.awt.*;
 
-import java.util.UUID;
-
-@ConfigGroup(CONFIG_VERSION)
-public interface SocketConfig extends Config {
+@ConfigGroup("Socket Special Counter Config")
+public interface SpecialCounterExtendedConfig extends Config {
 
     @ConfigItem(
             position = 0,
-            keyName = "getHost",
-            name = "Server Host Address",
-            description = "The host address of the server to connect to."
+            keyName = "showHitOverlay",
+            name = "Hit Overlay",
+            description = "Show the special attack overlay."
     )
-    default String getServerAddress() {
-        return "socket.kthisiscvpv.com";
+    default boolean showHitOverlay() {
+        return true;
     }
 
     @ConfigItem(
             position = 1,
-            keyName = "getPort",
-            name = "Server Port Number",
-            description = "The port number of the server to connect to."
+            keyName = "getFadeDelay",
+            name = "Fade Delay",
+            description = "Delay, in milliseconds, until the icon disappears."
     )
-    default int getServerPort() {
-        return 26388;
+    default int getFadeDelay() {
+        return 5000;
     }
 
     @ConfigItem(
             position = 2,
-            keyName = "getPassword",
-            name = "Shared Password",
-            description = "Used to encrypt and decrypt data sent to the server."
+            keyName = "getMaxHeight",
+            name = "Travel Height",
+            description = "Maximum height, in pixels, for the icon to travel."
     )
-    default String getPassword() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
+    default int getMaxHeight() {
+        return 200;
+    }
+
+    @ConfigItem(
+            position = 3,
+            keyName = "guessDawnbringer",
+            name = "Guess Dawnbringer Hit",
+            description = "Guess Dawnbringer based on XP drop. Provides faster results."
+    )
+    default boolean guessDawnbringer() {
+        return true;
     }
 }

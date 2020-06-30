@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,34 +22,19 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.socket;
 
-version = "2.0.7"
+/**
+ * Identify the String headers of each packet broadcast type.
+ */
+public class SocketPacket {
 
-project.extra["PluginName"] = "Socket"
-project.extra["PluginDescription"] = "Socket connection for broadcasting messages across clients."
+    public static final String JOIN = "JOIN";
+    public static final String LEAVE = "LEAVE";
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+    public static final String BROADCAST = "BROADCAST";
+    public static final String PING = "PING";
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+    public static final String MESSAGE = "MESSAGE";
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-}
-
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
 }

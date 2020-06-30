@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2018, Tyler <https://github.com/tylerthardy>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,34 +22,34 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.socket.plugins.playerstatus.gametimer;
 
-version = "2.0.7"
+import lombok.AccessLevel;
+import lombok.Getter;
+import net.runelite.api.SpriteID;
 
-project.extra["PluginName"] = "Socket"
-project.extra["PluginDescription"] = "Socket connection for broadcasting messages across clients."
+import java.awt.*;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+@Getter(AccessLevel.PUBLIC)
+public enum GameIndicator {
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+    VENGEANCE_ACTIVE(SpriteID.SPELL_VENGEANCE_OTHER, GameTimerImageType.SPRITE, "Vengeance active");
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-}
+    private final String description;
+    private String text;
+    private Color textColor;
+    private final int imageId;
+    private final GameTimerImageType imageType;
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
+    GameIndicator(int imageId, GameTimerImageType idType, String description, String text, Color textColor) {
+        this.imageId = imageId;
+        this.imageType = idType;
+        this.description = description;
+        this.text = text;
+        this.textColor = textColor;
+    }
+
+    GameIndicator(int imageId, GameTimerImageType idType, String description) {
+        this(imageId, idType, description, "", null);
     }
 }
