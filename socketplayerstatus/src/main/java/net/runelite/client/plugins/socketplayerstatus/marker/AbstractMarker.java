@@ -40,7 +40,7 @@ public abstract class AbstractMarker
 
 	public BufferedImage getImage(int size)
 	{
-		BufferedImage baseImage = this.getBaseImage();
+		BufferedImage baseImage = getBaseImage();
 		if (baseImage == null)
 		{
 			return null;

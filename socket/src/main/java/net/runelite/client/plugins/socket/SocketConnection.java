@@ -85,18 +85,18 @@ public class SocketConnection implements Runnable
 
 	public SocketConnection(SocketPlugin plugin, String playerName)
 	{
-		this.plugin = plugin;
-		this.config = this.plugin.getConfig();
+		plugin = plugin;
+		config = plugin.getConfig();
 
-		this.client = this.plugin.getClient();
-		this.clientThread = this.plugin.getClientThread();
+		client = plugin.getClient();
+		clientThread = plugin.getClientThread();
 
-		this.eventBus = this.plugin.getEventBus();
+		eventBus = plugin.getEventBus();
 
-		this.playerName = playerName;
-		this.lastHeartbeat = 0L;
+		playerName = playerName;
+		lastHeartbeat = 0L;
 
-		this.state = SocketState.DISCONNECTED;
+		state = SocketState.DISCONNECTED;
 	}
 
 	@Override
@@ -104,67 +104,67 @@ public class SocketConnection implements Runnable
 	{
 
 		// Socket can only be started once. If the state isn't originally disconnected, ignore everything.
-		if (this.state != SocketState.DISCONNECTED)
+		if (state != SocketState.DISCONNECTED)
 		{
 			throw new IllegalStateException(
-				"Socket connection is already in state " + this.state.name() + ".");
+				"Socket connection is already in state " + state.name() + ".");
 		}
 
 		// Let's start a new connection.
-		this.state = SocketState.CONNECTING;
-		log.info("Attempting to establish socket connection to {}:{}", this.config.getServerAddress(),
-			this.config.getServerPort());
+		state = SocketState.CONNECTING;
+		log.info("Attempting to establish socket connection to {}:{}", config.getServerAddress(),
+			config.getServerPort());
 
 		// Apply the salt to the password.
-		final String secret = new String(this.config.getPassword() + PASSWORD_SALT);
+		final String secret = new String(config.getPassword() + PASSWORD_SALT);
 
 		try
 		{
 
 			// Attempt to establish a connection.
 			InetSocketAddress address =
-				new InetSocketAddress(this.config.getServerAddress(), this.config.getServerPort());
+				new InetSocketAddress(config.getServerAddress(), config.getServerPort());
 
-			this.socket = new Socket();
-			this.socket.connect(address, 10000);
+			socket = new Socket();
+			socket.connect(address, 10000);
 
-			this.inputStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-			this.outputStream = new PrintWriter(this.socket.getOutputStream(), true);
+			inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			outputStream = new PrintWriter(socket.getOutputStream(), true);
 
 			// Notify the server about your connection credentials. This establishes the necessary handshake.
 			JSONObject joinPacket = new JSONObject();
 			joinPacket.put("header", SocketPacket.JOIN);
 			joinPacket.put("room", SHA256.encrypt(secret));
-			joinPacket.put("name", AES256.encrypt(secret, this.playerName));
-			this.outputStream.println(joinPacket.toString());
+			joinPacket.put("name", AES256.encrypt(secret, playerName));
+			outputStream.println(joinPacket.toString());
 
 			// Start listening for input.
 			while (true)
 			{
-				if (this.state == SocketState.DISCONNECTED || this.state == SocketState.TERMINATED)
+				if (state == SocketState.DISCONNECTED || state == SocketState.TERMINATED)
 				{
 					break; // If object was terminated, stop loop.
 				}
 
-				if (!this.socket.isConnected() || this.socket.isClosed())
+				if (!socket.isConnected() || socket.isClosed())
 				{
 					break; // Socket was disconnected, stop loop.
 				}
 
-				if (this.outputStream.checkError())
+				if (outputStream.checkError())
 				{
 					throw new IOException("Broken transmission stream");
 				}
 
-				if (!this.inputStream.ready())
+				if (!inputStream.ready())
 				{ // If there is no data ready, ping (heartbeat) the server.
-					long elapsedTime = System.currentTimeMillis() - this.lastHeartbeat;
+					long elapsedTime = System.currentTimeMillis() - lastHeartbeat;
 					if (elapsedTime >= 30000)
 					{ // Maintain a heartbeat with the server every 30 seconds.
-						this.lastHeartbeat = System.currentTimeMillis();
-						synchronized (this.outputStream)
+						lastHeartbeat = System.currentTimeMillis();
+						synchronized (outputStream)
 						{
-							this.outputStream.println();
+							outputStream.println();
 						}
 					}
 
@@ -173,7 +173,7 @@ public class SocketConnection implements Runnable
 				}
 
 				// Read the input line.
-				String packet = this.inputStream.readLine();
+				String packet = inputStream.readLine();
 				if (packet == null || packet.isEmpty())
 				{
 					continue;
@@ -208,27 +208,27 @@ public class SocketConnection implements Runnable
 					{ // Player is broadcasting a packet to all members.
 						String message = AES256.decrypt(secret, data.getString("payload"));
 						JSONObject payload = new JSONObject(message);
-						this.clientThread.invoke(
+						clientThread.invoke(
 							() -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
 
 					}
 					else if (header.equals(SocketPacket.JOIN))
 					{ // Player has joined the party.
 						String targetName = AES256.decrypt(secret, data.getString("player"));
-						this.logMessage(SocketLog.INFO, targetName + " has joined the party.");
+						logMessage(SocketLog.INFO, targetName + " has joined the party.");
 
-						if (targetName.equals(this.playerName))
+						if (targetName.equals(playerName))
 						{ // You have joined the party.
-							this.state = SocketState.CONNECTED;
+							state = SocketState.CONNECTED;
 							log.info("You have successfully joined the socket party.");
 						}
 
 						JSONArray membersArray = data.getJSONArray("party");
-						this.logMessage(SocketLog.INFO, this.mergeMembers(membersArray, secret));
+						logMessage(SocketLog.INFO, mergeMembers(membersArray, secret));
 
 						try
 						{
-							this.eventBus.post(SocketPlayerJoin.class, new SocketPlayerJoin(targetName));
+							eventBus.post(SocketPlayerJoin.class, new SocketPlayerJoin(targetName));
 						}
 						catch (Exception ignored)
 						{
@@ -238,14 +238,14 @@ public class SocketConnection implements Runnable
 					else if (header.equals(SocketPacket.LEAVE))
 					{ // Player has left the party.
 						String targetName = AES256.decrypt(secret, data.getString("player"));
-						this.logMessage(SocketLog.ERROR, targetName + " has left the party.");
+						logMessage(SocketLog.ERROR, targetName + " has left the party.");
 
 						JSONArray membersArray = data.getJSONArray("party");
-						this.logMessage(SocketLog.ERROR, this.mergeMembers(membersArray, secret));
+						logMessage(SocketLog.ERROR, mergeMembers(membersArray, secret));
 
 						try
 						{
-							this.eventBus.post(SocketPlayerLeave.class, new SocketPlayerLeave(targetName));
+							eventBus.post(SocketPlayerLeave.class, new SocketPlayerLeave(targetName));
 						}
 						catch (Exception ignored)
 						{
@@ -256,8 +256,8 @@ public class SocketConnection implements Runnable
 						.equals(SocketPacket.MESSAGE))
 					{ // Socket server wishes to send you a message.
 						String message = data.getString("message");
-						this.clientThread.invoke(
-							() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", message, null));
+						clientThread.invoke(
+							() -> client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", message, null));
 
 					}
 				}
@@ -272,14 +272,14 @@ public class SocketConnection implements Runnable
 		{
 			// Oh no, something went wrong! Terminate the connection and log.
 			log.error("Unable to establish connection with the server.", ex);
-			this.terminate(false);
+			terminate(false);
 
-			this.logMessage(SocketLog.ERROR,
+			logMessage(SocketLog.ERROR,
 				"Socket terminated. " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
 
 			// Try to reconnect in 30 seconds.
-			this.plugin.setNextConnection(System.currentTimeMillis() + 30000L);
-			this.logMessage(SocketLog.ERROR, "Reconnecting in 30 seconds...");
+			plugin.setNextConnection(System.currentTimeMillis() + 30000L);
+			logMessage(SocketLog.ERROR, "Reconnecting in 30 seconds...");
 			return;
 		}
 	}
@@ -291,18 +291,18 @@ public class SocketConnection implements Runnable
 	 */
 	public void terminate(boolean verbose)
 	{
-		if (this.state == SocketState.TERMINATED)
+		if (state == SocketState.TERMINATED)
 		{
 			return;
 		}
 
-		this.state = SocketState.TERMINATED;
+		state = SocketState.TERMINATED;
 
 		try
 		{ // Close the socket output stream.
-			if (this.outputStream != null)
+			if (outputStream != null)
 			{
-				this.outputStream.close();
+				outputStream.close();
 			}
 		}
 		catch (Exception ignored)
@@ -311,9 +311,9 @@ public class SocketConnection implements Runnable
 
 		try
 		{ // Close the socket input stream.
-			if (this.inputStream != null)
+			if (inputStream != null)
 			{
-				this.inputStream.close();
+				inputStream.close();
 			}
 		}
 		catch (Exception ignored)
@@ -322,11 +322,11 @@ public class SocketConnection implements Runnable
 
 		try
 		{ // Close the actual socket.
-			if (this.socket != null)
+			if (socket != null)
 			{
-				this.socket.close();
-				this.socket.shutdownOutput();
-				this.socket.shutdownInput();
+				socket.close();
+				socket.shutdownOutput();
+				socket.shutdownInput();
 			}
 		}
 		catch (Exception ignored)
@@ -336,7 +336,7 @@ public class SocketConnection implements Runnable
 		log.info("Terminated connections with the socket server.");
 		if (verbose)
 		{
-			this.logMessage(SocketLog.INFO, "Any active socket server connections were closed.");
+			logMessage(SocketLog.INFO, "Any active socket server connections were closed.");
 		}
 	}
 
@@ -372,7 +372,7 @@ public class SocketConnection implements Runnable
 	 */
 	private void logMessage(SocketLog level, String message)
 	{
-		this.clientThread.invoke(() -> this.client
+		clientThread.invoke(() -> client
 			.addChatMessage(ChatMessageType.GAMEMESSAGE, "", level.getPrefix() + message, null));
 	}
 }

@@ -122,23 +122,23 @@ public class SotetsegPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		this.sotetsegActive = false;
-		this.sotetsegNPC = null;
+		sotetsegActive = false;
+		sotetsegNPC = null;
 
-		this.redTiles = new LinkedHashSet<>();
-		this.mazePings = Collections.synchronizedSet(new HashSet<>());
+		redTiles = new LinkedHashSet<>();
+		mazePings = Collections.synchronizedSet(new HashSet<>());
 
-		this.dispatchCount = 5;
-		this.wasInUnderworld = false;
-		this.overworldRegionID = -1;
+		dispatchCount = 5;
+		wasInUnderworld = false;
+		overworldRegionID = -1;
 
-		this.overlayManager.add(this.overlay);
+		overlayManager.add(overlay);
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		this.overlayManager.remove(this.overlay);
+		overlayManager.remove(overlay);
 	}
 
 	@Subscribe // Boss has entered the scene. Played has entered the room.
@@ -149,8 +149,8 @@ public class SotetsegPlugin extends Plugin
 		{
 			case 8387:
 			case 8388:
-				this.sotetsegActive = true;
-				this.sotetsegNPC = npc;
+				sotetsegActive = true;
+				sotetsegNPC = npc;
 				break;
 			default:
 				break;
@@ -165,10 +165,10 @@ public class SotetsegPlugin extends Plugin
 		{
 			case 8387:
 			case 8388:
-				if (this.client.getPlane() != 3)
+				if (client.getPlane() != 3)
 				{
-					this.sotetsegActive = false;
-					this.sotetsegNPC = null;
+					sotetsegActive = false;
+					sotetsegNPC = null;
 				}
 
 				break;
@@ -180,41 +180,41 @@ public class SotetsegPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (this.sotetsegActive)
+		if (sotetsegActive)
 		{
-			final Player player = this.client.getLocalPlayer();
+			final Player player = client.getLocalPlayer();
 
 			// This check resets all the data if sotetseg is attackable.
-			if (this.sotetsegNPC != null && this.sotetsegNPC.getId() == 8388)
+			if (sotetsegNPC != null && sotetsegNPC.getId() == 8388)
 			{
-				this.redTiles.clear();
-				this.mazePings.clear();
-				this.dispatchCount = 5;
+				redTiles.clear();
+				mazePings.clear();
+				dispatchCount = 5;
 
-				if (this.isInOverWorld())
+				if (isInOverWorld())
 				{ // Set the overworld flags.
-					this.wasInUnderworld = false;
+					wasInUnderworld = false;
 					if (player != null && player.getWorldLocation() != null)
 					{
 						WorldPoint wp = player.getWorldLocation();
-						this.overworldRegionID = wp.getRegionID();
+						overworldRegionID = wp.getRegionID();
 					}
 				}
 			}
 
-			if (!this.redTiles.isEmpty() && this.wasInUnderworld)
+			if (!redTiles.isEmpty() && wasInUnderworld)
 			{
-				if (this.dispatchCount > 0)
+				if (dispatchCount > 0)
 				{ // Ensure we only send the data a couple times.
-					this.dispatchCount--;
+					dispatchCount--;
 
 					if (pluginManager.isPluginEnabled(socketPlugin))
 					{
 						JSONArray data = new JSONArray();
 
-						for (final Point p : this.redTiles)
+						for (final Point p : redTiles)
 						{
-							WorldPoint wp = this.translateMazePoint(p);
+							WorldPoint wp = translateMazePoint(p);
 
 							JSONObject jsonwp = new JSONObject();
 							jsonwp.put("x", wp.getX());
@@ -245,7 +245,7 @@ public class SotetsegPlugin extends Plugin
 				return;
 			}
 
-			this.mazePings.clear();
+			mazePings.clear();
 
 			JSONArray data = payload.getJSONArray("sotetseg-extended");
 			for (int i = 0; i < data.length(); i++)
@@ -256,7 +256,7 @@ public class SotetsegPlugin extends Plugin
 				int plane = jsonwp.getInt("plane");
 
 				WorldPoint wp = new WorldPoint(x, y, plane);
-				this.mazePings.add(wp);
+				mazePings.add(wp);
 			}
 		}
 		catch (Exception e)
@@ -268,26 +268,26 @@ public class SotetsegPlugin extends Plugin
 	@Subscribe
 	public void onGroundObjectSpawned(GroundObjectSpawned event)
 	{
-		if (this.sotetsegActive)
+		if (sotetsegActive)
 		{
 			GroundObject o = event.getGroundObject();
 			if (o.getId() == 33035)
 			{
 				final Tile t = event.getTile();
-				final WorldPoint p = WorldPoint.fromLocal(this.client, t.getLocalLocation());
+				final WorldPoint p = WorldPoint.fromLocal(client, t.getLocalLocation());
 				final Point point = new Point(p.getRegionX(), p.getRegionY());
 
 				if (this
 					.isInOverWorld())
 				{  // (9, 22) are magical numbers that represent the overworld maze offset.
-					this.redTiles.add(new Point(point.getX() - 9, point.getY() - 22));
+					redTiles.add(new Point(point.getX() - 9, point.getY() - 22));
 				}
 
 				if (this
 					.isInUnderWorld())
 				{   // (42, 31) are magical numbers that represent the underworld maze offset.
-					this.redTiles.add(new Point(point.getX() - 42, point.getY() - 31));
-					this.wasInUnderworld = true;
+					redTiles.add(new Point(point.getX() - 42, point.getY() - 31));
+					wasInUnderworld = true;
 				}
 			}
 		}
@@ -300,7 +300,7 @@ public class SotetsegPlugin extends Plugin
 	 */
 	private boolean isInOverWorld()
 	{
-		return this.client.getMapRegions().length > 0 && this.client.getMapRegions()[0] == 13123;
+		return client.getMapRegions().length > 0 && client.getMapRegions()[0] == 13123;
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class SotetsegPlugin extends Plugin
 	 */
 	private boolean isInUnderWorld()
 	{
-		return this.client.getMapRegions().length > 0 && this.client.getMapRegions()[0] == 13379;
+		return client.getMapRegions().length > 0 && client.getMapRegions()[0] == 13379;
 	}
 
 	/**
@@ -321,10 +321,10 @@ public class SotetsegPlugin extends Plugin
 	 */
 	private WorldPoint translateMazePoint(final Point mazePoint)
 	{
-		Player p = this.client.getLocalPlayer();
+		Player p = client.getLocalPlayer();
 
 		// (9, 22) are magical numbers that represent the overworld maze offset.
-		if (this.overworldRegionID == -1 && p != null)
+		if (overworldRegionID == -1 && p != null)
 		{
 			WorldPoint wp = p.getWorldLocation();
 			return WorldPoint
@@ -332,6 +332,6 @@ public class SotetsegPlugin extends Plugin
 		}
 
 		return WorldPoint
-			.fromRegion(this.overworldRegionID, mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
+			.fromRegion(overworldRegionID, mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
 	}
 }

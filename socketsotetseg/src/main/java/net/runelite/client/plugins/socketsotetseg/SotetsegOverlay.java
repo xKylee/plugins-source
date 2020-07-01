@@ -75,29 +75,29 @@ public class SotetsegOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (this.plugin.isSotetsegActive())
+		if (plugin.isSotetsegActive())
 		{
-			for (final WorldPoint next : this.plugin.getMazePings())
+			for (final WorldPoint next : plugin.getMazePings())
 			{
-				final LocalPoint localPoint = LocalPoint.fromWorld(this.client, next);
+				final LocalPoint localPoint = LocalPoint.fromWorld(client, next);
 				if (localPoint != null)
 				{
-					Polygon poly = Perspective.getCanvasTilePoly(this.client, localPoint);
+					Polygon poly = Perspective.getCanvasTilePoly(client, localPoint);
 					if (poly == null)
 					{
 						continue;
 					}
 
-					Color color = this.config.getTileOutline();
+					Color color = config.getTileOutline();
 					graphics.setColor(color);
 
 					Stroke originalStroke = graphics.getStroke();
-					int strokeSize = Math.max(this.config.getTileOutlineSize(), 1);
+					int strokeSize = Math.max(config.getTileOutlineSize(), 1);
 					graphics.setStroke(new BasicStroke(strokeSize));
 					graphics.draw(poly);
 
-					Color fill = this.config.getTileColor();
-					int alpha = Math.min(Math.max(this.config.getTileTransparency(), 0), 255);
+					Color fill = config.getTileColor();
+					int alpha = Math.min(Math.max(config.getTileTransparency(), 0), 255);
 					Color realFill = new Color(fill.getRed(), fill.getGreen(), fill.getBlue(), alpha);
 					graphics.setColor(realFill);
 					graphics.fill(poly);

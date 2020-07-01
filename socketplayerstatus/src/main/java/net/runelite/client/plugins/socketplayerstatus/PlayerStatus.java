@@ -56,23 +56,23 @@ public class PlayerStatus
 	public JSONObject toJSON()
 	{
 		JSONObject json = new JSONObject();
-		json.put("health", this.health);
-		json.put("max-health", this.maxHealth);
-		json.put("prayer", this.prayer);
-		json.put("max-prayer", this.maxPrayer);
-		json.put("run", this.run);
-		json.put("special", this.special);
+		json.put("health", health);
+		json.put("max-health", maxHealth);
+		json.put("prayer", prayer);
+		json.put("max-prayer", maxPrayer);
+		json.put("run", run);
+		json.put("special", special);
 		return json;
 	}
 
 	public void parseJSON(JSONObject json)
 	{
-		this.health = json.getInt("health");
-		this.maxHealth = json.getInt("max-health");
-		this.prayer = json.getInt("prayer");
-		this.maxPrayer = json.getInt("max-prayer");
-		this.run = json.getInt("run");
-		this.special = json.getInt("special");
+		health = json.getInt("health");
+		maxHealth = json.getInt("max-health");
+		prayer = json.getInt("prayer");
+		maxPrayer = json.getInt("max-prayer");
+		run = json.getInt("run");
+		special = json.getInt("special");
 	}
 
 	public static PlayerStatus fromJSON(JSONObject json)

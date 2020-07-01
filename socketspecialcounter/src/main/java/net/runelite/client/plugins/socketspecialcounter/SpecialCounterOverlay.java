@@ -80,15 +80,15 @@ public class SpecialCounterOverlay extends Overlay
 
 	public void addOverlay(String player, SpecialIcon icon)
 	{
-		if (this.config.showHitOverlay())
+		if (config.showHitOverlay())
 		{
 			ArrayList<SpecialIcon> icons = new ArrayList<>();
-			if (this.drawings.containsKey(player))
+			if (drawings.containsKey(player))
 			{
-				icons = this.drawings.get(player);
+				icons = drawings.get(player);
 			}
 			icons.add(icon);
-			this.drawings.put(player, icons);
+			drawings.put(player, icons);
 		}
 	}
 
@@ -98,17 +98,17 @@ public class SpecialCounterOverlay extends Overlay
 		ArrayList<String> removePlayers = new ArrayList<>();
 
 		Map<String, LocalPoint> locations = new HashMap<>();
-		for (Player player : this.client.getPlayers())
+		for (Player player : client.getPlayers())
 		{
 			locations.put(player.getName(), player.getLocalLocation());
 		}
 
-		for (String playerName : this.drawings.keySet())
+		for (String playerName : drawings.keySet())
 		{
 			LocalPoint center = locations.get(playerName);
 			if (center != null)
 			{
-				ArrayList<SpecialIcon> icons = this.drawings.get(playerName);
+				ArrayList<SpecialIcon> icons = drawings.get(playerName);
 				ArrayList<SpecialIcon> removeIcons = new ArrayList<>();
 				int currentHeight = 200; // Base height for a player.
 
@@ -133,14 +133,14 @@ public class SpecialCounterOverlay extends Overlay
 					final int maxHeight = Math.max(config.getMaxHeight(), 1);
 					int updatedHeight = maxHeight - (int) (((float) maxHeight) * thresh);
 
-					Point drawPoint = Perspective.getCanvasImageLocation(this.client, center, icon.getImage(),
+					Point drawPoint = Perspective.getCanvasImageLocation(client, center, icon.getImage(),
 						currentHeight + updatedHeight);
 					graphics.drawImage(icon.getImage(), drawPoint.getX(), drawPoint.getY(), null);
 
 					if (icon.getText() != null)
 					{
 						Point textPoint = Perspective
-							.getCanvasTextLocation(this.client, graphics, center, icon.getText(),
+							.getCanvasTextLocation(client, graphics, center, icon.getText(),
 								currentHeight + updatedHeight);
 						graphics.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -175,7 +175,7 @@ public class SpecialCounterOverlay extends Overlay
 
 		for (String playerName : removePlayers)
 		{
-			this.drawings.remove(playerName);
+			drawings.remove(playerName);
 		}
 
 		return null;

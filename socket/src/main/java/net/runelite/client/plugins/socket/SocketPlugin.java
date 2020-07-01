@@ -101,7 +101,7 @@ public class SocketPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		this.nextConnection = 0L;
+		nextConnection = 0L;
 	}
 
 	@Override
@@ -113,9 +113,9 @@ public class SocketPlugin extends Plugin
 		eventBus.unregister(SocketPlayerJoin.class);
 		eventBus.unregister(SocketPlayerLeave.class);
 
-		if (this.connection != null)
+		if (connection != null)
 		{
-			this.connection.terminate(true);
+			connection.terminate(true);
 		}
 	}
 
@@ -125,20 +125,20 @@ public class SocketPlugin extends Plugin
 		// Attempt connecting, or re-establishing connection to the socket server, only when the user is logged in.
 		if (client.getGameState() == GameState.LOGGED_IN)
 		{
-			if (this.connection != null)
+			if (connection != null)
 			{ // If an connection is already being established, ignore.
-				SocketState state = this.connection.getState();
+				SocketState state = connection.getState();
 				if (state == SocketState.CONNECTING || state == SocketState.CONNECTED)
 				{
 					return;
 				}
 			}
 
-			if (System.currentTimeMillis() >= this.nextConnection)
+			if (System.currentTimeMillis() >= nextConnection)
 			{ // Create a new connection.
-				this.nextConnection = System.currentTimeMillis() + 30000L;
-				this.connection = new SocketConnection(this, this.client.getLocalPlayer().getName());
-				new Thread(this.connection).start(); // Handler blocks, so run it on a separate thread.
+				nextConnection = System.currentTimeMillis() + 30000L;
+				connection = new SocketConnection(this, client.getLocalPlayer().getName());
+				new Thread(connection).start(); // Handler blocks, so run it on a separate thread.
 			}
 		}
 	}
@@ -149,7 +149,7 @@ public class SocketPlugin extends Plugin
 		// Notify the user to restart the plugin when the config changes.
 		if (event.getGroup().equals("Socket"))
 		{
-			this.clientThread.invoke(() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
+			clientThread.invoke(() -> client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
 				"<col=b4281e>Configuration changed. Please restart the plugin to see updates.",
 				null));
 		}
@@ -161,9 +161,9 @@ public class SocketPlugin extends Plugin
 		// Terminate all connections to the socket server when the user logs out.
 		if (event.getGameState() == GameState.LOGIN_SCREEN)
 		{
-			if (this.connection != null)
+			if (connection != null)
 			{
-				this.connection.terminate(false);
+				connection.terminate(false);
 			}
 		}
 	}
@@ -174,7 +174,7 @@ public class SocketPlugin extends Plugin
 		try
 		{
 			// Handles the packets that alternative plugins broadcasts.
-			if (this.connection == null || this.connection.getState() != SocketState.CONNECTED)
+			if (connection == null || connection.getState() != SocketState.CONNECTED)
 			{
 				return;
 			}
@@ -182,13 +182,13 @@ public class SocketPlugin extends Plugin
 			String data = packet.getPayload().toString();
 			log.debug("Deploying packet from client: {}", data);
 
-			String secret = this.config.getPassword() + PASSWORD_SALT;
+			String secret = config.getPassword() + PASSWORD_SALT;
 
 			JSONObject payload = new JSONObject();
 			payload.put("header", SocketPacket.BROADCAST);
 			payload.put("payload", AES256.encrypt(secret, data)); // Payload is now an encrypted string.
 
-			PrintWriter outputStream = this.connection.getOutputStream();
+			PrintWriter outputStream = connection.getOutputStream();
 			synchronized (outputStream)
 			{
 				outputStream.println(payload.toString());

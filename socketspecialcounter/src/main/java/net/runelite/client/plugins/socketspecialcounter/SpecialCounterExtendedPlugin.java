@@ -136,7 +136,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		specialExperience = -1;
 		magicExperience = -1;
 
-		this.overlayManager.add(this.overlay);
+		overlayManager.add(overlay);
 
 		try
 		{
@@ -153,7 +153,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 	protected void shutDown()
 	{
 		removeCounters();
-		this.overlayManager.remove(this.overlay);
+		overlayManager.remove(overlay);
 	}
 
 	private int currentWorld;
@@ -213,21 +213,21 @@ public class SpecialCounterExtendedPlugin extends Plugin
 	{
 		int specialPercentage = client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT);
 
-		if (this.specialPercentage == -1 || specialPercentage >= this.specialPercentage)
+		if (specialPercentage == -1 || specialPercentage >= specialPercentage)
 		{
-			this.specialPercentage = specialPercentage;
+			specialPercentage = specialPercentage;
 			return;
 		}
 
-		this.specialPercentage = specialPercentage;
-		this.specialWeapon = usedSpecialWeapon();
+		specialPercentage = specialPercentage;
+		specialWeapon = usedSpecialWeapon();
 
-		this.lastSpecTarget = client.getLocalPlayer().getInteracting();
-		this.lastSpecTick = client.getTickCount();
+		lastSpecTarget = client.getLocalPlayer().getInteracting();
+		lastSpecTick = client.getTickCount();
 
-		this.specialUsed = true;
-		this.specialExperience = this.client.getOverallExperience();
-		this.magicExperience = this.client.getSkillExperience(Skill.MAGIC);
+		specialUsed = true;
+		specialExperience = client.getOverallExperience();
+		magicExperience = client.getSkillExperience(Skill.MAGIC);
 	}
 
 	@Subscribe // For Dawnbringer, EXP tracked.
@@ -238,23 +238,23 @@ public class SpecialCounterExtendedPlugin extends Plugin
 			return;
 		}
 
-		if (!this.config.guessDawnbringer()) // They want to wait for the Hitsplat instead.
+		if (!config.guessDawnbringer()) // They want to wait for the Hitsplat instead.
 		{
 			return;
 		}
 
-		if (this.specialExperience != -1 && this.specialUsed && this.lastSpecTarget != null &&
-			this.lastSpecTarget instanceof NPC)
+		if (specialExperience != -1 && specialUsed && lastSpecTarget != null &&
+			lastSpecTarget instanceof NPC)
 		{
-			this.specialUsed = false;
+			specialUsed = false;
 
-			long deltaExp = this.client.getOverallExperience() - this.specialExperience;
-			this.specialExperience = -1;
+			long deltaExp = client.getOverallExperience() - specialExperience;
+			specialExperience = -1;
 
-			long deltaMagicExp = this.client.getSkillExperience(Skill.MAGIC) - this.magicExperience;
-			this.magicExperience = -1;
+			long deltaMagicExp = client.getSkillExperience(Skill.MAGIC) - magicExperience;
+			magicExperience = -1;
 
-			if (this.specialWeapon != null && this.specialWeapon == SpecialWeapon.DAWNBRINGER)
+			if (specialWeapon != null && specialWeapon == SpecialWeapon.DAWNBRINGER)
 			{
 				int currentAttackStyleVarbit = client.getVar(VarPlayer.ATTACK_STYLE);
 
@@ -269,14 +269,14 @@ public class SpecialCounterExtendedPlugin extends Plugin
 					damage = (int) Math.round(((double) deltaExp) / 3.5d);
 				}
 
-				String pName = this.client.getLocalPlayer().getName();
-				updateCounter(pName, this.specialWeapon, null, damage);
+				String pName = client.getLocalPlayer().getName();
+				updateCounter(pName, specialWeapon, null, damage);
 
 				if (pluginManager.isPluginEnabled(socketPlugin))
 				{
 					JSONObject data = new JSONObject();
 					data.put("player", pName);
-					data.put("target", ((NPC) this.lastSpecTarget).getId());
+					data.put("target", ((NPC) lastSpecTarget).getId());
 					data.put("weapon", specialWeapon.ordinal());
 					data.put("hit", damage);
 
@@ -285,7 +285,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 					eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
 				}
 
-				this.lastSpecTarget = null;
+				lastSpecTarget = null;
 			}
 		}
 	}
@@ -338,7 +338,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 			log.debug("Special attack target: id: {} - target: {} - weapon: {} - amount: {}",
 				interactingId, target, specialWeapon, hit);
 
-			final String pName = this.client.getLocalPlayer().getName();
+			final String pName = client.getLocalPlayer().getName();
 			updateCounter(pName, specialWeapon, null, hit);
 
 			if (pluginManager.isPluginEnabled(socketPlugin))
@@ -361,7 +361,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 	{
 		try
 		{
-			if (this.client.getGameState() != GameState.LOGGED_IN)
+			if (client.getGameState() != GameState.LOGGED_IN)
 			{
 				return;
 			}
@@ -372,7 +372,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 				return;
 			}
 
-			final String pName = this.client.getLocalPlayer().getName();
+			final String pName = client.getLocalPlayer().getName();
 
 			final JSONObject data = payload.getJSONObject("special-extended");
 			if (data.getString("player").equals(pName))
@@ -464,7 +464,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		SpecialCounter counter = specialCounter[specialWeapon.ordinal()];
 
 		BufferedImage image = itemManager.getImage(specialWeapon.getItemID());
-		this.overlay.addOverlay(player,
+		overlay.addOverlay(player,
 			new SpecialIcon(image, Integer.toString(hit), System.currentTimeMillis()));
 
 		if (counter == null)

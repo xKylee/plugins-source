@@ -61,6 +61,7 @@ public class PlayerSidebarOverlay extends OverlayPanel
 	private PlayerSidebarOverlay(final PlayerStatusPlugin plugin, final PlayerStatusConfig config)
 	{
 		super(plugin);
+		
 		this.plugin = plugin;
 		this.config = config;
 
@@ -72,14 +73,14 @@ public class PlayerSidebarOverlay extends OverlayPanel
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		final Map<String, PlayerStatus> partyStatus = this.plugin.getPartyStatus();
+		final Map<String, PlayerStatus> partyStatus = plugin.getPartyStatus();
 		if (partyStatus.size() <= 1)
 		{
 			return null;
 		}
 
-		if (!this.config.showPlayerHealth() && !this.config.showPlayerPrayer() &&
-			!this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
+		if (!config.showPlayerHealth() && !config.showPlayerPrayer() &&
+			!config.showPlayerSpecial() && !config.showPlayerRunEnergy())
 		{
 			return null; // No options are turned on. Nothing to display.
 		}
@@ -98,7 +99,7 @@ public class PlayerSidebarOverlay extends OverlayPanel
 					.build();
 				panel.getChildren().add(name);
 
-				if (this.config.showPlayerHealth())
+				if (config.showPlayerHealth())
 				{
 					final ProgressBarComponent hpBar = new ProgressBarComponent();
 					hpBar.setBackgroundColor(HP_BG);
@@ -109,7 +110,7 @@ public class PlayerSidebarOverlay extends OverlayPanel
 					panel.getChildren().add(hpBar);
 				}
 
-				if (this.config.showPlayerPrayer())
+				if (config.showPlayerPrayer())
 				{
 					final ProgressBarComponent prayBar = new ProgressBarComponent();
 					prayBar.setBackgroundColor(PRAY_BG);
@@ -120,7 +121,7 @@ public class PlayerSidebarOverlay extends OverlayPanel
 					panel.getChildren().add(prayBar);
 				}
 
-				if (this.config.showPlayerRunEnergy())
+				if (config.showPlayerRunEnergy())
 				{
 					final ProgressBarComponent runBar = new ProgressBarComponent();
 					runBar.setBackgroundColor(RUN_BG);
@@ -131,7 +132,7 @@ public class PlayerSidebarOverlay extends OverlayPanel
 					panel.getChildren().add(runBar);
 				}
 
-				if (this.config.showPlayerSpecial())
+				if (config.showPlayerSpecial())
 				{
 					final ProgressBarComponent specBar = new ProgressBarComponent();
 					specBar.setBackgroundColor(SPEC_BG);

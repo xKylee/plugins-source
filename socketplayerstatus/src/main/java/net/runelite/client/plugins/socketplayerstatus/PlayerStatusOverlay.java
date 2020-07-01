@@ -71,9 +71,9 @@ public class PlayerStatusOverlay extends Overlay
 		this.itemManager = itemManager;
 		this.spriteManager = spriteManager;
 
-		this.setPosition(OverlayPosition.DYNAMIC);
-		this.setPriority(OverlayPriority.HIGH);
-		this.determineLayer();
+		setPosition(OverlayPosition.DYNAMIC);
+		setPriority(OverlayPriority.HIGH);
+		determineLayer();
 	}
 
 	private boolean ignoreMarker(AbstractMarker marker)
@@ -89,7 +89,7 @@ public class PlayerStatusOverlay extends Overlay
 			switch (indicator)
 			{
 				case VENGEANCE_ACTIVE:
-					return !this.config.showVengeanceActive();
+					return !config.showVengeanceActive();
 				default:
 					return true;
 			}
@@ -100,16 +100,16 @@ public class PlayerStatusOverlay extends Overlay
 			switch (timer)
 			{
 				case VENGEANCE:
-					return !this.config.showVengeanceCooldown();
+					return !config.showVengeanceCooldown();
 				case IMBUED_HEART:
-					return !this.config.showImbuedHeart();
+					return !config.showImbuedHeart();
 				case OVERLOAD:
 				case OVERLOAD_RAID:
-					return !this.config.showOverload();
+					return !config.showOverload();
 				case PRAYER_ENHANCE:
-					return !this.config.showPrayerEnhance();
+					return !config.showPrayerEnhance();
 				case STAMINA:
-					return !this.config.showStamina();
+					return !config.showStamina();
 				default:
 					return true;
 			}
@@ -122,19 +122,19 @@ public class PlayerStatusOverlay extends Overlay
 	{
 		List<AbstractMarker> toRemove = new ArrayList<AbstractMarker>();
 
-		int size = this.config.getIndicatorSize();
-		int margin = this.config.getIndicatorPadding();
+		int size = config.getIndicatorSize();
+		int margin = config.getIndicatorPadding();
 		graphics.setFont(new Font("SansSerif", Font.BOLD, (int) (0.75d * size)));
 
 		Point base = Perspective
-			.localToCanvas(this.client, p.getLocalLocation(), this.client.getPlane(),
+			.localToCanvas(client, p.getLocalLocation(), client.getPlane(),
 				p.getLogicalHeight());
 		int zOffset = 0;
-		int xOffset = this.config.getIndicatorXOffset() - (size / 2);
+		int xOffset = config.getIndicatorXOffset() - (size / 2);
 
 		for (AbstractMarker marker : markers)
 		{
-			if (this.ignoreMarker(marker))
+			if (ignoreMarker(marker))
 			{
 				continue;
 			}
@@ -188,13 +188,13 @@ public class PlayerStatusOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		Map<String, List<AbstractMarker>> effects = this.plugin.getStatusEffects();
-		Player p = this.client.getLocalPlayer();
+		Map<String, List<AbstractMarker>> effects = plugin.getStatusEffects();
+		Player p = client.getLocalPlayer();
 
 		List<AbstractMarker> localMarkers = effects.get(null);
 		if (localMarkers != null)
 		{
-			List<AbstractMarker> toRemove = this.renderPlayer(graphics, p, localMarkers);
+			List<AbstractMarker> toRemove = renderPlayer(graphics, p, localMarkers);
 
 			if (!toRemove.isEmpty())
 			{
@@ -213,7 +213,7 @@ public class PlayerStatusOverlay extends Overlay
 			}
 		}
 
-		for (Player t : this.client.getPlayers())
+		for (Player t : client.getPlayers())
 		{
 			if (p == t)
 			{
@@ -223,7 +223,7 @@ public class PlayerStatusOverlay extends Overlay
 			List<AbstractMarker> markers = effects.get(t.getName());
 			if (markers != null)
 			{
-				List<AbstractMarker> toRemove = this.renderPlayer(graphics, t, markers);
+				List<AbstractMarker> toRemove = renderPlayer(graphics, t, markers);
 
 				if (!toRemove.isEmpty())
 				{
