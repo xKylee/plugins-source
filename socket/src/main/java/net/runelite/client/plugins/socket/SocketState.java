@@ -25,45 +25,22 @@
 
 package net.runelite.client.plugins.socket;
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+/**
+ * An enum class that identifies the state of the socket connection.
+ */
+public enum SocketState
 {
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
-	{
-		return "localhost";
-	}
+	// Connection has not been attempted yet. Default state.
+	DISCONNECTED,
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
-	{
-		return 26388;
-	}
+	// Connection is being established.
+	CONNECTING,
 
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
-	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
-	}
+	// Connection has been established.
+	CONNECTED,
+
+	// Connection was terminated, either by the user or due to an error.
+	TERMINATED;
+
 }

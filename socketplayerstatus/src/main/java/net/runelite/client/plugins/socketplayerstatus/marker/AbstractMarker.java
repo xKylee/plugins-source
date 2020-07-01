@@ -23,47 +23,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socketplayerstatus.marker;
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+public abstract class AbstractMarker
 {
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
-	{
-		return "localhost";
-	}
+	@Setter(AccessLevel.PUBLIC)
+	@Getter(AccessLevel.PUBLIC)
+	private BufferedImage baseImage;
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
+	public BufferedImage getImage(int size)
 	{
-		return 26388;
-	}
+		BufferedImage baseImage = getBaseImage();
+		if (baseImage == null)
+		{
+			return null;
+		}
 
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
-	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		double height = baseImage.getHeight() > 0 ? baseImage.getHeight() : 1;
+		double scale = ((double) size) / height;
+
+		int newWidth = (int) Math.ceil(scale * baseImage.getWidth());
+		BufferedImage realImage = new BufferedImage(newWidth, size, baseImage.getType());
+
+		Graphics2D g2d = realImage.createGraphics();
+		g2d.drawImage(baseImage, 0, 0, newWidth, size, null);
+		g2d.dispose();
+
+		return realImage;
 	}
 }

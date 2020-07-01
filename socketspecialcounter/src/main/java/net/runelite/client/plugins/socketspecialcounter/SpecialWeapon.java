@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
+ * Copyright (c) 2018, Raqes <j.raqes@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,47 +23,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socketspecialcounter;
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.runelite.api.ItemID;
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+@AllArgsConstructor
+@Getter
+enum SpecialWeapon
 {
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
-	{
-		return "localhost";
-	}
+	DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
-	{
-		return 26388;
-	}
+	ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
+	DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
 
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
-	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
-	}
+	BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
+	BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
+
+	DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true),
+
+	SARADOMIN_GODSWORD("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD, true),
+	SARADOMIN_GODSWORD_OR("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD_OR, true),
+
+	BLOWPIPE_FULL("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE, true),
+	BLOWPIPE_EMPTY("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE_EMPTY, true),
+
+	VOLATILE_NIGHTMARE_STAFF("Volatile Nightmare Staff", ItemID.VOLATILE_NIGHTMARE_STAFF, true),
+	ELDRITCH_NIGHTMARE_STAFF("Eldritch Nightmare Staff", ItemID.ELDRITCH_NIGHTMARE_STAFF, true),
+	ANCIENT_MACE("Ancient Mace", ItemID.ANCIENT_MACE, true);
+
+	private final String name;
+	private final int itemID;
+	private final boolean damage;
 }

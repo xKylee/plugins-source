@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
+ * Copyright (c) 2018, Tyler <https://github.com/tylerthardy>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,47 +23,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socketplayerstatus.gametimer;
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import java.awt.Color;
+import lombok.AccessLevel;
+import lombok.Getter;
+import net.runelite.api.SpriteID;
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+@Getter(AccessLevel.PUBLIC)
+public enum GameIndicator
 {
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
+	VENGEANCE_ACTIVE(SpriteID.SPELL_VENGEANCE_OTHER, GameTimerImageType.SPRITE, "Vengeance active");
+
+	private final String description;
+	private String text;
+	private Color textColor;
+	private final int imageId;
+	private final GameTimerImageType imageType;
+
+	GameIndicator(int imageId, GameTimerImageType idType, String description, String text, Color textColor)
 	{
-		return "localhost";
+		this.imageId = imageId;
+		this.imageType = idType;
+		this.description = description;
+		this.text = text;
+		this.textColor = textColor;
 	}
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
+	GameIndicator(int imageId, GameTimerImageType idType, String description)
 	{
-		return 26388;
-	}
-
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
-	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		this(imageId, idType, description, "", null);
 	}
 }

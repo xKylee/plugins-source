@@ -25,45 +25,29 @@
 
 package net.runelite.client.plugins.socket;
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+/**
+ * Enum message types for broadcasting a message to the user's chatbox.
+ * SocketLog identifies a color prefix to use in each scenario.
+ */
+public enum SocketLog
 {
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
+	INFO("<col=008000>"), ERROR("<col=b4281e>");
+
+	private String prefix;
+
+	SocketLog(String prefix)
 	{
-		return "localhost";
+		this.prefix = prefix;
 	}
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
+	/**
+	 * Retrieves the hex tag to use for the specific message type.
+	 *
+	 * @return String hex tag.
+	 */
+	public String getPrefix()
 	{
-		return 26388;
-	}
-
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
-	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		return this.prefix;
 	}
 }

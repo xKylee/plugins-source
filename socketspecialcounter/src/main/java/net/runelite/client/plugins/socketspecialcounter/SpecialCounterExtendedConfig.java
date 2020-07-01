@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
+ * Copyright (c) 2020, Charles <github.com/kthisiscvpv>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,47 +23,68 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socketspecialcounter;
 
-import java.util.UUID;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+@ConfigGroup("Socket Special Attack Counter")
+public interface SpecialCounterExtendedConfig extends Config
 {
 
 	@ConfigItem(
 		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
+		keyName = "mirrorMode",
+		name = "Mirror Mode Compatibility?",
+		description = "Should we show the overlay on Mirror Mode?"
 	)
-	default String getServerAddress()
+	default boolean mirrorMode()
 	{
-		return "localhost";
+		return false;
 	}
 
 	@ConfigItem(
 		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
+		keyName = "showHitOverlay",
+		name = "Hit Overlay",
+		description = "Show the special attack overlay."
 	)
-	default int getServerPort()
+	default boolean showHitOverlay()
 	{
-		return 26388;
+		return true;
 	}
 
 	@ConfigItem(
 		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
+		keyName = "getFadeDelay",
+		name = "Fade Delay",
+		description = "Delay, in milliseconds, until the icon disappears."
 	)
-	default String getPassword()
+	default int getFadeDelay()
 	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		return 5000;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "getMaxHeight",
+		name = "Travel Height",
+		description = "Maximum height, in pixels, for the icon to travel."
+	)
+	default int getMaxHeight()
+	{
+		return 200;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "guessDawnbringer",
+		name = "Guess Dawnbringer Hit",
+		description = "Guess Dawnbringer based on XP drop. Provides faster results."
+	)
+	default boolean guessDawnbringer()
+	{
+		return true;
 	}
 }

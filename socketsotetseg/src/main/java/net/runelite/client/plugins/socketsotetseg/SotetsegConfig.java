@@ -23,47 +23,69 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socketsotetseg;
 
-import java.util.UUID;
+import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+@ConfigGroup("Socket Sotetseg")
+public interface SotetsegConfig extends Config
 {
 
 	@ConfigItem(
 		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
+		keyName = "mirrorMode",
+		name = "Mirror Mode Compatibility?",
+		description = "Should we show the overlay on Mirror Mode?"
 	)
-	default String getServerAddress()
+	default boolean mirrorMode()
 	{
-		return "localhost";
+		return false;
 	}
 
 	@ConfigItem(
 		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
+		keyName = "getTileColor",
+		name = "Tile Color",
+		description = "The color of the tiles."
 	)
-	default int getServerPort()
+	default Color getTileColor()
 	{
-		return 26388;
+		return new Color(0, 0, 0);
 	}
 
 	@ConfigItem(
 		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
+		keyName = "getTileTransparency",
+		name = "Tile Transparency",
+		description = "The color transparency of the tiles. Ranges from 0 to 255, inclusive."
 	)
-	default String getPassword()
+	default int getTileTransparency()
 	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		return 50;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "getTileOutline",
+		name = "Tile Outline Color",
+		description = "The color of the outline of the tiles."
+	)
+	default Color getTileOutline()
+	{
+		return Color.GREEN;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "getTileOutlineSize",
+		name = "Tile Outline Size",
+		description = "The size of the outline of the tiles."
+	)
+	default int getTileOutlineSize()
+	{
+		return 1;
 	}
 }

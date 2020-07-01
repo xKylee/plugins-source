@@ -23,47 +23,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+package net.runelite.client.plugins.socketplayerstatus;
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import net.runelite.client.plugins.socket.org.json.JSONObject;
+import net.runelite.client.ui.overlay.components.PanelComponent;
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
+@Setter(AccessLevel.PUBLIC)
+@Getter(AccessLevel.PUBLIC)
+@AllArgsConstructor
+public class PlayerStatus
 {
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
+	private final PanelComponent panel = new PanelComponent();
+
+	private int health;
+	private int maxHealth;
+
+	private int prayer;
+	private int maxPrayer;
+
+	private int run;
+	private int special;
+
+	private PlayerStatus()
 	{
-		return "localhost";
 	}
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
+	public JSONObject toJSON()
 	{
-		return 26388;
+		JSONObject json = new JSONObject();
+		json.put("health", health);
+		json.put("max-health", maxHealth);
+		json.put("prayer", prayer);
+		json.put("max-prayer", maxPrayer);
+		json.put("run", run);
+		json.put("special", special);
+		return json;
 	}
 
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
+	public void parseJSON(JSONObject json)
 	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		health = json.getInt("health");
+		maxHealth = json.getInt("max-health");
+		prayer = json.getInt("prayer");
+		maxPrayer = json.getInt("max-prayer");
+		run = json.getInt("run");
+		special = json.getInt("special");
+	}
+
+	public static PlayerStatus fromJSON(JSONObject json)
+	{
+		PlayerStatus ps = new PlayerStatus();
+		ps.parseJSON(json);
+		return ps;
 	}
 }
