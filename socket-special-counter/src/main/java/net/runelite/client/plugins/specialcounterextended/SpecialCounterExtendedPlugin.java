@@ -455,7 +455,8 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		{
 			specialWeapon = SpecialWeapon.BANDOS_GODSWORD;
 		}
-		else if (specialWeapon == SpecialWeapon.SARADOMIN_GODSWORD_OR)
+
+		if (specialWeapon == SpecialWeapon.SARADOMIN_GODSWORD_OR)
 		{
 			specialWeapon = SpecialWeapon.SARADOMIN_GODSWORD;
 		}
