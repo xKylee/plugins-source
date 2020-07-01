@@ -28,7 +28,7 @@ package net.runelite.client.plugins.playerstatus.marker;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator;
+import net.runelite.client.plugins.playerstatus.gametimer.GameIndicator;
 
 @AllArgsConstructor
 public class IndicatorMarker extends AbstractMarker
