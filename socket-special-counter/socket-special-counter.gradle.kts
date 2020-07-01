@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.2"
+version = "0.0.1"
 
-project.extra["PluginName"] = "Socket"
-project.extra["PluginDescription"] = "Socket connection for broadcasting messages across clients."
+project.extra["PluginName"] = "Socket Special Attack Counter"
+project.extra["PluginDescription"] = "Track DWH, Arclight, Darklight, and BGS special attacks used on NPCs using server sockets."
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -36,6 +36,9 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
+
+    compileOnly(project(":socket"))
+    compileOnly("com.openosrs.externals:specialcounter:0.0.+")
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
@@ -49,6 +52,11 @@ tasks {
                     "Plugin-Version" to project.version,
                     "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
                     "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Dependencies" to
+                            arrayOf(
+                                    nameToId("socket"),
+                                    nameToId("specialattackcounter")
+                            ).joinToString(),
                     "Plugin-Description" to project.extra["PluginDescription"],
                     "Plugin-License" to project.extra["PluginLicense"]
             ))

@@ -1,5 +1,7 @@
+import ProjectVersions.rlVersion
+
 /*
- * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
+ * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,47 +25,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket;
+version = "0.0.1"
 
-import java.util.UUID;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+project.extra["PluginName"] = "Socket Player Status"
+project.extra["PluginDescription"] = "Socket extension for displaying player status to members in your party."
 
-@ConfigGroup("Socket")
-public interface SocketConfig extends Config
-{
+dependencies {
+    annotationProcessor(Libraries.lombok)
+    annotationProcessor(Libraries.pf4j)
 
-	@ConfigItem(
-		position = 0,
-		keyName = "getHost",
-		name = "Server Host Address",
-		description = "The host address of the server to connect to."
-	)
-	default String getServerAddress()
-	{
-		return "localhost";
-	}
+    compileOnly("com.openosrs:runelite-api:$rlVersion")
+    compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-	@ConfigItem(
-		position = 1,
-		keyName = "getPort",
-		name = "Server Port Number",
-		description = "The port number of the server to connect to."
-	)
-	default int getServerPort()
-	{
-		return 26388;
-	}
+    compileOnly(project(":socket"))
 
-	@ConfigItem(
-		position = 2,
-		keyName = "getPassword",
-		name = "Shared Password",
-		description = "Used to encrypt and decrypt data sent to the server."
-	)
-	default String getPassword()
-	{
-		return UUID.randomUUID().toString().replaceAll("-", "");
-	}
+    compileOnly(Libraries.guice)
+    compileOnly(Libraries.lombok)
+    compileOnly(Libraries.pf4j)
+}
+
+tasks {
+    jar {
+        manifest {
+            attributes(mapOf(
+                    "Plugin-Version" to project.version,
+                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+                    "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Dependencies" to
+                            arrayOf(
+                                    nameToId("socket")
+                            ).joinToString(),
+                    "Plugin-Description" to project.extra["PluginDescription"],
+                    "Plugin-License" to project.extra["PluginLicense"]
+            ))
+        }
+    }
 }

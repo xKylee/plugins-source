@@ -29,15 +29,25 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("Socket Player Status Config v2")
+@ConfigGroup("Socket Player Status")
 public interface PlayerStatusConfig extends Config
 {
+	@ConfigItem(
+		position = 0,
+		keyName = "mirrorMode",
+		name = "Mirror Mode Compatibility?",
+		description = "Should we show the overlay on Mirror Mode?",
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
 
 	@ConfigItem(
-			position = 0,
-			keyName = "getFontSize",
-			name = "Indicator Font Size",
-			description = "This is the size of the indicator and it's containing text."
+		position = 1,
+		keyName = "getFontSize",
+		name = "Indicator Font Size",
+		description = "This is the size of the indicator and it's containing text."
 	)
 	default int getIndicatorSize()
 	{
@@ -45,10 +55,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 1,
-			keyName = "getIndicatorXOffset",
-			name = "Indicator X Offset",
-			description = "This is horizontal offset of the indicators."
+		position = 2,
+		keyName = "getIndicatorXOffset",
+		name = "Indicator X Offset",
+		description = "This is horizontal offset of the indicators."
 	)
 	default int getIndicatorXOffset()
 	{
@@ -56,10 +66,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 2,
-			keyName = "getIndicatorPadding",
-			name = "Indicator Border Padding",
-			description = "This is the border around each indicator entry."
+		position = 3,
+		keyName = "getIndicatorPadding",
+		name = "Indicator Border Padding",
+		description = "This is the border around each indicator entry."
 	)
 	default int getIndicatorPadding()
 	{
@@ -67,10 +77,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 3,
-			keyName = "showVengeance",
-			name = "Show Vengeance Cooldown",
-			description = "Show players who have vengeance on cooldown."
+		position = 4,
+		keyName = "showVengeance",
+		name = "Show Vengeance Cooldown",
+		description = "Show players who have vengeance on cooldown."
 	)
 	default boolean showVengeanceCooldown()
 	{
@@ -78,10 +88,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 4,
-			keyName = "showVengeanceActive",
-			name = "Show Vengeance Active",
-			description = "Show players with an active vengeance."
+		position = 5,
+		keyName = "showVengeanceActive",
+		name = "Show Vengeance Active",
+		description = "Show players with an active vengeance."
 	)
 	default boolean showVengeanceActive()
 	{
@@ -89,10 +99,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 5,
-			keyName = "showStamina",
-			name = "Show Stamina",
-			description = "Show players who drank a stamina."
+		position = 6,
+		keyName = "showStamina",
+		name = "Show Stamina",
+		description = "Show players who drank a stamina."
 	)
 	default boolean showStamina()
 	{
@@ -100,10 +110,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 6,
-			keyName = "showOverload",
-			name = "Show Overload",
-			description = "Show players who drank an overload."
+		position = 7,
+		keyName = "showOverload",
+		name = "Show Overload",
+		description = "Show players who drank an overload."
 	)
 	default boolean showOverload()
 	{
@@ -111,10 +121,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 7,
-			keyName = "showPrayerEnhance",
-			name = "Show Prayer Enhance",
-			description = "Show players who drank a prayer enhance."
+		position = 8,
+		keyName = "showPrayerEnhance",
+		name = "Show Prayer Enhance",
+		description = "Show players who drank a prayer enhance."
 	)
 	default boolean showPrayerEnhance()
 	{
@@ -122,10 +132,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 8,
-			keyName = "showImbuedHeart",
-			name = "Show Imbued Heart",
-			description = "Show players who invigorated their imbued heart."
+		position = 9,
+		keyName = "showImbuedHeart",
+		name = "Show Imbued Heart",
+		description = "Show players who invigorated their imbued heart."
 	)
 	default boolean showImbuedHeart()
 	{
@@ -133,10 +143,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 9,
-			keyName = "getStatsRefreshRate",
-			name = "Stats Refresh Rate",
-			description = "The amount of ticks to wait in-between each stat request. I wouldn't touch this variable."
+		position = 10,
+		keyName = "getStatsRefreshRate",
+		name = "Stats Refresh Rate",
+		description = "The amount of ticks to wait in-between each stat request. I wouldn't touch this variable."
 	)
 	default int getStatsRefreshRate()
 	{
@@ -144,10 +154,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 10,
-			keyName = "showPlayerHealth",
-			name = "Show Team Health",
-			description = "Show player's health level."
+		position = 11,
+		keyName = "showPlayerHealth",
+		name = "Show Team Health",
+		description = "Show player's health level."
 	)
 	default boolean showPlayerHealth()
 	{
@@ -155,10 +165,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 11,
-			keyName = "showPlayerPrayer",
-			name = "Show Team Prayer",
-			description = "Show player's prayer level."
+		position = 12,
+		keyName = "showPlayerPrayer",
+		name = "Show Team Prayer",
+		description = "Show player's prayer level."
 	)
 	default boolean showPlayerPrayer()
 	{
@@ -166,10 +176,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 12,
-			keyName = "showPlayerRunEnergy",
-			name = "Show Team Run Energy",
-			description = "Show player's run energy level."
+		position = 13,
+		keyName = "showPlayerRunEnergy",
+		name = "Show Team Run Energy",
+		description = "Show player's run energy level."
 	)
 	default boolean showPlayerRunEnergy()
 	{
@@ -177,10 +187,10 @@ public interface PlayerStatusConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 13,
-			keyName = "showPlayerSpecial",
-			name = "Show Team Special",
-			description = "Show player's special attack bar level."
+		position = 14,
+		keyName = "showPlayerSpecial",
+		name = "Show Team Special",
+		description = "Show player's special attack bar level."
 	)
 	default boolean showPlayerSpecial()
 	{

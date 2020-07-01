@@ -25,6 +25,16 @@
 
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
@@ -40,16 +50,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import javax.inject.Inject;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class PlayerStatusOverlay extends Overlay
 {
@@ -73,7 +73,7 @@ public class PlayerStatusOverlay extends Overlay
 
 		this.setPosition(OverlayPosition.DYNAMIC);
 		this.setPriority(OverlayPriority.HIGH);
-		this.setLayer(OverlayLayer.ABOVE_SCENE);
+		this.determineLayer();
 	}
 
 	private boolean ignoreMarker(AbstractMarker marker)
@@ -127,8 +127,8 @@ public class PlayerStatusOverlay extends Overlay
 		graphics.setFont(new Font("SansSerif", Font.BOLD, (int) (0.75d * size)));
 
 		Point base = Perspective
-				.localToCanvas(this.client, p.getLocalLocation(), this.client.getPlane(),
-						p.getLogicalHeight());
+			.localToCanvas(this.client, p.getLocalLocation(), this.client.getPlane(),
+				p.getLogicalHeight());
 		int zOffset = 0;
 		int xOffset = this.config.getIndicatorXOffset() - (size / 2);
 
@@ -244,5 +244,17 @@ public class PlayerStatusOverlay extends Overlay
 		}
 
 		return null;
+	}
+
+	private void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		else
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
 	}
 }

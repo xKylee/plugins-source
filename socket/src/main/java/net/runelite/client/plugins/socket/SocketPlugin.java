@@ -26,6 +26,8 @@
 package net.runelite.client.plugins.socket;
 
 import com.google.inject.Provides;
+import java.io.PrintWriter;
+import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,23 +52,18 @@ import net.runelite.client.plugins.socket.packet.SocketPlayerJoin;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import org.pf4j.Extension;
-import javax.inject.Inject;
-import java.io.PrintWriter;
 
 @Slf4j
 @Extension
 @PluginDescriptor(
-		name = "Socket",
-		description = "Socket connection for broadcasting messages across clients.",
-		tags = {"socket", "server", "discord", "connection", "broadcast"},
-		enabledByDefault = false,
-		type = PluginType.UTILITY
+	name = "Socket",
+	description = "Socket connection for broadcasting messages across clients.",
+	tags = {"socket", "server", "discord", "connection", "broadcast"},
+	enabledByDefault = false,
+	type = PluginType.UTILITY
 )
 public class SocketPlugin extends Plugin
 {
-
-	// Config version changes between updates, hence we use a global variable.
-	public static final String CONFIG_VERSION = "Socket Plugin v2.0.5";
 
 	// To help users who decide to use weak passwords.
 	public static final String PASSWORD_SALT = "$P@_/gKR`y:mv)6K";
@@ -150,11 +147,11 @@ public class SocketPlugin extends Plugin
 	public void onConfigChanged(ConfigChanged event)
 	{
 		// Notify the user to restart the plugin when the config changes.
-		if (event.getGroup().equals(CONFIG_VERSION))
+		if (event.getGroup().equals("Socket"))
 		{
 			this.clientThread.invoke(() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
-					"<col=b4281e>Configuration changed. Please restart the plugin to see updates.",
-					null));
+				"<col=b4281e>Configuration changed. Please restart the plugin to see updates.",
+				null));
 		}
 	}
 
