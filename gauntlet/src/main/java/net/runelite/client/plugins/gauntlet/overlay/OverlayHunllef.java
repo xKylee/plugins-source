@@ -140,7 +140,9 @@ public class OverlayHunllef extends Overlay
 
 		renderHunllefTile(graphics2D);
 
-		renderFlash(graphics2D);
+		renderFlashOnWrongAttack(graphics2D);
+
+		renderFlashOn51Method(graphics2D);
 
 		return null;
 	}
@@ -339,7 +341,7 @@ public class OverlayHunllef extends Overlay
 			config.hunllefTileOutlineWidth(), polygon);
 	}
 
-	private void renderFlash(final Graphics2D graphics2D)
+	private void renderFlashOnWrongAttack(final Graphics2D graphics2D)
 	{
 		if (!config.flashOnWrongAttack() || !plugin.isWrongAttackStyle())
 		{
@@ -348,7 +350,7 @@ public class OverlayHunllef extends Overlay
 
 		final Color originalColor = graphics2D.getColor();
 
-		graphics2D.setColor(config.flashColor());
+		graphics2D.setColor(config.flashOnWrongAttackColor());
 
 		graphics2D.fill(client.getCanvas().getBounds());
 
@@ -358,6 +360,28 @@ public class OverlayHunllef extends Overlay
 		{
 			timeout = 0;
 			plugin.setWrongAttackStyle(false);
+		}
+	}
+
+	private void renderFlashOn51Method(final Graphics2D graphics2D)
+	{
+		if (!config.flashOn51Method() || !plugin.isSwitchWeapon())
+		{
+			return;
+		}
+
+		final Color originalColor = graphics2D.getColor();
+
+		graphics2D.setColor(config.flashOn51MethodColor());
+
+		graphics2D.fill(client.getCanvas().getBounds());
+
+		graphics2D.setColor(originalColor);
+
+		if (++timeout >= config.flashOn51MethodDuration())
+		{
+			timeout = 0;
+			plugin.setSwitchWeapon(false);
 		}
 	}
 

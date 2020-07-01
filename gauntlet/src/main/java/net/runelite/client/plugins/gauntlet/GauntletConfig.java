@@ -1006,7 +1006,7 @@ public interface GauntletConfig extends Config
 	)
 	@ConfigItem(
 		name = "Flash duration",
-		description = "Change the duration of the flash on wrong attack style.",
+		description = "Change the duration of the flash.",
 		position = 2,
 		keyName = "flashOnWrongAttackDuration",
 		section = "playerSection",
@@ -1023,14 +1023,59 @@ public interface GauntletConfig extends Config
 		name = "Flash color",
 		description = "Color of the flash notification.",
 		position = 3,
-		keyName = "flashColor",
+		keyName = "flashOnWrongAttackColor",
 		section = "playerSection",
 		hidden = true,
 		unhide = "flashOnWrongAttack"
 	)
-	default Color flashColor()
+	default Color flashOnWrongAttackColor()
 	{
 		return new Color(255, 0, 0, 70);
+	}
+
+	@ConfigItem(
+		name = "Flash on 5:1 method",
+		description = "Flash the screen to weapon switch when using 5:1 method.",
+		position = 4,
+		keyName = "flashOn51Method",
+		section = "playerSection"
+	)
+	default boolean flashOn51Method()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 10,
+		max = 50
+	)
+	@ConfigItem(
+		name = "Flash duration",
+		description = "Change the duration of the flash.",
+		position = 5,
+		keyName = "flashOn51MethodDuration",
+		section = "playerSection",
+		hidden = true,
+		unhide = "flashOn51Method"
+	)
+	default int flashOn51MethodDuration()
+	{
+		return 25;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Flash color",
+		description = "Color of the flash notification.",
+		position = 6,
+		keyName = "flashOn51MethodColor",
+		section = "playerSection",
+		hidden = true,
+		unhide = "flashOn51Method"
+	)
+	default Color flashOn51MethodColor()
+	{
+		return new Color(255, 190, 0, 50);
 	}
 
 	// Timer Section

@@ -71,7 +71,7 @@ public class Hunllef
 		this.originalRangeIcon = skillIconManager.getSkillImage(Skill.RANGED);
 		this.iconSize = iconSize;
 
-		this.attackCount = MAX_ATTACK_COUNT - 1;
+		this.attackCount = MAX_ATTACK_COUNT;
 		this.playerAttackCount = MAX_PLAYER_ATTACK_COUNT;
 		this.ticksUntilNextAttack = 0;
 
