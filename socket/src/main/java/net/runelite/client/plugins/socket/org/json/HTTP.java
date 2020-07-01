@@ -167,8 +167,8 @@ public class HTTP
 		{
 			string = keys.next();
 			if (!"HTTP-Version".equals(string) && !"Status-Code".equals(string) &&
-					!"Reason-Phrase".equals(string) && !"Method".equals(string) &&
-					!"Request-URI".equals(string) && !jo.isNull(string))
+				!"Reason-Phrase".equals(string) && !"Method".equals(string) &&
+				!"Request-URI".equals(string) && !jo.isNull(string))
 			{
 				sb.append(string);
 				sb.append(": ");

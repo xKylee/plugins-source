@@ -1,10 +1,10 @@
 package net.runelite.client.plugins.socket.hash;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Handles encryption and decryption using the AES-256 symmetrical key method.

@@ -27,28 +27,28 @@
 
 package net.runelite.client.plugins.playerstatus.gametimer;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.GraphicID;
 import net.runelite.api.ItemID;
 import net.runelite.api.SpriteID;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 @Getter(AccessLevel.PUBLIC)
 public enum GameTimer
 {
 
 	VENGEANCE(SpriteID.SPELL_VENGEANCE, GameTimerImageType.SPRITE, "Vengeance", 30,
-			ChronoUnit.SECONDS),
+		ChronoUnit.SECONDS),
 	OVERLOAD(ItemID.OVERLOAD_4, GameTimerImageType.ITEM, "Overload", 5, ChronoUnit.MINUTES, true),
 	OVERLOAD_RAID(ItemID.OVERLOAD_4_20996, GameTimerImageType.ITEM, "Overload", 5, ChronoUnit.MINUTES,
-			true),
+		true),
 	PRAYER_ENHANCE(ItemID.PRAYER_ENHANCE_4, GameTimerImageType.ITEM, "Prayer enhance", 290,
-			ChronoUnit.SECONDS, true),
+		ChronoUnit.SECONDS, true),
 	STAMINA(ItemID.STAMINA_POTION4, GameTimerImageType.ITEM, "Stamina", 2, ChronoUnit.MINUTES, true),
 	IMBUED_HEART(ItemID.IMBUED_HEART, GameTimerImageType.ITEM, "Imbued heart", GraphicID.IMBUED_HEART,
-			420, ChronoUnit.SECONDS);
+		420, ChronoUnit.SECONDS);
 
 	private final Duration duration;
 	private final Integer graphicId;

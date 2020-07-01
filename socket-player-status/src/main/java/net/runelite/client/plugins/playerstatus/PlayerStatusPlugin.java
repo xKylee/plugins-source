@@ -28,6 +28,13 @@
 package net.runelite.client.plugins.playerstatus;
 
 import com.google.inject.Provides;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -63,31 +70,32 @@ import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator.VENGEANCE_ACTIVE;
 import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.IMBUED_HEART;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.OVERLOAD;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.OVERLOAD_RAID;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.PRAYER_ENHANCE;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.STAMINA;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.VENGEANCE;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimerConstant.IMBUED_HEART_READY_MESSAGE;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimerConstant.STAMINA_DRINK_MESSAGE;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimerConstant.STAMINA_EXPIRED_MESSAGE;
+import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimerConstant.STAMINA_SHARED_DRINK_MESSAGE;
 import net.runelite.client.plugins.socket.plugins.playerstatus.marker.AbstractMarker;
 import net.runelite.client.plugins.socket.plugins.playerstatus.marker.IndicatorMarker;
 import net.runelite.client.plugins.socket.plugins.playerstatus.marker.TimerMarker;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator.VENGEANCE_ACTIVE;
-import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer.*;
-import static net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimerConstant.*;
 
 @Extension
 @PluginDescriptor(
-		name = "Socket - Player Status",
-		description = "Socket extension for displaying player status to members in your party.",
-		tags = {"socket", "server", "discord", "connection", "broadcast", "player", "status", "venge",
-				"vengeance"},
-		enabledByDefault = true,
-		type = PluginType.UTILITY
+	name = "Socket - Player Status",
+	description = "Socket extension for displaying player status to members in your party.",
+	tags = {"socket", "server", "discord", "connection", "broadcast", "player", "status", "venge",
+		"vengeance"},
+	enabledByDefault = true,
+	type = PluginType.UTILITY
 )
 @Slf4j
 @PluginDependency(SocketPlugin.class)
@@ -132,7 +140,7 @@ public class PlayerStatusPlugin extends Plugin
 
 	@Getter(AccessLevel.PUBLIC)
 	private Map<String, List<AbstractMarker>> statusEffects =
-			new HashMap<String, List<AbstractMarker>>();
+		new HashMap<String, List<AbstractMarker>>();
 
 	@Getter(AccessLevel.PUBLIC)
 	private Map<String, PlayerStatus> partyStatus = new TreeMap<String, PlayerStatus>();
@@ -216,13 +224,13 @@ public class PlayerStatusPlugin extends Plugin
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
 		if (config.showStamina()
-				&& event.getOption().contains("Drink")
-				&& (event.getIdentifier() == ItemID.STAMINA_MIX1
-				|| event.getIdentifier() == ItemID.STAMINA_MIX2
-				|| event.getIdentifier() == ItemID.EGNIOL_POTION_1
-				|| event.getIdentifier() == ItemID.EGNIOL_POTION_2
-				|| event.getIdentifier() == ItemID.EGNIOL_POTION_3
-				|| event.getIdentifier() == ItemID.EGNIOL_POTION_4))
+			&& event.getOption().contains("Drink")
+			&& (event.getIdentifier() == ItemID.STAMINA_MIX1
+			|| event.getIdentifier() == ItemID.STAMINA_MIX2
+			|| event.getIdentifier() == ItemID.EGNIOL_POTION_1
+			|| event.getIdentifier() == ItemID.EGNIOL_POTION_2
+			|| event.getIdentifier() == ItemID.EGNIOL_POTION_3
+			|| event.getIdentifier() == ItemID.EGNIOL_POTION_4))
 		{
 			// Needs menu option hook because mixes use a common drink message, distinct from their standard potion messages
 			createGameTimer(STAMINA);
@@ -239,7 +247,7 @@ public class PlayerStatusPlugin extends Plugin
 		}
 
 		if (event.getMessage().equals(STAMINA_DRINK_MESSAGE) ||
-				event.getMessage().equals(STAMINA_SHARED_DRINK_MESSAGE))
+			event.getMessage().equals(STAMINA_SHARED_DRINK_MESSAGE))
 		{
 			createGameTimer(STAMINA);
 		}
@@ -250,7 +258,7 @@ public class PlayerStatusPlugin extends Plugin
 		}
 
 		if (event.getMessage().startsWith("You drink some of your") &&
-				event.getMessage().contains("overload"))
+			event.getMessage().contains("overload"))
 		{
 			if (client.getVar(Varbits.IN_RAID) == 1)
 			{
@@ -264,7 +272,7 @@ public class PlayerStatusPlugin extends Plugin
 		}
 
 		if (event.getMessage().startsWith("You drink some of your") &&
-				event.getMessage().contains("prayer enhance"))
+			event.getMessage().contains("prayer enhance"))
 		{
 			createGameTimer(PRAYER_ENHANCE);
 		}
@@ -373,7 +381,7 @@ public class PlayerStatusPlugin extends Plugin
 		int maxHealth = client.getRealSkillLevel(Skill.HITPOINTS);
 		int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
 		int specialAttack = this.client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT) /
-				10; // This variable is in [0, 1000]. So we divide by 10.
+			10; // This variable is in [0, 1000]. So we divide by 10.
 		int runEnergy = this.client.getEnergy();
 
 		String name = this.client.getLocalPlayer().getName();
@@ -385,7 +393,7 @@ public class PlayerStatusPlugin extends Plugin
 			if (status == null)
 			{
 				status = new PlayerStatus(currentHealth, maxHealth, currentPrayer, maxPrayer, runEnergy,
-						specialAttack);
+					specialAttack);
 				this.partyStatus.put(name, status);
 			}
 			else

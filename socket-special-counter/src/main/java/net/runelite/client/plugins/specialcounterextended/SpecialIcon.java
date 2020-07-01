@@ -26,10 +26,10 @@
 
 package net.runelite.client.plugins.specialcounterextended;
 
+import java.awt.image.BufferedImage;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import java.awt.image.BufferedImage;
 
 @AllArgsConstructor
 public class SpecialIcon

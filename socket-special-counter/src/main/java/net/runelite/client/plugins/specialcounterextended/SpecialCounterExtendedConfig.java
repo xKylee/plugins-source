@@ -29,7 +29,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("Socket Special Counter Config")
+@ConfigGroup("Socket Special Attack Counter")
 public interface SpecialCounterExtendedConfig extends Config
 {
 

@@ -82,7 +82,7 @@ public class XMLTokener extends JSONTokener
 			sb.append(c);
 			i = sb.length() - 3;
 			if (i >= 0 && sb.charAt(i) == ']' &&
-					sb.charAt(i + 1) == ']' && sb.charAt(i + 2) == '>')
+				sb.charAt(i + 1) == ']' && sb.charAt(i + 2) == '>')
 			{
 				sb.setLength(i);
 				return sb.toString();

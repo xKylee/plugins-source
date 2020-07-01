@@ -62,11 +62,11 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-		name = "Socket - Sotetseg",
-		description = "Extended plugin handler for Sotetseg in the Theatre of Blood.",
-		tags = {"socket", "server", "discord", "connection", "broadcast", "sotetseg", "theatre", "tob"},
-		enabledByDefault = false,
-		type = PluginType.PVM
+	name = "Socket - Sotetseg",
+	description = "Extended plugin handler for Sotetseg in the Theatre of Blood.",
+	tags = {"socket", "server", "discord", "connection", "broadcast", "sotetseg", "theatre", "tob"},
+	enabledByDefault = false,
+	type = PluginType.PVM
 )
 @PluginDependency(SocketPlugin.class)
 public class SotetsegPlugin extends Plugin
@@ -278,13 +278,13 @@ public class SotetsegPlugin extends Plugin
 				final Point point = new Point(p.getRegionX(), p.getRegionY());
 
 				if (this
-						.isInOverWorld())
+					.isInOverWorld())
 				{  // (9, 22) are magical numbers that represent the overworld maze offset.
 					this.redTiles.add(new Point(point.getX() - 9, point.getY() - 22));
 				}
 
 				if (this
-						.isInUnderWorld())
+					.isInUnderWorld())
 				{   // (42, 31) are magical numbers that represent the underworld maze offset.
 					this.redTiles.add(new Point(point.getX() - 42, point.getY() - 31));
 					this.wasInUnderworld = true;
@@ -328,10 +328,10 @@ public class SotetsegPlugin extends Plugin
 		{
 			WorldPoint wp = p.getWorldLocation();
 			return WorldPoint
-					.fromRegion(wp.getRegionID(), mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
+				.fromRegion(wp.getRegionID(), mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
 		}
 
 		return WorldPoint
-				.fromRegion(this.overworldRegionID, mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
+			.fromRegion(this.overworldRegionID, mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
 	}
 }

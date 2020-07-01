@@ -25,10 +25,10 @@
 
 package net.runelite.client.plugins.playerstatus.gametimer;
 
+import java.awt.Color;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.SpriteID;
-import java.awt.Color;
 
 @Getter(AccessLevel.PUBLIC)
 public enum GameIndicator

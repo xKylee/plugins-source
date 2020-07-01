@@ -49,9 +49,9 @@ public class JSONML
 	 * @throws JSONException
 	 */
 	private static Object parse(
-			XMLTokener x,
-			boolean arrayForm,
-			JSONArray ja
+		XMLTokener x,
+		boolean arrayForm,
+		JSONArray ja
 	) throws JSONException
 	{
 		String attribute;
@@ -90,8 +90,8 @@ public class JSONML
 						if (!(token instanceof String))
 						{
 							throw new JSONException(
-									"Expected a closing name instead of '" +
-											token + "'.");
+								"Expected a closing name instead of '" +
+									token + "'.");
 						}
 						if (x.nextToken() != XML.GT)
 						{
@@ -271,7 +271,7 @@ public class JSONML
 							if (!closeTag.equals(tagName))
 							{
 								throw x.syntaxError("Mismatched '" + tagName +
-										"' and '" + closeTag + "'");
+									"' and '" + closeTag + "'");
 							}
 							tagName = null;
 							if (!arrayForm && newja.length() > 0)
@@ -298,8 +298,8 @@ public class JSONML
 				if (ja != null)
 				{
 					ja.put(token instanceof String
-							? XML.stringToValue((String) token)
-							: token);
+						? XML.stringToValue((String) token)
+						: token);
 				}
 			}
 		}

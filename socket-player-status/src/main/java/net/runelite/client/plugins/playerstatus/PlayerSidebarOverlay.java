@@ -27,17 +27,17 @@
 package net.runelite.client.plugins.playerstatus;
 
 import com.google.inject.Inject;
-import net.runelite.client.ui.overlay.OverlayPanel;
-import net.runelite.client.ui.overlay.components.ComponentConstants;
-import net.runelite.client.ui.overlay.components.PanelComponent;
-import net.runelite.client.ui.overlay.components.ProgressBarComponent;
-import net.runelite.client.ui.overlay.components.TitleComponent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Map;
+import net.runelite.client.ui.overlay.OverlayPanel;
+import net.runelite.client.ui.overlay.components.ComponentConstants;
+import net.runelite.client.ui.overlay.components.PanelComponent;
+import net.runelite.client.ui.overlay.components.ProgressBarComponent;
+import net.runelite.client.ui.overlay.components.TitleComponent;
 
 public class PlayerSidebarOverlay extends OverlayPanel
 {
@@ -79,7 +79,7 @@ public class PlayerSidebarOverlay extends OverlayPanel
 		}
 
 		if (!this.config.showPlayerHealth() && !this.config.showPlayerPrayer() &&
-				!this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
+			!this.config.showPlayerSpecial() && !this.config.showPlayerRunEnergy())
 		{
 			return null; // No options are turned on. Nothing to display.
 		}
@@ -93,9 +93,9 @@ public class PlayerSidebarOverlay extends OverlayPanel
 				panel.getChildren().clear();
 
 				final TitleComponent name = TitleComponent.builder()
-						.text(targetName)
-						.color(Color.WHITE)
-						.build();
+					.text(targetName)
+					.color(Color.WHITE)
+					.build();
 				panel.getChildren().add(name);
 
 				if (this.config.showPlayerHealth())

@@ -25,6 +25,12 @@
 
 package net.runelite.client.plugins.socket;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +38,7 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
+import static net.runelite.client.plugins.socket.SocketPlugin.PASSWORD_SALT;
 import net.runelite.client.plugins.socket.hash.AES256;
 import net.runelite.client.plugins.socket.hash.SHA256;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
@@ -40,13 +47,6 @@ import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketPlayerJoin;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import static net.runelite.client.plugins.socket.SocketPlugin.PASSWORD_SALT;
 
 /**
  * Represents an instance of a socket connection to the server.
@@ -107,13 +107,13 @@ public class SocketConnection implements Runnable
 		if (this.state != SocketState.DISCONNECTED)
 		{
 			throw new IllegalStateException(
-					"Socket connection is already in state " + this.state.name() + ".");
+				"Socket connection is already in state " + this.state.name() + ".");
 		}
 
 		// Let's start a new connection.
 		this.state = SocketState.CONNECTING;
 		log.info("Attempting to establish socket connection to {}:{}", this.config.getServerAddress(),
-				this.config.getServerPort());
+			this.config.getServerPort());
 
 		// Apply the salt to the password.
 		final String secret = new String(this.config.getPassword() + PASSWORD_SALT);
@@ -123,7 +123,7 @@ public class SocketConnection implements Runnable
 
 			// Attempt to establish a connection.
 			InetSocketAddress address =
-					new InetSocketAddress(this.config.getServerAddress(), this.config.getServerPort());
+				new InetSocketAddress(this.config.getServerAddress(), this.config.getServerPort());
 
 			this.socket = new Socket();
 			this.socket.connect(address, 10000);
@@ -204,12 +204,12 @@ public class SocketConnection implements Runnable
 				try
 				{ // Read and decode the packet based on the header.
 					if (header
-							.equals(SocketPacket.BROADCAST))
+						.equals(SocketPacket.BROADCAST))
 					{ // Player is broadcasting a packet to all members.
 						String message = AES256.decrypt(secret, data.getString("payload"));
 						JSONObject payload = new JSONObject(message);
 						this.clientThread.invoke(
-								() -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
+							() -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
 
 					}
 					else if (header.equals(SocketPacket.JOIN))
@@ -253,11 +253,11 @@ public class SocketConnection implements Runnable
 
 					}
 					else if (header
-							.equals(SocketPacket.MESSAGE))
+						.equals(SocketPacket.MESSAGE))
 					{ // Socket server wishes to send you a message.
 						String message = data.getString("message");
 						this.clientThread.invoke(
-								() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", message, null));
+							() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", message, null));
 
 					}
 				}
@@ -275,7 +275,7 @@ public class SocketConnection implements Runnable
 			this.terminate(false);
 
 			this.logMessage(SocketLog.ERROR,
-					"Socket terminated. " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+				"Socket terminated. " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
 
 			// Try to reconnect in 30 seconds.
 			this.plugin.setNextConnection(System.currentTimeMillis() + 30000L);
@@ -373,6 +373,6 @@ public class SocketConnection implements Runnable
 	private void logMessage(SocketLog level, String message)
 	{
 		this.clientThread.invoke(() -> this.client
-				.addChatMessage(ChatMessageType.GAMEMESSAGE, "", level.getPrefix() + message, null));
+			.addChatMessage(ChatMessageType.GAMEMESSAGE, "", level.getPrefix() + message, null));
 	}
 }

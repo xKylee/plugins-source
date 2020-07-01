@@ -26,12 +26,12 @@
 
 package net.runelite.client.plugins.specialcounterextended;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import net.runelite.client.ui.overlay.infobox.Counter;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
+import net.runelite.client.ui.overlay.infobox.Counter;
 
 class SpecialCounter extends Counter
 {
@@ -71,8 +71,8 @@ class SpecialCounter extends Counter
 		for (Map.Entry<String, Integer> entry : partySpecs.entrySet())
 		{
 			stringBuilder.append("</br>")
-					.append(entry.getKey() == null ? "You" : entry.getKey()).append(": ")
-					.append(buildTooltip(entry.getValue()));
+				.append(entry.getKey() == null ? "You" : entry.getKey()).append(": ")
+				.append(buildTooltip(entry.getValue()));
 		}
 
 		return stringBuilder.toString();

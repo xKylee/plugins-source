@@ -59,8 +59,8 @@ public class JSONTokener
 	public JSONTokener(Reader reader)
 	{
 		this.reader = reader.markSupported()
-				? reader
-				: new BufferedReader(reader);
+			? reader
+			: new BufferedReader(reader);
 		this.eof = false;
 		this.usePrevious = false;
 		this.previous = 0;
@@ -222,7 +222,7 @@ public class JSONTokener
 		if (n != c)
 		{
 			throw this.syntaxError("Expected '" + c + "' and instead saw '" +
-					n + "'");
+				n + "'");
 		}
 		return n;
 	}
@@ -387,7 +387,7 @@ public class JSONTokener
 		{
 			c = this.next();
 			if (delimiters.indexOf(c) >= 0 || c == 0 ||
-					c == '\n' || c == '\r')
+				c == '\n' || c == '\r')
 			{
 				if (c != 0)
 				{
@@ -510,6 +510,6 @@ public class JSONTokener
 	public String toString()
 	{
 		return " at " + this.index + " [character " + this.character + " line " +
-				this.line + "]";
+			this.line + "]";
 	}
 }

@@ -25,11 +25,11 @@
 
 package net.runelite.client.plugins.playerstatus.marker;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 public abstract class AbstractMarker
 {

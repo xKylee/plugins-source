@@ -142,7 +142,7 @@ public class XML
 			if (Character.isWhitespace(string.charAt(i)))
 			{
 				throw new JSONException("'" + string +
-						"' contains a space character.");
+					"' contains a space character.");
 			}
 		}
 	}
@@ -289,7 +289,7 @@ public class XML
 							throw x.syntaxError("Missing value");
 						}
 						jsonobject.accumulate(string,
-								XML.stringToValue((String) token));
+							XML.stringToValue((String) token));
 						token = null;
 					}
 					else
@@ -338,7 +338,7 @@ public class XML
 							if (string.length() > 0)
 							{
 								jsonobject.accumulate("content",
-										XML.stringToValue(string));
+									XML.stringToValue(string));
 							}
 
 // Nested element
@@ -353,10 +353,10 @@ public class XML
 									context.accumulate(tagName, "");
 								}
 								else if (jsonobject.length() == 1 &&
-										jsonobject.opt("content") != null)
+									jsonobject.opt("content") != null)
 								{
 									context.accumulate(tagName,
-											jsonobject.opt("content"));
+										jsonobject.opt("content"));
 								}
 								else
 								{
@@ -483,7 +483,7 @@ public class XML
 	 * @throws JSONException
 	 */
 	public static String toString(Object object, String tagName)
-			throws JSONException
+		throws JSONException
 	{
 		StringBuilder sb = new StringBuilder();
 		int i;
@@ -617,8 +617,8 @@ public class XML
 			{
 				string = (object == null) ? "null" : escape(object.toString());
 				return (tagName == null) ? "\"" + string + "\"" :
-						(string.length() == 0) ? "<" + tagName + "/>" :
-								"<" + tagName + ">" + string + "</" + tagName + ">";
+					(string.length() == 0) ? "<" + tagName + "/>" :
+						"<" + tagName + ">" + string + "</" + tagName + ">";
 			}
 		}
 	}
