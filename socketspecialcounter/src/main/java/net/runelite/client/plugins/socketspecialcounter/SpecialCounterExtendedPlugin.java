@@ -213,13 +213,13 @@ public class SpecialCounterExtendedPlugin extends Plugin
 	{
 		int specialPercentage = client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT);
 
-		if (specialPercentage == -1 || specialPercentage >= specialPercentage)
+		if (this.specialPercentage == -1 || specialPercentage >= this.specialPercentage)
 		{
-			specialPercentage = specialPercentage;
+			this.specialPercentage = specialPercentage;
 			return;
 		}
 
-		specialPercentage = specialPercentage;
+		this.specialPercentage = specialPercentage;
 		specialWeapon = usedSpecialWeapon();
 
 		lastSpecTarget = client.getLocalPlayer().getInteracting();

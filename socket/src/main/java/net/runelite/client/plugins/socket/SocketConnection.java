@@ -85,7 +85,7 @@ public class SocketConnection implements Runnable
 
 	public SocketConnection(SocketPlugin plugin, String playerName)
 	{
-		plugin = plugin;
+		this.plugin = plugin;
 		config = plugin.getConfig();
 
 		client = plugin.getClient();
@@ -93,7 +93,7 @@ public class SocketConnection implements Runnable
 
 		eventBus = plugin.getEventBus();
 
-		playerName = playerName;
+		this.playerName = playerName;
 		lastHeartbeat = 0L;
 
 		state = SocketState.DISCONNECTED;
