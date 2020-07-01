@@ -450,10 +450,14 @@ public class SpecialCounterExtendedPlugin extends Plugin
 
 	private void updateCounter(String player, SpecialWeapon specialWeapon, String name, int hit)
 	{
-		// Hotfix for Bandos Godsword (OR)
+		// Hotfix for ornaments.
 		if (specialWeapon == SpecialWeapon.BANDOS_GODSWORD_OR)
 		{
 			specialWeapon = SpecialWeapon.BANDOS_GODSWORD;
+		}
+		else if (specialWeapon == SpecialWeapon.SARADOMIN_GODSWORD_OR)
+		{
+			specialWeapon = SpecialWeapon.SARADOMIN_GODSWORD;
 		}
 
 		SpecialCounter counter = specialCounter[specialWeapon.ordinal()];
