@@ -27,6 +27,7 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 public class HallowedSepulchreOverlay extends Overlay
 {
 	private static final int CROSSBOW_STATUE_ANIM_DEFAULT = 8681;
+	private static final int CROSSBOW_STATUE_ANIM_FINAL = 8685;
 
 	private final Client client;
 	private final HallowedSepulchrePlugin plugin;
@@ -175,7 +176,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 			final DynamicObject dynamicObject = (DynamicObject) gameObject.getEntity();
 
-			if (dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_DEFAULT)
+			if (dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_DEFAULT || dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_FINAL)
 			{
 				continue;
 			}
