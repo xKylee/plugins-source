@@ -24,9 +24,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.specialcounterextended;
+package net.runelite.client.plugins.specialcounterextended;
 
 import com.google.inject.Provides;
+import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
@@ -64,19 +69,14 @@ import net.runelite.client.plugins.specialcounter.SpecialCounterPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import org.pf4j.Extension;
-import javax.inject.Inject;
-import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 @Extension
 @PluginDescriptor(
-		name = "Socket - Special Attack Counter",
-		description = "Track DWH, Arclight, Darklight, and BGS special attacks used on NPCs using server sockets.",
-		tags = {"socket", "server", "discord", "connection", "broadcast", "combat", "npcs", "overlay"},
-		enabledByDefault = false,
-		type = PluginType.PVM
+	name = "Socket - Special Attack Counter",
+	description = "Track DWH, Arclight, Darklight, and BGS special attacks used on NPCs using server sockets.",
+	tags = {"socket", "server", "discord", "connection", "broadcast", "combat", "npcs", "overlay"},
+	enabledByDefault = false,
+	type = PluginType.PVM
 )
 @Slf4j
 @PluginDependency(SpecialCounterPlugin.class)
@@ -200,7 +200,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		Actor target = interactingChanged.getTarget();
 
 		if (lastSpecTick != client.getTickCount() || source != client.getLocalPlayer() ||
-				target == null)
+			target == null)
 		{
 			return;
 		}
@@ -244,7 +244,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		}
 
 		if (this.specialExperience != -1 && this.specialUsed && this.lastSpecTarget != null &&
-				this.lastSpecTarget instanceof NPC)
+			this.lastSpecTarget instanceof NPC)
 		{
 			this.specialUsed = false;
 
@@ -336,7 +336,7 @@ public class SpecialCounterExtendedPlugin extends Plugin
 		{
 			int hit = getHit(specialWeapon, hitsplat);
 			log.debug("Special attack target: id: {} - target: {} - weapon: {} - amount: {}",
-					interactingId, target, specialWeapon, hit);
+				interactingId, target, specialWeapon, hit);
 
 			final String pName = this.client.getLocalPlayer().getName();
 			updateCounter(pName, specialWeapon, null, hit);
@@ -460,12 +460,12 @@ public class SpecialCounterExtendedPlugin extends Plugin
 
 		BufferedImage image = itemManager.getImage(specialWeapon.getItemID());
 		this.overlay.addOverlay(player,
-				new SpecialIcon(image, Integer.toString(hit), System.currentTimeMillis()));
+			new SpecialIcon(image, Integer.toString(hit), System.currentTimeMillis()));
 
 		if (counter == null)
 		{
 			counter = new SpecialCounter(image, this,
-					hit, specialWeapon);
+				hit, specialWeapon);
 			infoBoxManager.addInfoBox(counter);
 			specialCounter[specialWeapon.ordinal()] = counter;
 		}

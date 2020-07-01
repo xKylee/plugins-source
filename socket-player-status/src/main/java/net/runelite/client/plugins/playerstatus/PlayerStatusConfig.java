@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.playerstatus;
+package net.runelite.client.plugins.playerstatus;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -36,7 +36,7 @@ public interface PlayerStatusConfig extends Config
 		position = 0,
 		keyName = "mirrorMode",
 		name = "Mirror Mode Compatibility?",
-		description = "Should we show the overlay on Mirror Mode?",
+		description = "Should we show the overlay on Mirror Mode?"
 	)
 	default boolean mirrorMode()
 	{

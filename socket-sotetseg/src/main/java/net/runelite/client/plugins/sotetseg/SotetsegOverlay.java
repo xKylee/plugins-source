@@ -25,6 +25,13 @@
 
 package net.runelite.client.plugins.socket.plugins.sotetseg;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Stroke;
+import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.coords.LocalPoint;
@@ -33,13 +40,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import javax.inject.Inject;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.Stroke;
 
 public class SotetsegOverlay extends Overlay
 {
@@ -57,9 +57,20 @@ public class SotetsegOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 	}
 
+	private void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		else
+		{
+			setLayer(OverlayLayer.ABOVE_SCENE);
+		}
+	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)

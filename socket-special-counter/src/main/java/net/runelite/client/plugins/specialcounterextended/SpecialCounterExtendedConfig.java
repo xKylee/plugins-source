@@ -34,10 +34,21 @@ public interface SpecialCounterExtendedConfig extends Config
 {
 
 	@ConfigItem(
-			position = 0,
-			keyName = "showHitOverlay",
-			name = "Hit Overlay",
-			description = "Show the special attack overlay."
+		position = 0,
+		keyName = "mirrorMode",
+		name = "Mirror Mode Compatibility?",
+		description = "Should we show the overlay on Mirror Mode?"
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "showHitOverlay",
+		name = "Hit Overlay",
+		description = "Show the special attack overlay."
 	)
 	default boolean showHitOverlay()
 	{
@@ -45,10 +56,10 @@ public interface SpecialCounterExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 1,
-			keyName = "getFadeDelay",
-			name = "Fade Delay",
-			description = "Delay, in milliseconds, until the icon disappears."
+		position = 2,
+		keyName = "getFadeDelay",
+		name = "Fade Delay",
+		description = "Delay, in milliseconds, until the icon disappears."
 	)
 	default int getFadeDelay()
 	{
@@ -56,10 +67,10 @@ public interface SpecialCounterExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 2,
-			keyName = "getMaxHeight",
-			name = "Travel Height",
-			description = "Maximum height, in pixels, for the icon to travel."
+		position = 3,
+		keyName = "getMaxHeight",
+		name = "Travel Height",
+		description = "Maximum height, in pixels, for the icon to travel."
 	)
 	default int getMaxHeight()
 	{
@@ -67,10 +78,10 @@ public interface SpecialCounterExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 3,
-			keyName = "guessDawnbringer",
-			name = "Guess Dawnbringer Hit",
-			description = "Guess Dawnbringer based on XP drop. Provides faster results."
+		position = 4,
+		keyName = "guessDawnbringer",
+		name = "Guess Dawnbringer Hit",
+		description = "Guess Dawnbringer based on XP drop. Provides faster results."
 	)
 	default boolean guessDawnbringer()
 	{

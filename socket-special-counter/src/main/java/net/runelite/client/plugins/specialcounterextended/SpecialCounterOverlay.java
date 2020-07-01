@@ -25,6 +25,15 @@
 
 package net.runelite.client.plugins.socket.plugins.specialcounterextended;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
@@ -35,15 +44,6 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
-import javax.inject.Inject;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SpecialCounterOverlay extends Overlay
 {
@@ -63,7 +63,19 @@ public class SpecialCounterOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		determineLayer();
+	}
+
+	private void determineLayer()
+	{
+		if (config.mirrorMode())
+		{
+			setLayer(OverlayLayer.AFTER_MIRROR);
+		}
+		else
+		{
+			setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		}
 	}
 
 	public void addOverlay(String player, SpecialIcon icon)
@@ -122,24 +134,24 @@ public class SpecialCounterOverlay extends Overlay
 					int updatedHeight = maxHeight - (int) (((float) maxHeight) * thresh);
 
 					Point drawPoint = Perspective.getCanvasImageLocation(this.client, center, icon.getImage(),
-							currentHeight + updatedHeight);
+						currentHeight + updatedHeight);
 					graphics.drawImage(icon.getImage(), drawPoint.getX(), drawPoint.getY(), null);
 
 					if (icon.getText() != null)
 					{
 						Point textPoint = Perspective
-								.getCanvasTextLocation(this.client, graphics, center, icon.getText(),
-										currentHeight + updatedHeight);
+							.getCanvasTextLocation(this.client, graphics, center, icon.getText(),
+								currentHeight + updatedHeight);
 						graphics.setFont(new Font("Arial", Font.BOLD, 16));
 
 						final Point canvasCenterPoint = new Point(textPoint.getX(), textPoint.getY());
 						final Point canvasCenterPointShadow =
-								new Point(textPoint.getX() + 1, textPoint.getY() + 1);
+							new Point(textPoint.getX() + 1, textPoint.getY() + 1);
 
 						OverlayUtil
-								.renderTextLocation(graphics, canvasCenterPointShadow, icon.getText(), Color.BLACK);
+							.renderTextLocation(graphics, canvasCenterPointShadow, icon.getText(), Color.BLACK);
 						OverlayUtil
-								.renderTextLocation(graphics, canvasCenterPoint, icon.getText(), Color.WHITE);
+							.renderTextLocation(graphics, canvasCenterPoint, icon.getText(), Color.WHITE);
 					}
 
 					currentHeight += (icon.getImage().getHeight() * 2);
