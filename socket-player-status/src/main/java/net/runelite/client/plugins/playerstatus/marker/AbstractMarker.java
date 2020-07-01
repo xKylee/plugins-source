@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.playerstatus.marker;
+package net.runelite.client.plugins.playerstatus.marker;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.playerstatus;
+package net.runelite.client.plugins.playerstatus;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.specialcounterextended;
+package net.runelite.client.plugins.specialcounterextended;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;

@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.specialcounterextended;
+package net.runelite.client.plugins.specialcounterextended;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

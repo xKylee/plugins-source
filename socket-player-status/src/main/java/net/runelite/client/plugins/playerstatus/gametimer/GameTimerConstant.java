@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.playerstatus.gametimer;
+package net.runelite.client.plugins.playerstatus.gametimer;
 
 import java.util.regex.Pattern;
 

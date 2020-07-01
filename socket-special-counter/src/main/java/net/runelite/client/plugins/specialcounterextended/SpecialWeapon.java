@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.specialcounterextended;
+package net.runelite.client.plugins.specialcounterextended;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,11 +35,24 @@ enum SpecialWeapon
 {
 
 	DRAGON_WARHAMMER("Dragon Warhammer", ItemID.DRAGON_WARHAMMER, false),
+
 	ARCLIGHT("Arclight", ItemID.ARCLIGHT, false),
 	DARKLIGHT("Darklight", ItemID.DARKLIGHT, false),
+
 	BANDOS_GODSWORD("Bandos Godsword", ItemID.BANDOS_GODSWORD, true),
 	BANDOS_GODSWORD_OR("Bandos Godsword", ItemID.BANDOS_GODSWORD_OR, true),
-	DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true);
+
+	DAWNBRINGER("Dawnbringer", ItemID.DAWNBRINGER, true),
+
+	SARADOMIN_GODSWORD("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD, true),
+	SARADOMIN_GODSWORD_OR("Saradomin Godsword", ItemID.SARADOMIN_GODSWORD_OR, true),
+
+	BLOWPIPE_FULL("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE, true),
+	BLOWPIPE_EMPTY("Toxic BlowPipe", ItemID.TOXIC_BLOWPIPE_EMPTY, true),
+
+	VOLATILE_NIGHTMARE_STAFF("Volatile Nightmare Staff", ItemID.VOLATILE_NIGHTMARE_STAFF, true),
+	ELDRITCH_NIGHTMARE_STAFF("Eldritch Nightmare Staff", ItemID.ELDRITCH_NIGHTMARE_STAFF, true),
+	ANCIENT_MACE("Ancient Mace", ItemID.ANCIENT_MACE, true);
 
 	private final String name;
 	private final int itemID;

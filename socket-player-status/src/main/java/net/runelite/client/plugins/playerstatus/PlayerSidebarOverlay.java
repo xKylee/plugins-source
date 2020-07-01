@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.playerstatus;
+package net.runelite.client.plugins.playerstatus;
 
 import com.google.inject.Inject;
 import net.runelite.client.ui.overlay.OverlayPanel;

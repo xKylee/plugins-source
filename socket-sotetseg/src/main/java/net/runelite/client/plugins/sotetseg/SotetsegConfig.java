@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.socket.plugins.sotetseg;
+package net.runelite.client.plugins.sotetseg;
 
 import java.awt.Color;
 import net.runelite.client.config.Config;
