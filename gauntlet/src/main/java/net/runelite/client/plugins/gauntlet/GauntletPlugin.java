@@ -248,6 +248,10 @@ public class GauntletPlugin extends Plugin
 	@Setter
 	private boolean wrongAttackStyle;
 
+	@Getter
+	@Setter
+	private boolean switchWeapon;
+
 	private boolean inGauntlet;
 	private boolean inHunllef;
 
@@ -284,6 +288,7 @@ public class GauntletPlugin extends Plugin
 		hunllef = null;
 		missile = null;
 		wrongAttackStyle = false;
+		switchWeapon = false;
 
 		overlayTimer.reset();
 		resourceManager.reset();
@@ -565,6 +570,11 @@ public class GauntletPlugin extends Plugin
 			{
 				wrongAttackStyle = false;
 				hunllef.updatePlayerAttackCount();
+
+				if (hunllef.getPlayerAttackCount() == 1)
+				{
+					switchWeapon = true;
+				}
 			}
 			else
 			{
