@@ -28,7 +28,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("environmentaid")
+@ConfigGroup("areaeffects")
 public interface EnvironmentAidConfig extends Config
 {
 	@ConfigItem(
@@ -51,5 +51,27 @@ public interface EnvironmentAidConfig extends Config
 	default boolean showBarrowsMinimap()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		keyName = "zamorakDarkness",
+		name = "Remove darkness",
+		description = "Removes the on-screen darkening effect in the Zamorak chamber of GWD",
+		position = 2
+	)
+	default boolean zamorakEffect()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "snowTrollheim",
+		name = "Remove snow",
+		description = "Removes the on-screen snow effect north of Trollheim & God Wars entrance",
+		position = 3
+	)
+	default boolean snowEffect()
+	{
+		return false;
 	}
 }

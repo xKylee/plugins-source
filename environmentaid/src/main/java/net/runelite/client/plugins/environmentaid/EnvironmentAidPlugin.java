@@ -42,9 +42,12 @@ import net.runelite.api.events.GameObjectChanged;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.WallObjectChanged;
 import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
+import net.runelite.api.events.WidgetHiddenChanged;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -71,6 +74,9 @@ public class EnvironmentAidPlugin extends Plugin
 	private Client client;
 
 	@Inject
+	private EnvironmentAidConfig config;
+
+	@Inject
 	private EnvironmentAidBarrowsOverlay environmentAidBarrowsOverlay;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -89,6 +95,13 @@ public class EnvironmentAidPlugin extends Plugin
 	private static final Set<Integer> BARROWS_LADDERS = Sets.newHashSet(NullObjectID.NULL_20675, NullObjectID.NULL_20676, NullObjectID.NULL_20677);
 
 	private static final int BARROWS_CRYPT_REGION_ID = 14231;
+	private static final int ZAMORAK_REGION = 11603;
+
+	private static final Set<Integer> SNOW_REGIONS = Set.of(
+		11322, 11323, 11578, 11579,             //  ICE PATH + GWD SURFACE(ENTRANCE)
+		10042,                                  //  WATERBIRTH ISLAND
+		10810                                   //  FAIRY RING DKS
+	);
 
 	private boolean wasInCrypt = false;
 
@@ -108,17 +121,83 @@ public class EnvironmentAidPlugin extends Plugin
 	protected void startUp()
 	{
 		overlayManager.add(environmentAidBarrowsOverlay);
+		onStartUp();
 	}
 
 	@Override
 	protected void shutDown()
 	{
 		overlayManager.remove(environmentAidBarrowsOverlay);
+		onShutDown();
+	}
+
+	private void onStartUp()
+	{
+		if (client.getWidget(167, 0) != null)
+		{
+			client.getWidget(167, 0).setHidden(config.snowEffect());
+		}
+		if (client.getWidget(406, 2) != null)
+		{
+			client.getWidget(406, 2).setHidden(config.zamorakEffect());
+		}
+	}
+
+	private void onShutDown()
+	{
 		wasInCrypt = false;
 		walls.clear();
 		ladders.clear();
+
+		if (client.getWidget(406, 2) != null)
+		{
+			client.getWidget(406, 2).setHidden(false);
+		}
+
+		if (client.getWidget(167, 0) != null)
+		{
+			client.getWidget(167, 0).setHidden(false);
+		}
+
 	}
 
+	@Subscribe
+	public void onGameTick(GameTick gameTick)
+	{
+		if (isInZamorakRegion() && client.getWidget(406, 2) != null)
+		{
+			client.getWidget(406, 2).setHidden(config.zamorakEffect());
+		}
+
+		if (isInSnowRegions() && client.getWidget(167, 0) != null)
+		{
+			client.getWidget(167, 0).setHidden(config.snowEffect());
+		}
+	}
+
+	@Subscribe
+	public void widgetEvent(WidgetHiddenChanged widgetHiddenChanged)
+	{
+		Widget event = widgetHiddenChanged.getWidget();
+
+		if (config.zamorakEffect() && event.getId() == client.getWidget(406, 2).getId() && isInZamorakRegion())
+		{
+			hideWidget(event, true);
+		}
+
+		if (config.snowEffect() && event.getId() == client.getWidget(167, 0).getId() && isInSnowRegions())
+		{
+			hideWidget(event, true);
+		}
+	}
+
+	private void hideWidget(Widget widget, boolean hidden)
+	{
+		if (widget != null)
+		{
+			widget.setHidden(true);
+		}
+	}
 
 	@Subscribe
 	private void onWallObjectSpawned(WallObjectSpawned event)
@@ -183,7 +262,7 @@ public class EnvironmentAidPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals("environmentaid"))
+		if (!event.getGroup().equals("areaeffects"))
 		{
 			return;
 		}
@@ -212,5 +291,16 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		Player localPlayer = client.getLocalPlayer();
 		return localPlayer != null && localPlayer.getWorldLocation().getRegionID() == BARROWS_CRYPT_REGION_ID;
+	}
+
+	private boolean isInZamorakRegion()
+	{
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer != null && localPlayer.getWorldLocation().getRegionID() == ZAMORAK_REGION;
+	}
+
+	private boolean isInSnowRegions()
+	{
+		return SNOW_REGIONS.contains(client.getMapRegions()[0]);
 	}
 }
