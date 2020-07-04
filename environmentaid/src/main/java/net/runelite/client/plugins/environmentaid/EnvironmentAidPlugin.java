@@ -183,7 +183,7 @@ public class EnvironmentAidPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals("areaeffects"))
+		if (!event.getGroup().equals("environmentaid"))
 		{
 			return;
 		}
