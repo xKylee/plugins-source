@@ -83,11 +83,6 @@ public class OverlayGauntlet extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!plugin.isInGauntlet() || plugin.isInHunllefRoom())
-		{
-			return null;
-		}
-
 		player = client.getLocalPlayer();
 
 		if (player == null)
@@ -111,22 +106,22 @@ public class OverlayGauntlet extends Overlay
 			return;
 		}
 
-		final LocalPoint playerLocalLocation = player.getLocalLocation();
+		final LocalPoint localPointPlayer = player.getLocalLocation();
 
 		for (final Resource resource : plugin.getResources())
 		{
 			final GameObject gameObject = resource.getGameObject();
 
-			final LocalPoint gameObjectLocalLocation = gameObject.getLocalLocation();
+			final LocalPoint localPointGameObject = gameObject.getLocalLocation();
 
-			if (isOutsideRenderDistance(gameObjectLocalLocation, playerLocalLocation))
+			if (isOutsideRenderDistance(localPointGameObject, localPointPlayer))
 			{
 				continue;
 			}
 
 			if (config.resourceOverlay())
 			{
-				final Polygon polygon = Perspective.getCanvasTilePoly(client, gameObjectLocalLocation);
+				final Polygon polygon = Perspective.getCanvasTilePoly(client, localPointGameObject);
 
 				if (polygon == null)
 				{
@@ -136,7 +131,7 @@ public class OverlayGauntlet extends Overlay
 				drawOutlineAndFill(graphics2D, config.resourceTileOutlineColor(), config.resourceTileFillColor(),
 					config.resourceTileOutlineWidth(), polygon);
 
-				OverlayUtil.renderImageLocation(client, graphics2D, gameObjectLocalLocation, resource.getIcon(), 0);
+				OverlayUtil.renderImageLocation(client, graphics2D, localPointGameObject, resource.getIcon(), 0);
 			}
 
 			if (config.resourceOutline())
@@ -161,11 +156,11 @@ public class OverlayGauntlet extends Overlay
 			return;
 		}
 
-		final LocalPoint localPoint = player.getLocalLocation();
+		final LocalPoint localPointPlayer = player.getLocalLocation();
 
 		for (final GameObject gameObject : plugin.getUtilities())
 		{
-			if (isOutsideRenderDistance(gameObject.getLocalLocation(), localPoint))
+			if (isOutsideRenderDistance(gameObject.getLocalLocation(), localPointPlayer))
 			{
 				continue;
 			}

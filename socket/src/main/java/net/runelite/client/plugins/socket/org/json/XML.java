@@ -156,8 +156,7 @@ public class XML
 	 * @return true if the close tag is processed.
 	 * @throws JSONException
 	 */
-	private static boolean parse(XMLTokener x, JSONObject context,
-								String name) throws JSONException
+	private static boolean parse(XMLTokener x, JSONObject context, String name) throws JSONException
 	{
 		char c;
 		int i;

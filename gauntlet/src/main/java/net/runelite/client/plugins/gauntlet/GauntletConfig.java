@@ -273,29 +273,165 @@ public interface GauntletConfig extends Config
 
 	@ConfigItem(
 		name = "Track resources",
-		description = "Track resources in a counter infobox.",
+		description = "Track resources in counter infoboxes.",
 		position = 8,
 		keyName = "resourceTracker",
-		section = "resourcesSection"
+		section = "resourcesSection",
+		enumClass = ResourceFilter.class
 	)
-	default boolean resourceTracker()
+	default ResourceFilter resourceTracker()
+	{
+		return ResourceFilter.OFF;
+	}
+
+	@ConfigItem(
+		name = "Ore",
+		description = "The desired number of ores to acquire.",
+		position = 9,
+		keyName = "resourceOre",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourceOre()
+	{
+		return 3;
+	}
+
+	@ConfigItem(
+		name = "Phren bark",
+		description = "The desired number of phren barks to acquire.",
+		position = 10,
+		keyName = "resourceBark",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourceBark()
+	{
+		return 3;
+	}
+
+	@ConfigItem(
+		name = "Linum tirinum",
+		description = "The desired number of linum tirinums to acquire.",
+		position = 11,
+		keyName = "resourceTirinum",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourceTirinum()
+	{
+		return 3;
+	}
+
+	@ConfigItem(
+		name = "Grym leaf",
+		description = "The desired number of grym leaves to acquire.",
+		position = 12,
+		keyName = "resourceGrym",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourceGrym()
+	{
+		return 2;
+	}
+
+	@ConfigItem(
+		name = "Weapon frames",
+		description = "The desired number of weapon frames to acquire.",
+		position = 13,
+		keyName = "resourceFrame",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourceFrame()
+	{
+		return 2;
+	}
+
+	@ConfigItem(
+		name = "Paddlefish",
+		description = "The desired number of paddlefish to acquire.",
+		position = 14,
+		keyName = "resourcePaddlefish",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourcePaddlefish()
+	{
+		return 20;
+	}
+
+	@ConfigItem(
+		name = "Crystal shards",
+		description = "The desired number of crystal shards to acquire.",
+		position = 15,
+		keyName = "resourceShard",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default int resourceShard()
+	{
+		return 320;
+	}
+
+	@ConfigItem(
+		name = "Bowstring",
+		description = "Whether or not to acquire the crystalline or corrupted bowstring.",
+		position = 16,
+		keyName = "resourceBowstring",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default boolean resourceBowstring()
 	{
 		return false;
 	}
 
 	@ConfigItem(
-		name = "Tracking filter",
-		description = "Filter resources to be tracked." +
-			"<br>All resources includes weapon frames, upgrades, and teleport crystals.",
-		position = 9,
-		keyName = "resourceTrackerFilter",
+		name = "Spike",
+		description = "Whether or not to acquire the crystal or corrupted spike.",
+		position = 17,
+		keyName = "resourceSpike",
 		section = "resourcesSection",
 		hidden = true,
-		unhide = "resourceTracker"
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
 	)
-	default ResourceFilter resourceTrackerFilter()
+	default boolean resourceSpike()
 	{
-		return ResourceFilter.DEFAULT;
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Orb",
+		description = "Whether or not to acquire the crystal or corrupted orb.",
+		position = 18,
+		keyName = "resourceOrb",
+		section = "resourcesSection",
+		hidden = true,
+		unhide = "resourceTracker",
+		unhideValue = "CUSTOM"
+	)
+	default boolean resourceOrb()
+	{
+		return false;
 	}
 
 	// Utilities Section
@@ -492,7 +628,8 @@ public interface GauntletConfig extends Config
 		keyName = "hunllefAttackCounterFontStyle",
 		section = "hunllefSection",
 		hidden = true,
-		unhide = "hunllefOverlayAttackCounter"
+		unhide = "hunllefOverlayAttackCounter",
+		enumClass = FontStyle.class
 	)
 	default FontStyle hunllefAttackCounterFontStyle()
 	{
@@ -656,9 +793,21 @@ public interface GauntletConfig extends Config
 	// Projectiles Section
 
 	@ConfigItem(
+		name = "Outline projectiles",
+		description = "Outline projectiles with a blue (magic) or green (range) color.",
+		position = 0,
+		keyName = "outlineProjectile",
+		section = "projectilesSection"
+	)
+	default boolean outlineProjectile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		name = "Overlay projectile icons",
 		description = "Overlay projectiles with their respective icon.",
-		position = 0,
+		position = 1,
 		keyName = "overlayProjectileIcon",
 		section = "projectilesSection"
 	)
@@ -674,7 +823,7 @@ public interface GauntletConfig extends Config
 	@ConfigItem(
 		name = "Icon size",
 		description = "Change the size of the projectile icons.",
-		position = 1,
+		position = 2,
 		keyName = "projectileIconSize",
 		section = "projectilesSection",
 		hidden = true,
@@ -684,18 +833,6 @@ public interface GauntletConfig extends Config
 	default int projectileIconSize()
 	{
 		return 18;
-	}
-
-	@ConfigItem(
-		name = "Outline projectiles",
-		description = "Outline projectiles with a blue (magic) or green (range) color.",
-		position = 2,
-		keyName = "outlineProjectile",
-		section = "projectilesSection"
-	)
-	default boolean outlineProjectile()
-	{
-		return false;
 	}
 
 	// Tornadoes Section
@@ -719,7 +856,8 @@ public interface GauntletConfig extends Config
 		keyName = "tornadoFontStyle",
 		section = "tornadoesSection",
 		hidden = true,
-		unhide = "tornadoTickCounter"
+		unhide = "tornadoTickCounter",
+		enumClass = FontStyle.class
 	)
 	default FontStyle tornadoFontStyle()
 	{
@@ -842,7 +980,8 @@ public interface GauntletConfig extends Config
 		description = "Overlay the correct prayer to use against the Hunllef's current attack style.",
 		position = 0,
 		keyName = "prayerOverlay",
-		section = "playerSection"
+		section = "playerSection",
+		enumClass = PrayerHighlightMode.class
 	)
 	default PrayerHighlightMode prayerOverlay()
 	{
@@ -867,7 +1006,7 @@ public interface GauntletConfig extends Config
 	)
 	@ConfigItem(
 		name = "Flash duration",
-		description = "Change the duration of the flash on wrong attack style.",
+		description = "Change the duration of the flash.",
 		position = 2,
 		keyName = "flashOnWrongAttackDuration",
 		section = "playerSection",
@@ -884,14 +1023,59 @@ public interface GauntletConfig extends Config
 		name = "Flash color",
 		description = "Color of the flash notification.",
 		position = 3,
-		keyName = "flashColor",
+		keyName = "flashOnWrongAttackColor",
 		section = "playerSection",
 		hidden = true,
 		unhide = "flashOnWrongAttack"
 	)
-	default Color flashColor()
+	default Color flashOnWrongAttackColor()
 	{
 		return new Color(255, 0, 0, 70);
+	}
+
+	@ConfigItem(
+		name = "Flash on 5:1 method",
+		description = "Flash the screen to weapon switch when using 5:1 method.",
+		position = 4,
+		keyName = "flashOn51Method",
+		section = "playerSection"
+	)
+	default boolean flashOn51Method()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 10,
+		max = 50
+	)
+	@ConfigItem(
+		name = "Flash duration",
+		description = "Change the duration of the flash.",
+		position = 5,
+		keyName = "flashOn51MethodDuration",
+		section = "playerSection",
+		hidden = true,
+		unhide = "flashOn51Method"
+	)
+	default int flashOn51MethodDuration()
+	{
+		return 25;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Flash color",
+		description = "Color of the flash notification.",
+		position = 6,
+		keyName = "flashOn51MethodColor",
+		section = "playerSection",
+		hidden = true,
+		unhide = "flashOn51Method"
+	)
+	default Color flashOn51MethodColor()
+	{
+		return new Color(255, 190, 0, 50);
 	}
 
 	// Timer Section
@@ -900,7 +1084,7 @@ public interface GauntletConfig extends Config
 		position = 0,
 		keyName = "timerOverlay",
 		name = "Overlay timer",
-		description = "Display a timer overlay that tracks your gauntlet progress.",
+		description = "Display an overlay that tracks your gauntlet time.",
 		section = "timerSection"
 	)
 	default boolean timerOverlay()
@@ -912,7 +1096,7 @@ public interface GauntletConfig extends Config
 		position = 1,
 		keyName = "timerChatMessage",
 		name = "Chat timer",
-		description = "Display a chat message that tracks your gauntlet progress.",
+		description = "Display a chat message on death with your gauntlet time.",
 		section = "timerSection"
 	)
 	default boolean timerChatMessage()
@@ -927,7 +1111,8 @@ public interface GauntletConfig extends Config
 		description = "Set render distance of various overlays.",
 		position = 0,
 		keyName = "resourceRenderDistance",
-		section = "otherSection"
+		section = "otherSection",
+		enumClass = RenderDistance.class
 	)
 	default RenderDistance resourceRenderDistance()
 	{
@@ -936,8 +1121,7 @@ public interface GauntletConfig extends Config
 
 	@ConfigItem(
 		name = "Disco mode",
-		description = "<b>&nbsp;&nbsp;&nbsp;D<br><br>&nbsp;I<br><br>&nbsp;" +
-			"&nbsp;&nbsp;S<br><br>&nbsp;C<br><br>&nbsp;&nbsp;&nbsp;O</b>",
+		description = "Kill the Hunllef.",
 		position = 1,
 		keyName = "discoMode",
 		section = "otherSection"
@@ -998,11 +1182,10 @@ public interface GauntletConfig extends Config
 		}
 	}
 
-	@Getter
 	@AllArgsConstructor
 	enum PrayerHighlightMode
 	{
-		PRAYERWIDGET("On Widget"),
+		WIDGET("Widget"),
 		BOX("Box"),
 		BOTH("Both"),
 		NONE("None");
@@ -1012,12 +1195,12 @@ public interface GauntletConfig extends Config
 		@Override
 		public String toString()
 		{
-			return getName();
+			return name;
 		}
 	}
 
 	enum ResourceFilter
 	{
-		DEFAULT, ALL
+		ALL, BASIC, CUSTOM, OFF
 	}
 }

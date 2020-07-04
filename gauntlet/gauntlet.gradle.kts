@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.1.5"
+version = "0.1.8"
 
 project.extra["PluginName"] = "Gauntlet"
 project.extra["PluginDescription"] = "All-in-one plugin for the Gauntlet"
@@ -40,6 +40,7 @@ dependencies {
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    compileOnly(Libraries.rxjava)
 }
 
 tasks {
