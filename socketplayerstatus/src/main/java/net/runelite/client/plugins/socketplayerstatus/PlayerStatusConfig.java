@@ -117,7 +117,7 @@ public interface PlayerStatusConfig extends Config
 	)
 	default boolean showOverload()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
