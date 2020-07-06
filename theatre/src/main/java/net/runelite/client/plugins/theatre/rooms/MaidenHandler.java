@@ -2,6 +2,7 @@ package net.runelite.client.plugins.theatre.rooms;
 
 import com.google.common.collect.ImmutableSet;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +13,10 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
+import net.runelite.api.NPCDefinition;
+import net.runelite.api.Perspective;
+import net.runelite.api.Point;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.NpcDefinitionChanged;
@@ -139,6 +144,34 @@ public class MaidenHandler extends RoomHandler
 			}
 		}
 
+		if (config.showMaidenNyloDistance())
+		{
+			WorldPoint maidenWp = maiden.getWorldLocation();
+			int maidenX = maidenWp.getX();
+
+			NPCDefinition maidenModel = maiden.getTransformedDefinition();
+			if (maidenModel != null)
+			{
+				maidenX += maidenModel.getSize();
+			}
+
+			for (NPC npc : healers)
+			{
+				if (!npc.isDead() && npc.getId() != -1)
+				{
+					WorldPoint healerWp = npc.getWorldLocation();
+					int healerX = healerWp.getX();
+					int deltaX = Math.max(0, healerX - maidenX);
+					String deltaXStr = Integer.toString(deltaX);
+
+					LocalPoint lp = npc.getLocalLocation();
+					Point point = Perspective.getCanvasTextLocation(client, graphics, lp, deltaXStr, 0);
+
+					renderTextLocation(graphics, deltaXStr, 20, Font.BOLD, Color.WHITE, point);
+				}
+			}
+		}
+
 		if (config.showMaidenBloodToss())
 		{
 			for (WorldPoint point : bloodThrows)
@@ -197,12 +230,12 @@ public class MaidenHandler extends RoomHandler
 				maiden = npc;
 				break;
 			case "Nylocas Matomenos":
+				healers.add(npc);
+
 				if (!config.showNyloFreezeHighlights())
 				{
 					return;
 				}
-
-				healers.add(npc);
 
 				WorldPoint wp = WorldPoint.fromLocalInstance(client, npc.getLocalLocation());
 
