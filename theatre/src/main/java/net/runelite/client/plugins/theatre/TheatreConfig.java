@@ -76,6 +76,18 @@ public interface TheatreConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+		position = 4,
+		keyName = "showNyloFreezeHighlights",
+		name = "Show Nylo Distance",
+		description = "Show remaining ticks before nylos will reach and heal maiden.",
+		section = "maidenSection"
+	)
+	default boolean showMaidenNyloDistance()
+	{
+		return true;
+	}
+
 	@ConfigSection(
 		position = 4,
 		keyName = "bloatSection",
