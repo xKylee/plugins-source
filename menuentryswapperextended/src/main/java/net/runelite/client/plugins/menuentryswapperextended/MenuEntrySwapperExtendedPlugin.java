@@ -278,10 +278,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 			if (option.contains("empty") && config.hideEmpty())
 			{
-				if (entry.getTarget().contains("potion") || entry.getTarget().contains("antidote")
+				if (entry.getTarget().contains("potion") || entry.getTarget().contains("Antidote")
 					|| entry.getTarget().contains("venom") || entry.getTarget().contains("antifire")
-					|| entry.getTarget().contains("Antipoison") || entry.getTarget().contains("Saradomin Brew")
-					|| entry.getTarget().contains("Zamorak Brew") || entry.getTarget().contains("Guthix rest"))
+					|| entry.getTarget().contains("Antipoison") || entry.getTarget().contains("Superantipoison")
+					|| entry.getTarget().contains("Saradomin brew") || entry.getTarget().contains("Super restore")
+					|| entry.getTarget().contains("Zamorak brew") || entry.getTarget().contains("Guthix rest"))
 				{
 					continue;
 				}
