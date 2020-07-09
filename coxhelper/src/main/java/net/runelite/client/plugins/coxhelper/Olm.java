@@ -6,24 +6,30 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.DynamicObject;
 import net.runelite.api.GameObject;
 import net.runelite.api.GraphicID;
 import net.runelite.api.GraphicsObject;
+import net.runelite.api.Prayer;
 import net.runelite.api.coords.WorldPoint;
 
 @Slf4j
-@Getter(AccessLevel.PACKAGE)
-@Setter(AccessLevel.PACKAGE)
 @Singleton
+@Getter
+@Setter
 public class Olm
 {
+	public static final int HEAD_GAMEOBJECT_RISING = 29880;
+	public static final int HEAD_GAMEOBJECT_READY = 29881;
+	public static final int LEFT_HAND_GAMEOBJECT_RISING = 29883;
+	public static final int LEFT_HAND_GAMEOBJECT_READY = 29884;
+	public static final int RIGHT_HAND_GAMEOBJECT_RISING = 29886;
+	public static final int RIGHT_HAND_GAMEOBJECT_READY = 29887;
+
 	private final Client client;
 	private final CoxPlugin plugin;
 	private final CoxConfig config;
@@ -32,24 +38,24 @@ public class Olm
 	private final List<WorldPoint> portals = new ArrayList<>();
 	private final Set<Victim> victims = new HashSet<>();
 	private int portalTicks = 10;
-	private Actor acidTarget = null;
 
 	private boolean active = false; // in fight
 	private boolean firstPhase = false;
 	private boolean finalPhase = false;
 
 	private GameObject hand = null;
-	private int lastHandAnimation = -2;
+	private OlmAnimation handAnimation = OlmAnimation.UNKNOWN;
 	private GameObject head = null;
-	private int lastHeadAnimation = -2;
+	private OlmAnimation headAnimation = OlmAnimation.UNKNOWN;
 
-	private int tickCycle = -1;
+	private int ticksUntilNextAttack = -1;
+	private int attackCycle = 1;
 	private int specialCycle = 1;
 
 	private boolean crippled = false;
 	private int crippleTicks = 45;
 
-	private PrayAgainst prayer = null;
+	private Prayer prayer = null;
 	private long lastPrayTime = 0;
 
 	@Inject
@@ -64,14 +70,15 @@ public class Olm
 	{
 		this.firstPhase = !this.active;
 		this.active = true;
-		this.tickCycle = -1;
+		this.ticksUntilNextAttack = -1;
+		this.attackCycle = 1;
 		this.specialCycle = 1;
 		this.crippled = false;
 		this.crippleTicks = 45;
 		this.prayer = null;
 		this.lastPrayTime = 0;
-		this.lastHeadAnimation = -2;
-		this.lastHandAnimation = -2;
+		this.headAnimation = OlmAnimation.UNKNOWN;
+		this.handAnimation = OlmAnimation.UNKNOWN;
 	}
 
 	public void hardRest()
@@ -81,22 +88,22 @@ public class Olm
 		this.finalPhase = false;
 		this.hand = null;
 		this.head = null;
-		this.lastHeadAnimation = -2;
-		this.lastHandAnimation = -2;
-		this.tickCycle = -1;
+		this.headAnimation = OlmAnimation.UNKNOWN;
+		this.handAnimation = OlmAnimation.UNKNOWN;
+		this.ticksUntilNextAttack = -1;
+		this.attackCycle = 1;
 		this.specialCycle = 1;
 		this.healPools.clear();
 		this.portals.clear();
 		this.portalTicks = 10;
 		this.victims.clear();
-		this.acidTarget = null;
 		this.crippled = false;
 		this.crippleTicks = 45;
 		this.prayer = null;
 		this.lastPrayTime = 0;
 	}
 
-	void setPrayer(PrayAgainst pray)
+	void setPrayer(Prayer pray)
 	{
 		this.prayer = pray;
 		this.lastPrayTime = System.currentTimeMillis();
@@ -114,16 +121,6 @@ public class Olm
 		this.crippleTicks = 45;
 	}
 
-	public int ticksUntilNextAction()
-	{
-		return this.tickCycle % 4 == 0 ? 1 : 4 - (this.tickCycle % 4) + 1;
-	}
-
-	public int actionCycle()
-	{
-		return (int) Math.ceil((double) this.tickCycle / 4);
-	}
-
 	public void update()
 	{
 		this.updateVictims();
@@ -136,14 +133,27 @@ public class Olm
 
 	public void incrementTickCycle()
 	{
-		if (this.tickCycle == 16)
+		if (this.ticksUntilNextAttack == 1)
 		{
-			this.incrementSpecialCycle();
-			this.tickCycle = 1;
+			this.ticksUntilNextAttack = 4;
+			this.incrementAttackCycle();
 		}
-		else if (this.tickCycle != -1)
+		else if (this.ticksUntilNextAttack != -1)
 		{
-			this.tickCycle++;
+			this.ticksUntilNextAttack--;
+		}
+	}
+
+	public void incrementAttackCycle()
+	{
+		if (this.attackCycle == 4)
+		{
+			this.attackCycle = 1;
+			this.incrementSpecialCycle();
+		}
+		else
+		{
+			this.attackCycle++;
 		}
 	}
 
@@ -159,22 +169,23 @@ public class Olm
 		}
 	}
 
-	public void specialSync(int currentAnimation)
+	public void specialSync(OlmAnimation currentAnimation)
 	{
-		this.tickCycle = 1;
+		this.ticksUntilNextAttack = 1;
+		this.attackCycle = 4;
 		switch (currentAnimation)
 		{
-			case OlmID.OLM_LEFT_HAND_CRYSTALS:
+			case LEFT_HAND_CRYSTALS:
+				this.specialCycle = 1;
+				break;
+			case LEFT_HAND_LIGHTNING:
 				this.specialCycle = 2;
 				break;
-			case OlmID.OLM_LEFT_HAND_LIGHTNING:
+			case LEFT_HAND_PORTALS:
 				this.specialCycle = 3;
 				break;
-			case OlmID.OLM_LEFT_HAND_PORTALS:
-				this.specialCycle = this.finalPhase ? 4 : 1;
-				break;
-			case OlmID.OLM_LEFT_HAND_HEAL:
-				this.specialCycle = 1;
+			case LEFT_HAND_HEAL:
+				this.specialCycle = 4;
 				break;
 		}
 	}
@@ -238,29 +249,31 @@ public class Olm
 			return;
 		}
 
-		int currentAnimation = ((DynamicObject) this.head.getEntity()).getAnimationID();
+		OlmAnimation currentAnimation = OlmAnimation.fromId(((DynamicObject) this.head.getEntity()).getAnimationID());
 
-		if (currentAnimation == this.lastHeadAnimation)
+		if (currentAnimation == this.headAnimation)
 		{
 			return;
 		}
 
 		switch (currentAnimation)
 		{
-			case OlmID.OLM_MIDDLE:
-				if (this.lastHeadAnimation == OlmID.OLM_RISING_2 || this.lastHeadAnimation == OlmID.OLM_ENRAGED_RISING_2)
+			case HEAD_MIDDLE:
+				if (this.headAnimation == OlmAnimation.HEAD_RISING_2 || this.headAnimation == OlmAnimation.HEAD_ENRAGED_RISING_2)
 				{
-					this.tickCycle = this.firstPhase ? 3 : 0;
+					this.ticksUntilNextAttack = this.firstPhase ? 2 : 5;
+					this.attackCycle = 1;
+					this.specialCycle = 1;
 				}
 				break;
-			case OlmID.OLM_ENRAGED_LEFT:
-			case OlmID.OLM_ENRAGED_MIDDLE:
-			case OlmID.OLM_ENRAGED_RIGHT:
+			case HEAD_ENRAGED_LEFT:
+			case HEAD_ENRAGED_MIDDLE:
+			case HEAD_ENRAGED_RIGHT:
 				this.finalPhase = true;
 				break;
 		}
 
-		this.lastHeadAnimation = currentAnimation;
+		this.headAnimation = currentAnimation;
 	}
 
 	private void handAnimations()
@@ -270,30 +283,30 @@ public class Olm
 			return;
 		}
 
-		int currentAnimation = ((DynamicObject) this.hand.getEntity()).getAnimationID();
+		OlmAnimation currentAnimation = OlmAnimation.fromId(((DynamicObject) this.hand.getEntity()).getAnimationID());
 
-		if (currentAnimation == this.lastHandAnimation)
+		if (currentAnimation == this.handAnimation)
 		{
 			return;
 		}
 
 		switch (currentAnimation)
 		{
-			case OlmID.OLM_LEFT_HAND_CRYSTALS:
-			case OlmID.OLM_LEFT_HAND_LIGHTNING:
-			case OlmID.OLM_LEFT_HAND_PORTALS:
-			case OlmID.OLM_LEFT_HAND_HEAL:
+			case LEFT_HAND_CRYSTALS:
+			case LEFT_HAND_LIGHTNING:
+			case LEFT_HAND_PORTALS:
+			case LEFT_HAND_HEAL:
 				this.specialSync(currentAnimation);
 				break;
-			case OlmID.OLM_LEFT_HAND_CRIPPLING:
+			case LEFT_HAND_CRIPPLING:
 				this.cripple();
 				break;
-			case OlmID.OLM_LEFT_HAND_UNCRIPPLING1:
-			case OlmID.OLM_LEFT_HAND_UNCRIPPLING2:
+			case LEFT_HAND_UNCRIPPLING1:
+			case LEFT_HAND_UNCRIPPLING2:
 				this.uncripple();
 				break;
 		}
 
-		this.lastHandAnimation = currentAnimation;
+		this.handAnimation = currentAnimation;
 	}
 }
