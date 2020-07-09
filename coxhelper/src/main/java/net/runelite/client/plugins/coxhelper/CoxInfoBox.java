@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.NpcID;
+import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
@@ -81,9 +82,9 @@ public class CoxInfoBox extends Overlay
 		{
 			this.prayAgainstPanel.getChildren().clear();
 
-			final PrayAgainst prayAgainst = this.olm.getPrayer();
+			final Prayer prayer = this.olm.getPrayer();
 
-			if (System.currentTimeMillis() < this.olm.getLastPrayTime() + 120000 && prayAgainst != null && this.config.prayAgainstOlm())
+			if (System.currentTimeMillis() < this.olm.getLastPrayTime() + 120000 && prayer != null && this.config.prayAgainstOlm())
 			{
 				final int scale = this.config.prayAgainstOlmSize();
 				InfoBoxComponent prayComponent = new InfoBoxComponent();
@@ -92,7 +93,7 @@ public class CoxInfoBox extends Overlay
 				);
 				prayComponent.setImage(prayImg);
 				prayComponent.setColor(Color.WHITE);
-				prayComponent.setBackgroundColor(this.client.isPrayerActive(prayAgainst.getPrayer())
+				prayComponent.setBackgroundColor(this.client.isPrayerActive(prayer)
 					? ComponentConstants.STANDARD_BACKGROUND_COLOR
 					: NOT_ACTIVATED_BACKGROUND_COLOR
 				);
@@ -149,15 +150,15 @@ public class CoxInfoBox extends Overlay
 		return null;
 	}
 
-	private BufferedImage getPrayerImage(PrayAgainst prayAgainst)
+	private BufferedImage getPrayerImage(Prayer prayer)
 	{
-		switch (prayAgainst)
+		switch (prayer)
 		{
-			case MAGIC:
+			case PROTECT_FROM_MAGIC:
 				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MAGIC, 0);
-			case MELEE:
+			case PROTECT_FROM_MELEE:
 				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MELEE, 0);
-			case RANGED:
+			case PROTECT_FROM_MISSILES:
 				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0);
 			default:
 				return this.spriteManager.getSprite(SpriteID.BARBARIAN_ASSAULT_EAR_ICON, 0);

@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Actor;
 import net.runelite.api.AnimationID;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -43,6 +44,7 @@ import net.runelite.api.GraphicID;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Player;
+import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.Varbits;
@@ -175,15 +177,15 @@ public class CoxPlugin extends Plugin
 					break;
 				case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
 				case "the great olm fires a sphere of aggression your way.":
-					this.olm.setPrayer(PrayAgainst.MELEE);
+					this.olm.setPrayer(Prayer.PROTECT_FROM_MELEE);
 					break;
 				case "the great olm fires a sphere of magical power your way. your prayers have been sapped.":
 				case "the great olm fires a sphere of magical power your way.":
-					this.olm.setPrayer(PrayAgainst.MAGIC);
+					this.olm.setPrayer(Prayer.PROTECT_FROM_MAGIC);
 					break;
 				case "the great olm fires a sphere of accuracy and dexterity your way. your prayers have been sapped.":
 				case "the great olm fires a sphere of accuracy and dexterity your way.":
-					this.olm.setPrayer(PrayAgainst.RANGED);
+					this.olm.setPrayer(Prayer.PROTECT_FROM_MISSILES);
 					break;
 			}
 		}
@@ -202,13 +204,17 @@ public class CoxPlugin extends Plugin
 		switch (projectile.getId())
 		{
 			case ProjectileID.OLM_MAGE_ATTACK:
-				this.olm.setPrayer(PrayAgainst.MAGIC);
+				this.olm.setPrayer(Prayer.PROTECT_FROM_MAGIC);
 				break;
 			case ProjectileID.OLM_RANGE_ATTACK:
-				this.olm.setPrayer(PrayAgainst.RANGED);
+				this.olm.setPrayer(Prayer.PROTECT_FROM_MISSILES);
 				break;
 			case ProjectileID.OLM_ACID_TRAIL:
-				this.olm.setAcidTarget(projectile.getInteracting());
+				Actor actor = projectile.getInteracting();
+				if (actor instanceof Player)
+				{
+					this.olm.getVictims().add(new Victim((Player) actor, Victim.Type.ACID));
+				}
 				break;
 		}
 	}
@@ -230,20 +236,7 @@ public class CoxPlugin extends Plugin
 
 		if (player.getSpotAnimation() == GraphicID.OLM_BURN)
 		{
-			int add = 0;
-
-			for (Victim victim : this.olm.getVictims())
-			{
-				if (victim.getPlayer().getName().equals(player.getName()))
-				{
-					add++;
-				}
-			}
-
-			if (add == 0)
-			{
-				this.olm.getVictims().add(new Victim(player, Victim.Type.BURN));
-			}
+			this.olm.getVictims().add(new Victim(player, Victim.Type.BURN));
 		}
 	}
 
@@ -468,16 +461,16 @@ public class CoxPlugin extends Plugin
 		int id = event.getGameObject().getId();
 		switch (id)
 		{
-			case OlmID.OLM_HEAD_GAMEOBJECT_RISING:
-			case OlmID.OLM_HEAD_GAMEOBJECT_READY:
+			case Olm.HEAD_GAMEOBJECT_RISING:
+			case Olm.HEAD_GAMEOBJECT_READY:
 				if (this.olm.getHead() == null)
 				{
 					this.olm.startPhase();
 				}
 				this.olm.setHead(event.getGameObject());
 				break;
-			case OlmID.OLM_LEFT_HAND_GAMEOBJECT_RISING:
-			case OlmID.OLM_LEFT_HAND_GAMEOBJECT_READY:
+			case Olm.LEFT_HAND_GAMEOBJECT_RISING:
+			case Olm.LEFT_HAND_GAMEOBJECT_READY:
 				this.olm.setHand(event.getGameObject());
 				break;
 		}
@@ -492,7 +485,7 @@ public class CoxPlugin extends Plugin
 		}
 
 		int id = event.getGameObject().getId();
-		if (id == OlmID.OLM_HEAD_GAMEOBJECT_READY)
+		if (id == Olm.HEAD_GAMEOBJECT_READY)
 		{
 			this.olm.setHead(null);
 		}

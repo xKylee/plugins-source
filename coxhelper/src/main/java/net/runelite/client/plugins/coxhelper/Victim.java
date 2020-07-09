@@ -1,11 +1,12 @@
 package net.runelite.client.plugins.coxhelper;
 
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.api.Player;
 
-@Getter(AccessLevel.PACKAGE)
+@Getter
 class Victim
 {
 	private final Player player;
@@ -25,6 +26,28 @@ class Victim
 		{
 			this.ticks--;
 		}
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(player.getName(), type);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		Victim victim = (Victim) o;
+		return Objects.equals(player.getName(), victim.player.getName()) &&
+			type == victim.type;
 	}
 
 	@AllArgsConstructor

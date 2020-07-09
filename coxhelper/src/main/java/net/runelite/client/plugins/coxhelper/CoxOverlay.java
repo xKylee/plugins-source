@@ -287,8 +287,8 @@ public class CoxOverlay extends Overlay
 				{
 					if (head != null)
 					{
-						final int tick = this.olm.ticksUntilNextAction();
-						final int cycle = this.olm.actionCycle();
+						final int tick = this.olm.getTicksUntilNextAttack();
+						final int cycle = this.olm.getAttackCycle();
 						final String tickStr = String.valueOf(tick);
 						String cycleStr = "?";
 						switch (cycle)
@@ -323,7 +323,7 @@ public class CoxOverlay extends Overlay
 								cycleStr = "??";
 								break;
 						}
-						final String combinedStr = this.olm.getTickCycle() >= 1 ? cycleStr + ":" + tickStr : "??:?";
+						final String combinedStr = this.olm.getTicksUntilNextAttack() >= 1 ? cycleStr + ":" + tickStr : "??:?";
 						Point canvasPoint = head.getCanvasTextLocation(graphics, combinedStr, 130);
 						var color = cycle == 4 ? this.config.olmSpecialColor() : Color.WHITE;
 						this.renderTextLocation(graphics, combinedStr, this.config.textSize(), this.config.fontStyle().getFont(), color, canvasPoint);
