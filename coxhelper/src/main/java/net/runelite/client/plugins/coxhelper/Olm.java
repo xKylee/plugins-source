@@ -175,16 +175,20 @@ public class Olm
 		this.attackCycle = 4;
 		switch (currentAnimation)
 		{
-			case LEFT_HAND_CRYSTALS:
+			case LEFT_HAND_CRYSTALS1:
+			case LEFT_HAND_CRYSTALS2:
 				this.specialCycle = 1;
 				break;
-			case LEFT_HAND_LIGHTNING:
+			case LEFT_HAND_LIGHTNING1:
+			case LEFT_HAND_LIGHTNING2:
 				this.specialCycle = 2;
 				break;
-			case LEFT_HAND_PORTALS:
+			case LEFT_HAND_PORTALS1:
+			case LEFT_HAND_PORTALS2:
 				this.specialCycle = 3;
 				break;
-			case LEFT_HAND_HEAL:
+			case LEFT_HAND_HEAL1:
+			case LEFT_HAND_HEAL2:
 				this.specialCycle = 4;
 				break;
 		}
@@ -290,10 +294,14 @@ public class Olm
 
 		switch (currentAnimation)
 		{
-			case LEFT_HAND_CRYSTALS:
-			case LEFT_HAND_LIGHTNING:
-			case LEFT_HAND_PORTALS:
-			case LEFT_HAND_HEAL:
+			case LEFT_HAND_CRYSTALS1:
+			case LEFT_HAND_CRYSTALS2:
+			case LEFT_HAND_LIGHTNING1:
+			case LEFT_HAND_LIGHTNING2:
+			case LEFT_HAND_PORTALS1:
+			case LEFT_HAND_PORTALS2:
+			case LEFT_HAND_HEAL1:
+			case LEFT_HAND_HEAL2:
 				this.specialSync(currentAnimation);
 				break;
 			case LEFT_HAND_CRIPPLING:
