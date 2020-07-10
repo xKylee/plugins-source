@@ -258,13 +258,11 @@ public class Olm
 
 		switch (currentAnimation)
 		{
-			case HEAD_MIDDLE:
-				if (this.headAnimation == OlmAnimation.HEAD_RISING_2 || this.headAnimation == OlmAnimation.HEAD_ENRAGED_RISING_2)
-				{
-					this.ticksUntilNextAttack = this.firstPhase ? 2 : 5;
-					this.attackCycle = 1;
-					this.specialCycle = 1;
-				}
+			case HEAD_RISING_2:
+			case HEAD_ENRAGED_RISING_2:
+				this.ticksUntilNextAttack = this.firstPhase ? 5 : 9;
+				this.attackCycle = 1;
+				this.specialCycle = 1;
 				break;
 			case HEAD_ENRAGED_LEFT:
 			case HEAD_ENRAGED_MIDDLE:
