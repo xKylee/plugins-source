@@ -359,7 +359,7 @@ public class InfernoPlugin extends Plugin
 				break;
 			case HEALER_ZUK:
 				finalPhase = true;
-				ticksSinceFinalPhase++;
+				ticksSinceFinalPhase = 1;
 				finalPhaseTick = true;
 				for (InfernoNPC infernoNPC : infernoNpcs)
 				{
