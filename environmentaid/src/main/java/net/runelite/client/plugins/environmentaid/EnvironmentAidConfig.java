@@ -81,7 +81,8 @@ public interface EnvironmentAidConfig extends Config
 			name = "Underwater",
 			description = "Removes the on-screen water effect in when diving underwater"
 	)
-	default boolean waterEffect() {
+	default boolean waterEffect()
+	{
 		return false;
 	}
 }

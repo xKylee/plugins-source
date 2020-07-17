@@ -204,7 +204,7 @@ public class EnvironmentAidPlugin extends Plugin
 				client.getWidget(169, 0).setHidden(config.waterEffect());
 
 			if (client.getWidget(170, 0) != null)
-				client.getWidget(170 ,0).setHidden(config.waterEffect());
+				client.getWidget(170, 0).setHidden(config.waterEffect());
 		}
 	}
 
