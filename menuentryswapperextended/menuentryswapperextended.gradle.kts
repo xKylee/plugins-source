@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.13"
+version = "0.0.14"
 
 project.extra["PluginName"] = "Menu Entry Swapper Extended"
 project.extra["PluginDescription"] = "Change the default option that is displayed when hovering over objects"
