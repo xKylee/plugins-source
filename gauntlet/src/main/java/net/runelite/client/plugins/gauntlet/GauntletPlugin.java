@@ -543,6 +543,11 @@ public class GauntletPlugin extends Plugin
 
 	private void onActorDeath(final ActorDeath event)
 	{
+		if (event.getActor() != client.getLocalPlayer())
+		{
+			return;
+		}
+
 		overlayTimer.onPlayerDeath();
 	}
 
