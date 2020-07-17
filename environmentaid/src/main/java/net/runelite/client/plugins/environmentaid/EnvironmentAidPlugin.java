@@ -175,12 +175,12 @@ public class EnvironmentAidPlugin extends Plugin
 
 		if (client.getWidget(169, 0) != null)
 		{
-			client.getWidget(169, 0).setHidden(config.waterEffect());
+			client.getWidget(169, 0).setHidden(false);
 		}
 
 		if (client.getWidget(170, 0) != null)
 		{
-			client.getWidget(170, 0).setHidden(config.waterEffect());
+			client.getWidget(170, 0).setHidden(false);
 		}
 
 	}
@@ -223,7 +223,12 @@ public class EnvironmentAidPlugin extends Plugin
 			hideWidget(event, true);
 		}
 
-		if (config.waterEffect() && isInWaterRegion() && (event.getId() == (client.getWidget(169, 0).getId()) || event.getId() == (client.getWidget(170, 0).getId())))
+		if (config.waterEffect() && isInWaterRegion() && event.getId() == client.getWidget(169, 0).getId())
+		{
+			hideWidget(event, true);
+		}
+
+		if (config.waterEffect() && isInWaterRegion() &&  event.getId() == client.getWidget(170, 0).getId())
 		{
 			hideWidget(event, true);
 		}
