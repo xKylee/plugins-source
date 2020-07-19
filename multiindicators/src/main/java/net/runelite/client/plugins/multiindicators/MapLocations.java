@@ -3564,10 +3564,10 @@ public class MapLocations
 			if (level % 2 != 0)
 			{
 				addPolygonTo(WILDERNESS_LEVEL_LINES,
-						wildyLeftX, wildyBottomY + accumulatedY,
-						wildyRightX, wildyBottomY + accumulatedY,
-						wildyRightX, wildyBottomY + accumulatedY + levelTiles,
-						wildyLeftX, wildyBottomY + accumulatedY + levelTiles);
+					wildyLeftX, wildyBottomY + accumulatedY,
+					wildyRightX, wildyBottomY + accumulatedY,
+					wildyRightX, wildyBottomY + accumulatedY + levelTiles,
+					wildyLeftX, wildyBottomY + accumulatedY + levelTiles);
 			}
 			accumulatedY += levelTiles;
 		}
