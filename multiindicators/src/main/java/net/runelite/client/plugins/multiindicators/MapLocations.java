@@ -730,27 +730,17 @@ public class MapLocations
 			1683, 3701,
 			1684, 3701,
 			1684, 3700,
-			1686, 3700,
-			1686, 3702,
-			1687, 3702,
-			1687, 3700,
 			1688, 3700,
+			1688, 3701,
 			1688, 3701,
 			1690, 3701,
 			1690, 3703,
-			1689, 3703,
-			1689, 3704,
-			1690, 3704,
-			1690, 3705,
-			1704, 3705,
+			1700, 3703,
+			1700, 3705,
 			1704, 3707,
 			1706, 3707,
-			1706, 3712,
-			1711, 3712,
-			1711, 3711,
-			1710, 3711,
-			1710, 3710,
-			1712, 3710,
+			1706, 3709,
+			1712, 3709,
 			1712, 3707,
 			1728, 3707);
 
@@ -823,8 +813,20 @@ public class MapLocations
 
 		// Western hosidius area, including woodcutting guild and western sand crabs
 		addPolygonOnPlane(MULTICOMBAT, 0,
+			1648, 3617,
+			1648, 3622,
+			1650, 3622,
+			1650, 3632,
+			1648, 3632,
+			1648, 3637,
+			1626, 3637,
+			1626, 3648,
 			1650, 3648,
 			1664, 3648,
+			1664, 3684,
+			1684, 3584,
+			1684, 3542,
+			1664, 3542,
 			1664, 3520,
 			1689, 3520,
 			1689, 3496,
@@ -855,8 +857,7 @@ public class MapLocations
 			1600, 3456,
 			1600, 3584,
 			1608, 3584,
-			1608, 3616,
-			1650, 3616);
+			1608, 3617);
 
 		// Hosidius sand crabs
 		addPolygonOnPlane(MULTICOMBAT, 0,
@@ -885,22 +886,16 @@ public class MapLocations
 			1781, 3475,
 			1786, 3475,
 			1786, 3476,
-			1800, 3476,
-			1800, 3475,
-			1805, 3475,
-			1805, 3474,
-			1807, 3474,
-			1807, 3473,
-			1808, 3473,
-			1808, 3472,
-			1810, 3472,
-			1810, 3471,
+			1792, 3476,
+			1792, 3498,
+			1807, 3498,
+			1807, 3486,
+			1813, 3486,
+			1813, 3471,
 			1833, 3471,
 			1833, 3470,
-			1834, 3470,
-			1834, 3469,
-			1852, 3469,
-			1852, 3449,
+			1856, 3470,
+			1856, 3449,
 			1792, 3449,
 			1792, 3424,
 			1800, 3424,
@@ -1004,32 +999,6 @@ public class MapLocations
 			1849, 3564,
 			1850, 3564,
 			1850, 3563);
-
-		// Hosidius cows/chickens/pigs
-		addPolygonOnPlane(MULTICOMBAT, 0,
-			1792, 3513,
-			1802, 3513,
-			1802, 3520,
-			1810, 3520,
-			1810, 3513,
-			1816, 3513,
-			1816, 3512,
-			1836, 3512,
-			1836, 3494,
-			1796, 3494,
-			1796, 3495,
-			1792, 3495);
-
-		// Hosidius southeast of tithe farm
-		addPolygonOnPlane(MULTICOMBAT, 0,
-			1777, 3597,
-			1794, 3597,
-			1794, 3561,
-			1777, 3561,
-			1777, 3591,
-			1779, 3591,
-			1779, 3592,
-			1777, 3592);
 
 		// West of shayzien house
 		addPolygonOnPlane(MULTICOMBAT, 0,
@@ -1445,6 +1414,42 @@ public class MapLocations
 			3072, 4736,
 			3072, 4800,
 			3008, 4800);
+
+		// Hosidius monk camp (South of POH portal)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1739, 3504,
+			1739, 3503,
+			1737, 3503,
+			1736, 3502,
+			1736, 3501,
+			1735, 3501,
+			1732, 3498,
+			1732, 3491,
+			1733, 3491,
+			1733, 3490,
+			1737, 3487,
+			1738, 3486,
+			1745, 3486,
+			1746, 3485,
+			1750, 3485,
+			1750, 3486,
+			1754, 3486,
+			1755, 3487,
+			1757, 3487,
+			1757, 3490,
+			1759, 3492,
+			1759, 3495,
+			1758, 3495,
+			1758, 3496,
+			1757, 3496,
+			1757, 3500,
+			1755, 3502,
+			1752, 3502,
+			1750, 3504,
+			1746, 3504,
+			1745, 3505,
+			1741, 3505,
+			1740, 3504);
 	}
 
 	private static void defineDeadmanSafeZones()
@@ -3184,13 +3189,6 @@ public class MapLocations
 			2340, 3809,
 			2340, 3805);
 
-		// Hosidius bank
-		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-			1671, 3558,
-			1671, 3577,
-			1682, 3577,
-			1682, 3558);
-
 		// Woodcutting guild bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
 			1589, 3475,
@@ -3274,17 +3272,25 @@ public class MapLocations
 
 		// Hosidius grape farm bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-			1804, 3571,
-			1804, 3572,
-			1808, 3572,
-			1808, 3571);
+			1810, 3567,
+			1810, 3566,
+			1806, 3566,
+			1806, 3567);
 
 		// Hosidius cooking bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-			1652, 3605,
-			1652, 3615,
-			1661, 3615,
-			1661, 3605);
+			1684, 3615,
+			1684, 3617,
+			1683, 3618,
+			1683, 3620,
+			1684, 3621,
+			1684, 3632,
+			1675, 3623,
+			1675, 3621,
+			1676, 3620,
+			1676, 3618,
+			1675, 3617,
+			1675, 3615);
 
 		// Ecteria bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
@@ -3478,6 +3484,51 @@ public class MapLocations
 			3124, 3622,
 			3126, 3622,
 			3126, 3618);
+
+		// Crafting guild bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			2937, 3282,
+			2937, 3279,
+			2935, 3279,
+			2935, 3282);
+
+		// Mount Kuruulm bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			1327, 3823,
+			1322, 3823,
+			1322, 3826,
+			1327, 3826);
+
+		// Farming guild bank high tier
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			1250, 3758,
+			1248, 3758,
+			1248, 3739,
+			1250, 3759);
+
+		// Farming guild bank low tier
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			1252, 3743,
+			1255, 3743,
+			1255, 3739,
+			1252, 3739);
+
+		//	Hosidius bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			1753, 3601,
+			1753, 3597,
+			1751, 3597,
+			1750, 3596,
+			1750, 3594,
+			1745, 3594,
+			1745, 3601,
+			1744, 3602,
+			1744, 3603,
+			1745, 3604,
+			1750, 3604,
+			1750, 3602,
+			1751, 3601,
+			1753, 3601);
 	}
 
 	private static void defineWilderness()
