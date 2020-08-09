@@ -178,7 +178,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 		{
 			final int animationId = player.getAnimation();
 
-			final Integer delay = animationTickMap.getOrDefault(animationId, customAnimationTickMap.get(animationId));
+			final Integer delay = customAnimationTickMap.getOrDefault(animationId, animationTickMap.get(animationId));
 
 			if (delay != null)
 			{
