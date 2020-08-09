@@ -42,6 +42,7 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
@@ -110,6 +111,20 @@ public class KQPlugin extends Plugin
 		lastVengCooldown = 0;
 
 		kalphiteQueen = null;
+	}
+
+	@Subscribe
+	private void onConfigChange(final ConfigChanged event)
+	{
+		if (!event.getGroup().equals("kalphitequeen"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			sceneOverlay.determineLayer();
+		}
 	}
 
 	@Subscribe

@@ -70,7 +70,7 @@ class KQSceneOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.UNDER_WIDGETS);
+		determineLayer();
 	}
 
 	@Override
@@ -192,5 +192,10 @@ class KQSceneOverlay extends Overlay
 
 		graphics2D.setColor(originalColor);
 		graphics2D.setStroke(originalStroke);
+	}
+
+	void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 }

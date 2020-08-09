@@ -235,6 +235,20 @@ public interface KQConfig extends Config
 		return new Color(255, 255, 255, 70);
 	}
 
+	// other
+
+	@ConfigItem(
+		name = "Enable mirror mode",
+		description = "Toggle mirror mode compatibility.",
+		position = 99,
+		keyName = "mirrorMode",
+		section = "otherSection"
+	)
+	default boolean mirrorMode()
+	{
+		return false;
+	}
+
 	// Constants
 
 	@Getter
