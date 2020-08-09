@@ -88,7 +88,7 @@ class PlayerOverlay extends Overlay
 	{
 		final int ticksUntilNextAnimation = plugin.getTicksUntilNextAnimation();
 
-		if (ticksUntilNextAnimation <= 0)
+		if (ticksUntilNextAnimation == 0)
 		{
 			return;
 		}
@@ -125,9 +125,16 @@ class PlayerOverlay extends Overlay
 			return;
 		}
 
-		OverlayUtil.renderTextLocation(graphics2D, str, config.fontSize(),
-			config.fontStyle().getFont(), config.fontColor(), point,
-			config.fontShadow(), config.fontZOffset() * -1);
+		OverlayUtil.renderTextLocation(
+			graphics2D,
+			str,
+			config.fontSize(),
+			config.fontStyle().getFont(),
+			config.fontColor(),
+			point,
+			config.fontShadow(),
+			config.fontZOffset() * -1
+		);
 	}
 
 	private void determineLayer()

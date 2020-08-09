@@ -37,6 +37,7 @@ import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
+import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
@@ -162,28 +163,28 @@ public class PlayerAttackTimerPlugin extends Plugin
 
 	private void onGameTick(final GameTick event)
 	{
-		final Player player = client.getLocalPlayer();
-
-		if (player == null)
-		{
-			return;
-		}
-
 		if (ticksUntilNextAnimation > 0)
 		{
 			--ticksUntilNextAnimation;
 		}
+	}
 
-		if (ticksUntilNextAnimation <= 0)
+	private void onAnimationChanged(final AnimationChanged event)
+	{
+		final Player player = client.getLocalPlayer();
+
+		if (ticksUntilNextAnimation > 1 || player == null || event.getActor() != player)
 		{
-			final int animationId = player.getAnimation();
+			return;
+		}
 
-			final Integer delay = customAnimationTickMap.getOrDefault(animationId, animationTickMap.get(animationId));
+		final int animationId = player.getAnimation();
 
-			if (delay != null)
-			{
-				ticksUntilNextAnimation = delay;
-			}
+		final Integer delay = customAnimationTickMap.getOrDefault(animationId, animationTickMap.get(animationId));
+
+		if (delay != null)
+		{
+			ticksUntilNextAnimation = delay + 1; // add 1 because GameTick event is posted after this
 		}
 	}
 
@@ -196,6 +197,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 		overlayManager.add(playerOverlay);
 
 		eventBus.subscribe(GameTick.class, this, this::onGameTick);
+		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
 	}
 
 	private void parseCustomAnimationConfig(final String config)
