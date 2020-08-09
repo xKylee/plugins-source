@@ -137,7 +137,7 @@ class PlayerOverlay extends Overlay
 		);
 	}
 
-	private void determineLayer()
+	void determineLayer()
 	{
 		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}

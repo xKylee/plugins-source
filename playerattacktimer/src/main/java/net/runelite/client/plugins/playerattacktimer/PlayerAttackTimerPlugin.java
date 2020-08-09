@@ -35,18 +35,16 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
 import net.runelite.api.Player;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
+import static net.runelite.client.plugins.playerattacktimer.AttackTimerMap.ATTACK_TIMER_MAP;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -61,13 +59,6 @@ import org.pf4j.Extension;
 )
 public class PlayerAttackTimerPlugin extends Plugin
 {
-	private static final Map<Integer, Integer> animationTickMap = new HashMap<>();
-
-	static
-	{
-		animationTickMap.put(1658, 4); // Abyssal whip
-	}
-
 	private final Map<Integer, Integer> customAnimationTickMap = new HashMap<>();
 
 	private static final Splitter NEWLINE_SPLITTER = Splitter
@@ -79,9 +70,6 @@ public class PlayerAttackTimerPlugin extends Plugin
 	private Client client;
 
 	@Inject
-	private EventBus eventBus;
-
-	@Inject
 	PlayerAttackTimerConfig config;
 
 	@Inject
@@ -89,8 +77,6 @@ public class PlayerAttackTimerPlugin extends Plugin
 
 	@Inject
 	private PlayerOverlay playerOverlay;
-
-	private boolean enabled;
 
 	@Getter
 	private int ticksUntilNextAnimation;
@@ -104,24 +90,17 @@ public class PlayerAttackTimerPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		if (client.getGameState() != GameState.LOGGED_IN)
-		{
-			return;
-		}
+		overlayManager.add(playerOverlay);
 
-		init();
+		parseCustomAnimationConfig(config.customAnimations());
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		eventBus.unregister(this);
-
 		overlayManager.remove(playerOverlay);
 
 		customAnimationTickMap.clear();
-
-		enabled = false;
 	}
 
 	@Subscribe
@@ -132,35 +111,20 @@ public class PlayerAttackTimerPlugin extends Plugin
 			return;
 		}
 
-		if (event.getKey().equals("customAnimations"))
+		switch (event.getKey())
 		{
-			parseCustomAnimationConfig(config.customAnimations());
+			case "customAnimations":
+				parseCustomAnimationConfig(config.customAnimations());
+				break;
+			case "mirrorMode":
+				playerOverlay.determineLayer();
+				break;
+			default:
+				break;
 		}
 	}
 
 	@Subscribe
-	private void onGameStateChanged(final GameStateChanged event)
-	{
-		final GameState gameState = event.getGameState();
-
-		switch (gameState)
-		{
-			case LOGGED_IN:
-				if (!enabled)
-				{
-					init();
-				}
-				break;
-			case LOGIN_SCREEN:
-			case HOPPING:
-				if (enabled)
-				{
-					shutDown();
-				}
-				break;
-		}
-	}
-
 	private void onGameTick(final GameTick event)
 	{
 		if (ticksUntilNextAnimation > 0)
@@ -169,6 +133,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
 		final Player player = client.getLocalPlayer();
@@ -180,24 +145,12 @@ public class PlayerAttackTimerPlugin extends Plugin
 
 		final int animationId = player.getAnimation();
 
-		final Integer delay = customAnimationTickMap.getOrDefault(animationId, animationTickMap.get(animationId));
+		final Integer delay = customAnimationTickMap.getOrDefault(animationId, ATTACK_TIMER_MAP.get(animationId));
 
 		if (delay != null)
 		{
 			ticksUntilNextAnimation = delay + 1; // add 1 because GameTick event is posted after this
 		}
-	}
-
-	private void init()
-	{
-		enabled = true;
-
-		parseCustomAnimationConfig(config.customAnimations());
-
-		overlayManager.add(playerOverlay);
-
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
 	}
 
 	private void parseCustomAnimationConfig(final String config)
