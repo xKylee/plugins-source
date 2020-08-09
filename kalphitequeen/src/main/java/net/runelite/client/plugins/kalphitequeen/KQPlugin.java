@@ -36,13 +36,11 @@ import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Varbits;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -61,13 +59,8 @@ import org.pf4j.Extension;
 @Singleton
 public class KQPlugin extends Plugin
 {
-	private static final int KQ_REGION = 13715;
-
 	@Inject
 	private Client client;
-
-	@Inject
-	private EventBus eventBus;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -77,8 +70,6 @@ public class KQPlugin extends Plugin
 
 	@Getter
 	private KQNpc kalphiteQueen;
-
-	private boolean atKalphiteQueen;
 
 	@Getter
 	@Setter
@@ -96,22 +87,23 @@ public class KQPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		if (client.getGameState() != GameState.LOGGED_IN || !atKalphiteQueen())
+		overlayManager.add(sceneOverlay);
+
+		if (client.getGameState() != GameState.LOGGED_IN)
 		{
 			return;
 		}
 
-		init();
+		for (final NPC npc : client.getNpcs())
+		{
+			addNpc(npc);
+		}
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		eventBus.unregister(this);
-
 		overlayManager.remove(sceneOverlay);
-
-		atKalphiteQueen = false;
 
 		flashVeng = false;
 		lastVengActive = 0;
@@ -121,38 +113,6 @@ public class KQPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onGameStateChanged(final GameStateChanged event)
-	{
-		final GameState gameState = event.getGameState();
-
-		switch (gameState)
-		{
-			case LOGGED_IN:
-				if (atKalphiteQueen())
-				{
-					if (!atKalphiteQueen)
-					{
-						init();
-					}
-				}
-				else
-				{
-					if (atKalphiteQueen)
-					{
-						shutDown();
-					}
-				}
-				break;
-			case LOGIN_SCREEN:
-			case HOPPING:
-				if (atKalphiteQueen)
-				{
-					shutDown();
-				}
-				break;
-		}
-	}
-
 	private void onGameTick(final GameTick event)
 	{
 		if (kalphiteQueen != null)
@@ -161,6 +121,7 @@ public class KQPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onVarbitChanged(final VarbitChanged event)
 	{
 		final int vengCoolDown = client.getVar(Varbits.VENGEANCE_COOLDOWN);
@@ -187,6 +148,7 @@ public class KQPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -194,6 +156,7 @@ public class KQPlugin extends Plugin
 		addNpc(npc);
 	}
 
+	@Subscribe
 	private void onNpcDespawned(final NpcDespawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -215,27 +178,5 @@ public class KQPlugin extends Plugin
 		{
 			kalphiteQueen = null;
 		}
-	}
-
-	private void init()
-	{
-		atKalphiteQueen = true;
-
-		overlayManager.add(sceneOverlay);
-
-		for (final NPC npc : client.getNpcs())
-		{
-			addNpc(npc);
-		}
-
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
-		eventBus.subscribe(VarbitChanged.class, this, this::onVarbitChanged);
-	}
-
-	private boolean atKalphiteQueen()
-	{
-		return client.getMapRegions()[0] == KQ_REGION;
 	}
 }
