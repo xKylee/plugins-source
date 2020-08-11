@@ -1,7 +1,7 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,63 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.0.0"
+package net.runelite.client.plugins.grotesqueguardians.entity;
 
-project.extra["PluginName"] = "Grotesque Guardians"
-project.extra["PluginDescription"] = "Show various helpful utitiles during the Grotesque Gaurdians (Gargoyles) fight"
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.Set;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import net.runelite.api.NPC;
+import net.runelite.api.NpcID;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+public class Dawn extends Gargoyle
+{
+	public Dawn(@NonNull final NPC npc)
+	{
+		super(npc);
+	}
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+	public Phase getPhase()
+	{
+		return Phase.of(npc.getId());
+	}
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.gson)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
-}
+	@Override
+	protected void updateTicksUntilNextAttack()
+	{
+		// Dawn npc does not always show animation ID when attacking
+		// Currently unused
+	}
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	@Getter
+	@RequiredArgsConstructor
+	enum Phase
+	{
+		PHASE_1(NpcID.DAWN_7852, Set.of(7770, 7771)),
+		PHASE_3(NpcID.DAWN_7884, Set.of(7770));
+
+		private static final Map<Integer, Phase> MAP;
+
+		static
+		{
+			final ImmutableMap.Builder<Integer, Phase> builder = new ImmutableMap.Builder<>();
+
+			for (final Phase phase : Phase.values())
+			{
+				builder.put(phase.getNpcId(), phase);
+			}
+
+			MAP = builder.build();
+		}
+
+		private final int npcId;
+		private final Set<Integer> attackAnimationIdSet;
+
+		static Phase of(final int npcId)
+		{
+			return MAP.get(npcId);
+		}
+	}
 }
