@@ -36,7 +36,6 @@ import javax.inject.Singleton;
 import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
-import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -131,14 +130,10 @@ public class PlayerAttackTimerPlugin extends Plugin
 		{
 			--ticksUntilNextAnimation;
 		}
-	}
 
-	@Subscribe
-	private void onAnimationChanged(final AnimationChanged event)
-	{
 		final Player player = client.getLocalPlayer();
 
-		if (ticksUntilNextAnimation > 1 || player == null || event.getActor() != player)
+		if (ticksUntilNextAnimation > 0 || player == null)
 		{
 			return;
 		}
@@ -149,7 +144,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 
 		if (delay != null)
 		{
-			ticksUntilNextAnimation = delay + 1; // add 1 because GameTick event is posted after this
+			ticksUntilNextAnimation = delay;
 		}
 	}
 
