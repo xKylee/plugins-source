@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
@@ -61,6 +62,8 @@ class NightmareOverlay extends Overlay
 	private static final int NIGHTMARE_MUSHROOM = 37739;
 
 	private static final int NM_PRE_REGION = 15256;
+
+	private int timeout;
 
 
 	@Inject
@@ -177,6 +180,20 @@ class NightmareOverlay extends Overlay
 		if (config.highlightNightmareChargeRange())
 		{
 			drawNightmareChargeRange(graphics, plugin.getNm(), plugin.isNightmareCharging());
+		}
+
+		if (plugin.isFlash() && config.flash())
+		{
+			final Color flash = graphics.getColor();
+			graphics.setColor(new Color(255, 0, 0, 70));
+			graphics.fill(new Rectangle(client.getCanvas().getSize()));
+			graphics.setColor(flash);
+			timeout++;
+			if (timeout >= 50)
+			{
+				timeout = 0;
+				plugin.setFlash(false);
+			}
 		}
 
 		return null;

@@ -230,4 +230,16 @@ public interface NightmareConfig extends Config
 	{
 		return new Color(255, 0, 0, 50);
 	}
+
+	@ConfigItem(
+			keyName = "flash",
+			name = "Flash your screen when you get impregnated",
+			description = "Your Screen flashes when the nightmare infects you with her parasite",
+			position = 14,
+			titleSection = "generalSection"
+	)
+	default boolean flash()
+	{
+		return false;
+	}
 }

@@ -11,8 +11,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
@@ -21,6 +23,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
@@ -121,6 +124,10 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private boolean shadowsSpawning = false;
 
+	@Getter(AccessLevel.PACKAGE)
+	@Setter
+	private boolean flash = false;
+
 	public NightmarePlugin()
 	{
 		inFight = false;
@@ -159,6 +166,7 @@ public class NightmarePlugin extends Plugin
 		nightmareCharging = false;
 		shadowsSpawning = false;
 		cursed = false;
+		flash = false;
 		attacksSinceCurse = 0;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
@@ -327,6 +335,22 @@ public class NightmarePlugin extends Plugin
 			//else if the totem is not in the totem array and it is an inactive totem, add it to the totem map.
 			totems.putIfAbsent(npc.getIndex(), new MemorizedTotem(npc));
 		}
+	}
+
+	@Subscribe
+	private void onChatMessage(ChatMessage event)
+	{
+
+		if (!inFight || nm == null || event.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+
+		if (event.getMessage().contains("The Nightmare has impregnated you with a deadly parasite!"))
+		{
+			flash = true;
+		}
+
 	}
 
 	@Subscribe
