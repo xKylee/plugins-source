@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2018, https://openosrs.com
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,31 +24,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.grotesqueguardians;
 
-import net.runelite.api.Prayer;
+package net.runelite.client.plugins.grotesqueguardians.entity;
 
-public enum DuskAttack
+import lombok.Getter;
+import net.runelite.api.NPC;
+
+public abstract class Gargoyle
 {
-	MELEE(7800, Prayer.PROTECT_FROM_MELEE),
-	RANGE(7801, Prayer.PROTECT_FROM_MISSILES);
+	@Getter
+	protected final NPC npc;
 
-	private final int animation;
-	private final Prayer prayer;
+	@Getter
+	protected int ticksUntilNextAttack;
 
-	DuskAttack(final int animation, final Prayer prayer)
+	Gargoyle(final NPC npc)
 	{
-		this.animation = animation;
-		this.prayer = prayer;
+		this.npc = npc;
 	}
 
-	public int getAnimation()
-	{
-		return animation;
-	}
-
-	public Prayer getPrayer()
-	{
-		return prayer;
-	}
+	protected abstract void updateTicksUntilNextAttack();
 }
