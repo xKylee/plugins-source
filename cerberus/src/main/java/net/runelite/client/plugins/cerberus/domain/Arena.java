@@ -25,25 +25,43 @@
 
 package net.runelite.client.plugins.cerberus.domain;
 
-import java.awt.Color;
-import lombok.AccessLevel;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.runelite.api.Skill;
+import net.runelite.api.coords.WorldPoint;
 
+@Getter
 @RequiredArgsConstructor
-public enum CerberusPhase
+public enum Arena
 {
-	SPAWNING(null, 4, null),
-	AUTO(Skill.ATTACK, 6, null),
-	TRIPLE(Skill.FLETCHING, 6, new Color(153, 214, 255)),
-	GHOSTS(Skill.PRAYER, 8, new Color(255, 255, 255)),
-	LAVA(Skill.FIREMAKING, 8, new Color(255, 153, 153));
+	WEST(1231, 1249, 1243, 1257),
+	NORTH(1295, 1313, 1307, 1321),
+	EAST(1359, 1377, 1243, 1257);
 
-	@Getter(AccessLevel.PUBLIC)
-	private final Skill type;
-	@Getter(AccessLevel.PUBLIC)
-	private final int tickDelay;
-	@Getter(AccessLevel.PUBLIC)
-	private final Color textColor;
+	private final int x1, x2, y1, y2;
+
+	@Nullable
+	public static Arena getArena(final WorldPoint worldPoint)
+	{
+		for (final Arena arena : Arena.values())
+		{
+			if (worldPoint.getX() >= arena.getX1() && worldPoint.getX() <= arena.getX2() &&
+				worldPoint.getY() >= arena.getY1() && worldPoint.getY() <= arena.getY2())
+			{
+				return arena;
+			}
+		}
+
+		return null;
+	}
+
+	public WorldPoint getGhostTile(final int ghostIndex)
+	{
+		if (ghostIndex > 2 || ghostIndex < 0)
+		{
+			return null;
+		}
+
+		return new WorldPoint(x1 + 8 + ghostIndex, y1 + 13, 0);
+	}
 }

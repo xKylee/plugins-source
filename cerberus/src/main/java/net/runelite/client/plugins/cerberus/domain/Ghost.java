@@ -24,35 +24,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package net.runelite.client.plugins.cerberus.domain;
 
 import com.google.common.collect.ImmutableMap;
 import java.awt.Color;
 import java.util.Map;
-import java.util.Optional;
-import lombok.AccessLevel;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Skill;
 
-@Getter(AccessLevel.PUBLIC)
+@Getter
 @RequiredArgsConstructor
-public enum CerberusGhost
+public enum Ghost
 {
 	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED, Color.GREEN),
 	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC, Color.BLUE),
 	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK, Color.RED);
 
-	private static final Map<Integer, CerberusGhost> MAP;
+	private static final Map<Integer, Ghost> MAP;
 
 	static
 	{
-		ImmutableMap.Builder<Integer, CerberusGhost> builder = new ImmutableMap.Builder<>();
+		final ImmutableMap.Builder<Integer, Ghost> builder = new ImmutableMap.Builder<>();
 
-		for (final CerberusGhost ghost : values())
+		for (final Ghost ghost : values())
 		{
 			builder.put(ghost.getNpcId(), ghost);
 		}
@@ -70,8 +68,9 @@ public enum CerberusGhost
 	 * @param npc npc
 	 * @return optional ghost
 	 */
-	public static Optional<CerberusGhost> fromNPC(final NPC npc)
+	@Nullable
+	public static Ghost fromNPC(final NPC npc)
 	{
-		return npc == null ? Optional.empty() : Optional.ofNullable(MAP.get(npc.getId()));
+		return MAP.get(npc.getId());
 	}
 }
