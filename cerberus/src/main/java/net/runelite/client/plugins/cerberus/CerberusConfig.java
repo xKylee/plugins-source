@@ -38,7 +38,6 @@ import net.runelite.client.config.Range;
 import net.runelite.client.ui.overlay.components.ComponentOrientation;
 
 @ConfigGroup("cerberus")
-
 public interface CerberusConfig extends Config
 {
 	// Sections

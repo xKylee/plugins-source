@@ -85,7 +85,7 @@ public class PrayerOverlay extends Overlay
 
 	private void renderPrayer(final Graphics2D graphics2D)
 	{
-		if (!config.guitarHeroMode() || plugin.getCerberus() == null || !plugin.inCerberusArena())
+		if (!config.guitarHeroMode() || plugin.getCerberus() == null)
 		{
 			return;
 		}

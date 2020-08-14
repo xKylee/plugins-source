@@ -90,7 +90,7 @@ public final class SceneOverlay extends Overlay
 	{
 		cerberus = plugin.getCerberus();
 
-		if (cerberus == null || !plugin.inCerberusArena())
+		if (cerberus == null)
 		{
 			return null;
 		}

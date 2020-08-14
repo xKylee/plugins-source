@@ -80,7 +80,7 @@ public final class UpcomingAttackOverlay extends Overlay
 	{
 		final Cerberus cerberus = plugin.getCerberus();
 
-		if (!config.showUpcomingAttacks() || cerberus == null || !plugin.inCerberusArena())
+		if (!config.showUpcomingAttacks() || cerberus == null)
 		{
 			return null;
 		}

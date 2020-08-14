@@ -84,7 +84,7 @@ public final class CurrentAttackOverlay extends Overlay
 	@Override
 	public Dimension render(final Graphics2D graphics2D)
 	{
-		if (!config.showCurrentAttack() || plugin.getCerberus() == null || !plugin.inCerberusArena())
+		if (!config.showCurrentAttack() || plugin.getCerberus() == null)
 		{
 			return null;
 		}

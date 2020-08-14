@@ -29,6 +29,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.inject.Provides;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -53,6 +54,7 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
@@ -105,8 +107,13 @@ public class CerberusPlugin extends Plugin
 	private static final int PROJECTILE_ID_NO_FUCKING_IDEA = 15;
 	private static final int PROJECTILE_ID_LAVA = 1247;
 
+	private static final Set<Integer> REGION_IDS = Set.of(4883, 5140, 5395);
+
 	@Inject
 	private Client client;
+
+	@Inject
+	private EventBus eventBus;
 
 	@Inject
 	private CerberusConfig config;
@@ -153,6 +160,8 @@ public class CerberusPlugin extends Plugin
 	@Getter
 	private long lastTick;
 
+	private boolean inArena;
+
 	@Provides
 	CerberusConfig getConfig(final ConfigManager configManager)
 	{
@@ -162,19 +171,53 @@ public class CerberusPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
+		if (client.getGameState() != GameState.LOGGED_IN || !inCerberusRegion())
+		{
+			return;
+		}
+
+		init();
+	}
+
+	private void init()
+	{
+		inArena = true;
+
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(prayerOverlay);
 		overlayManager.add(currentAttackOverlay);
 		overlayManager.add(upcomingAttackOverlay);
+
+		eventBus.subscribe(GameTick.class, this, this::onGameTick);
+		eventBus.subscribe(ProjectileSpawned.class, this, this::onProjectileSpawned);
+		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
+		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
+		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
 	}
 
 	@Override
 	protected void shutDown()
 	{
+		inArena = false;
+
+		eventBus.unregister(this);
+
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(currentAttackOverlay);
 		overlayManager.remove(upcomingAttackOverlay);
+
+		ghosts.clear();
+		upcomingAttacks.clear();
+		tickTimestamps.clear();
+
+		prayer = Prayer.PROTECT_FROM_MAGIC;
+
+		cerberus = null;
+
+		gameTick = 0;
+		tickTimestampIndex = 0;
+		lastTick = 0;
 	}
 
 	@Subscribe
@@ -187,20 +230,23 @@ public class CerberusPlugin extends Plugin
 
 		if (event.getKey().equals("mirrorMode"))
 		{
-			overlayManager.remove(sceneOverlay);
-			overlayManager.remove(prayerOverlay);
-			overlayManager.remove(currentAttackOverlay);
-			overlayManager.remove(upcomingAttackOverlay);
-
 			sceneOverlay.determineLayer();
 			prayerOverlay.determineLayer();
 			currentAttackOverlay.determineLayer();
 			upcomingAttackOverlay.determineLayer();
 
-			overlayManager.add(sceneOverlay);
-			overlayManager.add(prayerOverlay);
-			overlayManager.add(currentAttackOverlay);
-			overlayManager.add(upcomingAttackOverlay);
+			if (inArena)
+			{
+				overlayManager.remove(sceneOverlay);
+				overlayManager.remove(prayerOverlay);
+				overlayManager.remove(currentAttackOverlay);
+				overlayManager.remove(upcomingAttackOverlay);
+
+				overlayManager.add(sceneOverlay);
+				overlayManager.add(prayerOverlay);
+				overlayManager.add(currentAttackOverlay);
+				overlayManager.add(upcomingAttackOverlay);
+			}
 		}
 	}
 
@@ -211,22 +257,37 @@ public class CerberusPlugin extends Plugin
 
 		switch (gameState)
 		{
-			case LOGIN_SCREEN:
+			case LOGGED_IN:
+				if (inCerberusRegion())
+				{
+					if (!inArena)
+					{
+						init();
+					}
+				}
+				else
+				{
+					if (inArena)
+					{
+						shutDown();
+					}
+				}
+				break;
 			case HOPPING:
-			case CONNECTION_LOST:
-				cerberus = null;
-				ghosts.clear();
-				upcomingAttacks.clear();
+			case LOGIN_SCREEN:
+				if (inArena)
+				{
+					shutDown();
+				}
 				break;
 			default:
 				break;
 		}
 	}
 
-	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
-		if (cerberus == null || client.getGameState() != GameState.LOGGED_IN)
+		if (cerberus == null)
 		{
 			return;
 		}
@@ -260,30 +321,27 @@ public class CerberusPlugin extends Plugin
 
 		++gameTick;
 
-		if (gameTick % 10 == 3 && config.calculateAutoAttackPrayer())
+		if (config.calculateAutoAttackPrayer() && gameTick % 10 == 3)
 		{
 			setAutoAttackPrayer();
 		}
 
 		calculateUpcomingAttacks();
 
-		if (ghosts.size() <= 1)
+		if (ghosts.size() > 1)
 		{
-			return;
+			/*
+			 * First, sort by the southernmost ghost (e.g with lowest y).
+			 * Then, sort by the westernmost ghost (e.g with lowest x).
+			 * This will give use the current wave and order of the ghosts based on what ghost will attack first.
+			 */
+			ghosts.sort((a, b) -> ComparisonChain.start()
+				.compare(a.getLocalLocation().getY(), b.getLocalLocation().getY())
+				.compare(a.getLocalLocation().getX(), b.getLocalLocation().getX())
+				.result());
 		}
-
-		/*
-		 * First, sort by the southernmost ghost (e.g with lowest y).
-		 * Then, sort by the westernmost ghost (e.g with lowest x).
-		 * This will give use the current wave and order of the ghosts based on what ghost will attack first.
-		 */
-		ghosts.sort((a, b) -> ComparisonChain.start()
-			.compare(a.getLocalLocation().getY(), b.getLocalLocation().getY())
-			.compare(a.getLocalLocation().getX(), b.getLocalLocation().getX())
-			.result());
 	}
 
-	@Subscribe
 	private void onProjectileSpawned(final ProjectileSpawned event)
 	{
 		if (cerberus == null)
@@ -353,7 +411,6 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
 		if (cerberus == null)
@@ -423,7 +480,6 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -455,7 +511,6 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
 	private void onNpcDespawned(final NpcDespawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -468,13 +523,9 @@ public class CerberusPlugin extends Plugin
 			log.debug("onNpcDespawned name={}, id={}", npc.getName(), npc.getId());
 		}
 
-		if (cerberus == null)
+		if (cerberus == null && !ghosts.isEmpty())
 		{
-			if (!ghosts.isEmpty())
-			{
-				ghosts.clear();
-			}
-
+			ghosts.clear();
 			return;
 		}
 
@@ -676,7 +727,7 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
-	public boolean inCerberusArena()
+	private boolean inCerberusArena()
 	{
 		final Player player = client.getLocalPlayer();
 
@@ -686,5 +737,18 @@ public class CerberusPlugin extends Plugin
 		}
 
 		return Arena.getArena(player.getWorldLocation()) != null;
+	}
+
+	private boolean inCerberusRegion()
+	{
+		for (final int regionId : client.getMapRegions())
+		{
+			if (REGION_IDS.contains(regionId))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
