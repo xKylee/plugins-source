@@ -25,172 +25,274 @@
 package net.runelite.client.plugins.alchemicalhydra;
 
 import java.awt.Color;
+import java.awt.Font;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Range;
+import net.runelite.client.config.Units;
 
-@ConfigGroup("betterHydra")
+@ConfigGroup("alchemicalhydra")
 public interface AlchemicalHydraConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
+	// Sections
+
+	@ConfigSection(
+		keyName = "settings",
+		name = "Settings",
+		description = "",
 		position = 0
+	)
+	default boolean settings()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		keyName = "misc",
+		name = "Misc",
+		description = "",
+		position = 1
+	)
+	default boolean misc()
+	{
+		return false;
+	}
+
+	// Settings
+
+	@ConfigItem(
+		keyName = "hydraImmunityOutline",
+		name = "Hydra immunity outline",
+		description = "Overlay the hydra with a colored outline while it has immunity/not weakened.",
+		position = 0,
+		section = "settings"
+	)
+	default boolean hydraImmunityOutline()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "fountainOutline",
+		name = "Fountain occupancy outline",
+		description = "Overlay fountains with a colored outline indicating if the hydra is standing on it.",
+		position = 1,
+		section = "settings"
+	)
+	default boolean fountainOutline()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "hidePrayerOnSpecial",
+		name = "Hide prayer on special attack",
+		description = "Hide prayer overlay during special attacks."
+			+ "<br>This can help indicate when to save prayer points.",
+		position = 2,
+		section = "settings"
+	)
+	default boolean hidePrayerOnSpecial()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "showHpUntilPhaseChange",
+		name = "Show HP until phase change",
+		description = "Overlay hydra with hp remaining until next phase change.",
+		position = 3,
+		section = "settings"
+	)
+	default boolean showHpUntilPhaseChange()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Font style",
+		description = "Font style can be bold, plain, or italicized.",
+		position = 4,
+		keyName = "fontStyle",
+		section = "settings",
+		enumClass = FontStyle.class,
+		hidden = true,
+		unhide = "showHpUntilPhaseChange"
+	)
+	default FontStyle fontStyle()
+	{
+		return FontStyle.BOLD;
+	}
+
+	@ConfigItem(
+		name = "Font shadow",
+		description = "Toggle font shadow.",
+		position = 5,
+		keyName = "fontShadow",
+		section = "settings",
+		hidden = true,
+		unhide = "showHpUntilPhaseChange"
+	)
+	default boolean fontShadow()
+	{
+		return true;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Font size",
+		description = "Adjust font size.",
+		position = 6,
+		keyName = "fontSize",
+		section = "settings",
+		hidden = true,
+		unhide = "showHpUntilPhaseChange"
+	)
+	@Units(Units.POINTS)
+	default int fontSize()
+	{
+		return 16;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Font color",
+		description = "Adjust font color.",
+		position = 7,
+		keyName = "fontColor",
+		section = "settings",
+		hidden = true,
+		unhide = "showHpUntilPhaseChange"
+	)
+	default Color fontColor()
+	{
+		return new Color(255, 255, 255, 255);
+	}
+
+	@Range(
+		min = -100,
+		max = 100
+	)
+	@ConfigItem(
+		name = "Font zOffset",
+		description = "Adjust the Z coordinate offset.",
+		position = 8,
+		keyName = "fontZOffset",
+		section = "settings",
+		hidden = true,
+		unhide = "showHpUntilPhaseChange"
+	)
+	@Units(Units.POINTS)
+	default int fontZOffset()
+	{
+		return 0;
+	}
+
+	// Misc
+
+	@Alpha
+	@ConfigItem(
+		keyName = "safeColor",
+		name = "Safe color",
+		description = "Color indicating there are at least two hydra attacks pending.",
+		position = 0,
+		section = "misc"
+	)
+	default Color safeColor()
+	{
+		return new Color(0, 150, 0, 150);
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "warningColor",
+		name = "Warning color",
+		description = "Color indicating there is one hydra attack pending.",
+		position = 1,
+		section = "misc"
+	)
+	default Color warningColor()
+	{
+		return new Color(200, 150, 0, 150);
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "dangerColor",
+		name = "Danger color",
+		description = "Color indiciating the hydra will change attacks.",
+		position = 2,
+		section = "misc"
+	)
+	default Color dangerColor()
+	{
+		return new Color(150, 0, 0, 150);
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "poisonOutlineColor",
+		name = "Poison outline color",
+		description = "Outline color of poison area tiles.",
+		position = 3,
+		section = "misc"
+	)
+	default Color poisonOutlineColor()
+	{
+		return new Color(255, 0, 0, 100);
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "poisonFillColor",
+		name = "Poison fill color",
+		description = "Fill color of poison area tiles.",
+		position = 4,
+		section = "misc"
+	)
+	default Color poisonFillColor()
+	{
+		return new Color(255, 0, 0, 50);
+	}
+
+	// Mirror mode
+
+	@ConfigItem(
+		name = "Mirror mode compatibility",
+		keyName = "mirrorMode",
+		description = "Render overlays while mirror mode enabled.",
+		position = 99
 	)
 	default boolean mirrorMode()
 	{
 		return false;
 	}
 
-	@ConfigTitleSection(
-		keyName = "features",
-		name = "Features",
-		description = "Feathers. Jk, features",
-		position = 0
-	)
-	default boolean features()
-	{
-		return true;
-	}
+	// Constants
 
-	@ConfigItem(
-		keyName = "counting",
-		name = "Prayer helper",
-		description = "Basically everything this plugin is known for. Also has attacks between specs and poison overlay. Shouldn't NOT use this tbh",
-		position = 1,
-		titleSection = "features"
-	)
-	default boolean counting()
+	@Getter
+	@AllArgsConstructor
+	enum FontStyle
 	{
-		return true;
-	}
+		BOLD("Bold", Font.BOLD),
+		ITALIC("Italic", Font.ITALIC),
+		PLAIN("Plain", Font.PLAIN);
 
-	@ConfigItem(
-		keyName = "fountain",
-		name = "Fountain helper",
-		description = "Indicates if hydra is on a fountain",
-		position = 2,
-		titleSection = "features"
-	)
-	default boolean fountain()
-	{
-		return true;
-	}
+		private final String name;
+		private final int font;
 
-	@ConfigItem(
-		keyName = "stun",
-		name = "Stun timer",
-		description = "Shows when you can walk in fire phase",
-		position = 3,
-		titleSection = "features"
-	)
-	default boolean stun()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
-		keyName = "colors",
-		name = "Colors",
-		description = "colors...",
-		position = 2
-	)
-	default boolean colors()
-	{
-		return false;
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "safeCol",
-		name = "Safe color",
-		description = "Color overlay will be when there's >2 attacks left",
-		position = 1,
-		titleSection = "colors"
-	)
-	default Color safeCol()
-	{
-		return new Color(0, 156, 0, 156);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "medCol",
-		name = "Medium color",
-		description = "Color overlay will be when a input is coming up",
-		position = 2,
-		titleSection = "colors"
-	)
-	default Color medCol()
-	{
-		return new Color(200, 156, 0, 156);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "badCol",
-		name = "Bad color",
-		description = "Color overlay will be when you have to do something NOW",
-		position = 3,
-		titleSection = "colors"
-	)
-	default Color badCol()
-	{
-		return new Color(156, 0, 0, 156);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "poisonBorderCol",
-		name = "Poison border color",
-		description = "Color the edges of the area highlighted by poison special will be",
-		position = 4,
-		titleSection = "colors"
-	)
-	default Color poisonBorderCol()
-	{
-		return new Color(255, 0, 0, 100);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "poisonCol",
-		name = "Poison color",
-		description = "Color the fill of the area highlighted by poison special will be",
-		position = 5,
-		titleSection = "colors"
-	)
-	default Color poisonCol()
-	{
-		return new Color(255, 0, 0, 50);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "fountainColA",
-		name = "Fountain color (not on top)",
-		description = "Fountain color (not on top)",
-		position = 6,
-		titleSection = "colors"
-	)
-	default Color fountainColA()
-	{
-		return new Color(255, 0, 0, 100);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "fountainColB",
-		name = "Fountain color (on top)",
-		description = "Fountain color (on top)",
-		position = 7,
-		titleSection = "colors"
-	)
-	default Color fountainColB()
-	{
-		return new Color(0, 255, 0, 100);
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }
