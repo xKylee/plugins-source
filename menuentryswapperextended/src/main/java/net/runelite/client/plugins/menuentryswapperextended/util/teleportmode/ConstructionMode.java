@@ -9,6 +9,9 @@ import static net.runelite.client.menus.ComparableEntries.newBaseComparableEntry
 @AllArgsConstructor
 public enum ConstructionMode
 {
+	ATTACK_STONE("Attack Stone",
+		newBaseComparableEntry("Remove", "Attack stone", -1, -1, true, false),
+		newBaseComparableEntry("Build", "Stone space", -1, -1, true, true)),
 	BENCH("Benches",
 		newBaseComparableEntry("Remove", "bench", -1, -1, true, false),
 		newBaseComparableEntry("Build", "Seating space", -1, -1, true, true)),
