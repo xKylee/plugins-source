@@ -170,10 +170,13 @@ public class CoxPlugin extends Plugin
 			switch (Text.standardize(event.getMessageNode().getValue()))
 			{
 				case "the great olm rises with the power of acid.":
+					olm.setPhaseType(Olm.PhaseType.ACID);
+					break;
 				case "the great olm rises with the power of crystal.":
+					olm.setPhaseType(Olm.PhaseType.CRYSTAL);
+					break;
 				case "the great olm rises with the power of flame.":
-				case "the great olm is giving its all. this is its final stand.":
-					//TODO: detect olm phase
+					olm.setPhaseType(Olm.PhaseType.FLAME);
 					break;
 				case "the great olm fires a sphere of aggression your way. your prayers have been sapped.":
 				case "the great olm fires a sphere of aggression your way.":

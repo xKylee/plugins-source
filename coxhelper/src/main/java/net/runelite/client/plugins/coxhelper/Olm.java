@@ -42,6 +42,7 @@ public class Olm
 	private boolean active = false; // in fight
 	private boolean firstPhase = false;
 	private boolean finalPhase = false;
+	private PhaseType phaseType = PhaseType.UNKNOWN;
 
 	private GameObject hand = null;
 	private OlmAnimation handAnimation = OlmAnimation.UNKNOWN;
@@ -86,6 +87,7 @@ public class Olm
 		this.active = false;
 		this.firstPhase = false;
 		this.finalPhase = false;
+		this.phaseType = PhaseType.UNKNOWN;
 		this.hand = null;
 		this.head = null;
 		this.headAnimation = OlmAnimation.UNKNOWN;
@@ -171,25 +173,25 @@ public class Olm
 
 	public void specialSync(OlmAnimation currentAnimation)
 	{
-		this.ticksUntilNextAttack = 1;
-		this.attackCycle = 4;
+		this.ticksUntilNextAttack = 4;
+		this.attackCycle = 1;
 		switch (currentAnimation)
 		{
 			case LEFT_HAND_CRYSTALS1:
 			case LEFT_HAND_CRYSTALS2:
-				this.specialCycle = 1;
+				this.specialCycle = 2;
 				break;
 			case LEFT_HAND_LIGHTNING1:
 			case LEFT_HAND_LIGHTNING2:
-				this.specialCycle = 2;
+				this.specialCycle = 3;
 				break;
 			case LEFT_HAND_PORTALS1:
 			case LEFT_HAND_PORTALS2:
-				this.specialCycle = 3;
+				this.specialCycle = this.finalPhase ? 4 : 1;
 				break;
 			case LEFT_HAND_HEAL1:
 			case LEFT_HAND_HEAL2:
-				this.specialCycle = 4;
+				this.specialCycle = 1;
 				break;
 		}
 	}
@@ -264,7 +266,7 @@ public class Olm
 		{
 			case HEAD_RISING_2:
 			case HEAD_ENRAGED_RISING_2:
-				this.ticksUntilNextAttack = this.firstPhase ? 5 : 9;
+				this.ticksUntilNextAttack = this.firstPhase ? 4 : 8;
 				this.attackCycle = 1;
 				this.specialCycle = 1;
 				break;
@@ -314,5 +316,13 @@ public class Olm
 		}
 
 		this.handAnimation = currentAnimation;
+	}
+
+	public enum PhaseType
+	{
+		FLAME,
+		ACID,
+		CRYSTAL,
+		UNKNOWN,
 	}
 }

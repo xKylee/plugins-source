@@ -268,9 +268,21 @@ public interface CoxConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		position = 16,
+		keyName = "olmPShowPhase",
+		name = "Olm Phase Type",
+		description = "Will highlight olm depending on which phase type is active. Red=Flame Green=Acid Purple=Crystal",
+		titleSection = "olmTitle"
+	)
+	default boolean olmPShowPhase()
+	{
+		return false;
+	}
+
 	@ConfigTitleSection(
 		keyName = "colors",
-		position = 16,
+		position = 17,
 		name = "Colors",
 		description = ""
 	)
@@ -280,7 +292,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 17,
+		position = 18,
 		keyName = "muttaColor",
 		name = "Muttadile Tile Color",
 		description = "Change hit area tile color for muttadiles",
@@ -294,7 +306,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 18,
+		position = 19,
 		keyName = "guardColor",
 		name = "Guardians Tile Color",
 		description = "Change safespot area tile color for Guardians",
@@ -308,7 +320,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 19,
+		position = 20,
 		keyName = "tektonColor",
 		name = "Tekton Tile Color",
 		description = "Change hit area tile color for Tekton",
@@ -322,7 +334,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 20,
+		position = 21,
 		keyName = "burnColor",
 		name = "Burn Victim Color",
 		description = "Changes tile color for burn victim.",
@@ -336,7 +348,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 21,
+		position = 22,
 		keyName = "acidColor",
 		name = "Acid Victim Color",
 		description = "Changes tile color for acid victim.",
@@ -350,7 +362,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 22,
+		position = 23,
 		keyName = "tpColor",
 		name = "Teleport Target Color",
 		description = "Changes tile color for teleport target.",
@@ -364,7 +376,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 23,
+		position = 24,
 		keyName = "olmSpecialColor",
 		name = "Olm Special Color",
 		description = "Changes color of a special on Olm's tick counter",
@@ -379,7 +391,7 @@ public interface CoxConfig extends Config
 
 	@ConfigTitleSection(
 		keyName = "text",
-		position = 24,
+		position = 25,
 		name = "Text",
 		description = ""
 	)
@@ -389,7 +401,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 25,
+		position = 26,
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Bold/Italics/Plain",
@@ -405,7 +417,7 @@ public interface CoxConfig extends Config
 		max = 20
 	)
 	@ConfigItem(
-		position = 26,
+		position = 27,
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
@@ -418,7 +430,7 @@ public interface CoxConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 27,
+		position = 28,
 		keyName = "shadows",
 		name = "Shadows",
 		description = "Adds Shadows to text.",
