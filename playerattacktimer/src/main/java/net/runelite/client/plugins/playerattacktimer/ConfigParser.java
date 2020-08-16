@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Im2be <https://github.com/Im2be>
+ * Copyright (c) 2019, Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,52 +23,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.cerberus.Util;
+package net.runelite.client.plugins.playerattacktimer;
 
-public class CerberusUtil
+import com.google.common.base.Splitter;
+import java.util.Map;
+
+public final class ConfigParser
 {
-
-	public static int getExactHp(int ratio, int health, int maxHp)
+	public static boolean parse(final String value)
 	{
-		if (ratio < 0 || health <= 0 || maxHp == -1)
+		if (value.isEmpty() || value.isBlank())
 		{
-			return -1;
+			return true;
 		}
 
-		int exactHealth = 0;
-
-		// This is the reverse of the calculation of healthRatio done by the server
-		// which is: healthRatio = 1 + (healthScale - 1) * health / maxHealth (if health > 0, 0 otherwise)
-		// It's able to recover the exact health if maxHealth <= healthScale.
-		if (ratio > 0)
+		try
 		{
-			int minHealth = 1;
-			int maxHealth;
-			if (health > 1)
-			{
-				if (ratio > 1)
-				{
-					// This doesn't apply if healthRatio = 1, because of the special case in the server calculation that
-					// health = 0 forces healthRatio = 0 instead of the expected healthRatio = 1
-					minHealth = (maxHp * (ratio - 1) + health - 2) / (health - 1);
-				}
-				maxHealth = (maxHp * ratio - 1) / (health - 1);
-				if (maxHealth > maxHp)
-				{
-					maxHealth = maxHp;
-				}
-			}
-			else
-			{
-				// If healthScale is 1, healthRatio will always be 1 unless health = 0
-				// so we know nothing about the upper limit except that it can't be higher than maxHealth
-				maxHealth = maxHp;
-			}
-			// Take the average of min and max possible healths
-			exactHealth = (minHealth + maxHealth + 1) / 2;
-		}
+			final StringBuilder sb = new StringBuilder();
 
-		return exactHealth;
+			for (final String str : value.split("\n"))
+			{
+				if (!str.startsWith("//"))
+				{
+					sb.append(str).append("\n");
+				}
+			}
+
+			final Splitter NEWLINE_SPLITTER = Splitter
+				.on("\n")
+				.omitEmptyStrings()
+				.trimResults();
+
+			final Map<String, String> tmp = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
+
+			for (final String str : tmp.values())
+			{
+				Integer.parseInt(str.trim());
+			}
+
+			return true;
+		}
+		catch (final Exception ex)
+		{
+			return false;
+		}
 	}
-
 }

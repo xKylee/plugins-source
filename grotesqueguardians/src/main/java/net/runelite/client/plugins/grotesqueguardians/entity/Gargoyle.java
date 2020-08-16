@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2019 Im2be <https://github.com/Im2be>
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,27 +25,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.cerberus.domain;
+package net.runelite.client.plugins.grotesqueguardians.entity;
 
-import java.awt.Color;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.runelite.api.Skill;
+import net.runelite.api.NPC;
 
-@RequiredArgsConstructor
-public enum CerberusPhase
+public abstract class Gargoyle
 {
-	SPAWNING(null, 4, null),
-	AUTO(Skill.ATTACK, 6, null),
-	TRIPLE(Skill.FLETCHING, 6, new Color(153, 214, 255)),
-	GHOSTS(Skill.PRAYER, 8, new Color(255, 255, 255)),
-	LAVA(Skill.FIREMAKING, 8, new Color(255, 153, 153));
+	@Getter
+	protected final NPC npc;
 
-	@Getter(AccessLevel.PUBLIC)
-	private final Skill type;
-	@Getter(AccessLevel.PUBLIC)
-	private final int tickDelay;
-	@Getter(AccessLevel.PUBLIC)
-	private final Color textColor;
+	@Getter
+	protected int ticksUntilNextAttack;
+
+	Gargoyle(final NPC npc)
+	{
+		this.npc = npc;
+	}
+
+	protected abstract void updateTicksUntilNextAttack();
 }

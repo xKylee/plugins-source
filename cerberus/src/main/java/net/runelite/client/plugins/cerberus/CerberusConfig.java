@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020 dutta64 <https://github.com/dutta64>
  * Copyright (c) 2017, Aria <aria@ar1as.space>
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * Copyright (c) 2017, Devin French <https://github.com/devinfrench>
@@ -27,105 +28,145 @@
 
 package net.runelite.client.plugins.cerberus;
 
-import net.runelite.client.config.Button;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigTitleSection;
-import net.runelite.client.plugins.cerberus.Util.CerberusReadMeButton;
+import net.runelite.client.config.Range;
+import net.runelite.client.ui.overlay.components.ComponentOrientation;
 
 @ConfigGroup("cerberus")
-
 public interface CerberusConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
+	// Sections
 
 	@ConfigTitleSection(
 		name = "General",
-		description = "Configure general settings.",
+		description = "",
 		position = 0,
 		keyName = "generalSection"
 	)
 	default boolean generalSection()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigTitleSection(
-		name = "Upcoming attacks",
-		description = "Configure how the upcoming attacks are rendered. The upcoming attacks usually follow the same pattern (see http://pastebin.com/hWCvantS).",
+		name = "Current Attack",
+		description = "",
 		position = 1,
+		keyName = "currentAttackSection"
+	)
+	default boolean currentAttackSection()
+	{
+		return false;
+	}
+
+	@ConfigTitleSection(
+		name = "Upcoming Attacks",
+		description = "",
+		position = 2,
 		keyName = "upcomingAttacksSection"
 	)
 	default boolean upcomingAttacksSection()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigTitleSection(
-		name = "'Guitar Hero'-mode",
-		description = "Configure the 'Guitar-hero'-mode.",
-		position = 2,
+		name = "Guitar Hero Mode",
+		description = "",
+		position = 3,
 		keyName = "guitarHeroSection"
 	)
 	default boolean guitarHeroSection()
 	{
-		return true;
+		return false;
 	}
 
+	// General Section
 
 	@ConfigItem(
 		keyName = "drawGhostTiles",
 		name = "Show ghost tiles",
-		description = "Check this to mark the tiles beneath the ghosts with a timer that counts down until its attack.",
+		description = "Overlay ghost tiles with respective colors and attack timers.",
 		position = 0,
 		titleSection = "generalSection"
 	)
 	default boolean drawGhostTiles()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
-		keyName = "showPrayerTimer",
-		name = "Show prayer timer",
-		description = "Check this to show a timer on the prayer overlay until the attack hits.",
-		position = 1,
-		titleSection = "generalSection"
-	)
-	default boolean showPrayerTimer()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		keyName = "useSmallBoxes",
-		name = "Use small boxes",
-		description = "Display the upcoming phases using a smaller display.",
+		keyName = "calculateAutoAttackPrayer",
+		name = "Calculate auto attack prayer",
+		description = "Calculate prayer for auto attacks based on your equipment defensive bonuses."
+			+ "<br>Default is Protect from Magic.",
 		position = 2,
 		titleSection = "generalSection"
 	)
-	default boolean useSmallBoxes()
+	default boolean calculateAutoAttackPrayer()
 	{
 		return false;
 	}
 
+	// Current Attack Section
 
 	@ConfigItem(
-		keyName = "amountOfAttacksShown",
-		name = "Amount of attacks",
-		description = "Indicates how many upcoming attacks you would like to draw on the overlay. (0 - 10)",
+		keyName = "showCurrentAttack",
+		name = "Show current attack",
+		description = "Overlay the current attack in a separate infobox.",
+		position = 0,
+		titleSection = "currentAttackSection"
+	)
+	default boolean showCurrentAttack()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "showCurrentAttackTimer",
+		name = "Show current attack timer",
+		description = "Display a timer on the current attack infobox.",
+		position = 1,
+		titleSection = "currentAttackSection",
+		hidden = true,
+		unhide = "showCurrentAttack"
+	)
+	default boolean showCurrentAttackTimer()
+	{
+		return false;
+	}
+
+	// Upcoming Attacks Section
+
+	@ConfigItem(
+		keyName = "showUpcomingAttacks",
+		name = "Show upcoming attacks",
+		description = "Overlay upcoming attacks in stacked info boxes.",
 		position = 0,
 		titleSection = "upcomingAttacksSection"
+	)
+	default boolean showUpcomingAttacks()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 10
+	)
+	@ConfigItem(
+		keyName = "amountOfAttacksShown",
+		name = "# of attacks",
+		description = "Number of upcoming attacks to render.",
+		position = 1,
+		titleSection = "upcomingAttacksSection",
+		hidden = true,
+		unhide = "showUpcomingAttacks"
 	)
 	default int amountOfAttacksShown()
 	{
@@ -135,9 +176,11 @@ public interface CerberusConfig extends Config
 	@ConfigItem(
 		keyName = "reverseUpcomingAttacks",
 		name = "Reverse order",
-		description = "Check this to reverse the order of the upcoming attacks shown on the overlay.",
-		position = 1,
-		titleSection = "upcomingAttacksSection"
+		description = "Reverse the order of the upcoming attacks.",
+		position = 2,
+		titleSection = "upcomingAttacksSection",
+		hidden = true,
+		unhide = "showUpcomingAttacks"
 	)
 	default boolean reverseUpcomingAttacks()
 	{
@@ -145,64 +188,127 @@ public interface CerberusConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "horizontalUpcomingAttacks",
-		name = "Horizontal mode",
-		description = "Check this to show the upcoming attacks horizontally.",
-		position = 2,
-		titleSection = "upcomingAttacksSection"
+		keyName = "showUpcomingAttackNumber",
+		name = "Show attack number",
+		description = "Display the attack pattern number on each upcoming attack." +
+			"<br>See http://pastebin.com/hWCvantS",
+		position = 3,
+		titleSection = "upcomingAttacksSection",
+		hidden = true,
+		unhide = "showUpcomingAttacks"
 	)
-	default boolean horizontalUpcomingAttacks()
+	default boolean showUpcomingAttackNumber()
 	{
 		return false;
 	}
 
 	@ConfigItem(
-		keyName = "showAttackNumber",
-		name = "Show attack number",
-		description = "Check this to show the attack number on each upcoming attack. This can be useful if you understand Cerberus' attack patterns (see http://pastebin.com/hWCvantS).",
-		position = 2,
-		titleSection = "upcomingAttacksSection"
+		keyName = "upcomingAttacksOrientation",
+		name = "Upcoming attacks orientation",
+		description = "Display upcoming attacks vertically or horizontally.",
+		position = 4,
+		titleSection = "upcomingAttacksSection",
+		hidden = true,
+		unhide = "showUpcomingAttacks",
+		enumClass = InfoBoxOrientation.class
 	)
-	default boolean showAttackNumber()
+	default InfoBoxOrientation upcomingAttacksOrientation()
 	{
-		return true;
+		return InfoBoxOrientation.VERTICAL;
 	}
 
+	@ConfigItem(
+		keyName = "infoBoxComponentSize",
+		name = "Info box size",
+		description = "Size of the upcoming attacks infoboxes.",
+		position = 5,
+		titleSection = "upcomingAttacksSection",
+		hidden = true,
+		unhide = "showUpcomingAttacks",
+		enumClass = InfoBoxComponentSize.class
+	)
+	default InfoBoxComponentSize infoBoxComponentSize()
+	{
+		return InfoBoxComponentSize.SMALL;
+	}
+
+	// Guitar Hero Mode Section
 
 	@ConfigItem(
-		keyName = "drawDescendingBoxes",
-		name = "Enable 'Guitar Hero'-mode",
-		description = "Check this to show descending boxes that show you what to pray against every upcoming attack.",
+		keyName = "guitarHeroMode",
+		name = "Guitar Hero mode",
+		description = "Display descending boxes indicating the correct prayer for the current attack.",
 		position = 0,
 		titleSection = "guitarHeroSection"
 	)
-	default boolean drawDescendingBoxes()
+	default boolean guitarHeroMode()
 	{
-		return true;
+		return false;
 	}
 
-	@ConfigItem(
-		keyName = "amountOfDescendingBoxes",
-		name = "Amount of ticks",
-		description = "Indicates how many upcoming ticks you would like to draw on the overlay. (0 - 10)",
-		position = 1,
-		titleSection = "guitarHeroSection"
+	@Range(
+		min = 1,
+		max = 10
 	)
-	default int amountOfDescendingBoxes()
+	@ConfigItem(
+		keyName = "guitarHeroTicks",
+		name = "# of ticks",
+		description = "The number of ticks, before the upcoming current attack, to render.",
+		position = 1,
+		titleSection = "guitarHeroSection",
+		hidden = true,
+		unhide = "guitarHeroMode"
+	)
+	default int guitarHeroTicks()
 	{
 		return 4;
 	}
 
+	// Mirror mode
 
 	@ConfigItem(
-		keyName = "readMeButton",
-		name = "Cerberus info",
-		description = "Read this if you don't know how Cerberus or the plugin works!",
-		position = 0,
-		clazz = CerberusReadMeButton.class
+		name = "Enable mirror mode",
+		keyName = "mirrorMode",
+		description = "Enable mirror mode overlay rendering.",
+		position = 99
 	)
-	default Button readMeButton()
+	default boolean mirrorMode()
 	{
-		return new Button();
+		return false;
+	}
+
+	// Constants
+
+	@Getter
+	@RequiredArgsConstructor
+	enum InfoBoxOrientation
+	{
+		HORIZONTAL("Horizontal layout", ComponentOrientation.HORIZONTAL),
+		VERTICAL("Vertical layout", ComponentOrientation.VERTICAL);
+
+		private final String name;
+		private final ComponentOrientation orientation;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
+
+	@Getter
+	@RequiredArgsConstructor
+	enum InfoBoxComponentSize
+	{
+		SMALL("Small boxes", 40), MEDIUM("Medium boxes", 60), LARGE("Large boxes", 80);
+
+		private final String name;
+		private final int size;
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }

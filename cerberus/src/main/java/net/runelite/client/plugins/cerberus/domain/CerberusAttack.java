@@ -25,16 +25,13 @@
 
 package net.runelite.client.plugins.cerberus.domain;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
-@Getter(AccessLevel.PUBLIC)
 public class CerberusAttack
 {
-
 	private final int tick;
-	private final CerberusNPC.Attack attack;
-
+	private final Cerberus.Attack attack;
 }

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2018, https://openosrs.com
+ * Copyright (c) 2018, Tomas Slusny <slusnucky@gmail.com>
+ * Copyright (c) 2019 Im2be <https://github.com/Im2be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,31 +23,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.grotesqueguardians;
 
-import net.runelite.api.Prayer;
+package net.runelite.client.plugins.cerberus.domain;
 
-public enum DuskAttack
+import com.google.common.collect.ImmutableMap;
+import java.awt.Color;
+import java.util.Map;
+import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.runelite.api.NPC;
+import net.runelite.api.NpcID;
+import net.runelite.api.Skill;
+
+@Getter
+@RequiredArgsConstructor
+public enum Ghost
 {
-	MELEE(7800, Prayer.PROTECT_FROM_MELEE),
-	RANGE(7801, Prayer.PROTECT_FROM_MISSILES);
+	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED, Color.GREEN),
+	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC, Color.BLUE),
+	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK, Color.RED);
 
-	private final int animation;
-	private final Prayer prayer;
+	private static final Map<Integer, Ghost> MAP;
 
-	DuskAttack(final int animation, final Prayer prayer)
+	static
 	{
-		this.animation = animation;
-		this.prayer = prayer;
+		final ImmutableMap.Builder<Integer, Ghost> builder = new ImmutableMap.Builder<>();
+
+		for (final Ghost ghost : values())
+		{
+			builder.put(ghost.getNpcId(), ghost);
+		}
+
+		MAP = builder.build();
 	}
 
-	public int getAnimation()
-	{
-		return animation;
-	}
+	private final int npcId;
+	private final Skill type;
+	private final Color color;
 
-	public Prayer getPrayer()
+	/**
+	 * Try to identify if NPC is ghost
+	 *
+	 * @param npc npc
+	 * @return optional ghost
+	 */
+	@Nullable
+	public static Ghost fromNPC(final NPC npc)
 	{
-		return prayer;
+		return MAP.get(npc.getId());
 	}
 }

@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.7"
+version = "1.0.0"
 
 project.extra["PluginName"] = "Grotesque Guardians"
 project.extra["PluginDescription"] = "Show various helpful utitiles during the Grotesque Gaurdians (Gargoyles) fight"
@@ -41,6 +41,7 @@ dependencies {
     compileOnly(Libraries.gson)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    compileOnly(Libraries.rxjava)
 }
 
 tasks {

@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.6"
+version = "0.0.7"
 
 project.extra["PluginName"] = "Dynamic Max Hit"
 project.extra["PluginDescription"] = "Dynamic Max Hit Calculations"
@@ -38,6 +38,7 @@ dependencies {
     compileOnly("com.openosrs:runelite-client:$rlVersion")
     compileOnly("com.openosrs:http-api:$rlVersion")
 
+    compileOnly(Libraries.okhttp3)
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)

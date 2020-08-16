@@ -1,5 +1,7 @@
+import ProjectVersions.rlVersion
+
 /*
- * Copyright (c) 2019 Im2be <https://github.com/Im2be>
+ * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,45 +25,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+version = "0.0.5"
 
-package net.runelite.client.plugins.cerberus.domain;
+project.extra["PluginName"] = "Entity Focus Pile"
+project.extra["PluginDescription"] = "Bring whomever you're interacting with to focus on the pile."
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.runelite.api.coords.WorldPoint;
+dependencies {
+    annotationProcessor(Libraries.lombok)
+    annotationProcessor(Libraries.pf4j)
 
-@Getter(AccessLevel.PUBLIC)
-@RequiredArgsConstructor
-public enum CerberusArena
-{
-	WEST(1231, 1249, 1243, 1257),
-	NORTH(1295, 1313, 1307, 1321),
-	EAST(1359, 1377, 1243, 1257);
+    compileOnly("com.openosrs:runelite-api:$rlVersion")
+    compileOnly("com.openosrs:runelite-client:$rlVersion")
+    compileOnly("com.openosrs.rs:runescape-api:$rlVersion")
 
-	private final int x1, x2, y1, y2;
+    compileOnly(Libraries.guice)
+    compileOnly(Libraries.lombok)
+    compileOnly(Libraries.pf4j)
+}
 
-	public static CerberusArena getArena(WorldPoint wp)
-	{
-		for (var arena : CerberusArena.values())
-		{
-			if (wp.getX() >= arena.getX1() && wp.getX() <= arena.getX2() &&
-				wp.getY() >= arena.getY1() && wp.getY() <= arena.getY2())
-			{
-				return arena;
-			}
-		}
-
-		return null;
-	}
-
-	public WorldPoint getGhostTile(int ghostIndex)
-	{
-		if (ghostIndex > 2 || ghostIndex < 0)
-		{
-			return null;
-		}
-
-		return new WorldPoint(x1 + 8 + ghostIndex, y1 + 13, 0);
-	}
+tasks {
+    jar {
+        manifest {
+            attributes(mapOf(
+                    "Plugin-Version" to project.version,
+                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+                    "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Description" to project.extra["PluginDescription"],
+                    "Plugin-License" to project.extra["PluginLicense"]
+            ))
+        }
+    }
 }

@@ -1,6 +1,7 @@
+import ProjectVersions.rlVersion
+
 /*
- * Copyright (c) 2018, Tomas Slusny <slusnucky@gmail.com>
- * Copyright (c) 2019 Im2be <https://github.com/Im2be>
+ * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,54 +25,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+version = "0.0.1"
 
-package net.runelite.client.plugins.cerberus.domain;
+project.extra["PluginName"] = "Kalphite Queen"
+project.extra["PluginDescription"] = "Kalphite Queen plugin"
 
-import com.google.common.collect.ImmutableMap;
-import java.awt.Color;
-import java.util.Map;
-import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.runelite.api.NPC;
-import net.runelite.api.NpcID;
-import net.runelite.api.Skill;
+dependencies {
+    annotationProcessor(Libraries.lombok)
+    annotationProcessor(Libraries.pf4j)
 
-@Getter(AccessLevel.PUBLIC)
-@RequiredArgsConstructor
-public enum CerberusGhost
-{
-	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED, Color.GREEN),
-	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC, Color.BLUE),
-	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK, Color.RED);
+    compileOnly("com.openosrs:runelite-api:$rlVersion")
+    compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-	private static final Map<Integer, CerberusGhost> MAP;
+    compileOnly(Libraries.guice)
+    compileOnly(Libraries.lombok)
+    compileOnly(Libraries.pf4j)
+}
 
-	static
-	{
-		ImmutableMap.Builder<Integer, CerberusGhost> builder = new ImmutableMap.Builder<>();
-
-		for (final CerberusGhost ghost : values())
-		{
-			builder.put(ghost.getNpcId(), ghost);
-		}
-
-		MAP = builder.build();
-	}
-
-	private final int npcId;
-	private final Skill type;
-	private final Color color;
-
-	/**
-	 * Try to identify if NPC is ghost
-	 *
-	 * @param npc npc
-	 * @return optional ghost
-	 */
-	public static Optional<CerberusGhost> fromNPC(final NPC npc)
-	{
-		return npc == null ? Optional.empty() : Optional.ofNullable(MAP.get(npc.getId()));
-	}
+tasks {
+    jar {
+        manifest {
+            attributes(mapOf(
+                    "Plugin-Version" to project.version,
+                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+                    "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Description" to project.extra["PluginDescription"],
+                    "Plugin-License" to project.extra["PluginLicense"]
+            ))
+        }
+    }
 }
