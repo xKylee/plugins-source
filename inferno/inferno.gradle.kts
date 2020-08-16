@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.16"
+version = "0.0.15"
 
 project.extra["PluginName"] = "Inferno"
 project.extra["PluginDescription"] = "Inferno helper"

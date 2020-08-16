@@ -1,19 +1,15 @@
 package net.runelite.client.plugins.nightmare;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
-import java.awt.geom.GeneralPath;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GraphicsObject;
@@ -23,7 +19,6 @@ import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.geometry.Geometry;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -31,7 +26,6 @@ import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
-@Slf4j
 class NightmareOverlay extends Overlay
 {
 	private static final int NIGHTMARE_REGION_ID = 15256;
@@ -62,8 +56,6 @@ class NightmareOverlay extends Overlay
 	private static final int NIGHTMARE_MUSHROOM = 37739;
 
 	private static final int NM_PRE_REGION = 15256;
-
-	private int timeout;
 
 
 	@Inject
@@ -106,14 +98,6 @@ class NightmareOverlay extends Overlay
 				if (poly != null)
 				{
 					OverlayUtil.renderPolygon(graphics, poly, color);
-				}
-			}
-			if (plugin.isShadowsSpawning())
-			{
-				if (plugin.getNm() != null)
-				{
-					Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-					OverlayUtil.renderPolygon(graphics, tilePoly, Color.ORANGE);
 				}
 			}
 		}
@@ -167,35 +151,6 @@ class NightmareOverlay extends Overlay
 			drawPoisonArea(graphics, plugin.getSpores());
 		}
 
-		if (config.highlightHuskTarget())
-		{
-			drawHuskTarget(graphics, plugin.getHuskTarget());
-		}
-
-		if (config.highlightNightmareHitboxOnCharge())
-		{
-			drawNightmareHitboxOnCharge(graphics, plugin.getNm(), plugin.isNightmareCharging());
-		}
-
-		if (config.highlightNightmareChargeRange())
-		{
-			drawNightmareChargeRange(graphics, plugin.getNm(), plugin.isNightmareCharging());
-		}
-
-		if (plugin.isFlash() && config.flash())
-		{
-			final Color flash = graphics.getColor();
-			graphics.setColor(new Color(255, 0, 0, 70));
-			graphics.fill(new Rectangle(client.getCanvas().getSize()));
-			graphics.setColor(flash);
-			timeout++;
-			if (timeout >= 50)
-			{
-				timeout = 0;
-				plugin.setFlash(false);
-			}
-		}
-
 		return null;
 	}
 
@@ -244,119 +199,6 @@ class NightmareOverlay extends Overlay
 		graphics.draw(poisonTiles);
 		graphics.setColor(config.poisonCol());
 		graphics.fill(poisonTiles);
-	}
-
-	private void drawNightmareHitboxOnCharge(Graphics2D graphics, NPC nm, boolean isNmCharging)
-	{
-		if (!isNmCharging)
-		{
-			return;
-		}
-
-		if (plugin.getNm() != null)
-		{
-			Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-			OverlayUtil.renderPolygon(graphics, tilePoly, Color.ORANGE);
-		}
-	}
-
-	private void drawNightmareChargeRange(Graphics2D graphics, NPC nm, boolean isNmCharging)
-	{
-		if (!isNmCharging)
-		{
-			return;
-		}
-
-		LocalPoint nmLocalPoint = nm.getLocalLocation();
-		int nmX = nmLocalPoint.getX();
-		int nmY = nmLocalPoint.getY();
-		Area areaAddPoints = new Area();
-		Polygon polyAddPoints = new Polygon();
-
-		// if nightmare is at the gates, there are extra dangerous squares
-		int offset = 1792;
-		if (nmX == 6208)
-		{
-			offset = 2048;
-		}
-
-		// facing west
-		if (nmX == 5312)
-		{
-			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY + 256 + 64);
-			polyAddPoints.addPoint(nmX - 256 - 64, nmY + 256 + 64);
-			polyAddPoints.addPoint(nmX - 256 - 64, nmY - 256 - 64);
-			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY - 256 - 64);
-		}
-		// facing east
-		else if (nmX == 7104)
-		{
-			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
-			polyAddPoints.addPoint(nmX - offset - 256 - 64, nmY + 256 + 64);
-			polyAddPoints.addPoint(nmX - offset - 256 - 64, nmY - 256 - 64);
-			polyAddPoints.addPoint(nmX + 256 + 64, nmY - 256 - 64);
-		}
-		// facing north
-		else if (nmY == 8000 || nmY == 8128)
-		{
-			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
-			polyAddPoints.addPoint(nmX - 256 - 64, nmY + 256 + 64);
-			polyAddPoints.addPoint(nmX - 256 - 64, nmY - offset - 256 - 64);
-			polyAddPoints.addPoint(nmX + 256 + 64, nmY - offset - 256 - 64);
-		}
-		//facing south
-		else if (nmY == 6080 || nmY == 6208)
-		{
-			polyAddPoints.addPoint(nmX + 256 + 64, nmY + offset + 256 + 64);
-			polyAddPoints.addPoint(nmX - 256 - 64, nmY + offset + 256 + 64);
-			polyAddPoints.addPoint(nmX - 256 - 64, nmY - 256 - 64);
-			polyAddPoints.addPoint(nmX + 256 + 64, nmY - 256 - 64);
-		}
-
-		areaAddPoints.add(new Area(polyAddPoints));
-		GeneralPath path = new GeneralPath(areaAddPoints);
-
-		renderPath(graphics, path);
-
-	}
-
-	private void renderPath(Graphics2D graphics, GeneralPath path)
-	{
-		graphics.setPaintMode();
-		graphics.setColor(config.nightmareChargeBorderCol());
-		graphics.setStroke(new BasicStroke(1));
-
-		path = Geometry.filterPath(path, (p1, p2) ->
-				Perspective.localToCanvas(client, new LocalPoint((int) p1[0], (int) p1[1]), client.getPlane()) != null &&
-						Perspective.localToCanvas(client, new LocalPoint((int) p2[0], (int) p2[1]), client.getPlane()) != null);
-		path = Geometry.transformPath(path, coords ->
-		{
-			Point point = Perspective.localToCanvas(client, new LocalPoint((int) coords[0], (int) coords[1]), client.getPlane());
-			if (point != null)
-			{
-				coords[0] = point.getX();
-				coords[1] = point.getY();
-			}
-		});
-
-		graphics.draw(path);
-		graphics.setColor(config.nightmareChargeCol());
-		graphics.fill(path);
-
-	}
-
-	private void drawHuskTarget(Graphics2D graphics, Map<Polygon, Player> huskTarget)
-	{
-		if (huskTarget.size() < 1)
-		{
-			return;
-		}
-
-		for (Map.Entry<Polygon, Player> entry : huskTarget.entrySet())
-		{
-			Polygon playerPolygon = entry.getKey();
-			OverlayUtil.renderPolygon(graphics, playerPolygon, config.huskBorderCol());
-		}
 	}
 
 	public void determineLayer()

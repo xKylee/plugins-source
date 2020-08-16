@@ -47,11 +47,11 @@ import net.runelite.api.Player;
 import net.runelite.api.Skill;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.Varbits;
-import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.PlayerDeath;
 import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
@@ -139,7 +139,7 @@ public class PlayerStatusPlugin extends Plugin
 	}
 
 	@Getter(AccessLevel.PUBLIC)
-	private final Map<String, List<AbstractMarker>> statusEffects =
+	private Map<String, List<AbstractMarker>> statusEffects =
 		new HashMap<String, List<AbstractMarker>>();
 
 	@Getter(AccessLevel.PUBLIC)
@@ -301,9 +301,9 @@ public class PlayerStatusPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onActorDeath(ActorDeath event)
+	public void onPlayerDeath(PlayerDeath event)
 	{
-		if (event.getActor() != client.getLocalPlayer())
+		if (event.getPlayer() != client.getLocalPlayer())
 		{
 			return;
 		}

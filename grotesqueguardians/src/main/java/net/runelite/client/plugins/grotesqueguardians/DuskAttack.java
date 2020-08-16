@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2018, https://openosrs.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,50 +22,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.grotesqueguardians;
 
-package net.runelite.client.plugins.playerattacktimer;
+import net.runelite.api.Prayer;
 
-import com.google.common.base.Splitter;
-import java.util.Map;
-
-public final class ConfigParser
+public enum DuskAttack
 {
-	public static boolean parse(final String value)
+	MELEE(7800, Prayer.PROTECT_FROM_MELEE),
+	RANGE(7801, Prayer.PROTECT_FROM_MISSILES);
+
+	private final int animation;
+	private final Prayer prayer;
+
+	DuskAttack(final int animation, final Prayer prayer)
 	{
-		if (value.isEmpty() || value.isBlank())
-		{
-			return true;
-		}
+		this.animation = animation;
+		this.prayer = prayer;
+	}
 
-		try
-		{
-			final StringBuilder sb = new StringBuilder();
+	public int getAnimation()
+	{
+		return animation;
+	}
 
-			for (final String str : value.split("\n"))
-			{
-				if (!str.startsWith("//"))
-				{
-					sb.append(str).append("\n");
-				}
-			}
-
-			final Splitter NEWLINE_SPLITTER = Splitter
-				.on("\n")
-				.omitEmptyStrings()
-				.trimResults();
-
-			final Map<String, String> tmp = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
-
-			for (final String str : tmp.values())
-			{
-				Integer.parseInt(str.trim());
-			}
-
-			return true;
-		}
-		catch (final Exception ex)
-		{
-			return false;
-		}
+	public Prayer getPrayer()
+	{
+		return prayer;
 	}
 }

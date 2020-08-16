@@ -81,7 +81,7 @@ import org.pf4j.Extension;
 	name = "Menu Entry Swapper Extended",
 	enabledByDefault = false,
 	description = "Change the default option that is displayed when hovering over objects",
-	tags = {"pickpocket", "equipped items", "inventory", "items", "equip", "construction"},
+	tags = {"pickpocket", "equipped items", "inventory", "items", "equip"},
 	type = PluginType.UTILITY
 )
 @PluginDependency(PvpToolsPlugin.class)

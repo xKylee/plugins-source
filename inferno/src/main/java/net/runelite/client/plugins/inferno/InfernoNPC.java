@@ -173,7 +173,7 @@ class InfernoNPC
 		return new WorldArea(lastPlayerLocation, 1, 1).hasLineOfSightTo(client, this.getNpc().getWorldArea());
 	}
 
-	void gameTick(Client client, WorldPoint lastPlayerLocation, boolean finalPhase, int ticksSinceFinalPhase)
+	void gameTick(Client client, WorldPoint lastPlayerLocation, boolean finalPhase, boolean finalPhaseTick)
 	{
 		safeSpotCache.clear();
 
@@ -198,15 +198,12 @@ class InfernoNPC
 			switch (this.getType())
 			{
 				case ZUK:
-					if (this.getNpc().getAnimation() == AnimationID.TZKAL_ZUK)
+					//if final phase started on this exact tick, skip setting the ticksTillNextAttack
+					if (this.getNpc().getAnimation() == AnimationID.TZKAL_ZUK && !finalPhaseTick)
 					{
 						if (finalPhase)
 						{
-							//if on final phase, wait until at least 3 ticks since the final phase started to set the ticksTilNextAttack
-							if (ticksSinceFinalPhase > 3)
-							{
-								this.updateNextAttack(this.getType().getDefaultAttack(), 7);
-							}
+							this.updateNextAttack(this.getType().getDefaultAttack(), 7);
 						}
 						else
 						{

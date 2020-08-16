@@ -28,7 +28,7 @@ public enum DuelingRingMode
 {
 	DUEL_ARENA("Duel Arena"),
 	CASTLE_WARS("Castle Wars"),
-	FEROX_ENCLAVE("Ferox Enclave");
+	CLAN_WARS("Clan Wars");
 
 	private final String name;
 
