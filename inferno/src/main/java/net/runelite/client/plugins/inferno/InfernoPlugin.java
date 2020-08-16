@@ -130,7 +130,6 @@ public class InfernoPlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private boolean finalPhase = false;
 	private boolean finalPhaseTick = false;
-	private int ticksSinceFinalPhase = 0;
 	@Getter(AccessLevel.PACKAGE)
 	private NPC zukShield = null;
 	private NPC zuk = null;
@@ -289,14 +288,10 @@ public class InfernoPlugin extends Plugin
 
 		calculateSpawnTimerInfobox();
 
-		//if finalPhaseTick, we will skip incrementing because we already did it in onNpcSpawned
+		//no longer on the same tick that finalPhase started
 		if (finalPhaseTick)
 		{
 			finalPhaseTick = false;
-		}
-		else if (finalPhase)
-		{
-			ticksSinceFinalPhase++;
 		}
 	}
 
@@ -359,7 +354,6 @@ public class InfernoPlugin extends Plugin
 				break;
 			case HEALER_ZUK:
 				finalPhase = true;
-				ticksSinceFinalPhase = 1;
 				finalPhaseTick = true;
 				for (InfernoNPC infernoNPC : infernoNpcs)
 				{
@@ -504,7 +498,7 @@ public class InfernoPlugin extends Plugin
 	{
 		for (InfernoNPC infernoNPC : infernoNpcs)
 		{
-			infernoNPC.gameTick(client, lastLocation, finalPhase, ticksSinceFinalPhase);
+			infernoNPC.gameTick(client, lastLocation, finalPhase, finalPhaseTick);
 
 			if (infernoNPC.getType() == InfernoNPC.Type.ZUK && zukShieldCornerTicks == -1)
 			{

@@ -34,10 +34,10 @@ import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.WorldType;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.PlayerDeath;
 import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -226,11 +226,11 @@ public class EffectTimersPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onActorDeath(ActorDeath event)
+	public void onPlayerDeath(PlayerDeath event)
 	{
 		for (TimerType type : TimerType.values())
 		{
-			timerManager.setTimerFor(event.getActor(), type, new Timer(this, null));
+			timerManager.setTimerFor(event.getPlayer(), type, new Timer(this, null));
 		}
 	}
 
