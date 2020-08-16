@@ -64,6 +64,7 @@ import net.runelite.client.plugins.PluginType;
 import static net.runelite.client.plugins.dynamicmaxhit.Utils.getTrueHp;
 import static net.runelite.client.plugins.dynamicmaxhit.Utils.predictOffensivePrayer;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.http.api.RuneLiteAPI;
 import net.runelite.http.api.hiscore.HiscoreClient;
 import net.runelite.http.api.hiscore.HiscoreResult;
 import net.runelite.http.api.item.ItemEquipmentStats;
@@ -83,7 +84,7 @@ public class DynamicMaxHit extends Plugin
 {
 	private static final String CALC = "Max Hit";
 	private static final double SPEC_PER_TICK = 0.2;
-	private static final HiscoreClient HISCORE_CLIENT = new HiscoreClient();
+	private static final HiscoreClient HISCORE_CLIENT = new HiscoreClient(RuneLiteAPI.CLIENT);
 	private static final List<Integer> NORMAL_VOID = ImmutableList.of(ItemID.VOID_KNIGHT_TOP, ItemID.VOID_KNIGHT_ROBE, ItemID.VOID_KNIGHT_GLOVES);
 	private static final List<Integer> ELITE_VOID = ImmutableList.of(ItemID.ELITE_VOID_TOP, ItemID.ELITE_VOID_ROBE, ItemID.VOID_KNIGHT_GLOVES);
 	private static final List<Integer> DHAROK = ImmutableList.of(

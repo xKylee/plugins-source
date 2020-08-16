@@ -1,4 +1,7 @@
 /*
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2018, Damen <https://github.com/basicDamen>
  * All rights reserved.
  *
@@ -22,177 +25,316 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.runelite.client.plugins.grotesqueguardians;
 
 import com.google.inject.Provides;
-import java.util.ArrayList;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Actor;
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
-import static net.runelite.api.NpcID.DUSK_7888;
+import net.runelite.api.Player;
+import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicsObjectCreated;
+import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.grotesqueguardians.entity.Dawn;
+import net.runelite.client.plugins.grotesqueguardians.entity.Dusk;
+import net.runelite.client.plugins.grotesqueguardians.overlay.PrayerOverlay;
+import net.runelite.client.plugins.grotesqueguardians.overlay.SceneOverlay;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
+@Slf4j
 @Extension
 @PluginDescriptor(
 	name = "Grotesque Guardians",
 	enabledByDefault = false,
-	description = "Show various helpful utilities during the Grotesque Guardians fight",
-	tags = {"bosses", "combat", "gargs", "overlay", "grotesque", "pve", "pvm"},
+	description = "A plugin for Grotesque Guardians boss.",
+	tags = {"grotesque", "guardians", "gargoyles"},
 	type = PluginType.PVM
 )
 public class GrotesqueGuardiansPlugin extends Plugin
 {
-	private static final int GARGOYLES_REGION = 6727;
+	private static final int GROTESQUE_GUARDIANS_LIGHTNING_START = 1416;
+	private static final int GROTESQUE_GUARDIANS_LIGHTNING_END = 1431;
+	private static final int GROTESQUE_GUARDIANS_FALLING_ROCKS = 1436;
+	private static final int GROTESQUE_GUARDIANS_STONE_ORB = 160;
+
+	private static final String CONFIG_GROUP = "grotesqueguardians";
+
+	private static final String DUSK = "Dusk";
+	private static final String DAWN = "Dawn";
+
+	private static final int REGION_ID = 6727;
 
 	@Inject
 	private Client client;
 
 	@Inject
+	private EventBus eventBus;
+
+	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
-	private GrotesqueGuardiansPrayerOverlay prayerOverlay;
+	private SceneOverlay sceneOverlay;
 
+	@Inject
+	private PrayerOverlay prayerOverlay;
+
+	@Getter
 	@Nullable
-	private DuskAttack prayAgainst;
+	private Dusk dusk;
 
+	@Getter
 	@Nullable
-	private NPC dusk;
+	private Dawn dawn;
 
-	private GrotesqueGuardiansConfig config;
+	@Getter
+	private boolean onRoof;
 
-	private boolean inGargs;
-	private boolean needingToRun;
+	@Getter
+	private long lastTickTime;
+
+	@Setter
+	@Getter
+	private boolean flashOnDanger;
 
 	@Provides
-	GrotesqueGuardiansConfig provideConfig(ConfigManager configManager)
+	GrotesqueGuardiansConfig provideConfig(final ConfigManager configManager)
 	{
 		return configManager.getConfig(GrotesqueGuardiansConfig.class);
 	}
 
-
-	public GrotesqueGuardiansPlugin()
-	{
-		inGargs = false;
-		needingToRun = false;
-	}
-
-	@Inject
-	private GrotesqueGuardiansOverlay overlay;
-
 	@Override
 	protected void startUp()
 	{
-		overlayManager.add(overlay);
+		if (client.getGameState() != GameState.LOGGED_IN || !isInRegion())
+		{
+			return;
+		}
+
+		init();
+	}
+
+	private void init()
+	{
+		onRoof = true;
+
+		for (final NPC npc : client.getNpcs())
+		{
+			addNpc(npc);
+		}
+
+		overlayManager.add(sceneOverlay);
 		overlayManager.add(prayerOverlay);
-		dusk = null;
-		prayAgainst = null;
+
+		eventBus.subscribe(GameTick.class, this, this::onGameTick);
+		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
+		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
+		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
+		eventBus.subscribe(GraphicsObjectCreated.class, this, this::onGraphicsObjectCreated);
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		overlayManager.remove(overlay);
-		overlayManager.remove(prayerOverlay);
+		eventBus.unregister(this);
+
+		onRoof = false;
+		flashOnDanger = false;
+
 		dusk = null;
-		prayAgainst = null;
+		dawn = null;
+
+		overlayManager.remove(sceneOverlay);
+		overlayManager.remove(prayerOverlay);
 	}
 
 	@Subscribe
-	private void onGameTick(final GameTick event)
+	private void onGameStateChanged(final GameStateChanged event)
 	{
-		final ArrayList<Integer> regions = new ArrayList<>();
-		for (final int intValue : client.getMapRegions())
+		final GameState gameState = event.getGameState();
+
+		switch (gameState)
 		{
-			regions.add(intValue);
-		}
-		if (regions.contains(GARGOYLES_REGION))
-		{
-			dusk = null;
-			inGargs = true;
-			for (final NPC npc : client.getNpcs())
-			{
-				if (npc.getName() != null && npc.getName().contains("Dusk") && !npc.isDead())
+			case LOGGED_IN:
+				if (isInRegion())
 				{
-					dusk = npc;
-				}
-			}
-			if (inGargs && dusk != null)
-			{
-				if (dusk.getId() == DUSK_7888)
-				{
-					if (dusk.getAnimation() == DuskAttack.MELEE.getAnimation())
+					if (!onRoof)
 					{
-						prayAgainst = DuskAttack.MELEE;
-					}
-					else if (dusk.getAnimation() == DuskAttack.RANGE.getAnimation())
-					{
-						prayAgainst = DuskAttack.RANGE;
+						init();
 					}
 				}
 				else
 				{
-					prayAgainst = null;
+					if (onRoof)
+					{
+						shutDown();
+					}
 				}
-				needingToRun = dusk.getAnimation() == 7802;
-			}
+				break;
+			case HOPPING:
+			case LOGIN_SCREEN:
+				if (onRoof)
+				{
+					shutDown();
+				}
+				break;
+			default:
+				break;
 		}
-		else
-		{
-			inGargs = false;
-			prayAgainst = null;
-			dusk = null;
-		}
-	}
-
-	@Nullable
-	DuskAttack getPrayAgainst()
-	{
-		return prayAgainst;
-	}
-
-	@Nullable
-	NPC getDusk()
-	{
-		return dusk;
-	}
-
-	boolean isInGargs()
-	{
-		return inGargs;
-	}
-
-	boolean isNeedingToRun()
-	{
-		return needingToRun;
 	}
 
 	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
+	private void onConfigChanged(final ConfigChanged event)
 	{
-		if (!event.getGroup().equals("grotesqueguardians"))
+		if (!event.getGroup().equals(CONFIG_GROUP))
 		{
 			return;
 		}
 
 		if (event.getKey().equals("mirrorMode"))
 		{
-			overlay.determineLayer();
-			prayerOverlay.determineLayer();
-			overlayManager.remove(overlay);
+			overlayManager.remove(sceneOverlay);
 			overlayManager.remove(prayerOverlay);
-			overlayManager.add(overlay);
+
+			sceneOverlay.determineLayer();
+			prayerOverlay.determineLayer();
+
+			overlayManager.add(sceneOverlay);
 			overlayManager.add(prayerOverlay);
 		}
 	}
 
+	private void onGameTick(final GameTick event)
+	{
+		lastTickTime = System.currentTimeMillis();
+
+		if (dusk != null)
+		{
+			dusk.updateTicksUntilNextAttack();
+		}
+	}
+
+	private void onNpcSpawned(final NpcSpawned event)
+	{
+		addNpc(event.getNpc());
+	}
+
+	private void onNpcDespawned(final NpcDespawned event)
+	{
+		removeNpc(event.getNpc());
+	}
+
+	private void onAnimationChanged(final AnimationChanged event)
+	{
+		final Actor actor = event.getActor();
+
+		if (dusk == null || actor != dusk.getNpc() || !dusk.isLastPhase())
+		{
+			return;
+		}
+
+		dusk.updateLastAnimation(actor.getAnimation());
+	}
+
+	private void onGraphicsObjectCreated(final GraphicsObjectCreated event)
+	{
+		if (flashOnDanger)
+		{
+			return;
+		}
+
+		final GraphicsObject graphicsObject = event.getGraphicsObject();
+
+		if (!isValidGraphicsObject(graphicsObject))
+		{
+			return;
+		}
+
+		final Player player = client.getLocalPlayer();
+
+		if (player == null)
+		{
+			return;
+		}
+
+		final LocalPoint localPointPlayer = player.getLocalLocation();
+		final LocalPoint localPointGraphicsObject = graphicsObject.getLocation();
+
+		if (localPointGraphicsObject.distanceTo(localPointPlayer) <= 1)
+		{
+			flashOnDanger = true;
+		}
+	}
+
+	private void addNpc(final NPC npc)
+	{
+		final String name = npc.getName();
+
+		if (name == null)
+		{
+			return;
+		}
+
+		if (name.equals(DUSK))
+		{
+			dusk = new Dusk(npc);
+		}
+		else if (name.equals(DAWN))
+		{
+			dawn = new Dawn(npc);
+		}
+	}
+
+	private void removeNpc(final NPC npc)
+	{
+		final String name = npc.getName();
+
+		if (name == null)
+		{
+			return;
+		}
+
+		if (name.equals(DUSK))
+		{
+			dusk = null;
+		}
+		else if (name.equals(DAWN))
+		{
+			dawn = null;
+		}
+	}
+
+	public static boolean isValidGraphicsObject(final GraphicsObject graphicsObject)
+	{
+		final int id = graphicsObject.getId();
+
+		return (id >= GROTESQUE_GUARDIANS_LIGHTNING_START && id <= GROTESQUE_GUARDIANS_LIGHTNING_END)
+			|| id == GROTESQUE_GUARDIANS_STONE_ORB
+			|| id == GROTESQUE_GUARDIANS_FALLING_ROCKS;
+	}
+
+	private boolean isInRegion()
+	{
+		return client.isInInstancedRegion() && client.getMapRegions()[0] == REGION_ID;
+	}
 }

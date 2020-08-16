@@ -52,6 +52,7 @@ import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.SoundEffectID;
 import net.runelite.api.Varbits;
+import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
@@ -60,7 +61,6 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
-import net.runelite.api.events.PlayerDeath;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WidgetLoaded;
@@ -541,8 +541,13 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
-	private void onPlayerDeath(final PlayerDeath event)
+	private void onActorDeath(final ActorDeath event)
 	{
+		if (event.getActor() != client.getLocalPlayer())
+		{
+			return;
+		}
+
 		overlayTimer.onPlayerDeath();
 	}
 
@@ -688,7 +693,7 @@ public class GauntletPlugin extends Plugin
 		eventBus.subscribe(GameTick.class, this, this::onGameTick);
 		eventBus.subscribe(ProjectileSpawned.class, this, this::onProjectileSpawned);
 		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
-		eventBus.subscribe(PlayerDeath.class, this, this::onPlayerDeath);
+		eventBus.subscribe(ActorDeath.class, this, this::onActorDeath);
 	}
 
 	private boolean isGauntletVarbitSet()

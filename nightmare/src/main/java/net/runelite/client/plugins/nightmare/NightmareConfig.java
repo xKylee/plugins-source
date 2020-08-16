@@ -153,4 +153,93 @@ public interface NightmareConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "highlightHuskTarget",
+		name = "Highlight Husk Target(s)",
+		description = "Highlights whoever the husks will spawn on",
+		position = 8,
+		titleSection = "generalSection"
+	)
+	default boolean highlightHuskTarget()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "huskBorderCol",
+		name = "Husk Target Border Color",
+		description = "Colour the edges of the area highlighted by poison special will be",
+		position = 9,
+		titleSection = "generalSection"
+	)
+
+	default Color huskBorderCol()
+	{
+		return new Color(255, 0, 0, 100);
+	}
+
+	@ConfigItem(
+			keyName = "highlightNightmareHitboxOnCharge",
+			name = "Highlight Nightmare's Hitbox On Charge",
+			description = "Highlights the hitbox of the Nightmare when she charges",
+			position = 10,
+			titleSection = "generalSection"
+	)
+	default boolean highlightNightmareHitboxOnCharge()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "highlightNightmareChargeRange",
+			name = "Highlight Nightmare's Charge Range",
+			description = "Highlights the range the Nightmare will damage you with her charge attack",
+			position = 11,
+			titleSection = "generalSection"
+	)
+	default boolean highlightNightmareChargeRange()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+			keyName = "nightmareChargeBorderCol",
+			name = "Nightmare Charge Border Color",
+			description = "Color the edges of the area highlighted by the nightmare's charge attack",
+			position = 12,
+			titleSection = "generalSection"
+	)
+
+	default Color nightmareChargeBorderCol()
+	{
+		return new Color(255, 0, 0, 100);
+	}
+
+	@Alpha
+	@ConfigItem(
+			keyName = "nightmareChargeCol",
+			name = "Nightmare charge fill color",
+			description = "Color the fill of the area highlighted by the nightmare's charge attack",
+			position = 13,
+			titleSection = "generalSection"
+	)
+	default Color nightmareChargeCol()
+	{
+		return new Color(255, 0, 0, 50);
+	}
+
+	@ConfigItem(
+			keyName = "flash",
+			name = "Flash your screen when you get impregnated",
+			description = "Your Screen flashes when the nightmare infects you with her parasite",
+			position = 14,
+			titleSection = "generalSection"
+	)
+	default boolean flash()
+	{
+		return false;
+	}
 }

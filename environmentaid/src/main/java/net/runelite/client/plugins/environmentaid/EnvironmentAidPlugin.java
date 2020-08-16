@@ -103,6 +103,11 @@ public class EnvironmentAidPlugin extends Plugin
 		10810                                   //  FAIRY RING DKS
 	);
 
+	private static final Set<Integer> UNDERWATER_REGION = Set.of(
+		15008, 15264,                           //  FOSSIL ISLAND UNDERWATER
+		11924                                   //  MOGRE CAMP
+	);
+
 	private boolean wasInCrypt = false;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -141,6 +146,15 @@ public class EnvironmentAidPlugin extends Plugin
 		{
 			client.getWidget(406, 2).setHidden(config.zamorakEffect());
 		}
+		if (client.getWidget(169, 0) != null)
+		{
+			client.getWidget(169, 0).setHidden(config.waterEffect());
+		}
+		if (client.getWidget(170, 0) != null)
+		{
+			client.getWidget(170, 0).setHidden(config.waterEffect());
+		}
+
 	}
 
 	private void onShutDown()
@@ -159,6 +173,16 @@ public class EnvironmentAidPlugin extends Plugin
 			client.getWidget(167, 0).setHidden(false);
 		}
 
+		if (client.getWidget(169, 0) != null)
+		{
+			client.getWidget(169, 0).setHidden(false);
+		}
+
+		if (client.getWidget(170, 0) != null)
+		{
+			client.getWidget(170, 0).setHidden(false);
+		}
+
 	}
 
 	@Subscribe
@@ -173,6 +197,15 @@ public class EnvironmentAidPlugin extends Plugin
 		{
 			client.getWidget(167, 0).setHidden(config.snowEffect());
 		}
+
+		if (isInWaterRegion())
+		{
+			if (client.getWidget(169, 0) != null)
+				client.getWidget(169, 0).setHidden(config.waterEffect());
+
+			if (client.getWidget(170, 0) != null)
+				client.getWidget(170, 0).setHidden(config.waterEffect());
+		}
 	}
 
 	@Subscribe
@@ -186,6 +219,16 @@ public class EnvironmentAidPlugin extends Plugin
 		}
 
 		if (config.snowEffect() && event.getId() == client.getWidget(167, 0).getId() && isInSnowRegions())
+		{
+			hideWidget(event, true);
+		}
+
+		if (config.waterEffect() && isInWaterRegion() && event.getId() == client.getWidget(169, 0).getId())
+		{
+			hideWidget(event, true);
+		}
+
+		if (config.waterEffect() && isInWaterRegion() &&  event.getId() == client.getWidget(170, 0).getId())
 		{
 			hideWidget(event, true);
 		}
@@ -297,6 +340,11 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		Player localPlayer = client.getLocalPlayer();
 		return localPlayer != null && localPlayer.getWorldLocation().getRegionID() == ZAMORAK_REGION;
+	}
+
+	private boolean isInWaterRegion()
+	{
+		return UNDERWATER_REGION.contains(client.getMapRegions()[0]);
 	}
 
 	private boolean isInSnowRegions()
