@@ -29,10 +29,10 @@ import com.google.common.collect.ComparisonChain;
 import com.google.inject.Provides;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
@@ -42,8 +42,11 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.NPC;
+import net.runelite.api.Player;
 import net.runelite.api.Prayer;
+import net.runelite.api.Projectile;
 import net.runelite.api.Skill;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -51,101 +54,239 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.cerberus.domain.CerberusArena;
+import net.runelite.client.plugins.cerberus.domain.Arena;
+import net.runelite.client.plugins.cerberus.domain.Cerberus;
 import net.runelite.client.plugins.cerberus.domain.CerberusAttack;
-import net.runelite.client.plugins.cerberus.domain.CerberusGhost;
-import net.runelite.client.plugins.cerberus.domain.CerberusNPC;
-import net.runelite.client.plugins.cerberus.domain.CerberusPhase;
-import net.runelite.client.plugins.cerberus.overlays.CerberusOverlay;
-import net.runelite.client.plugins.cerberus.overlays.CerberusPhaseOverlay;
-import net.runelite.client.plugins.cerberus.overlays.CerberusPrayerOverlay;
+import net.runelite.client.plugins.cerberus.domain.Ghost;
+import net.runelite.client.plugins.cerberus.domain.Phase;
+import net.runelite.client.plugins.cerberus.overlays.CurrentAttackOverlay;
+import net.runelite.client.plugins.cerberus.overlays.PrayerOverlay;
+import net.runelite.client.plugins.cerberus.overlays.SceneOverlay;
+import net.runelite.client.plugins.cerberus.overlays.UpcomingAttackOverlay;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.http.api.item.ItemEquipmentStats;
 import net.runelite.http.api.item.ItemStats;
 import org.pf4j.Extension;
 
+@Slf4j
+@Singleton
 @Extension
 @PluginDescriptor(
 	name = "Cerberus",
 	enabledByDefault = false,
-	description = "Show Cerberus' attacks and what to pray against the summoned souls",
-	tags = {"bosses", "combat", "ghosts", "prayer", "pve", "overlay", "souls", "guitar", "hero"},
+	description = "A plugin for the Cerberus boss.",
+	tags = {"cerberus", "hellhound"},
 	type = PluginType.PVM
 )
-
-@Slf4j
-@Singleton
 public class CerberusPlugin extends Plugin
 {
-	@Getter(AccessLevel.PUBLIC)
-	private final List<NPC> ghosts = new ArrayList<>();
-	@Getter(AccessLevel.PUBLIC)
-	private final List<CerberusAttack> upcomingAttacks = new ArrayList<>(10);
-	@Getter(AccessLevel.PUBLIC)
-	private CerberusNPC cerberus;
-	@Getter(AccessLevel.PUBLIC)
-	private Prayer prayer;
-	@Getter(AccessLevel.PUBLIC)
-	private int gameTick = 0;
-	@Getter(AccessLevel.PUBLIC)
-	private long lastTick;
+	private static final int ANIMATION_ID_IDLE = -1;
+	private static final int ANIMATION_ID_STAND_UP = 4486;
+	private static final int ANIMATION_ID_SIT_DOWN = 4487;
+	private static final int ANIMATION_ID_FLINCH = 4489;
+	private static final int ANIMATION_ID_RANGED = 4490;
+	private static final int ANIMATION_ID_MELEE = 4491;
+	private static final int ANIMATION_ID_LAVA = 4493;
+	private static final int ANIMATION_ID_GHOSTS = 4494;
+	private static final int ANIMATION_ID_DEATH = 4495;
+
+	private static final int PROJECTILE_ID_MAGIC = 1242;
+	private static final int PROJECTILE_ID_RANGE = 1245;
+
+	private static final int GHOST_PROJECTILE_ID_RANGE = 34;
+	private static final int GHOST_PROJECTILE_ID_MAGIC = 100;
+	private static final int GHOST_PROJECTILE_ID_MELEE = 1248;
+
+	private static final int PROJECTILE_ID_NO_FUCKING_IDEA = 15;
+	private static final int PROJECTILE_ID_LAVA = 1247;
+
+	private static final Set<Integer> REGION_IDS = Set.of(4883, 5140, 5395);
+
 	@Inject
-	@Getter(AccessLevel.PUBLIC)
 	private Client client;
+
 	@Inject
-	private OverlayManager overlayManager;
+	private EventBus eventBus;
+
 	@Inject
-	private ItemManager itemManager;
-	@Inject
-	private CerberusOverlay attacksOverlay;
-	@Inject
-	private CerberusPhaseOverlay phaseOverlay;
-	@Inject
-	private CerberusPrayerOverlay prayerOverlay;
-	@Inject
-	@Getter(AccessLevel.PUBLIC)
 	private CerberusConfig config;
 
+	@Inject
+	private ItemManager itemManager;
+
+	@Inject
+	private OverlayManager overlayManager;
+
+	@Inject
+	private SceneOverlay sceneOverlay;
+
+	@Inject
+	private PrayerOverlay prayerOverlay;
+
+	@Inject
+	private CurrentAttackOverlay currentAttackOverlay;
+
+	@Inject
+	private UpcomingAttackOverlay upcomingAttackOverlay;
+
+	@Getter
+	private final List<NPC> ghosts = new ArrayList<>();
+
+	@Getter
+	private final List<CerberusAttack> upcomingAttacks = new ArrayList<>();
+
+	private final List<Long> tickTimestamps = new ArrayList<>();
+
+	@Getter
+	@Nullable
+	private Prayer prayer = Prayer.PROTECT_FROM_MAGIC;
+
+	@Getter
+	@Nullable
+	private Cerberus cerberus;
+
+	@Getter
+	private int gameTick;
+
+	private int tickTimestampIndex;
+
+	@Getter
+	private long lastTick;
+
+	private boolean inArena;
+
 	@Provides
-	CerberusConfig getConfig(ConfigManager configManager)
+	CerberusConfig getConfig(final ConfigManager configManager)
 	{
 		return configManager.getConfig(CerberusConfig.class);
 	}
 
-
-	private int tickTimestampIndex;
-	private final List<Long> tickTimestamps = new ArrayList<>(5);
-
 	@Override
 	protected void startUp()
 	{
+		if (client.getGameState() != GameState.LOGGED_IN || !inCerberusRegion())
+		{
+			return;
+		}
+
+		init();
+	}
+
+	private void init()
+	{
+		inArena = true;
+
+		overlayManager.add(sceneOverlay);
 		overlayManager.add(prayerOverlay);
-		overlayManager.add(phaseOverlay);
-		overlayManager.add(attacksOverlay);
+		overlayManager.add(currentAttackOverlay);
+		overlayManager.add(upcomingAttackOverlay);
+
+		eventBus.subscribe(GameTick.class, this, this::onGameTick);
+		eventBus.subscribe(ProjectileSpawned.class, this, this::onProjectileSpawned);
+		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
+		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
+		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
 	}
 
 	@Override
 	protected void shutDown()
 	{
+		inArena = false;
+
+		eventBus.unregister(this);
+
+		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(prayerOverlay);
-		overlayManager.remove(phaseOverlay);
-		overlayManager.remove(attacksOverlay);
+		overlayManager.remove(currentAttackOverlay);
+		overlayManager.remove(upcomingAttackOverlay);
+
+		ghosts.clear();
+		upcomingAttacks.clear();
+		tickTimestamps.clear();
+
+		prayer = Prayer.PROTECT_FROM_MAGIC;
+
+		cerberus = null;
+
+		gameTick = 0;
+		tickTimestampIndex = 0;
+		lastTick = 0;
 	}
 
-
 	@Subscribe
-	public void onGameTick(GameTick event)
+	private void onConfigChanged(final ConfigChanged event)
 	{
-		if (client.getGameState() != GameState.LOGGED_IN)
+		if (!event.getGroup().equals("cerberus"))
 		{
 			return;
 		}
 
+		if (event.getKey().equals("mirrorMode"))
+		{
+			sceneOverlay.determineLayer();
+			prayerOverlay.determineLayer();
+			currentAttackOverlay.determineLayer();
+			upcomingAttackOverlay.determineLayer();
+
+			if (inArena)
+			{
+				overlayManager.remove(sceneOverlay);
+				overlayManager.remove(prayerOverlay);
+				overlayManager.remove(currentAttackOverlay);
+				overlayManager.remove(upcomingAttackOverlay);
+
+				overlayManager.add(sceneOverlay);
+				overlayManager.add(prayerOverlay);
+				overlayManager.add(currentAttackOverlay);
+				overlayManager.add(upcomingAttackOverlay);
+			}
+		}
+	}
+
+	@Subscribe
+	private void onGameStateChanged(final GameStateChanged event)
+	{
+		final GameState gameState = event.getGameState();
+
+		switch (gameState)
+		{
+			case LOGGED_IN:
+				if (inCerberusRegion())
+				{
+					if (!inArena)
+					{
+						init();
+					}
+				}
+				else
+				{
+					if (inArena)
+					{
+						shutDown();
+					}
+				}
+				break;
+			case HOPPING:
+			case LOGIN_SCREEN:
+				if (inArena)
+				{
+					shutDown();
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void onGameTick(final GameTick event)
+	{
 		if (cerberus == null)
 		{
 			return;
@@ -161,6 +302,7 @@ public class CerberusPlugin extends Plugin
 		}
 
 		long min = 0;
+
 		for (int i = 0; i < tickTimestamps.size(); ++i)
 		{
 			if (min == 0)
@@ -172,227 +314,104 @@ public class CerberusPlugin extends Plugin
 				min = Math.min(min, tickTimestamps.get(i) + 600 * ((tickTimestampIndex - i + 5) % 5));
 			}
 		}
+
 		tickTimestampIndex = (tickTimestampIndex + 1) % 5;
+
 		lastTick = min;
+
 		++gameTick;
 
-		if (gameTick % 10 == 3)
+		if (config.calculateAutoAttackPrayer() && gameTick % 10 == 3)
 		{
-			setPrayer();
+			setAutoAttackPrayer();
 		}
 
 		calculateUpcomingAttacks();
 
-		if (ghosts.size() <= 1)
+		if (ghosts.size() > 1)
 		{
-			return;
-		}
-
-		ghosts.sort((a, b) -> ComparisonChain.start()
-			// First, sort by the southernmost ghost (e.g with lowest y)
-			.compare(a.getLocalLocation().getY(), b.getLocalLocation().getY())
-			// Then, sort by the westernmost ghost (e.g with lowest x)
-			.compare(a.getLocalLocation().getX(), b.getLocalLocation().getX())
-			// This will give use the current wave and order of the ghosts based on
-			// what ghost will attack first
-			.result());
-	}
-
-
-	private void calculateUpcomingAttacks()
-	{
-		upcomingAttacks.clear();
-
-		final CerberusNPC.Attack lastCerberusAttack = cerberus.getLastAttack();
-
-		if (lastCerberusAttack == null)
-		{
-			return;
-		}
-
-		final int lastCerberusAttackTick = cerberus.getLastAttackTick();
-		final int health = cerberus.getHealth();
-		final CerberusPhase expectedPhase = cerberus.getNextAttackPhase(1, health);
-
-
-		final CerberusPhase lastCerberusPhase = cerberus.getLastAttackPhase();
-
-		int tickDelay = 0;
-		if (lastCerberusPhase != null)
-		{
-			tickDelay = lastCerberusPhase.getTickDelay();
-		}
-
-		for (int tick = gameTick + 1; tick <= gameTick + 10; ++tick)
-		{
-			if (ghosts.size() == 3)
-			{
-				final Optional<CerberusGhost> ghost;
-				if (cerberus.getLastGhostYellTick() == tick - 13)
-				{
-					ghost = CerberusGhost.fromNPC(ghosts.get(ghosts.size() - 3));
-				}
-				else if (cerberus.getLastGhostYellTick() == tick - 15)
-				{
-					ghost = CerberusGhost.fromNPC(ghosts.get(ghosts.size() - 2));
-				}
-				else if (cerberus.getLastGhostYellTick() == tick - 17)
-				{
-					ghost = CerberusGhost.fromNPC(ghosts.get(ghosts.size() - 1));
-				}
-				else
-				{
-					ghost = null;
-				}
-
-				if (ghost != null && ghost.isPresent())
-				{
-					switch (ghost.get().getType())
-					{
-						case ATTACK:
-							upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.GHOST_MELEE));
-							break;
-						case RANGED:
-							upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.GHOST_RANGED));
-							break;
-						case MAGIC:
-							upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.GHOST_MAGIC));
-							break;
-					}
-					continue;
-				}
-			}
-
-			if (expectedPhase == CerberusPhase.TRIPLE)
-			{
-				if (cerberus.getLastTripleAttack() == CerberusNPC.Attack.MAGIC)
-				{
-					if (lastCerberusAttackTick + 4 == tick)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.RANGED));
-					}
-					else if (lastCerberusAttackTick + 7 == tick)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.MELEE));
-					}
-				}
-				else if (cerberus.getLastTripleAttack() == CerberusNPC.Attack.RANGED)
-				{
-					if (lastCerberusAttackTick + 4 == tick)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.MELEE));
-					}
-				}
-				else if (cerberus.getLastTripleAttack() == null)
-				{
-					if (lastCerberusAttackTick + tickDelay + 2 == tick)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.MAGIC));
-					}
-					else if (lastCerberusAttackTick + tickDelay + 5 == tick)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.RANGED));
-					}
-				}
-			}
-			else if (expectedPhase == CerberusPhase.AUTO)
-			{
-				if (lastCerberusAttackTick + tickDelay + 1 == tick)
-				{
-					if (getPrayer() == Prayer.PROTECT_FROM_MAGIC)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.MAGIC));
-					}
-					else if (getPrayer() == Prayer.PROTECT_FROM_MISSILES)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.RANGED));
-					}
-					else if (getPrayer() == Prayer.PROTECT_FROM_MELEE)
-					{
-						upcomingAttacks.add(new CerberusAttack(tick, CerberusNPC.Attack.MELEE));
-					}
-				}
-			}
+			/*
+			 * First, sort by the southernmost ghost (e.g with lowest y).
+			 * Then, sort by the westernmost ghost (e.g with lowest x).
+			 * This will give use the current wave and order of the ghosts based on what ghost will attack first.
+			 */
+			ghosts.sort((a, b) -> ComparisonChain.start()
+				.compare(a.getLocalLocation().getY(), b.getLocalLocation().getY())
+				.compare(a.getLocalLocation().getX(), b.getLocalLocation().getX())
+				.result());
 		}
 	}
 
-	@Subscribe
-	private void onGameStateChanged(GameStateChanged event)
-	{
-		GameState gameState = event.getGameState();
-		if (gameState == GameState.LOGIN_SCREEN || gameState == GameState.HOPPING || gameState == GameState.CONNECTION_LOST)
-		{
-			cerberus = null;
-			ghosts.clear();
-			upcomingAttacks.clear();
-		}
-	}
-
-	@Subscribe
-	private void onProjectileSpawned(ProjectileSpawned event)
+	private void onProjectileSpawned(final ProjectileSpawned event)
 	{
 		if (cerberus == null)
 		{
 			return;
 		}
-		var projectile = event.getProjectile();
-		var hp = cerberus.getHealth();
-		var expectedAttack = cerberus.getNextAttackPhase(1, hp);
+
+		final Projectile projectile = event.getProjectile();
+
+		final int hp = cerberus.getHp();
+
+		final Phase expectedAttack = cerberus.getNextAttackPhase(1, hp);
+
 		switch (projectile.getId())
 		{
-			case 1242: //Magic
-				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus projectile: MAGIC");
-				if (expectedAttack != CerberusPhase.TRIPLE)
+			case PROJECTILE_ID_MAGIC:
+				log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, cerbProjectile={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "MAGIC");
+
+				if (expectedAttack != Phase.TRIPLE)
 				{
-					cerberus.nextPhase(CerberusPhase.AUTO);
+					cerberus.nextPhase(Phase.AUTO);
 				}
 				else
 				{
-					cerberus.setLastTripleAttack(CerberusNPC.Attack.MAGIC);
+					cerberus.setLastTripleAttack(Cerberus.Attack.MAGIC);
 				}
-				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.MAGIC);
+
+				cerberus.doProjectileOrAnimation(gameTick, Cerberus.Attack.MAGIC);
 				break;
-			case 1245: //Ranged
-				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus projectile: RANGED");
-				if (expectedAttack != CerberusPhase.TRIPLE)
+			case PROJECTILE_ID_RANGE:
+				log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, cerbProjectile={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "RANGED");
+
+				if (expectedAttack != Phase.TRIPLE)
 				{
-					cerberus.nextPhase(CerberusPhase.AUTO);
+					cerberus.nextPhase(Phase.AUTO);
 				}
 				else
 				{
-					cerberus.setLastTripleAttack(CerberusNPC.Attack.RANGED);
+					cerberus.setLastTripleAttack(Cerberus.Attack.RANGED);
 				}
-				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.RANGED);
+
+				cerberus.doProjectileOrAnimation(gameTick, Cerberus.Attack.RANGED);
 				break;
-			case 34:
+			case GHOST_PROJECTILE_ID_RANGE:
 				if (!ghosts.isEmpty())
 				{
-					log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Ghost projectile: RANGED");
+					log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, ghostProjectile={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "RANGED");
 				}
 				break;
-			case 100:
+			case GHOST_PROJECTILE_ID_MAGIC:
 				if (!ghosts.isEmpty())
 				{
-					log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Ghost projectile: MAGIC");
+					log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, ghostProjectile={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "MAGIC");
 				}
 				break;
-			case 1248:
+			case GHOST_PROJECTILE_ID_MELEE:
 				if (!ghosts.isEmpty())
 				{
-					log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Ghost projectile: MELEE");
+					log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, ghostProjectile={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "MELEE");
 				}
 				break;
-			case 15:
-			case 1247: //Lava
+			case PROJECTILE_ID_NO_FUCKING_IDEA:
+			case PROJECTILE_ID_LAVA: //Lava
 			default:
 				break;
 
 		}
 	}
 
-
-	@Subscribe
-	private void onAnimationChanged(AnimationChanged event)
+	private void onAnimationChanged(final AnimationChanged event)
 	{
 		if (cerberus == null)
 		{
@@ -400,112 +419,305 @@ public class CerberusPlugin extends Plugin
 		}
 
 		final Actor actor = event.getActor();
-		if (!cerberus.getNpc().equals(actor))
+
+		final NPC npc = cerberus.getNpc();
+
+		if (npc == null || actor != npc)
 		{
 			return;
 		}
 
+		final int animationId = npc.getAnimation();
 
-		int animationId = cerberus.getNpc().getAnimation();
-		var hp = cerberus.getHealth();
-		var expectedAttack = cerberus.getNextAttackPhase(1, hp);
+		final int hp = cerberus.getHp();
+
+		final Phase expectedAttack = cerberus.getNextAttackPhase(1, hp);
 
 		switch (animationId)
 		{
-			case 4491: //MELEE
-				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: MELEE");
+			case ANIMATION_ID_MELEE:
+				log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, cerbAnimation={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "MELEE");
+
 				cerberus.setLastTripleAttack(null);
 				cerberus.nextPhase(expectedAttack);
-				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.MELEE);
+				cerberus.doProjectileOrAnimation(gameTick, Cerberus.Attack.MELEE);
 				break;
-			case 4493: //LAVA
-				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: LAVA");
-				cerberus.nextPhase(CerberusPhase.LAVA);
-				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.LAVA);
+			case ANIMATION_ID_LAVA:
+				log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, cerbAnimation={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "LAVA");
+
+				cerberus.nextPhase(Phase.LAVA);
+				cerberus.doProjectileOrAnimation(gameTick, Cerberus.Attack.LAVA);
 				break;
-			case 4494: //GHOSTS
-				log.debug(gameTick + " - Attack " + (cerberus.getPhaseCount() + 1) + " - Cerb HP: " + cerberus.getHealth() + " - Expecting " + expectedAttack + " -> Cerberus animation: GHOSTS");
-				cerberus.nextPhase(CerberusPhase.GHOSTS);
+			case ANIMATION_ID_GHOSTS:
+				log.debug("gameTick={}, attack={}, cerbHp={}, expectedAttack={}, cerbAnimation={}", gameTick, cerberus.getPhaseCount() + 1, hp, expectedAttack, "GHOSTS");
+
+				cerberus.nextPhase(Phase.GHOSTS);
 				cerberus.setLastGhostYellTick(gameTick);
 				cerberus.setLastGhostYellTime(System.currentTimeMillis());
-				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.GHOSTS);
+				cerberus.doProjectileOrAnimation(gameTick, Cerberus.Attack.GHOSTS);
 				break;
-			case 4487: //Cerberus resets (sits down)
-			case 4486: //Start of the fight (cerberus stands up)
-				cerberus = new CerberusNPC(cerberus.getNpc());
+			case ANIMATION_ID_SIT_DOWN:
+			case ANIMATION_ID_STAND_UP:
+				cerberus = new Cerberus(cerberus.getNpc());
 				gameTick = 0;
 				lastTick = System.currentTimeMillis();
 				upcomingAttacks.clear();
 				tickTimestamps.clear();
 				tickTimestampIndex = 0;
-				cerberus.doProjectileOrAnimation(gameTick, CerberusNPC.Attack.SPAWN);
+				cerberus.doProjectileOrAnimation(gameTick, Cerberus.Attack.SPAWN);
 				break;
-			case -1: //idle
-			case 4489: //Cerberus animation: taking damage
-			case 4490: //Ranged animation (projectile is tracked)
+			case ANIMATION_ID_IDLE:
+			case ANIMATION_ID_FLINCH:
+			case ANIMATION_ID_RANGED:
 				break;
-			case 4495: //Cerberus death
+			case ANIMATION_ID_DEATH:
 				cerberus = null;
 				ghosts.clear();
 				break;
 			default:
-				log.debug(gameTick + " - Cerberus animation: UNKNOWN (id: " + animationId + ")");
+				log.debug("gameTick={}, animationId={} (UNKNOWN)", gameTick, animationId);
+				break;
 		}
 	}
 
-	public void setPrayer()
+	private void onNpcSpawned(final NpcSpawned event)
 	{
-		int dStab = 0, dMagic = 0, dRange = 0;
+		final NPC npc = event.getNpc();
 
-		ItemContainer c = client.getItemContainer(InventoryID.EQUIPMENT);
-		if (c != null)
+		if (cerberus == null && npc != null && npc.getName() != null && npc.getName().toLowerCase().contains("cerberus"))
 		{
-			final Item[] items = c.getItems();
-			for (var item : items)
+			log.debug("onNpcSpawned name={}, id={}", npc.getName(), npc.getId());
+
+			cerberus = new Cerberus(npc);
+
+			gameTick = 0;
+			tickTimestampIndex = 0;
+			lastTick = System.currentTimeMillis();
+
+			upcomingAttacks.clear();
+			tickTimestamps.clear();
+		}
+
+		if (cerberus == null)
+		{
+			return;
+		}
+
+		final Ghost ghost = Ghost.fromNPC(npc);
+
+		if (ghost != null)
+		{
+			ghosts.add(npc);
+		}
+	}
+
+	private void onNpcDespawned(final NpcDespawned event)
+	{
+		final NPC npc = event.getNpc();
+
+		if (npc != null && npc.getName() != null && npc.getName().toLowerCase().contains("cerberus"))
+		{
+			cerberus = null;
+			ghosts.clear();
+
+			log.debug("onNpcDespawned name={}, id={}", npc.getName(), npc.getId());
+		}
+
+		if (cerberus == null && !ghosts.isEmpty())
+		{
+			ghosts.clear();
+			return;
+		}
+
+		ghosts.remove(event.getNpc());
+	}
+
+	private void calculateUpcomingAttacks()
+	{
+		upcomingAttacks.clear();
+
+		final Cerberus.Attack lastCerberusAttack = cerberus.getLastAttack();
+
+		if (lastCerberusAttack == null)
+		{
+			return;
+		}
+
+		final int lastCerberusAttackTick = cerberus.getLastAttackTick();
+
+		final int hp = cerberus.getHp();
+
+		final Phase expectedPhase = cerberus.getNextAttackPhase(1, hp);
+		final Phase lastPhase = cerberus.getLastAttackPhase();
+
+		int tickDelay = 0;
+
+		if (lastPhase != null)
+		{
+			tickDelay = lastPhase.getTickDelay();
+		}
+
+		for (int tick = gameTick + 1; tick <= gameTick + 10; ++tick)
+		{
+			if (ghosts.size() == 3)
 			{
-				if (item != null)
+				final Ghost ghost;
+
+				if (cerberus.getLastGhostYellTick() == tick - 13)
 				{
-					final ItemStats stats = itemManager.getItemStats(item.getId(), false);
-					if (stats == null)
+					ghost = Ghost.fromNPC(ghosts.get(ghosts.size() - 3));
+				}
+				else if (cerberus.getLastGhostYellTick() == tick - 15)
+				{
+					ghost = Ghost.fromNPC(ghosts.get(ghosts.size() - 2));
+				}
+				else if (cerberus.getLastGhostYellTick() == tick - 17)
+				{
+					ghost = Ghost.fromNPC(ghosts.get(ghosts.size() - 1));
+				}
+				else
+				{
+					ghost = null;
+				}
+
+				if (ghost != null)
+				{
+					switch (ghost.getType())
 					{
-						continue;
-					}
-					var equipmentStats = stats.getEquipment();
-					if (equipmentStats == null)
-					{
-						continue;
+						case ATTACK:
+							upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.GHOST_MELEE));
+							break;
+						case RANGED:
+							upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.GHOST_RANGED));
+							break;
+						case MAGIC:
+							upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.GHOST_MAGIC));
+							break;
 					}
 
-					dStab += equipmentStats.getDstab();
-					dMagic += equipmentStats.getDmagic();
-					dRange += equipmentStats.getDrange();
+					continue;
+				}
+			}
+
+			if (expectedPhase == Phase.TRIPLE)
+			{
+				if (cerberus.getLastTripleAttack() == Cerberus.Attack.MAGIC)
+				{
+					if (lastCerberusAttackTick + 4 == tick)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.RANGED));
+					}
+					else if (lastCerberusAttackTick + 7 == tick)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.MELEE));
+					}
+				}
+				else if (cerberus.getLastTripleAttack() == Cerberus.Attack.RANGED)
+				{
+					if (lastCerberusAttackTick + 4 == tick)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.MELEE));
+					}
+				}
+				else if (cerberus.getLastTripleAttack() == null)
+				{
+					if (lastCerberusAttackTick + tickDelay + 2 == tick)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.MAGIC));
+					}
+					else if (lastCerberusAttackTick + tickDelay + 5 == tick)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.RANGED));
+					}
+				}
+			}
+			else if (expectedPhase == Phase.AUTO)
+			{
+				if (lastCerberusAttackTick + tickDelay + 1 == tick)
+				{
+					if (prayer == Prayer.PROTECT_FROM_MAGIC)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.MAGIC));
+					}
+					else if (prayer == Prayer.PROTECT_FROM_MISSILES)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.RANGED));
+					}
+					else if (prayer == Prayer.PROTECT_FROM_MELEE)
+					{
+						upcomingAttacks.add(new CerberusAttack(tick, Cerberus.Attack.MELEE));
+					}
 				}
 			}
 		}
+	}
 
+	private void setAutoAttackPrayer()
+	{
+		int defenseStab = 0, defenseMagic = 0, defenseRange = 0;
 
-		var magicLvl = client.getBoostedSkillLevel(Skill.MAGIC);
-		var defenseLvl = client.getBoostedSkillLevel(Skill.DEFENCE);
+		final ItemContainer itemContainer = client.getItemContainer(InventoryID.EQUIPMENT);
 
-
-		var magDefenceTotal = (int) (((double) magicLvl) * 0.7 + ((double) defenseLvl) * 0.3) + dMagic;
-		var ranDefenceTotal = defenseLvl + dRange;
-		var melDefenceTotal = defenseLvl + dStab;
-
-		var loc = client.getLocalPlayer().getWorldLocation();
-		var cerbLoc = cerberus.getNpc().getWorldLocation();
-
-		//If you're not in melee range, disregard your stab defense
-		if (loc.getX() < cerbLoc.getX() - 1 || loc.getX() > cerbLoc.getX() + 5 || loc.getY() < cerbLoc.getY() - 1 || loc.getY() > cerbLoc.getY() + 5)
+		if (itemContainer != null)
 		{
-			melDefenceTotal = Integer.MAX_VALUE;
+			final Item[] items = itemContainer.getItems();
+
+			for (final Item item : items)
+			{
+				if (item == null)
+				{
+					continue;
+				}
+
+				final ItemStats itemStats = itemManager.getItemStats(item.getId(), false);
+
+				if (itemStats == null)
+				{
+					continue;
+				}
+
+				final ItemEquipmentStats itemStatsEquipment = itemStats.getEquipment();
+
+				if (itemStatsEquipment == null)
+				{
+					continue;
+				}
+
+				defenseStab += itemStatsEquipment.getDstab();
+				defenseMagic += itemStatsEquipment.getDmagic();
+				defenseRange += itemStatsEquipment.getDrange();
+			}
 		}
 
-		if (magDefenceTotal <= ranDefenceTotal && magDefenceTotal <= melDefenceTotal)
+		final int magicLvl = client.getBoostedSkillLevel(Skill.MAGIC);
+		final int defenseLvl = client.getBoostedSkillLevel(Skill.DEFENCE);
+
+		final int magicDefenseTotal = (int) (((double) magicLvl) * 0.7 + ((double) defenseLvl) * 0.3) + defenseMagic;
+		final int rangeDefenseTotal = defenseLvl + defenseRange;
+
+		int meleeDefenseTotal = defenseLvl + defenseStab;
+
+		final Player player = client.getLocalPlayer();
+
+		if (player != null)
+		{
+			final WorldPoint worldPointPlayer = client.getLocalPlayer().getWorldLocation();
+			final WorldPoint worldPointCerberus = cerberus.getNpc().getWorldLocation();
+
+			if (worldPointPlayer.getX() < worldPointCerberus.getX() - 1
+				|| worldPointPlayer.getX() > worldPointCerberus.getX() + 5
+				|| worldPointPlayer.getY() < worldPointCerberus.getY() - 1
+				|| worldPointPlayer.getY() > worldPointCerberus.getY() + 5)
+			{
+				meleeDefenseTotal = Integer.MAX_VALUE;
+			}
+		}
+
+		if (magicDefenseTotal <= rangeDefenseTotal && magicDefenseTotal <= meleeDefenseTotal)
 		{
 			prayer = Prayer.PROTECT_FROM_MAGIC;
 		}
-		else if (ranDefenceTotal <= melDefenceTotal)
+		else if (rangeDefenseTotal <= meleeDefenseTotal)
 		{
 			prayer = Prayer.PROTECT_FROM_MISSILES;
 		}
@@ -515,81 +727,28 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	private void onNpcSpawned(final NpcSpawned event)
+	private boolean inCerberusArena()
 	{
+		final Player player = client.getLocalPlayer();
 
-		final NPC npc = event.getNpc();
-		if (cerberus == null && npc != null && npc.getName() != null &&
-			npc.getName().toLowerCase().contains("cerberus"))
+		if (player == null)
 		{
-			log.debug("Cerberus-NPC spawned: " + npc.getName() + " (ID: " + npc.getId() + ")");
-			cerberus = new CerberusNPC(npc);
-			gameTick = 0;
-			lastTick = System.currentTimeMillis();
-			upcomingAttacks.clear();
-			tickTimestamps.clear();
-			tickTimestampIndex = 0;
+			return false;
 		}
 
-		if (cerberus == null)
-		{
-			return;
-		}
-
-		CerberusGhost.fromNPC(npc).ifPresent(ghost -> ghosts.add(npc));
+		return Arena.getArena(player.getWorldLocation()) != null;
 	}
 
-	@Subscribe
-	private void onNpcDespawned(final NpcDespawned event)
+	private boolean inCerberusRegion()
 	{
-		final NPC npc = event.getNpc();
-
-
-		if (npc != null && npc.getName() != null &&
-			npc.getName().toLowerCase().contains("cerberus"))
+		for (final int regionId : client.getMapRegions())
 		{
-			cerberus = null;
-			ghosts.clear();
-			log.debug("Cerberus-NPC despawned: " + npc.getName() + " (ID: " + npc.getId() + ")");
-		}
-
-		if (cerberus == null)
-		{
-			if (ghosts.size() != 0)
+			if (REGION_IDS.contains(regionId))
 			{
-				ghosts.clear();
+				return true;
 			}
-			return;
 		}
 
-		ghosts.remove(event.getNpc());
-	}
-
-	public boolean inCerberusArena()
-	{
-		return CerberusArena.getArena(client.getLocalPlayer().getWorldLocation()) != null;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("cerberus"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			prayerOverlay.determineLayer();
-			phaseOverlay.determineLayer();
-			attacksOverlay.determineLayer();
-			overlayManager.remove(prayerOverlay);
-			overlayManager.remove(phaseOverlay);
-			overlayManager.remove(attacksOverlay);
-			overlayManager.add(prayerOverlay);
-			overlayManager.add(phaseOverlay);
-			overlayManager.add(attacksOverlay);
-		}
+		return false;
 	}
 }

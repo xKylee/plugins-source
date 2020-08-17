@@ -27,111 +27,108 @@ package net.runelite.client.plugins.cerberus.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.NPC;
 import net.runelite.api.Prayer;
-import net.runelite.client.plugins.cerberus.Util.CerberusUtil;
+import net.runelite.client.plugins.cerberus.util.Utility;
 
-@Slf4j
-public class CerberusNPC
+@Getter
+public class Cerberus
 {
+	private static final int TOTAL_HP = 600;
+	private static final int GHOST_HP = 400;
+	private static final int LAVA_HP = 200;
 
-	@Getter(AccessLevel.PUBLIC)
-	private final List<CerberusPhase> attacksDone;
-	private NPC cerberus;
-	@Getter(AccessLevel.PUBLIC)
-	private int phaseCount = 0;
-	@Getter(AccessLevel.PUBLIC)
+	private final List<Phase> attacksDone;
+
+	private final NPC npc;
+
+	private int phaseCount;
+
 	private int lastAttackTick;
 
-	@Getter(AccessLevel.PUBLIC)
-	private CerberusPhase lastAttackPhase = CerberusPhase.SPAWNING;
+	private Phase lastAttackPhase;
 
-	@Getter(AccessLevel.PUBLIC)
 	private Attack lastAttack;
 
-	@Getter(AccessLevel.PUBLIC)
-	@Setter(AccessLevel.PUBLIC)
+	@Setter
 	private int lastGhostYellTick;
 
-	@Getter(AccessLevel.PUBLIC)
-	@Setter(AccessLevel.PUBLIC)
+	@Setter
 	private long lastGhostYellTime;
 
-	@Getter(AccessLevel.PUBLIC)
-	@Setter(AccessLevel.PUBLIC)
+	@Setter
 	private Attack lastTripleAttack;
 
-	private int hp = 600;
+	private int hp;
 
-	public CerberusNPC(NPC cerberus)
+	public Cerberus(@NonNull final NPC npc)
 	{
-		this.cerberus = cerberus;
-		this.attacksDone = new ArrayList<>();
+		this.npc = npc;
+
+		attacksDone = new ArrayList<>();
+		lastAttackPhase = Phase.SPAWNING;
+		hp = TOTAL_HP;
 	}
 
-	public void nextPhase(CerberusPhase lastAttackPhase)
+	public void nextPhase(final Phase lastAttackPhase)
 	{
 		phaseCount++;
 		this.lastAttackPhase = lastAttackPhase;
 	}
 
-	public void doProjectileOrAnimation(int gameTick, Attack attack)
+	public void doProjectileOrAnimation(final int gameTick, final Attack attack)
 	{
 		lastAttackTick = gameTick;
 		lastAttack = attack;
 	}
 
-	public NPC getNpc()
+	public int getHp()
 	{
-		return cerberus;
-	}
+		final var calcualtedHp = Utility.calculateNpcHp(npc.getHealthRatio(), npc.getHealthScale(), TOTAL_HP);
 
-	public int getHealth()
-	{
-		var calcualtedHp = CerberusUtil.getExactHp(cerberus.getHealthRatio(), cerberus.getHealthScale(), 600);
 		if (calcualtedHp != -1)
 		{
 			hp = calcualtedHp;
 		}
+
 		return hp;
 	}
 
 	//https://pastebin.com/hWCvantS
-	public CerberusPhase getNextAttackPhase(int i, int hp)
+	public Phase getNextAttackPhase(final int i, final int hp)
 	{
-		var nextAttack = this.phaseCount + i;
+		final var nextAttack = this.phaseCount + i;
+
 		if (nextAttack == 0)
 		{
-			return CerberusPhase.SPAWNING;
+			return Phase.SPAWNING;
 		}
 
 		if ((nextAttack - 1) % 10 == 0)
 		{
-			return CerberusPhase.TRIPLE;
+			return Phase.TRIPLE;
 		}
 
-		if (nextAttack % 7 == 0 && hp <= 400)
+		if (nextAttack % 7 == 0 && hp <= GHOST_HP)
 		{
-			return CerberusPhase.GHOSTS;
+			return Phase.GHOSTS;
 		}
 
-		if (nextAttack % 5 == 0 && hp <= 200)
+		if (nextAttack % 5 == 0 && hp <= LAVA_HP)
 		{
-			return CerberusPhase.LAVA;
+			return Phase.LAVA;
 		}
 
-		return CerberusPhase.AUTO;
+		return Phase.AUTO;
 	}
 
-	@Getter(AccessLevel.PUBLIC)
-	@AllArgsConstructor
-	public
-	enum Attack
+	@Getter
+	@RequiredArgsConstructor
+	public enum Attack
 	{
 		SPAWN(null, 0),
 		AUTO(null, 1),
@@ -144,10 +141,8 @@ public class CerberusNPC
 		GHOST_RANGED(Prayer.PROTECT_FROM_MISSILES, 2),
 		GHOST_MAGIC(Prayer.PROTECT_FROM_MAGIC, 2);
 
-		@Getter(AccessLevel.PUBLIC)
-		private Prayer prayer;
+		private final Prayer prayer;
 
-		@Getter(AccessLevel.PUBLIC)
-		private int priority;
+		private final int priority;
 	}
 }

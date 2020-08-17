@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2019 Im2be <https://github.com/Im2be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,33 +23,45 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.9"
+package net.runelite.client.plugins.cerberus.domain;
 
-project.extra["PluginName"] = "Multi Lines"
-project.extra["PluginDescription"] = "Show borders of multicombat and PvP safezones"
+import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.runelite.api.coords.WorldPoint;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+@Getter
+@RequiredArgsConstructor
+public enum Arena
+{
+	WEST(1231, 1249, 1243, 1257),
+	NORTH(1295, 1313, 1307, 1321),
+	EAST(1359, 1377, 1243, 1257);
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+	private final int x1, x2, y1, y2;
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-}
+	@Nullable
+	public static Arena getArena(final WorldPoint worldPoint)
+	{
+		for (final Arena arena : Arena.values())
+		{
+			if (worldPoint.getX() >= arena.getX1() && worldPoint.getX() <= arena.getX2() &&
+				worldPoint.getY() >= arena.getY1() && worldPoint.getY() <= arena.getY2())
+			{
+				return arena;
+			}
+		}
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+		return null;
+	}
+
+	public WorldPoint getGhostTile(final int ghostIndex)
+	{
+		if (ghostIndex > 2 || ghostIndex < 0)
+		{
+			return null;
+		}
+
+		return new WorldPoint(x1 + 8 + ghostIndex, y1 + 13, 0);
+	}
 }

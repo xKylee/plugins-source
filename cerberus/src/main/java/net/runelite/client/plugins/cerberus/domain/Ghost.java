@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2018, Tomas Slusny <slusnucky@gmail.com>
  * Copyright (c) 2019 Im2be <https://github.com/Im2be>
  * All rights reserved.
  *
@@ -23,45 +24,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package net.runelite.client.plugins.cerberus.domain;
 
-import lombok.AccessLevel;
+import com.google.common.collect.ImmutableMap;
+import java.awt.Color;
+import java.util.Map;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.NPC;
+import net.runelite.api.NpcID;
+import net.runelite.api.Skill;
 
-@Getter(AccessLevel.PUBLIC)
+@Getter
 @RequiredArgsConstructor
-public enum CerberusArena
+public enum Ghost
 {
-	WEST(1231, 1249, 1243, 1257),
-	NORTH(1295, 1313, 1307, 1321),
-	EAST(1359, 1377, 1243, 1257);
+	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED, Color.GREEN),
+	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC, Color.BLUE),
+	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK, Color.RED);
 
-	private final int x1, x2, y1, y2;
+	private static final Map<Integer, Ghost> MAP;
 
-	public static CerberusArena getArena(WorldPoint wp)
+	static
 	{
-		for (var arena : CerberusArena.values())
+		final ImmutableMap.Builder<Integer, Ghost> builder = new ImmutableMap.Builder<>();
+
+		for (final Ghost ghost : values())
 		{
-			if (wp.getX() >= arena.getX1() && wp.getX() <= arena.getX2() &&
-				wp.getY() >= arena.getY1() && wp.getY() <= arena.getY2())
-			{
-				return arena;
-			}
+			builder.put(ghost.getNpcId(), ghost);
 		}
 
-		return null;
+		MAP = builder.build();
 	}
 
-	public WorldPoint getGhostTile(int ghostIndex)
-	{
-		if (ghostIndex > 2 || ghostIndex < 0)
-		{
-			return null;
-		}
+	private final int npcId;
+	private final Skill type;
+	private final Color color;
 
-		return new WorldPoint(x1 + 8 + ghostIndex, y1 + 13, 0);
+	/**
+	 * Try to identify if NPC is ghost
+	 *
+	 * @param npc npc
+	 * @return optional ghost
+	 */
+	@Nullable
+	public static Ghost fromNPC(final NPC npc)
+	{
+		return MAP.get(npc.getId());
 	}
 }

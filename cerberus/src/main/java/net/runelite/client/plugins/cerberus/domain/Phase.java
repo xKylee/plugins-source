@@ -26,13 +26,13 @@
 package net.runelite.client.plugins.cerberus.domain;
 
 import java.awt.Color;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.runelite.api.Skill;
 
+@Getter
 @RequiredArgsConstructor
-public enum CerberusPhase
+public enum Phase
 {
 	SPAWNING(null, 4, null),
 	AUTO(Skill.ATTACK, 6, null),
@@ -40,10 +40,7 @@ public enum CerberusPhase
 	GHOSTS(Skill.PRAYER, 8, new Color(255, 255, 255)),
 	LAVA(Skill.FIREMAKING, 8, new Color(255, 153, 153));
 
-	@Getter(AccessLevel.PUBLIC)
 	private final Skill type;
-	@Getter(AccessLevel.PUBLIC)
 	private final int tickDelay;
-	@Getter(AccessLevel.PUBLIC)
 	private final Color textColor;
 }

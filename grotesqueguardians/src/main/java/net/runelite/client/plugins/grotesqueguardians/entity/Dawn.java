@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2018, https://openosrs.com
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,31 +24,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.grotesqueguardians;
 
-import net.runelite.api.Prayer;
+package net.runelite.client.plugins.grotesqueguardians.entity;
 
-public enum DuskAttack
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.Set;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import net.runelite.api.NPC;
+import net.runelite.api.NpcID;
+
+public class Dawn extends Gargoyle
 {
-	MELEE(7800, Prayer.PROTECT_FROM_MELEE),
-	RANGE(7801, Prayer.PROTECT_FROM_MISSILES);
-
-	private final int animation;
-	private final Prayer prayer;
-
-	DuskAttack(final int animation, final Prayer prayer)
+	public Dawn(@NonNull final NPC npc)
 	{
-		this.animation = animation;
-		this.prayer = prayer;
+		super(npc);
 	}
 
-	public int getAnimation()
+	public Phase getPhase()
 	{
-		return animation;
+		return Phase.of(npc.getId());
 	}
 
-	public Prayer getPrayer()
+	@Override
+	protected void updateTicksUntilNextAttack()
 	{
-		return prayer;
+		// Dawn npc does not always show animation ID when attacking
+		// Currently unused
+	}
+
+	@Getter
+	@RequiredArgsConstructor
+	enum Phase
+	{
+		PHASE_1(NpcID.DAWN_7852, Set.of(7770, 7771)),
+		PHASE_3(NpcID.DAWN_7884, Set.of(7770));
+
+		private static final Map<Integer, Phase> MAP;
+
+		static
+		{
+			final ImmutableMap.Builder<Integer, Phase> builder = new ImmutableMap.Builder<>();
+
+			for (final Phase phase : Phase.values())
+			{
+				builder.put(phase.getNpcId(), phase);
+			}
+
+			MAP = builder.build();
+		}
+
+		private final int npcId;
+		private final Set<Integer> attackAnimationIdSet;
+
+		static Phase of(final int npcId)
+		{
+			return MAP.get(npcId);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2018, Tomas Slusny <slusnucky@gmail.com>
- * Copyright (c) 2019 Im2be <https://github.com/Im2be>
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,54 +25,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package net.runelite.client.plugins.grotesqueguardians.entity;
 
-package net.runelite.client.plugins.cerberus.domain;
-
-import com.google.common.collect.ImmutableMap;
-import java.awt.Color;
-import java.util.Map;
-import java.util.Optional;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.runelite.api.NPC;
-import net.runelite.api.NpcID;
-import net.runelite.api.Skill;
 
-@Getter(AccessLevel.PUBLIC)
-@RequiredArgsConstructor
-public enum CerberusGhost
+public abstract class Gargoyle
 {
-	RANGE(NpcID.SUMMONED_SOUL, Skill.RANGED, Color.GREEN),
-	MAGE(NpcID.SUMMONED_SOUL_5868, Skill.MAGIC, Color.BLUE),
-	MELEE(NpcID.SUMMONED_SOUL_5869, Skill.ATTACK, Color.RED);
+	@Getter
+	protected final NPC npc;
 
-	private static final Map<Integer, CerberusGhost> MAP;
+	@Getter
+	protected int ticksUntilNextAttack;
 
-	static
+	Gargoyle(final NPC npc)
 	{
-		ImmutableMap.Builder<Integer, CerberusGhost> builder = new ImmutableMap.Builder<>();
-
-		for (final CerberusGhost ghost : values())
-		{
-			builder.put(ghost.getNpcId(), ghost);
-		}
-
-		MAP = builder.build();
+		this.npc = npc;
 	}
 
-	private final int npcId;
-	private final Skill type;
-	private final Color color;
-
-	/**
-	 * Try to identify if NPC is ghost
-	 *
-	 * @param npc npc
-	 * @return optional ghost
-	 */
-	public static Optional<CerberusGhost> fromNPC(final NPC npc)
-	{
-		return npc == null ? Optional.empty() : Optional.ofNullable(MAP.get(npc.getId()));
-	}
+	protected abstract void updateTicksUntilNextAttack();
 }

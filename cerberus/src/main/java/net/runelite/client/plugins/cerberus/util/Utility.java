@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2020 dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019 Im2be <https://github.com/Im2be>
  * All rights reserved.
  *
@@ -23,12 +24,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.cerberus.Util;
+package net.runelite.client.plugins.cerberus.util;
 
-public class CerberusUtil
+import java.awt.Color;
+import java.awt.Font;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import net.runelite.api.Prayer;
+import net.runelite.client.plugins.cerberus.CerberusConfig;
+import net.runelite.client.plugins.cerberus.domain.Phase;
+import net.runelite.client.ui.FontManager;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Utility
 {
+	private static final Color COLOR_DEFAULT = new Color(70, 61, 50, 225);
+	private static final Color COLOR_GHOSTS = new Color(255, 255, 255, 225);
+	private static final Color COLOR_TRIPLE_ATTACK = new Color(0, 15, 255, 225);
+	private static final Color COLOR_LAVA = new Color(82, 0, 0, 225);
 
-	public static int getExactHp(int ratio, int health, int maxHp)
+	public static int calculateNpcHp(final int ratio, final int health, final int maxHp)
 	{
 		if (ratio < 0 || health <= 0 || maxHp == -1)
 		{
@@ -71,4 +86,61 @@ public class CerberusUtil
 		return exactHealth;
 	}
 
+	public static Font getFontFromInfoboxComponentSize(final CerberusConfig.InfoBoxComponentSize size)
+	{
+		final Font font;
+
+		switch (size)
+		{
+			case LARGE:
+			case MEDIUM:
+			default:
+				font = FontManager.getRunescapeFont();
+				break;
+			case SMALL:
+				font = FontManager.getRunescapeSmallFont();
+				break;
+		}
+
+		return font;
+	}
+
+	public static Color getColorFromPhase(final Phase phase)
+	{
+		final Color color;
+
+		switch (phase)
+		{
+			case TRIPLE:
+				color = COLOR_TRIPLE_ATTACK;
+				break;
+			case LAVA:
+				color = COLOR_LAVA;
+				break;
+			case GHOSTS:
+				color = COLOR_GHOSTS;
+				break;
+			case AUTO:
+			default:
+				color = COLOR_DEFAULT;
+				break;
+		}
+
+		return color;
+	}
+
+	public static Color getColorFromPrayer(final Prayer prayer)
+	{
+		switch (prayer)
+		{
+			case PROTECT_FROM_MAGIC:
+				return Color.BLUE;
+			case PROTECT_FROM_MISSILES:
+				return Color.GREEN;
+			case PROTECT_FROM_MELEE:
+				return Color.RED;
+			default:
+				return Color.WHITE;
+		}
+	}
 }

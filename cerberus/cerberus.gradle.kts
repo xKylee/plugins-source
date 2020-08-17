@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.13"
+version = "0.0.14"
 
 project.extra["PluginName"] = "Cerberus"
 project.extra["PluginDescription"] = "Show Cerberus' attacks and what to pray against the summoned souls"
@@ -41,6 +41,7 @@ dependencies {
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    compileOnly(Libraries.rxjava)
 }
 
 tasks {

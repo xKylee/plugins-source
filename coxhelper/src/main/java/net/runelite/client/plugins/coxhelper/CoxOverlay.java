@@ -45,6 +45,7 @@ import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -59,14 +60,16 @@ public class CoxOverlay extends Overlay
 	private final CoxPlugin plugin;
 	private final CoxConfig config;
 	private final Olm olm;
+	private final ModelOutlineRenderer outliner;
 
 	@Inject
-	private CoxOverlay(final Client client, final CoxPlugin plugin, final CoxConfig config, final Olm olm)
+	private CoxOverlay(final Client client, final CoxPlugin plugin, final CoxConfig config, final Olm olm, ModelOutlineRenderer outliner)
 	{
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
 		this.olm = olm;
+		this.outliner = outliner;
 		this.setPosition(OverlayPosition.DYNAMIC);
 		this.determineLayer();
 		this.setPriority(OverlayPriority.HIGH);
@@ -282,6 +285,31 @@ public class CoxOverlay extends Overlay
 			if (this.olm.isActive())
 			{
 				GameObject head = this.olm.getHead();
+
+				if (this.config.olmPShowPhase())
+				{
+					if (head != null)
+					{
+						Color color = null;
+						switch (this.olm.getPhaseType())
+						{
+							case ACID:
+								color = Color.GREEN;
+								break;
+							case CRYSTAL:
+								color = Color.MAGENTA;
+								break;
+							case FLAME:
+								color = Color.RED;
+								break;
+						}
+						if (color != null)
+						{
+							outliner.drawOutline(head, 2, color);
+						}
+					}
+				}
+
 
 				if (this.config.olmTick())
 				{
