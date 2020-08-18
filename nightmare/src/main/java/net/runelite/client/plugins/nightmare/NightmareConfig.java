@@ -94,7 +94,7 @@ public interface NightmareConfig extends Config
 	@ConfigItem(
 		keyName = "highlightShadows",
 		name = "Highlight Shadows",
-		description = "Highlights the Shadow Attacks",
+		description = "prayerHelper the Shadow Attacks",
 		position = 3,
 		titleSection = "generalSection"
 	)
@@ -181,11 +181,11 @@ public interface NightmareConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "highlightNightmareHitboxOnCharge",
-			name = "Highlight Nightmare's Hitbox On Charge",
-			description = "Highlights the hitbox of the Nightmare when she charges",
-			position = 10,
-			titleSection = "generalSection"
+		keyName = "highlightNightmareHitboxOnCharge",
+		name = "Highlight Nightmare's Hitbox On Charge",
+		description = "Highlights the hitbox of the Nightmare when she charges",
+		position = 10,
+		titleSection = "generalSection"
 	)
 	default boolean highlightNightmareHitboxOnCharge()
 	{
@@ -193,11 +193,11 @@ public interface NightmareConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "highlightNightmareChargeRange",
-			name = "Highlight Nightmare's Charge Range",
-			description = "Highlights the range the Nightmare will damage you with her charge attack",
-			position = 11,
-			titleSection = "generalSection"
+		keyName = "highlightNightmareChargeRange",
+		name = "Highlight Nightmare's Charge Range",
+		description = "Highlights the range the Nightmare will damage you with her charge attack",
+		position = 11,
+		titleSection = "generalSection"
 	)
 	default boolean highlightNightmareChargeRange()
 	{
@@ -206,11 +206,11 @@ public interface NightmareConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-			keyName = "nightmareChargeBorderCol",
-			name = "Nightmare Charge Border Color",
-			description = "Color the edges of the area highlighted by the nightmare's charge attack",
-			position = 12,
-			titleSection = "generalSection"
+		keyName = "nightmareChargeBorderCol",
+		name = "Nightmare Charge Border Color",
+		description = "Color the edges of the area highlighted by the nightmare's charge attack",
+		position = 12,
+		titleSection = "generalSection"
 	)
 
 	default Color nightmareChargeBorderCol()
@@ -220,11 +220,11 @@ public interface NightmareConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-			keyName = "nightmareChargeCol",
-			name = "Nightmare charge fill color",
-			description = "Color the fill of the area highlighted by the nightmare's charge attack",
-			position = 13,
-			titleSection = "generalSection"
+		keyName = "nightmareChargeCol",
+		name = "Nightmare charge fill color",
+		description = "Color the fill of the area highlighted by the nightmare's charge attack",
+		position = 13,
+		titleSection = "generalSection"
 	)
 	default Color nightmareChargeCol()
 	{
@@ -232,11 +232,11 @@ public interface NightmareConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "flash",
-			name = "Flash your screen when you get impregnated",
-			description = "Your Screen flashes when the nightmare infects you with her parasite",
-			position = 14,
-			titleSection = "generalSection"
+		keyName = "flash",
+		name = "Flash your screen when you get impregnated",
+		description = "Your Screen flashes when the nightmare infects you with her parasite",
+		position = 14,
+		titleSection = "generalSection"
 	)
 	default boolean flash()
 	{
