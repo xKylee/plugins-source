@@ -73,39 +73,28 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_SHADOW = 1767;   // graphics object
 
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
-
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<LocalPoint, GameObject> spores = new HashMap<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<Polygon, Player> huskTarget = new HashMap<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<Integer, Player> parasiteTargets = new HashMap<>();
 	@Inject
 	private Client client;
-
 	@Inject
 	private NightmareConfig config;
-
 	@Inject
 	private OverlayManager overlayManager;
-
 	@Inject
-	private NightmarePrayerOverlay prayerOverlay;
-
+	private NightmarePrayerInfoBox prayerInfoBox;
 	@Nullable
 	@Getter(AccessLevel.PACKAGE)
 	private NightmareAttack pendingNightmareAttack;
-
 	@Nullable
 	@Getter(AccessLevel.PACKAGE)
 	private NPC nm;
-
-	@Getter(AccessLevel.PACKAGE)
-	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
-
-	@Getter(AccessLevel.PACKAGE)
-	private final Map<LocalPoint, GameObject> spores = new HashMap<>();
-
-	@Getter(AccessLevel.PACKAGE)
-	private final Map<Polygon, Player> huskTarget = new HashMap<>();
-
-	@Getter(AccessLevel.PACKAGE)
-	private final Map<Integer, Player> parasiteTargets = new HashMap<>();
-
 	@Getter(AccessLevel.PACKAGE)
 	private boolean inFight;
 
@@ -127,6 +116,10 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	@Setter
 	private boolean flash = false;
+	@Inject
+	private NightmareOverlay overlay;
+	@Inject
+	private NightmarePrayerOverlay prayerOverlay;
 
 	public NightmarePlugin()
 	{
@@ -139,14 +132,12 @@ public class NightmarePlugin extends Plugin
 		return configManager.getConfig(NightmareConfig.class);
 	}
 
-	@Inject
-	private NightmareOverlay overlay;
-
 	@Override
 	protected void startUp()
 	{
 		overlayManager.add(overlay);
 		overlayManager.add(prayerOverlay);
+		overlayManager.add(prayerInfoBox);
 		reset();
 	}
 
@@ -155,6 +146,7 @@ public class NightmarePlugin extends Plugin
 	{
 		overlayManager.remove(overlay);
 		overlayManager.remove(prayerOverlay);
+		overlayManager.remove(prayerInfoBox);
 		reset();
 	}
 
@@ -431,10 +423,13 @@ public class NightmarePlugin extends Plugin
 		{
 			overlay.determineLayer();
 			prayerOverlay.determineLayer();
+			prayerInfoBox.determineLayer();
 			overlayManager.remove(overlay);
 			overlayManager.remove(prayerOverlay);
+			overlayManager.remove(prayerInfoBox);
 			overlayManager.add(overlay);
 			overlayManager.add(prayerOverlay);
+			overlayManager.add(prayerInfoBox);
 		}
 	}
 }
