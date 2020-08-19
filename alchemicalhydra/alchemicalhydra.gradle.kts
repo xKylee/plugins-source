@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.9"
+version = "0.0.10"
 
 project.extra["PluginName"] = "Alchemical Hydra"
-project.extra["PluginDescription"] = "Show what to pray against Alchemical Hydra"
+project.extra["PluginDescription"] = "A plugin for the Alchemical Hydra boss."
 
 dependencies {
     annotationProcessor(Libraries.lombok)
