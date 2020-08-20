@@ -47,7 +47,7 @@ class NightmarePrayerOverlay extends Overlay
 			return null;
 		}
 
-		if (!config.prayerHelper())
+		if (!config.prayerHelper().showWidgetHelper())
 		{
 			return null;
 		}

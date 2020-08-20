@@ -154,7 +154,7 @@ class NightmareOverlay extends Overlay
 			{
 				if (totem.getCurrentPhase().isActive())
 				{
-					outliner.drawOutline(totem.getNpc(), 5, totem.getCurrentPhase().getColor());
+					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor());
 				}
 			}
 		}
