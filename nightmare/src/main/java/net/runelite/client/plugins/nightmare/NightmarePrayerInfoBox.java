@@ -55,7 +55,7 @@ public class NightmarePrayerInfoBox extends Overlay
 			return null;
 		}
 
-		if (!config.prayerHelper())
+		if (!config.prayerHelper().showInfoBox())
 		{
 			return null;
 		}
