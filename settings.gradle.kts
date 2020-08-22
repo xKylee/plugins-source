@@ -32,6 +32,7 @@ include(":castlewarsextended")
 include(":cerberus")
 include(":clanmanmode")
 include(":coxhelper")
+include(":dagannothkings")
 include(":demonicgorilla")
 include(":dropparty")
 include(":dynamicmaxhit")
@@ -87,3 +88,4 @@ for (project in rootProject.children) {
         require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
     }
 }
+
