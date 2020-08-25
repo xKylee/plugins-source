@@ -130,11 +130,7 @@ class NPCContainer
 		FLIGHT_KILISA(NpcID.FLIGHT_KILISA, AttackStyle.MELEE, ImmutableSet.of(AnimationID.KILISA_AUTO)),
 		FLOCKLEADER_GEERIN(NpcID.FLOCKLEADER_GEERIN, AttackStyle.RANGE, ImmutableSet.of(AnimationID.GEERIN_AUTO, AnimationID.GEERIN_FLINCH)),
 		WINGMAN_SKREE(NpcID.WINGMAN_SKREE, AttackStyle.MAGE, ImmutableSet.of(AnimationID.SKREE_AUTO)),
-		KREEARRA(NpcID.KREEARRA, AttackStyle.RANGE, ImmutableSet.of(AnimationID.KREE_RANGED)),
-
-		DAGANNOTH_REX(NpcID.DAGANNOTH_REX, AttackStyle.MELEE, ImmutableSet.of(AnimationID.DAG_REX)),
-		DAGANNOTH_SUPREME(NpcID.DAGANNOTH_SUPREME, AttackStyle.RANGE, ImmutableSet.of(AnimationID.DAG_SUPREME)),
-		DAGANNOTH_PRIME(NpcID.DAGANNOTH_PRIME, AttackStyle.MAGE, ImmutableSet.of(AnimationID.DAG_PRIME));
+		KREEARRA(NpcID.KREEARRA, AttackStyle.RANGE, ImmutableSet.of(AnimationID.KREE_RANGED));
 
 		private static final ImmutableMap<Integer, BossMonsters> idMap;
 
