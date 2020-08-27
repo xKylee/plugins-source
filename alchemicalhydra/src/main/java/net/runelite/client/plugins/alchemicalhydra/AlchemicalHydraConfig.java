@@ -42,12 +42,23 @@ public interface AlchemicalHydraConfig extends Config
 	// Sections
 
 	@ConfigSection(
-		keyName = "settings",
-		name = "Settings",
+		keyName = "general",
+		name = "General",
 		description = "",
 		position = 0
 	)
-	default boolean settings()
+	default boolean general()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		keyName = "specialAttacks",
+		name = "Special Attacks",
+		description = "",
+		position = 1
+	)
+	default boolean specialAttacks()
 	{
 		return false;
 	}
@@ -56,21 +67,21 @@ public interface AlchemicalHydraConfig extends Config
 		keyName = "misc",
 		name = "Misc",
 		description = "",
-		position = 1
+		position = 2
 	)
 	default boolean misc()
 	{
 		return false;
 	}
 
-	// Settings
+	// General
 
 	@ConfigItem(
 		keyName = "hydraImmunityOutline",
 		name = "Hydra immunity outline",
 		description = "Overlay the hydra with a colored outline while it has immunity/not weakened.",
 		position = 0,
-		section = "settings"
+		section = "general"
 	)
 	default boolean hydraImmunityOutline()
 	{
@@ -82,7 +93,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Fountain occupancy outline",
 		description = "Overlay fountains with a colored outline indicating if the hydra is standing on it.",
 		position = 1,
-		section = "settings"
+		section = "general"
 	)
 	default boolean fountainOutline()
 	{
@@ -95,7 +106,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Hide prayer overlay during special attacks."
 			+ "<br>This can help indicate when to save prayer points.",
 		position = 2,
-		section = "settings"
+		section = "general"
 	)
 	default boolean hidePrayerOnSpecial()
 	{
@@ -107,7 +118,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Show HP until phase change",
 		description = "Overlay hydra with hp remaining until next phase change.",
 		position = 3,
-		section = "settings"
+		section = "general"
 	)
 	default boolean showHpUntilPhaseChange()
 	{
@@ -119,7 +130,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Font style can be bold, plain, or italicized.",
 		position = 4,
 		keyName = "fontStyle",
-		section = "settings",
+		section = "general",
 		enumClass = FontStyle.class,
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
@@ -134,7 +145,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Toggle font shadow.",
 		position = 5,
 		keyName = "fontShadow",
-		section = "settings",
+		section = "general",
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -152,7 +163,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Adjust font size.",
 		position = 6,
 		keyName = "fontSize",
-		section = "settings",
+		section = "general",
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -168,7 +179,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Adjust font color.",
 		position = 7,
 		keyName = "fontColor",
-		section = "settings",
+		section = "general",
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -186,7 +197,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Adjust the Z coordinate offset.",
 		position = 8,
 		keyName = "fontZOffset",
-		section = "settings",
+		section = "general",
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -194,6 +205,130 @@ public interface AlchemicalHydraConfig extends Config
 	default int fontZOffset()
 	{
 		return 0;
+	}
+
+	// Special Attacks
+
+	@ConfigItem(
+		keyName = "lightningOutline",
+		name = "Lightning outline",
+		description = "Overlay lightning tiles with a colored outline.",
+		position = 0,
+		section = "specialAttacks"
+	)
+	default boolean lightningOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 8
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the stroke width of the lightning tile outline.",
+		position = 1,
+		keyName = "lightningStroke",
+		section = "specialAttacks",
+		hidden = true,
+		unhide = "lightningOutline"
+	)
+	@Units(Units.POINTS)
+	default int lightningStroke()
+	{
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline color",
+		description = "Change the tile outline color of lightning.",
+		position = 2,
+		keyName = "lightningOutlineColor",
+		section = "specialAttacks",
+		hidden = true,
+		unhide = "lightningOutline"
+	)
+	default Color lightningOutlineColor()
+	{
+		return Color.CYAN;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Outline fill color",
+		description = "Change the tile fill color of lightning.",
+		position = 3,
+		keyName = "lightningFillColor",
+		section = "specialAttacks",
+		hidden = true,
+		unhide = "lightningOutline"
+	)
+	default Color lightningFillColor()
+	{
+		return new Color(0, 255, 255, 30);
+	}
+
+	@ConfigItem(
+		keyName = "poisonOutline",
+		name = "Poison outline",
+		description = "Overlay poison tiles with a colored outline.",
+		position = 4,
+		section = "specialAttacks"
+	)
+	default boolean poisonOutline()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 8
+	)
+	@ConfigItem(
+		name = "Outline width",
+		description = "Change the stroke width of the poison tile outline.",
+		position = 5,
+		keyName = "poisonStroke",
+		section = "specialAttacks",
+		hidden = true,
+		unhide = "poisonOutline"
+	)
+	@Units(Units.POINTS)
+	default int poisonStroke()
+	{
+		return 1;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "poisonOutlineColor",
+		name = "Outline color",
+		description = "Outline color of poison area tiles.",
+		position = 6,
+		section = "specialAttacks",
+		hidden = true,
+		unhide = "poisonOutline"
+	)
+	default Color poisonOutlineColor()
+	{
+		return Color.RED;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "poisonFillColor",
+		name = "Outline fill color",
+		description = "Fill color of poison area tiles.",
+		position = 7,
+		section = "specialAttacks",
+		hidden = true,
+		unhide = "poisonOutline"
+	)
+	default Color poisonFillColor()
+	{
+		return new Color(255, 0, 0, 30);
 	}
 
 	// Misc
@@ -235,32 +370,6 @@ public interface AlchemicalHydraConfig extends Config
 	default Color dangerColor()
 	{
 		return new Color(150, 0, 0, 150);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "poisonOutlineColor",
-		name = "Poison outline color",
-		description = "Outline color of poison area tiles.",
-		position = 3,
-		section = "misc"
-	)
-	default Color poisonOutlineColor()
-	{
-		return new Color(255, 0, 0, 100);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "poisonFillColor",
-		name = "Poison fill color",
-		description = "Fill color of poison area tiles.",
-		position = 4,
-		section = "misc"
-	)
-	default Color poisonFillColor()
-	{
-		return new Color(255, 0, 0, 50);
 	}
 
 	// Mirror mode
