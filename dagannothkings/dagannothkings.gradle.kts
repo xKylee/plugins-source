@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.49"
+version = "0.0.1"
 
-project.extra["PluginName"] = "CoX Helper"
-project.extra["PluginDescription"] = "All-in-one plugin for Chambers of Xeric"
+project.extra["PluginName"] = "Dagannoth Kings"
+project.extra["PluginDescription"] = "A plugin for the Dagannoth Kings."
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -37,10 +37,10 @@ dependencies {
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    compileOnly(Libraries.apacheCommonsText)
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    compileOnly(Libraries.rxjava)
 }
 
 tasks {

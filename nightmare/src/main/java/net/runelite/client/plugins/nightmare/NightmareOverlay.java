@@ -24,6 +24,7 @@ import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.geometry.Geometry;
+import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -35,10 +36,6 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 class NightmareOverlay extends Overlay
 {
 	private static final int NIGHTMARE_REGION_ID = 15256;
-	private final Client client;
-	private final NightmarePlugin plugin;
-	private final NightmareConfig config;
-
 	// Nightmare's NPC IDs
 	private static final int NIGHTMARE_PHASE1 = 9425;
 	private static final int NIGHTMARE_PHASE2 = 9426;
@@ -46,8 +43,6 @@ class NightmareOverlay extends Overlay
 	private static final int NIGHTMARE_PILLAR1 = 9428;
 	private static final int NIGHTMARE_PILLAR2 = 9429;
 	private static final int NIGHTMARE_PHASE10Z = 9432;
-
-
 	// Non-Nightmare Objects
 	private static final int NIGHTMARE_WALKER_1 = 9446;
 	private static final int NIGHTMARE_WALKER_2 = 9447;
@@ -58,20 +53,22 @@ class NightmareOverlay extends Overlay
 	private static final int NIGHTMARE_PARASITE = 9452;
 	private static final int NIGHTMARE_HUSK = 9454;
 	private static final int NIGHTMARE_SHADOW = 1767;   // graphics object
-
 	private static final int NIGHTMARE_MUSHROOM = 37739;
-
 	private static final int NM_PRE_REGION = 15256;
-
+	private final Client client;
+	private final NightmarePlugin plugin;
+	private final NightmareConfig config;
+	private final ModelOutlineRenderer outliner;
 	private int timeout;
 
 
 	@Inject
-	private NightmareOverlay(final Client client, final NightmarePlugin plugin, final NightmareConfig config)
+	private NightmareOverlay(final Client client, final NightmarePlugin plugin, final NightmareConfig config, ModelOutlineRenderer outliner)
 	{
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
+		this.outliner = outliner;
 		setPosition(OverlayPosition.DYNAMIC);
 		determineLayer();
 		setPriority(OverlayPriority.LOW);
@@ -157,7 +154,7 @@ class NightmareOverlay extends Overlay
 			{
 				if (totem.getCurrentPhase().isActive())
 				{
-					renderNpcOverlay(graphics, totem.getNpc(), totem.getCurrentPhase().getColor());
+					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor());
 				}
 			}
 		}
@@ -327,8 +324,8 @@ class NightmareOverlay extends Overlay
 		graphics.setStroke(new BasicStroke(1));
 
 		path = Geometry.filterPath(path, (p1, p2) ->
-				Perspective.localToCanvas(client, new LocalPoint((int) p1[0], (int) p1[1]), client.getPlane()) != null &&
-						Perspective.localToCanvas(client, new LocalPoint((int) p2[0], (int) p2[1]), client.getPlane()) != null);
+			Perspective.localToCanvas(client, new LocalPoint((int) p1[0], (int) p1[1]), client.getPlane()) != null &&
+				Perspective.localToCanvas(client, new LocalPoint((int) p2[0], (int) p2[1]), client.getPlane()) != null);
 		path = Geometry.transformPath(path, coords ->
 		{
 			Point point = Perspective.localToCanvas(client, new LocalPoint((int) coords[0], (int) coords[1]), client.getPlane());
