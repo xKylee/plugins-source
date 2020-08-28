@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
@@ -52,7 +53,7 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Player Attack Timer",
 	enabledByDefault = false,
-	description = "Tick delay timer for player attacks.",
+	description = "Display the tick delay for your current weapon.<br>Helps with lazy prayer flicking and flinching.",
 	tags = {"player", "attack", "tick", "timer", "delay"},
 	type = PluginType.UTILITY
 )
@@ -77,7 +78,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 	@Inject
 	private PlayerOverlay playerOverlay;
 
-	@Getter
+	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAnimation;
 
 	@Provides
@@ -117,6 +118,9 @@ public class PlayerAttackTimerPlugin extends Plugin
 				break;
 			case "mirrorMode":
 				playerOverlay.determineLayer();
+
+				overlayManager.remove(playerOverlay);
+				overlayManager.add(playerOverlay);
 				break;
 			default:
 				break;
@@ -150,24 +154,19 @@ public class PlayerAttackTimerPlugin extends Plugin
 
 	private void parseCustomAnimationConfig(final String config)
 	{
-		if (config.isBlank() || config.isEmpty())
+		if (!ConfigParser.parse(config))
 		{
 			return;
 		}
 
 		customAnimationTickMap.clear();
 
-		final StringBuilder sb = new StringBuilder();
+		final Map<String, String> split = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(config);
 
-		for (final String str : config.split("\n"))
+		if (split.isEmpty())
 		{
-			if (!str.startsWith("//"))
-			{
-				sb.append(str).append("\n");
-			}
+			return;
 		}
-
-		final Map<String, String> split = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
 
 		for (final Map.Entry<String, String> entry : split.entrySet())
 		{
