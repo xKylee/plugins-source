@@ -53,7 +53,7 @@ public class NylocasOverlay extends RoomOverlay
 			if ((config.nyloBossAttackTickCount() || config.nyloBossSwitchTickCount() || config.nyloBossTotalTickCount()) && nylocas.isNyloBossAlive())
 			{
 				String text = "";
-				if (config.nyloBossAttackTickCount() && nylocas.getNyloBossAttackTickCount() >= 0)
+				if (nylocas.getNyloBossAttackTickCount() >= 0)
 				{
 					text += "[A] " + nylocas.getNyloBossAttackTickCount();
 					if (config.nyloBossSwitchTickCount() || config.nyloBossTotalTickCount())
@@ -62,7 +62,7 @@ public class NylocasOverlay extends RoomOverlay
 					}
 				}
 
-				if (config.nyloBossSwitchTickCount() && nylocas.getNyloBossSwitchTickCount() >= 0)
+				if (nylocas.getNyloBossSwitchTickCount() >= 0)
 				{
 					text += "[S] " + nylocas.getNyloBossSwitchTickCount();
 					if (config.nyloBossTotalTickCount() && nylocas.getNyloBossTotalTickCount() >= 0)
@@ -71,7 +71,7 @@ public class NylocasOverlay extends RoomOverlay
 					}
 				}
 
-				if (config.nyloBossTotalTickCount() && nylocas.getNyloBossTotalTickCount() >= 0)
+				if (nylocas.getNyloBossTotalTickCount() >= 0)
 				{
 					text += "(" + nylocas.getNyloBossTotalTickCount() + ")";
 				}
