@@ -13,14 +13,14 @@ import javax.inject.Singleton;
 @Singleton
 public abstract class Room
 {
-	protected final TheatresPlugin plugin;
+	protected final TheatrePlugin plugin;
 	protected final TheatreConfig config;
 
 	@Inject
 	protected OverlayManager overlayManager;
 
 	@Inject
-	protected Room(TheatresPlugin plugin, TheatreConfig config)
+	protected Room(TheatrePlugin plugin, TheatreConfig config)
 	{
 		this.plugin = plugin;
 		this.config = config;

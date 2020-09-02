@@ -27,7 +27,7 @@ import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
-import net.runelite.client.plugins.theatre.TheatresPlugin;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -40,7 +40,7 @@ public class Verzik extends Room
 	private VerzikOverlay verzikOverlay;
 
 	@Inject
-	private Verzik(TheatresPlugin plugin, TheatreConfig config)
+	private Verzik(TheatrePlugin plugin, TheatreConfig config)
 	{
 		super(plugin, config);
 	}

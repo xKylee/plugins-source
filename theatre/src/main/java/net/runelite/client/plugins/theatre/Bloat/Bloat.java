@@ -30,7 +30,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
-import net.runelite.client.plugins.theatre.TheatresPlugin;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 
 public class Bloat extends Room
 {
@@ -41,7 +41,7 @@ public class Bloat extends Room
 	private BloatOverlay bloatOverlay;
 
 	@Inject
-	protected Bloat(final Client client, TheatresPlugin plugin, TheatreConfig config)
+	protected Bloat(final Client client, TheatrePlugin plugin, TheatreConfig config)
 	{
 		super(plugin, config);
 	}

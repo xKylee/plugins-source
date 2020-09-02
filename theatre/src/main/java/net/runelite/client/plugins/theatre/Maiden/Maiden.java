@@ -23,7 +23,7 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
-import net.runelite.client.plugins.theatre.TheatresPlugin;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -36,7 +36,7 @@ public class Maiden extends Room
 	private MaidenOverlay maidenOverlay;
 
 	@Inject
-	protected Maiden(TheatresPlugin plugin, TheatreConfig config)
+	protected Maiden(TheatrePlugin plugin, TheatreConfig config)
 	{
 		super(plugin, config);
 	}

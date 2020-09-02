@@ -21,7 +21,6 @@ import net.runelite.api.Projectile;
 import net.runelite.api.Tile;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.NpcDespawned;
@@ -29,7 +28,7 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
-import net.runelite.client.plugins.theatre.TheatresPlugin;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 
 @Slf4j
 public class Sotetseg extends Room
@@ -38,13 +37,13 @@ public class Sotetseg extends Room
 	private Client client;
 
 	@Inject
-	private TheatresPlugin plugin; //DO NOT USE. - Here for Counter Constructor
+	private TheatrePlugin plugin; //DO NOT USE. - Here for Counter Constructor
 
 	@Inject
 	private SotetsegOverlay sotetsegOverlay;
 
 	@Inject
-	protected Sotetseg(TheatresPlugin plugin, TheatreConfig config)
+	protected Sotetseg(TheatrePlugin plugin, TheatreConfig config)
 	{
 		super(plugin, config);
 	}
@@ -184,6 +183,25 @@ public class Sotetseg extends Room
 				}
 			}
 
+			if (config.sotetsegBigOrbTicks())
+			{
+				boolean foundBigOrb = false;
+				for (Projectile p : client.getProjectiles())
+				{
+					if (p.getId() == SOTETSEG_BIG_AOE_ORB)
+					{
+						foundBigOrb = true;
+						break;
+					}
+				}
+				bigOrbPresent = foundBigOrb;
+			}
+
+			if (!bigOrbPresent)
+			{
+				sotetsegBallCounted = false;
+			}
+
 			if (bigOrbPresent && !sotetsegBallCounted)
 			{
 				sotetsegTickCount = 10;
@@ -214,28 +232,6 @@ public class Sotetseg extends Room
 					wasInUnderWorld = true;
 				}
 			}
-		}
-	}
-
-	@Subscribe
-	public void onClientTick(ClientTick event)
-	{
-		if (sotetsegActive && config.sotetsegBigOrbTicks())
-		{
-			boolean foundBigOrb = false;
-			for (Projectile p : client.getProjectiles())
-			{
-				if (p.getId() == SOTETSEG_BIG_AOE_ORB)
-				{
-					foundBigOrb = true;
-					break;
-				}
-			}
-			bigOrbPresent = foundBigOrb;
-		}
-		if (!bigOrbPresent)
-		{
-			sotetsegBallCounted = false;
 		}
 	}
 

@@ -11,7 +11,6 @@ import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicsObjectCreated;
@@ -30,6 +29,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.theatre.Bloat.Bloat;
 import net.runelite.client.plugins.theatre.Maiden.Maiden;
 import net.runelite.client.plugins.theatre.Nylocas.Nylocas;
@@ -44,11 +44,12 @@ import org.pf4j.Extension;
 	name = "Theatre of Blood",
 	description = "All-in-one plugin for Theatre of Blood",
 	tags = {"ToB"},
-	enabledByDefault = false
+	enabledByDefault = false,
+	type = PluginType.PVM
 )
 
 @Slf4j
-public class TheatresPlugin extends Plugin
+public class TheatrePlugin extends Plugin
 {
 	private Room[] rooms = null;
 
@@ -168,14 +169,6 @@ public class TheatresPlugin extends Plugin
 	{
 		nylocas.onGameStateChanged(gameStateChanged);
 		xarpus.onGameStateChanged(gameStateChanged);
-	}
-
-	@Subscribe
-	public void onClientTick(ClientTick event)
-	{
-		nylocas.onClientTick(event);
-		sotetseg.onClientTick(event);
-		xarpus.onClientTick(event);
 	}
 
 	@Subscribe

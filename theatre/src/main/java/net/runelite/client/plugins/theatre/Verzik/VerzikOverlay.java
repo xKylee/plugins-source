@@ -72,36 +72,33 @@ public class VerzikOverlay extends RoomOverlay
 				}
 			}
 
-			if (config.verzikAutosTick() || config.verzikAttackCounter() || config.verzikTotalTickCounter())
+			String tick_text = "";
+			if (config.verzikAttackCounter() && verzik.getVerzikSpecial() != Verzik.SpecialAttack.WEBS)
 			{
-				String text = "";
-				if (config.verzikAttackCounter() && verzik.getVerzikSpecial() != Verzik.SpecialAttack.WEBS)
+				tick_text += "[A] " + verzik.getVerzikAttackCount();
+				if (config.verzikAutosTick() || config.verzikTotalTickCounter())
 				{
-					text += "[A] " + verzik.getVerzikAttackCount();
-					if (config.verzikAutosTick() || config.verzikTotalTickCounter())
-					{
-						text += " : ";
-					}
+					tick_text += " : ";
 				}
-				if (config.verzikAutosTick() && verzik.getVerzikSpecial() != Verzik.SpecialAttack.WEBS)
-				{
-					text += verzik.getVerzikTicksUntilAttack();
-					if (config.verzikTotalTickCounter())
-					{
-						text += " : ";
-					}
-				}
+			}
+			if (config.verzikAutosTick() && verzik.getVerzikSpecial() != Verzik.SpecialAttack.WEBS)
+			{
+				tick_text += verzik.getVerzikTicksUntilAttack();
 				if (config.verzikTotalTickCounter())
 				{
-					text += "(" + verzik.getVerzikTotalTicksUntilAttack() + ")";
+					tick_text += " : ";
 				}
-				Point canvasPoint = verzik.getVerzikNPC().getCanvasTextLocation(graphics, text, 60);
+			}
+			if (config.verzikTotalTickCounter())
+			{
+				tick_text += "(" + verzik.getVerzikTotalTicksUntilAttack() + ")";
+			}
+			Point canvasPoint = verzik.getVerzikNPC().getCanvasTextLocation(graphics, tick_text, 60);
 
-				if (canvasPoint != null)
-				{
-					Color col = verzik.verzikSpecialWarningColor();
-					renderTextLocation(graphics, text, col, canvasPoint);
-				}
+			if (canvasPoint != null)
+			{
+				Color col = verzik.verzikSpecialWarningColor();
+				renderTextLocation(graphics, tick_text, col, canvasPoint);
 			}
 
 			if (verzik.getVerzikPhase() == Verzik.Phase.PHASE2)
@@ -112,7 +109,7 @@ public class VerzikOverlay extends RoomOverlay
 
 					while (iterator.hasNext())
 					{
-						drawTile(graphics, (WorldPoint)iterator.next(), new Color(255, 0, 0, 50), 1, 255, 20);
+						drawTile(graphics, (WorldPoint) iterator.next(), new Color(255, 0, 0, 50), 1, 255, 20);
 					}
 				}
 

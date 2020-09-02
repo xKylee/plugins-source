@@ -11,28 +11,53 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigTitleSection;
 import net.runelite.client.config.Range;
 
 @ConfigGroup("Theatre")
 public interface TheatreConfig extends Config
 {
+	@ConfigTitleSection(
+		name = "General",
+		description = "",
+		position = 0,
+		keyName = "generalSection"
+	)
+	default boolean generalSection()
+	{
+		return true;
+	}
+
 	@Range(max = 20)
 	@ConfigItem(
 		position = 0,
 		keyName = "theatreFontSize",
 		name = "Theatre Overlay Font Size",
-		description = "Sets the font size for all theatre text overlays"
+		description = "Sets the font size for all theatre text overlays",
+		titleSection = "generalSection"
 	)
 	default int theatreFontSize()
 	{
 		return 12;
 	}
 
+	@ConfigTitleSection(
+		name = "Maiden",
+		description = "Maiden's Configuration",
+		position = 1,
+		keyName = "maidenSection"
+	)
+	default boolean maidenSection()
+	{
+		return true;
+	}
+
 	@ConfigItem(
 		position = 1,
 		keyName = "maidenBlood",
 		name = "Maiden Blood Attack Marker",
-		description = "Highlights Maiden's Blood Pools"
+		description = "Highlights Maiden's Blood Pools",
+		titleSection = "maidenSection"
 	)
 	default boolean maidenBlood()
 	{
@@ -40,10 +65,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 1,
+		position = 2,
 		keyName = "maidenSpawns",
 		name = "Maiden Blood Spawns Marker",
-		description = "Highlights Maiden Blood Spawns (Tomatoes)"
+		description = "Highlights Maiden Blood Spawns (Tomatoes)",
+		titleSection = "maidenSection"
 	)
 	default boolean maidenSpawns()
 	{
@@ -51,10 +77,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 2,
+		position = 3,
 		keyName = "maidenReds",
 		name = "Maiden Reds Health Overlay",
-		description = "Displays the health of each red crab"
+		description = "Displays the health of each red crab",
+		titleSection = "maidenSection"
 	)
 	default boolean maidenRedsHealth()
 	{
@@ -62,10 +89,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 2,
+		position = 4,
 		keyName = "maidenRedsDistance",
 		name = "Maiden Reds Distance Overlay",
-		description = "Displays the distance of each red crab to reach Maiden"
+		description = "Displays the distance of each red crab to reach Maiden",
+		titleSection = "maidenSection"
 	)
 	default boolean maidenRedsDistance()
 	{
@@ -73,21 +101,34 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 5,
 		keyName = "MaidenTickCounter",
 		name = "Maiden Tank Tick Counter",
-		description = "Displays the tick counter for when she decides who to choose for tanking"
+		description = "Displays the tick counter for when she decides who to choose for tanking",
+		titleSection = "maidenSection"
 	)
 	default boolean maidenTickCounter()
 	{
 		return true;
 	}
 
+	@ConfigTitleSection(
+		name = "Bloat",
+		description = "Bloat's Configuration",
+		position = 2,
+		keyName = "bloatSection"
+	)
+	default boolean bloatSection()
+	{
+		return true;
+	}
+
 	@ConfigItem(
-		position = 4,
+		position = 1,
 		keyName = "bloatIndicator",
 		name = "Bloat Tile Indicator",
-		description = "Highlights Bloat's Tile"
+		description = "Highlights Bloat's Tile",
+		titleSection = "bloatSection"
 	)
 	default boolean bloatIndicator()
 	{
@@ -95,10 +136,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 2,
 		keyName = "bloatTickCounter",
 		name = "Bloat Tick Counter",
-		description = "Displays the tick counter for how long Bloat has been up or down"
+		description = "Displays the tick counter for how long Bloat has been up or down",
+		titleSection = "bloatSection"
 	)
 	default boolean bloatTickCounter()
 	{
@@ -106,10 +148,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 6,
+		position = 3,
 		keyName = "bloatHands",
 		name = "Bloat Hands Overlay",
-		description = "Highlights the tiles where Bloat's hands will fall"
+		description = "Highlights the tiles where Bloat's hands will fall",
+		titleSection = "bloatSection"
 	)
 	default boolean bloatHands()
 	{
@@ -118,21 +161,34 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 7,
+		position = 4,
 		keyName = "bloatHandsColor",
 		name = "Bloat Hands Overlay Color",
-		description = "Select a color for the Bloat Hands Overlay to be"
+		description = "Select a color for the Bloat Hands Overlay to be",
+		titleSection = "bloatSection"
 	)
 	default Color bloatHandsColor()
 	{
 		return Color.CYAN;
 	}
 
+	@ConfigTitleSection(
+		name = "Nylocas",
+		description = "Nylocas' Configuration",
+		position = 3,
+		keyName = "nylocasSection"
+	)
+	default boolean nylocasSection()
+	{
+		return true;
+	}
+
 	@ConfigItem(
-		position = 7,
+		position = 1,
 		keyName = "nyloPillars",
 		name = "Nylocas Pillar Health Overlay",
-		description = "Displays the health percentage of the pillars"
+		description = "Displays the health percentage of the pillars",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloPillars()
 	{
@@ -140,10 +196,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 14,
+		position = 2,
 		keyName = "nyloExplosions",
 		name = "Nylocas Explosion Tile Warning",
-		description = "Highlights a Nylocas that is about to explode"
+		description = "Highlights a Nylocas that is about to explode",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloExplosions()
 	{
@@ -152,10 +209,11 @@ public interface TheatreConfig extends Config
 
 	@Range(max = 52)
 	@ConfigItem(
-		position = 14,
+		position = 3,
 		keyName = "nyloExplosionDisplayTicks",
 		name = "Nylocas Display Last Ticks",
-		description = "Displays the last 'x' amount of ticks for a Nylocas. (ex: to see the last 10 ticks, you set it to 10)"
+		description = "Displays the last 'x' amount of ticks for a Nylocas. (ex: to see the last 10 ticks, you set it to 10)",
+		titleSection = "nylocasSection"
 	)
 	default int nyloExplosionDisplayTicks()
 	{
@@ -163,10 +221,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 15,
+		position = 4,
 		keyName = "nyloTimeAlive",
 		name = "Nylocas Tick Time Alive",
-		description = "Displays the tick counter of each nylocas spawn (Explodes on 52)"
+		description = "Displays the tick counter of each nylocas spawn (Explodes on 52)",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloTimeAlive()
 	{
@@ -174,10 +233,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 5,
 		keyName = "nyloRecolorMenu",
 		name = "Nylocas Recolor Menu Options",
-		description = "Recolors the menu options of each Nylocas to it's respective attack style"
+		description = "Recolors the menu options of each Nylocas to it's respective attack style",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloRecolorMenu()
 	{
@@ -185,10 +245,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 17,
+		position = 6,
 		keyName = "nyloHighlightOverlay",
 		name = "Nylocas Highlight Overlay",
-		description = "Select your role to highlight respective Nylocas to attack"
+		description = "Select your role to highlight respective Nylocas to attack",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloHighlightOverlay()
 	{
@@ -196,10 +257,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 18,
+		position = 7,
 		keyName = "nyloAliveCounter",
 		name = "Nylocas Alive Counter Panel",
-		description = "Displays how many Nylocas are currently alive"
+		description = "Displays how many Nylocas are currently alive",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloAlivePanel()
 	{
@@ -207,10 +269,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 19,
+		position = 8,
 		keyName = "nyloAggressiveOverlay",
 		name = "Highlight Aggressive Nylocas",
-		description = "Highlights aggressive Nylocas after they spawn"
+		description = "Highlights aggressive Nylocas after they spawn",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloAggressiveOverlay()
 	{
@@ -218,10 +281,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 20,
+		position = 9,
 		keyName = "nyloInstanceTimer",
 		name = "Nylocas Instance Timer",
-		description = "Displays an instance timer when the next set will potentially spawn"
+		description = "Displays an instance timer when the next set will potentially spawn",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloInstanceTimer()
 	{
@@ -229,10 +293,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 21,
+		position = 10,
 		keyName = "nyloStallMessage",
 		name = "Nylocas Stall Wave Messages",
-		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped"
+		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloStallMessage()
 	{
@@ -240,10 +305,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 22,
+		position = 11,
 		keyName = "nyloBossAttackTickCount",
 		name = "Nylocas Boss Attack Tick Counter",
-		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST)"
+		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST)",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloBossAttackTickCount()
 	{
@@ -251,10 +317,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 23,
+		position = 12,
 		keyName = "nyloBossSwitchTickCount",
 		name = "Nylocas Boss Switch Tick Counter",
-		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE)"
+		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE)",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloBossSwitchTickCount()
 	{
@@ -262,21 +329,34 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 24,
+		position = 13,
 		keyName = "nyloBossTotalTickCount",
 		name = "Nylocas Boss Total Tick Counter",
-		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST)"
+		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST)",
+		titleSection = "nylocasSection"
 	)
 	default boolean nyloBossTotalTickCount()
 	{
 		return false;
 	}
 
+	@ConfigTitleSection(
+		name = "Sotetseg",
+		description = "Sotetseg's Configuration",
+		position = 4,
+		keyName = "sotetsegSection"
+	)
+	default boolean sotetsegSection()
+	{
+		return true;
+	}
+
 	@ConfigItem(
-		position = 30,
+		position = 1,
 		keyName = "sotetsegMaze",
 		name = "Sotetseg Maze",
-		description = "Memorizes Solo Mazes and displays tiles of other chosen players"
+		description = "Memorizes Solo Mazes and displays tiles of other chosen players",
+		titleSection = "sotetsegSection"
 	)
 	default boolean sotetsegMaze()
 	{
@@ -284,10 +364,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 32,
+		position = 2,
 		keyName = "sotetsegOrbAttacksTicks",
 		name = "Sotetseg Small Attack Orb Ticks",
-		description = "Displays the amount of ticks until it will hit you (change prayers when you see 1)"
+		description = "Displays the amount of ticks until it will hit you (change prayers when you see 1)",
+		titleSection = "sotetsegSection"
 	)
 	default boolean sotetsegOrbAttacksTicks()
 	{
@@ -295,10 +376,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 32,
+		position = 3,
 		keyName = "sotetsegAutoAttacksTicks",
 		name = "Sotetseg Auto Attack Ticks",
-		description = "Displays a tick counter for when Sotetseg will attack next"
+		description = "Displays a tick counter for when Sotetseg will attack next",
+		titleSection = "sotetsegSection"
 	)
 	default boolean sotetsegAutoAttacksTicks()
 	{
@@ -306,21 +388,34 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 33,
+		position = 4,
 		keyName = "sotetsegBigOrbTicks",
 		name = "Sotetseg Ball Tick Overlay",
-		description = "Displays how many ticks until the ball will explode (eat when you see 1)"
+		description = "Displays how many ticks until the ball will explode (eat when you see 1)",
+		titleSection = "sotetsegSection"
 	)
 	default boolean sotetsegBigOrbTicks()
 	{
 		return true;
 	}
 
+	@ConfigTitleSection(
+		name = "Xarpus",
+		description = "Xarpus's Configuration",
+		position = 5,
+		keyName = "xarpusSection"
+	)
+	default boolean xarpusSection()
+	{
+		return true;
+	}
+
 	@ConfigItem(
-		position = 44,
+		position = 1,
 		keyName = "xarpusInstanceTimer",
 		name = "Xarpus Instance Timer",
-		description = "Displays the Xarpus Instance timer to be tick efficient with the first spawn of an exhumed"
+		description = "Displays the Xarpus Instance timer to be tick efficient with the first spawn of an exhumed",
+		titleSection = "xarpusSection"
 	)
 	default boolean xarpusInstanceTimer()
 	{
@@ -328,10 +423,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 45,
+		position = 2,
 		keyName = "xarpusExhumed",
 		name = "Xarpus Exhumed Markers",
-		description = "Highlights the tiles of exhumed spawns"
+		description = "Highlights the tiles of exhumed spawns",
+		titleSection = "xarpusSection"
 	)
 	default boolean xarpusExhumed()
 	{
@@ -339,10 +435,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 46,
+		position = 3,
 		keyName = "xarpusExhumedTick",
 		name = "Xarpus Exhumed Ticks",
-		description = "Displays how many ticks until the exhumeds will despawn"
+		description = "Displays how many ticks until the exhumeds will despawn",
+		titleSection = "xarpusSection"
 	)
 	default boolean xarpusExhumedTick()
 	{
@@ -350,10 +447,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 47,
+		position = 4,
 		keyName = "xarpusTickP2",
 		name = "Xarpus Attack Tick - P2",
-		description = "Displays a tick counter for when Xarpus faces a new target to spit at"
+		description = "Displays a tick counter for when Xarpus faces a new target to spit at",
+		titleSection = "xarpusSection"
 	)
 	default boolean xarpusTickP2()
 	{
@@ -361,21 +459,34 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 48,
+		position = 5,
 		keyName = "xarpusTickP3",
 		name = "Xarpus Attack Tick - P3",
-		description = "Displays a tick counter for when Xarpus will rotate"
+		description = "Displays a tick counter for when Xarpus will rotate",
+		titleSection = "xarpusSection"
 	)
 	default boolean xarpusTickP3()
 	{
 		return true;
 	}
 
+	@ConfigTitleSection(
+		name = "Verzik",
+		description = "Verzik's Configuration",
+		position = 6,
+		keyName = "verzikSection"
+	)
+	default boolean verzikSection()
+	{
+		return true;
+	}
+
 	@ConfigItem(
-		position = 54,
+		position = 1,
 		keyName = "verzikTileOverlay",
 		name = "Verzik Tile Indicator",
-		description = "Highlights Verzik's tile - If you are next to or inside of the indicator, you can be meleed"
+		description = "Highlights Verzik's tile - If you are next to or inside of the indicator, you can be meleed",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikTileOverlay()
 	{
@@ -383,10 +494,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 55,
+		position = 2,
 		keyName = "verzikProjectiles",
 		name = "Verzik Range Tile Markers",
-		description = "Highlights the tiles of Verzik's range projectiles"
+		description = "Highlights the tiles of Verzik's range projectiles",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikProjectiles()
 	{
@@ -394,10 +506,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 56,
+		position = 3,
 		keyName = "verzikDisplayTank",
 		name = "Verzik Display Tank",
-		description = "Highlights the tile of the player tanking to help clarify"
+		description = "Highlights the tile of the player tanking to help clarify",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikDisplayTank()
 	{
@@ -405,10 +518,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 57,
+		position = 4,
 		keyName = "VerzikRedHP",
 		name = "Verzik Reds Health Overlay",
-		description = "Displays the health of red crabs during Verzik"
+		description = "Displays the health of red crabs during Verzik",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikReds()
 	{
@@ -416,10 +530,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 58,
+		position = 5,
 		keyName = "verzikAutosTick",
 		name = "Verzik Attack Tick Counter",
-		description = "Displays the ticks until Verzik will attack next"
+		description = "Displays the ticks until Verzik will attack next",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikAutosTick()
 	{
@@ -427,10 +542,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 59,
+		position = 6,
 		keyName = "verzikAttackCounter",
 		name = "Verzik Attack Counter",
-		description = "Displays Verzik's Attack Count (useful for when P2 reds as they despawn after the 7th attack)"
+		description = "Displays Verzik's Attack Count (useful for when P2 reds as they despawn after the 7th attack)",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikAttackCounter()
 	{
@@ -438,10 +554,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 60,
+		position = 7,
 		keyName = "verzikTotalTickCounter",
 		name = "Verzik Total Tick Counter",
-		description = "Displays the total amount of ticks Verzik has been alive for"
+		description = "Displays the total amount of ticks Verzik has been alive for",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikTotalTickCounter()
 	{
@@ -449,10 +566,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 61,
+		position = 8,
 		keyName = "verzikNyloPersonalWarning",
 		name = "Verzik Nylo Direct Aggro Warning",
-		description = "Highlights the Nylocas that are targeting YOU and ONLY you"
+		description = "Highlights the Nylocas that are targeting YOU and ONLY you",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikNyloPersonalWarning()
 	{
@@ -460,10 +578,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 62,
+		position = 9,
 		keyName = "verzikNyloOtherWarning",
 		name = "Verzik Nylo Indirect Aggro Warnings",
-		description = "Highlights the Nylocas that are targeting OTHER players"
+		description = "Highlights the Nylocas that are targeting OTHER players",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikNyloOtherWarning()
 	{
@@ -471,10 +590,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 63,
+		position = 10,
 		keyName = "verzikNyloExplodeAOE",
 		name = "Verzik Nylo Explosion Area",
-		description = "Highlights the area of explosion for the Nylocas (Personal or Indirect Warnings MUST be enabled)"
+		description = "Highlights the area of explosion for the Nylocas (Personal or Indirect Warnings MUST be enabled)",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikNyloExplodeAOE()
 	{
@@ -482,10 +602,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 64,
+		position = 11,
 		keyName = "verzikYellows",
 		name = "Verzik Yellows Overlay",
-		description = "Highlights the yellow pools and displays the amount of ticks until you can move away or tick eat"
+		description = "Highlights the yellow pools and displays the amount of ticks until you can move away or tick eat",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikYellows()
 	{
@@ -493,10 +614,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 65,
+		position = 12,
 		keyName = "verzikGreenBall",
 		name = "Verzik Green Ball Tank",
-		description = "Displays who the green ball is targeting"
+		description = "Displays who the green ball is targeting",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikGreenBall()
 	{
@@ -504,10 +626,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 66,
+		position = 13,
 		keyName = "verzikTornado",
 		name = "Verzik Personal Tornado Highlight",
-		description = "Displays the tornado that is targeting you"
+		description = "Displays the tornado that is targeting you",
+		titleSection = "verzikSection"
 	)
 	default boolean verzikTornado()
 	{

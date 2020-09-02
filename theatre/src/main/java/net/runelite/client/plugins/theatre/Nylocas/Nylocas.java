@@ -30,7 +30,6 @@ import net.runelite.api.Skill;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
@@ -46,7 +45,7 @@ import net.runelite.client.input.MouseManager;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatreInputListener;
-import net.runelite.client.plugins.theatre.TheatresPlugin;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 import net.runelite.client.util.ColorUtil;
 
@@ -59,7 +58,7 @@ public class Nylocas extends Room
 	private NylocasOverlay nylocasOverlay;
 
 	@Inject
-	protected Nylocas(TheatresPlugin plugin, TheatreConfig config)
+	protected Nylocas(TheatrePlugin plugin, TheatreConfig config)
 	{
 		super(plugin, config);
 	}
@@ -567,7 +566,6 @@ public class Nylocas extends Room
 
 			ticksSinceLastWave = Math.max(0, ticksSinceLastWave - 1);
 		}
-		instanceTimer = (instanceTimer + 1) % 4;
 
 		if (nyloActive && nyloBossAlive)
 		{
@@ -575,11 +573,7 @@ public class Nylocas extends Room
 			nyloBossSwitchTickCount--;
 			nyloBossTotalTickCount++;
 		}
-	}
 
-	@Subscribe
-	public void onClientTick(ClientTick event)
-	{
 		List<Player> players = client.getPlayers();
 		for (Player player : players)
 		{
@@ -604,6 +598,8 @@ public class Nylocas extends Room
 				}
 			}
 		}
+
+		instanceTimer = (instanceTimer + 1) % 4;
 	}
 
 	@Subscribe

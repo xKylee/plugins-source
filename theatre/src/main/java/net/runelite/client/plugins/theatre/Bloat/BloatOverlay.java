@@ -31,7 +31,7 @@ public class BloatOverlay extends RoomOverlay
 	{
 		if (bloat.isBloatActive())
 		{
-			if (config.bloatIndicator() && bloat.isBloatActive())
+			if (config.bloatIndicator())
 			{
 				renderPoly(graphics, bloat.getBloatStateColor(), bloat.getBloatTilePoly(), 2);
 			}

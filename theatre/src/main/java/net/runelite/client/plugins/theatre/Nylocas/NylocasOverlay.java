@@ -48,38 +48,38 @@ public class NylocasOverlay extends RoomOverlay
 			}
 		}
 
-		if (nylocas.isNyloActive())
+		if (nylocas.isNyloBossAlive())
 		{
-			if ((config.nyloBossAttackTickCount() || config.nyloBossSwitchTickCount() || config.nyloBossTotalTickCount()) && nylocas.isNyloBossAlive())
+			String text = "";
+			if (config.nyloBossAttackTickCount() && nylocas.getNyloBossAttackTickCount() >= 0)
 			{
-				String text = "";
-				if (nylocas.getNyloBossAttackTickCount() >= 0)
+				text += "[A] " + nylocas.getNyloBossAttackTickCount();
+				if (config.nyloBossSwitchTickCount() || config.nyloBossTotalTickCount())
 				{
-					text += "[A] " + nylocas.getNyloBossAttackTickCount();
-					if (config.nyloBossSwitchTickCount() || config.nyloBossTotalTickCount())
-					{
-						text += " : ";
-					}
+					text += " : ";
 				}
-
-				if (nylocas.getNyloBossSwitchTickCount() >= 0)
-				{
-					text += "[S] " + nylocas.getNyloBossSwitchTickCount();
-					if (config.nyloBossTotalTickCount() && nylocas.getNyloBossTotalTickCount() >= 0)
-					{
-						text += " : ";
-					}
-				}
-
-				if (nylocas.getNyloBossTotalTickCount() >= 0)
-				{
-					text += "(" + nylocas.getNyloBossTotalTickCount() + ")";
-				}
-
-				Point canvasPoint = nylocas.getNyloBossNPC().getCanvasTextLocation(graphics, text, 50);
-				renderTextLocation(graphics, text, Color.WHITE, canvasPoint);
 			}
 
+			if (config.nyloBossSwitchTickCount() && nylocas.getNyloBossSwitchTickCount() >= 0)
+			{
+				text += "[S] " + nylocas.getNyloBossSwitchTickCount();
+				if (config.nyloBossTotalTickCount() && nylocas.getNyloBossTotalTickCount() >= 0)
+				{
+					text += " : ";
+				}
+			}
+
+			if (config.nyloBossTotalTickCount() && nylocas.getNyloBossTotalTickCount() >= 0)
+			{
+				text += "(" + nylocas.getNyloBossTotalTickCount() + ")";
+			}
+
+			Point canvasPoint = nylocas.getNyloBossNPC().getCanvasTextLocation(graphics, text, 50);
+			renderTextLocation(graphics, text, Color.WHITE, canvasPoint);
+		}
+
+		if (nylocas.isNyloActive())
+		{
 			if (config.nyloPillars())
 			{
 				Map<NPC, Integer> pillars = nylocas.getNylocasPillars();
@@ -107,64 +107,61 @@ public class NylocasOverlay extends RoomOverlay
 				}
 			}
 
-			if (config.nyloExplosions() || config.nyloTimeAlive() || config.getHighlightMageNylo() || config.getHighlightMeleeNylo() || config.getHighlightRangeNylo() || config.nyloAggressiveOverlay())
+			final Map<NPC, Integer> npcMap = nylocas.getNylocasNpcs();
+
+			for (NPC npc : npcMap.keySet())
 			{
-				final Map<NPC, Integer> npcMap = nylocas.getNylocasNpcs();
-
-				for (NPC npc : npcMap.keySet())
+				if (config.nyloAggressiveOverlay() && nylocas.getAggressiveNylocas().contains(npc) && !npc.isDead())
 				{
-					if (config.nyloAggressiveOverlay() && nylocas.getAggressiveNylocas().contains(npc) && !npc.isDead())
+					LocalPoint lp = npc.getLocalLocation();
+					if (lp != null)
+					{
+						Polygon poly = getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -25);
+						renderPoly(graphics, Color.RED, poly, 1);
+					}
+				}
+
+				int ticksLeft = npcMap.get(npc);
+				if (ticksLeft > -1 && ticksLeft <= config.nyloExplosionDisplayTicks())
+				{
+					if (config.nyloTimeAlive() && !npc.isDead())
+					{
+						int ticksAlive = 52 - ticksLeft;
+						Point textLocation = npc.getCanvasTextLocation(graphics, String.valueOf(ticksAlive), 60);
+						if (textLocation != null)
+						{
+							renderTextLocation(graphics, String.valueOf(ticksAlive), Color.WHITE, textLocation);
+						}
+					}
+
+					if (config.nyloExplosions() && ticksLeft <= 6)
 					{
 						LocalPoint lp = npc.getLocalLocation();
 						if (lp != null)
 						{
-							Polygon poly = getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -25);
-							renderPoly(graphics, Color.RED, poly, 1);
+							renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -15), 1);
 						}
 					}
+				}
 
-					int ticksLeft = npcMap.get(npc);
-					if (ticksLeft > -1 && ticksLeft <= config.nyloExplosionDisplayTicks())
+				String name = npc.getName();
+
+				if (config.nyloHighlightOverlay() && !npc.isDead())
+				{
+					LocalPoint lp = npc.getLocalLocation();
+					if (lp != null)
 					{
-						if (config.nyloTimeAlive() && !npc.isDead())
+						if (config.getHighlightMeleeNylo() && "Nylocas Ischyros".equals(name))
 						{
-							int ticksAlive = 52 - ticksLeft;
-							Point textLocation = npc.getCanvasTextLocation(graphics, String.valueOf(ticksAlive), 60);
-							if (textLocation != null)
-							{
-								renderTextLocation(graphics, String.valueOf(ticksAlive), Color.WHITE, textLocation);
-							}
+							renderPoly(graphics, new Color(255, 188, 188), Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
 						}
-
-						if (config.nyloExplosions() && ticksLeft <= 6)
+						else if (config.getHighlightRangeNylo() && "Nylocas Toxobolos".equals(name))
 						{
-							LocalPoint lp = npc.getLocalLocation();
-							if (lp != null)
-							{
-								renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -15), 1);
-							}
+							renderPoly(graphics, Color.GREEN, Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
 						}
-					}
-
-					String name = npc.getName();
-
-					if (config.nyloHighlightOverlay() && !npc.isDead())
-					{
-						LocalPoint lp = npc.getLocalLocation();
-						if (lp != null)
+						else if (config.getHighlightMageNylo() && "Nylocas Hagios".equals(name))
 						{
-							if (config.getHighlightMeleeNylo() && "Nylocas Ischyros".equals(name))
-							{
-								renderPoly(graphics, new Color(255, 188, 188), Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
-							}
-							else if (config.getHighlightRangeNylo() && "Nylocas Toxobolos".equals(name))
-							{
-								renderPoly(graphics, Color.GREEN, Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
-							}
-							else if (config.getHighlightMageNylo() && "Nylocas Hagios".equals(name))
-							{
-								renderPoly(graphics, Color.CYAN, Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
-							}
+							renderPoly(graphics, Color.CYAN, Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
 						}
 					}
 				}

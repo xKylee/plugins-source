@@ -7,7 +7,6 @@
 package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +24,6 @@ import net.runelite.api.Point;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectDespawned;
@@ -36,10 +34,11 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
-import net.runelite.client.plugins.theatre.TheatresPlugin;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ImageUtil;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class Xarpus extends Room
 {
@@ -53,10 +52,10 @@ public class Xarpus extends Room
 	private InfoBoxManager infoBoxManager;
 
 	@Inject
-	private TheatresPlugin p; //DO NOT USE. Just here for the exhumedCounter constructor.
+	private TheatrePlugin p; //DO NOT USE. Just here for the exhumedCounter constructor.
 
 	@Inject
-	protected Xarpus(TheatresPlugin plugin, TheatreConfig config)
+	protected Xarpus(TheatrePlugin plugin, TheatreConfig config)
 	{
 		super(plugin, config);
 	}
@@ -88,11 +87,12 @@ public class Xarpus extends Room
 
 	private static BufferedImage EXHUMED_COUNT_ICON;
 	private static final int GROUNDOBJECT_ID_EXHUMED = 32743;
+	private static final int XARPUS_REGION = 12612;
 
 	@Override
 	public void init()
 	{
-		EXHUMED_COUNT_ICON = ImageUtil.resizeCanvas(ImageUtil.getResourceStreamFromClass(TheatresPlugin.class, "1067-POISON.png"), 26, 26);
+		EXHUMED_COUNT_ICON = ImageUtil.resizeCanvas(ImageUtil.getResourceStreamFromClass(TheatrePlugin.class, "1067-POISON.png"), 26, 26);
 	}
 
 	@Override
@@ -174,48 +174,6 @@ public class Xarpus extends Room
 				this.xarpusExhumeds.put(o, 11);
 			}
 		}
-		/*if (xarpusActive)
-		{
-			if (exhumedCounter == null)
-			{
-				exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, 0);
-				infoBoxManager.addInfoBox(exhumedCounter);
-
-				int players = client.getPlayers().size();
-
-				switch (players)
-				{
-					case 1:
-						exhumedCounter.setCount(7);
-						break;
-					case 2:
-						exhumedCounter.setCount(9);
-						break;
-					case 3:
-						exhumedCounter.setCount(12);
-						break;
-					case 4:
-						exhumedCounter.setCount(15);
-						break;
-					case 5:
-					default:
-						exhumedCounter.setCount(18);
-						break;
-				}
-			}
-
-			GroundObject o = event.getGroundObject();
-			if (o.getId() == GROUNDOBJECT_ID_EXHUMED)
-			{
-				if (exhumedCounter != null)
-				{
-					int count = exhumedCounter.getCount();
-					exhumedCounter.setCount(count - 1);
-				}
-
-				xarpusExhumeds.put(o, 11);
-			}
-		}*/
 	}
 
 	@Subscribe
@@ -255,21 +213,6 @@ public class Xarpus extends Room
 					it.remove();
 				}
 			}
-			/*for (GroundObject exhumed : xarpusExhumeds.keySet())
-			{
-				if (exhumed != null)
-				{
-					int ticksLeft = xarpusExhumeds.get(exhumed);
-					if (ticksLeft > 0)
-					{
-						xarpusExhumeds.replace(exhumed, ticksLeft - 1);
-					}
-					else
-					{
-						xarpusExhumeds.remove(exhumed);
-					}
-				}
-			}*/
 
 			if (xarpusNPC.getOverheadText() != null && !xarpusStare)
 			{
@@ -295,24 +238,6 @@ public class Xarpus extends Room
 			}
 		}
 
-		if (isInstanceTimerRunning)
-		{
-			instanceTimer = (instanceTimer + 1) % 4;
-		}
-	}
-
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged event)
-	{
-		if (event.getGameState() == GameState.LOGGED_IN)
-		{
-			nextInstance = true;
-		}
-	}
-
-	@Subscribe
-	public void onClientTick(ClientTick event)
-	{
 		if (client.getLocalPlayer() != null)
 		{
 			List<Player> players = client.getPlayers();
@@ -349,7 +274,7 @@ public class Xarpus extends Room
 								lpChest = LocalPoint.fromWorld(client, wpChest.getX(), wpChest.getY());
 							} while (lpChest == null);
 							point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
-						} while (!this.isInSotetsegRegion());
+						} while (this.isInXarpusRegion());
 					} while (point.getY() != 1);
 				} while (point.getX() != 1 && point.getX() != 2 && point.getX() != 3);
 
@@ -362,21 +287,24 @@ public class Xarpus extends Room
 				}
 			}
 		}
+
+		if (isInstanceTimerRunning)
+		{
+			instanceTimer = (instanceTimer + 1) % 4;
+		}
 	}
 
-	protected boolean isInXarpusRegion()
+	@Subscribe
+	public void onGameStateChanged(GameStateChanged event)
 	{
-		return client.getMapRegions() != null && client.getMapRegions().length > 0 && Arrays.stream(client.getMapRegions()).anyMatch((s) ->
+		if (event.getGameState() == GameState.LOGGED_IN)
 		{
-			return s == 12612;
-		});
+			nextInstance = true;
+		}
 	}
 
-	protected boolean isInSotetsegRegion()
+	boolean isInXarpusRegion()
 	{
-		return client.getMapRegions() != null && client.getMapRegions().length > 0 && Arrays.stream(client.getMapRegions()).anyMatch((s) ->
-		{
-			return s == 13123 || s == 13379;
-		});
+		return ArrayUtils.contains(client.getMapRegions(), XARPUS_REGION);
 	}
 }
