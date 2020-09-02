@@ -109,15 +109,6 @@ subprojects {
             }
         }
 
-        withType<Jar> {
-        			doLast {
-        				copy {
-        					from("./build/libs/")
-        					into("C:/Users/Damen/.runelite/externalmanager/")
-        				}
-        			}
-        		}
-
         withType<AbstractArchiveTask> {
             isPreserveFileTimestamps = false
             isReproducibleFileOrder = true
