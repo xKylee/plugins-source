@@ -1,60 +1,58 @@
 /*
- * THIS SOFTWARE WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI
- * No rights reserved. Use, redistribute, and modify at your own discretion,
- * and in accordance with Yagex and RuneLite guidelines.
- * However, aforementioned monkey would prefer if you don't sell this plugin for profit.
- * Good luck on your raids!
+ * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
+ * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
+ * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
  */
 
 package net.runelite.client.plugins.theatre;
 
+import com.google.inject.Binder;
 import com.google.inject.Provides;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicsObjectCreated;
+import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
+import net.runelite.api.events.MenuEntryAdded;
+import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
-import net.runelite.api.events.ProjectileSpawned;
-import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.game.ItemManager;
-import net.runelite.client.graphics.ModelOutlineRenderer;
-import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.theatre.rooms.BloatHandler;
-import net.runelite.client.plugins.theatre.rooms.MaidenHandler;
-import net.runelite.client.plugins.theatre.rooms.SotetsegHandler;
-import net.runelite.client.plugins.theatre.rooms.VerzikHandler;
-import net.runelite.client.plugins.theatre.rooms.nylocas.NyloHandler;
-import net.runelite.client.plugins.theatre.rooms.xarpus.XarpusHandler;
-import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.plugins.theatre.Bloat.Bloat;
+import net.runelite.client.plugins.theatre.Maiden.Maiden;
+import net.runelite.client.plugins.theatre.Nylocas.Nylocas;
+import net.runelite.client.plugins.theatre.Sotetseg.Sotetseg;
+import net.runelite.client.plugins.theatre.Verzik.Verzik;
+import net.runelite.client.plugins.theatre.Xarpus.Xarpus;
+import javax.inject.Inject;
 import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
 	name = "Theatre of Blood",
+	description = "All-in-one plugin for Theatre of Blood",
+	tags = {"ToB"},
 	enabledByDefault = false,
-	description = "All-in-one plugin for Theatre of Blood.",
-	tags = {"ToB", "Theatre", "Theatre of Blood", "Lyzrd"},
 	type = PluginType.PVM
 )
-@Getter(AccessLevel.PUBLIC)
+
+@Slf4j
 public class TheatrePlugin extends Plugin
 {
+	private Room[] rooms = null;
+
 	@Inject
 	private Client client;
 
@@ -62,31 +60,28 @@ public class TheatrePlugin extends Plugin
 	private EventBus eventBus;
 
 	@Inject
-	private OverlayManager overlayManager;
+	private Maiden maiden;
 
 	@Inject
-	private TheatreOverlay overlay;
+	private Bloat bloat;
 
 	@Inject
-	private TheatreConfig config;
+	private Nylocas nylocas;
 
 	@Inject
-	private MenuManager menuManager;
+	private Sotetseg sotetseg;
 
 	@Inject
-	private ItemManager itemManager;
+	private Xarpus xarpus;
 
 	@Inject
-	private ModelOutlineRenderer modelOutline;
+	private Verzik verzik;
 
-	private BloatHandler bloatHandler;
-	private MaidenHandler maidenHandler;
-	private NyloHandler nyloHandler;
-	private SotetsegHandler sotetsegHandler;
-	@Setter(AccessLevel.PUBLIC)
-	private TheatreRoom room;
-	private VerzikHandler verzikHandler;
-	private XarpusHandler xarpusHandler;
+	@Override
+	public void configure(Binder binder)
+	{
+		binder.bind(TheatreInputListener.class);
+	}
 
 	@Provides
 	TheatreConfig getConfig(ConfigManager configManager)
@@ -97,241 +92,134 @@ public class TheatrePlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		room = TheatreRoom.UNKNOWN;
-		maidenHandler = new MaidenHandler(client, this, config, modelOutline);
-		bloatHandler = new BloatHandler(client, this, config);
-		nyloHandler = new NyloHandler(client, this, config, menuManager, eventBus);
-		sotetsegHandler = new SotetsegHandler(client, this, config);
-		xarpusHandler = new XarpusHandler(client, this, config);
-		verzikHandler = new VerzikHandler(client, this, config);
-		overlayManager.add(overlay);
+		if (this.rooms == null)
+		{
+			this.rooms = new Room[]{(Room) this.maiden, (Room) this.bloat, (Room) this.nylocas, (Room) this.sotetseg, (Room) this.xarpus, (Room) this.verzik};
+
+			for (Room room : this.rooms)
+			{
+				room.init();
+			}
+		}
+
+		for (Room room : this.rooms)
+		{
+			room.load();
+		}
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		maidenHandler.onStop();
-		maidenHandler = null;
-		bloatHandler.onStop();
-		bloatHandler = null;
-		nyloHandler.startTime = 0L;
-		nyloHandler.onStop();
-		nyloHandler = null;
-		sotetsegHandler.onStop();
-		sotetsegHandler = null;
-		xarpusHandler.onStop();
-		xarpusHandler = null;
-		verzikHandler.onStop();
-		verzikHandler = null;
-		room = TheatreRoom.UNKNOWN;
-		overlayManager.remove(overlay);
-	}
-
-	@Subscribe
-	private void onAnimationChanged(AnimationChanged event)
-	{
-		if (verzikHandler != null)
+		for (Room room : this.rooms)
 		{
-			verzikHandler.onAnimationChanged(event);
+			room.unload();
 		}
 	}
 
 	@Subscribe
-	private void onChatMessage(ChatMessage event)
+	public void onNpcSpawned(NpcSpawned npcSpawned)
 	{
-		if (maidenHandler != null)
-		{
-			maidenHandler.onChatMessage(event);
-		}
+		maiden.onNpcSpawned(npcSpawned);
+		bloat.onNpcSpawned(npcSpawned);
+		nylocas.onNpcSpawned(npcSpawned);
+		sotetseg.onNpcSpawned(npcSpawned);
+		xarpus.onNpcSpawned(npcSpawned);
+		verzik.onNpcSpawned(npcSpawned);
 	}
 
 	@Subscribe
-	private void onConfigChanged(ConfigChanged event)
+	public void onNpcDespawned(NpcDespawned npcDespawned)
 	{
-		if (!event.getGroup().equals("Theatre"))
-		{
-			return;
-		}
-
-		if (nyloHandler != null)
-		{
-			nyloHandler.onConfigChanged();
-		}
-
-		if (xarpusHandler != null)
-		{
-			xarpusHandler.onConfigChanged();
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.add(overlay);
-		}
+		maiden.onNpcDespawned(npcDespawned);
+		bloat.onNpcDespawned(npcDespawned);
+		nylocas.onNpcDespawned(npcDespawned);
+		sotetseg.onNpcDespawned(npcDespawned);
+		xarpus.onNpcDespawned(npcDespawned);
+		verzik.onNpcDespawned(npcDespawned);
 	}
 
 	@Subscribe
-	private void onGameTick(GameTick event)
+	public void onNpcDefinitionChanged(NpcDefinitionChanged npcDefinitionChanged)
 	{
-		if (maidenHandler != null)
-		{
-			maidenHandler.onGameTick();
-		}
-
-		if (bloatHandler != null)
-		{
-			bloatHandler.onGameTick();
-		}
-
-		if (nyloHandler != null)
-		{
-			nyloHandler.onGameTick();
-		}
-
-		if (sotetsegHandler != null)
-		{
-			sotetsegHandler.onGameTick();
-		}
-
-		if (xarpusHandler != null)
-		{
-			xarpusHandler.onGameTick();
-		}
-
-		if (verzikHandler != null)
-		{
-			verzikHandler.onGameTick();
-		}
+		nylocas.onNpcDefinitionChanged(npcDefinitionChanged);
 	}
 
 	@Subscribe
-	private void onGroundObjectSpawned(GroundObjectSpawned event)
+	public void onGameTick(GameTick event)
 	{
-		if (sotetsegHandler != null)
-		{
-			sotetsegHandler.onGroundObjectSpawned(event);
-		}
-
-		if (xarpusHandler != null)
-		{
-			xarpusHandler.onGroundObjectSpawned(event);
-		}
+		maiden.onGameTick(event);
+		bloat.onGameTick(event);
+		nylocas.onGameTick(event);
+		sotetseg.onGameTick(event);
+		xarpus.onGameTick(event);
+		verzik.onGameTick(event);
 	}
 
 	@Subscribe
-	private void onNpcDefinitionChanged(NpcDefinitionChanged event)
+	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (maidenHandler != null)
-		{
-			maidenHandler.onNpcDefinitionChanged(event);
-		}
+		bloat.onVarbitChanged(event);
+		nylocas.onVarbitChanged(event);
+		xarpus.onVarbitChanged(event);
 	}
 
 	@Subscribe
-	private void onNpcDespawned(NpcDespawned event)
+	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
-		if (maidenHandler != null)
-		{
-			maidenHandler.onNpcDespawned(event);
-		}
-
-		if (bloatHandler != null)
-		{
-			bloatHandler.onNpcDespawned(event);
-		}
-
-		if (nyloHandler != null)
-		{
-			nyloHandler.onNpcDespawned(event);
-		}
-
-		if (sotetsegHandler != null)
-		{
-			sotetsegHandler.onNpcDespawned(event);
-		}
-
-		if (xarpusHandler != null)
-		{
-			xarpusHandler.onNpcDespawned(event);
-		}
-
+		nylocas.onGameStateChanged(gameStateChanged);
+		xarpus.onGameStateChanged(gameStateChanged);
 	}
 
 	@Subscribe
-	private void onNpcSpawned(NpcSpawned event)
+	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
-		if (maidenHandler != null)
-		{
-			maidenHandler.onNpcSpawned(event);
-		}
-
-		if (bloatHandler != null)
-		{
-			bloatHandler.onNpcSpawned(event);
-		}
-
-		if (nyloHandler != null)
-		{
-			nyloHandler.onNpcSpawned(event);
-		}
-
-		if (sotetsegHandler != null)
-		{
-			sotetsegHandler.onNpcSpawned(event);
-		}
-
-		if (xarpusHandler != null)
-		{
-			xarpusHandler.onNpcSpawned(event);
-		}
-
-		if (verzikHandler != null)
-		{
-			verzikHandler.onNpcSpawned(event);
-		}
-
+		nylocas.onMenuEntryAdded(entry);
 	}
 
 	@Subscribe
-	private void onProjectileMoved(ProjectileMoved event)
+	public void onMenuOpened(MenuOpened menu)
 	{
-		if (verzikHandler != null)
-		{
-			verzikHandler.onProjectileMoved(event);
-		}
+		nylocas.onMenuOpened(menu);
 	}
 
 	@Subscribe
-	private void onProjectileSpawned(ProjectileSpawned event)
+	public void onConfigChanged(ConfigChanged change)
 	{
-		if (sotetsegHandler != null)
-		{
-			sotetsegHandler.onProjectileSpawned(event);
-
-		}
+		nylocas.onConfigChanged(change);
 	}
 
 	@Subscribe
-	private void onSpotAnimationChanged(SpotAnimationChanged event)
+	public void onGraphicsObjectCreated(GraphicsObjectCreated graphicsObjectC)
 	{
-		if (maidenHandler != null)
-		{
-			maidenHandler.onSpotAnimationChanged(event);
-		}
+		bloat.onGraphicsObjectCreated(graphicsObjectC);
 	}
 
 	@Subscribe
-	private void onVarbitChanged(VarbitChanged event)
+	public void onGroundObjectSpawned(GroundObjectSpawned event)
 	{
-		if (bloatHandler != null)
-		{
-			bloatHandler.onVarbitChanged(event);
-		}
+		sotetseg.onGroundObjectSpawned(event);
+		xarpus.onGroundObjectSpawned(event);
+	}
 
-		if (xarpusHandler != null)
-		{
-			xarpusHandler.onVarbitChanged(event);
-		}
+	@Subscribe
+	private void onGroundObjectDespawned(GroundObjectDespawned event)
+	{
+		xarpus.onGroundObjectDespawned(event);
+	}
+
+	@Subscribe
+	public void onAnimationChanged(AnimationChanged animationChanged)
+	{
+		bloat.onAnimationChanged(animationChanged);
+		nylocas.onAnimationChanged(animationChanged);
+		sotetseg.onAnimationChanged(animationChanged);
+	}
+
+	@Subscribe
+	public void onProjectileMoved(ProjectileMoved event)
+	{
+		verzik.onProjectileMoved(event);
 	}
 }
+
