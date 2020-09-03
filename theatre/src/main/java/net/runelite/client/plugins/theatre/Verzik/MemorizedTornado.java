@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.theatre.rooms;
+package net.runelite.client.plugins.theatre.Verzik;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.coords.WorldPoint;
 
 @Getter(AccessLevel.PACKAGE)
-class MemorizedTornado
+public class MemorizedTornado
 {
 	@Getter(AccessLevel.PACKAGE)
 	private NPC npc;
@@ -27,26 +27,11 @@ class MemorizedTornado
 		currentPosition = null;
 	}
 
-	public int getRelativeXDelta(WorldPoint pt)
-	{
-		return pt.getX() - currentPosition.getX() - (pt.getX() - lastPosition.getX());
-	}
-
-	public int getRelativeYDelta(WorldPoint pt)
-	{
-		return pt.getY() - currentPosition.getY() - (pt.getY() - lastPosition.getY());
-	}
-
 	public int getRelativeDelta(WorldPoint pt)
 	{
-		//if the tornado is newly spawned and doesn't have positions loaded, return -1
-		if (lastPosition == null || currentPosition == null)
-		{
-			return -1;
-		}
-
-		//if the last position is equal to the current position, it didn't move yet. return -1
-		if (lastPosition.distanceTo(currentPosition) == 0)
+		// If the tornado has recently spawned and does not have it's position loaded, return -1.
+		// If the last position is equal to the current position, it hasn't moved yet, return -1.
+		if (currentPosition == null || lastPosition == null || lastPosition.distanceTo(currentPosition) == 0)
 		{
 			return -1;
 		}

@@ -1,491 +1,697 @@
 /*
- * THIS SOFTWARE WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI
- * No rights reserved. Use, redistribute, and modify at your own discretion,
- * and in accordance with Yagex and RuneLite guidelines.
- * However, aforementioned monkey would prefer if you don't sell this plugin for profit.
- * Good luck on your raids!
+ * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
+ * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
+ * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
  */
 
 package net.runelite.client.plugins.theatre;
 
 import java.awt.Color;
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.Range;
 
 @ConfigGroup("Theatre")
-
 public interface TheatreConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
+	@ConfigTitleSection(
+		name = "General",
+		description = "",
+		position = 0,
+		keyName = "generalSection"
 	)
-	default boolean mirrorMode()
+	default boolean generalSection()
 	{
-		return false;
+		return true;
 	}
 
-	@ConfigSection(
+	@Range(max = 20)
+	@ConfigItem(
 		position = 0,
-		keyName = "maidenSection",
-		name = "Maiden",
-		description = ""
+		keyName = "theatreFontSize",
+		name = "Theatre Overlay Font Size",
+		description = "Sets the font size for all theatre text overlays",
+		titleSection = "generalSection"
 	)
-	default boolean experimentalSection()
+	default int theatreFontSize()
 	{
-		return false;
+		return 12;
+	}
+
+	@ConfigTitleSection(
+		name = "Maiden",
+		description = "Maiden's Configuration",
+		position = 1,
+		keyName = "maidenSection"
+	)
+	default boolean maidenSection()
+	{
+		return true;
 	}
 
 	@ConfigItem(
 		position = 1,
-		keyName = "showMaidenBloodToss",
-		name = "Show Maiden Blood Toss",
-		description = "Displays the tile location where tossed blood will land.",
-		section = "maidenSection"
+		keyName = "maidenBlood",
+		name = "Maiden Blood Attack Marker",
+		description = "Highlights Maiden's Blood Pools",
+		titleSection = "maidenSection"
 	)
-	default boolean showMaidenBloodToss()
+	default boolean maidenBlood()
 	{
 		return true;
 	}
 
 	@ConfigItem(
 		position = 2,
-		keyName = "showMaidenBloodSpawns",
-		name = "Show Maiden Blood Spawns",
-		description = "Show the tiles that blood spawns will travel to.",
-		section = "maidenSection"
+		keyName = "maidenSpawns",
+		name = "Maiden Blood Spawns Marker",
+		description = "Highlights Maiden Blood Spawns (Tomatoes)",
+		titleSection = "maidenSection"
 	)
-	default boolean showMaidenBloodSpawns()
+	default boolean maidenSpawns()
 	{
 		return true;
 	}
 
 	@ConfigItem(
 		position = 3,
-		keyName = "showNyloFreezeHighlights",
-		name = "Show Nylo Freeze Highlights",
-		description = "Show when to freeze Nylos at maiden. Say n1,n2,s1,s2 in chat for it to register.",
-		section = "maidenSection"
+		keyName = "maidenReds",
+		name = "Maiden Reds Health Overlay",
+		description = "Displays the health of each red crab",
+		titleSection = "maidenSection"
 	)
-	default boolean showNyloFreezeHighlights()
+	default boolean maidenRedsHealth()
 	{
 		return true;
 	}
 
 	@ConfigItem(
 		position = 4,
-		keyName = "showNyloFreezeHighlights",
-		name = "Show Nylo Distance",
-		description = "Show remaining ticks before nylos will reach and heal maiden.",
-		section = "maidenSection"
+		keyName = "maidenRedsDistance",
+		name = "Maiden Reds Distance Overlay",
+		description = "Displays the distance of each red crab to reach Maiden",
+		titleSection = "maidenSection"
 	)
-	default boolean showMaidenNyloDistance()
+	default boolean maidenRedsDistance()
 	{
 		return true;
 	}
 
-	@ConfigSection(
-		position = 4,
-		keyName = "bloatSection",
+	@ConfigItem(
+		position = 5,
+		keyName = "MaidenTickCounter",
+		name = "Maiden Tank Tick Counter",
+		description = "Displays the tick counter for when she decides who to choose for tanking",
+		titleSection = "maidenSection"
+	)
+	default boolean maidenTickCounter()
+	{
+		return true;
+	}
+
+	@ConfigTitleSection(
 		name = "Bloat",
-		description = ""
+		description = "Bloat's Configuration",
+		position = 2,
+		keyName = "bloatSection"
 	)
 	default boolean bloatSection()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "bloatIndicator",
+		name = "Bloat Tile Indicator",
+		description = "Highlights Bloat's Tile",
+		titleSection = "bloatSection"
+	)
+	default boolean bloatIndicator()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "bloatTickCounter",
+		name = "Bloat Tick Counter",
+		description = "Displays the tick counter for how long Bloat has been up or down",
+		titleSection = "bloatSection"
+	)
+	default boolean bloatTickCounter()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "bloatHands",
+		name = "Bloat Hands Overlay",
+		description = "Highlights the tiles where Bloat's hands will fall",
+		titleSection = "bloatSection"
+	)
+	default boolean bloatHands()
+	{
+		return false;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 4,
+		keyName = "bloatHandsColor",
+		name = "Bloat Hands Overlay Color",
+		description = "Select a color for the Bloat Hands Overlay to be",
+		titleSection = "bloatSection"
+	)
+	default Color bloatHandsColor()
+	{
+		return Color.CYAN;
+	}
+
+	@ConfigTitleSection(
+		name = "Nylocas",
+		description = "Nylocas' Configuration",
+		position = 3,
+		keyName = "nylocasSection"
+	)
+	default boolean nylocasSection()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "nyloPillars",
+		name = "Nylocas Pillar Health Overlay",
+		description = "Displays the health percentage of the pillars",
+		titleSection = "nylocasSection"
+	)
+	default boolean nyloPillars()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "nyloExplosions",
+		name = "Nylocas Explosion Tile Warning",
+		description = "Highlights a Nylocas that is about to explode",
+		titleSection = "nylocasSection"
+	)
+	default boolean nyloExplosions()
+	{
+		return true;
+	}
+
+	@Range(max = 52)
+	@ConfigItem(
+		position = 3,
+		keyName = "nyloExplosionDisplayTicks",
+		name = "Nylocas Display Last Ticks",
+		description = "Displays the last 'x' amount of ticks for a Nylocas. (ex: to see the last 10 ticks, you set it to 10)",
+		titleSection = "nylocasSection"
+	)
+	default int nyloExplosionDisplayTicks()
+	{
+		return 46;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "nyloTimeAlive",
+		name = "Nylocas Tick Time Alive",
+		description = "Displays the tick counter of each nylocas spawn (Explodes on 52)",
+		titleSection = "nylocasSection"
+	)
+	default boolean nyloTimeAlive()
 	{
 		return false;
 	}
 
 	@ConfigItem(
 		position = 5,
-		keyName = "showBloatIndicator",
-		name = "Show Bloat Status",
-		description = "Displays Bloat's status (asleep, wake, and enrage) using color code.",
-		section = "bloatSection"
+		keyName = "nyloRecolorMenu",
+		name = "Nylocas Recolor Menu Options",
+		description = "Recolors the menu options of each Nylocas to it's respective attack style",
+		titleSection = "nylocasSection"
 	)
-	default boolean showBloatIndicator()
+	default boolean nyloRecolorMenu()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
 		position = 6,
-		keyName = "showBloatHands",
-		name = "Show Bloat Hands",
-		description = "Highlights the falling hands inside Bloat.",
-		section = "bloatSection"
+		keyName = "nyloHighlightOverlay",
+		name = "Nylocas Highlight Overlay",
+		description = "Select your role to highlight respective Nylocas to attack",
+		titleSection = "nylocasSection"
 	)
-	default boolean showBloatHands()
+	default boolean nyloHighlightOverlay()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
 		position = 7,
-		keyName = "bloatFeet",
-		name = "Bloat Hands Rave Edition",
-		description = "",
-		section = "bloatSection"
+		keyName = "nyloAliveCounter",
+		name = "Nylocas Alive Counter Panel",
+		description = "Displays how many Nylocas are currently alive",
+		titleSection = "nylocasSection"
 	)
-	default boolean BloatFeetIndicatorRaveEdition()
+	default boolean nyloAlivePanel()
 	{
 		return false;
 	}
 
 	@ConfigItem(
 		position = 8,
-		keyName = "showBloatTimer",
-		name = "Show Bloat Timer",
-		description = "Show the estimated time when Bloat will go down.",
-		section = "bloatSection"
+		keyName = "nyloAggressiveOverlay",
+		name = "Highlight Aggressive Nylocas",
+		description = "Highlights aggressive Nylocas after they spawn",
+		titleSection = "nylocasSection"
 	)
-	default boolean showBloatTimer()
+	default boolean nyloAggressiveOverlay()
 	{
-		return false;
+		return true;
 	}
 
-	@ConfigSection(
+	@ConfigItem(
 		position = 9,
-		keyName = "nylocasSection",
-		name = "Nylocas",
-		description = ""
+		keyName = "nyloInstanceTimer",
+		name = "Nylocas Instance Timer",
+		description = "Displays an instance timer when the next set will potentially spawn",
+		titleSection = "nylocasSection"
 	)
-	default boolean nylocasSection()
+	default boolean nyloInstanceTimer()
 	{
 		return false;
 	}
 
 	@ConfigItem(
 		position = 10,
-		keyName = "showNyloPillarHealth",
-		name = "Show Nylocas Pillar Health",
-		description = "Show the health bars of the Nylocas pillars.",
-		section = "nylocasSection"
+		keyName = "nyloStallMessage",
+		name = "Nylocas Stall Wave Messages",
+		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped",
+		titleSection = "nylocasSection"
 	)
-	default boolean showNyloPillarHealth()
+	default boolean nyloStallMessage()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
 		position = 11,
-		keyName = "showNylocasExplosions",
-		name = "Highlight Old Nylocas",
-		description = "Either a timer on the nylo counting down to explosion, or a tile underneath.",
-		section = "nylocasSection"
+		keyName = "nyloBossAttackTickCount",
+		name = "Nylocas Boss Attack Tick Counter",
+		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST)",
+		titleSection = "nylocasSection"
 	)
-	default NYLOOPTION showNylocasExplosions()
+	default boolean nyloBossAttackTickCount()
 	{
-		return NYLOOPTION.NONE;
+		return false;
 	}
 
 	@ConfigItem(
 		position = 12,
-		keyName = "showNylocasAmount",
-		name = "Show Nylocas Amount",
-		description = "An overlay will appear that counts the amount of Nylocas in the room.",
-		section = "nylocasSection"
+		keyName = "nyloBossSwitchTickCount",
+		name = "Nylocas Boss Switch Tick Counter",
+		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE)",
+		titleSection = "nylocasSection"
 	)
-	default boolean showNylocasAmount()
+	default boolean nyloBossSwitchTickCount()
 	{
 		return true;
 	}
 
 	@ConfigItem(
 		position = 13,
-		keyName = "nylocasMenuSwap",
-		name = "Hide Nylocas wrong attack options",
-		description = "hides attack options on small nylos of the wrong style",
-		section = "nylocasSection"
+		keyName = "nyloBossTotalTickCount",
+		name = "Nylocas Boss Total Tick Counter",
+		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST)",
+		titleSection = "nylocasSection"
 	)
-	default boolean nylocasMenuSwap()
+	default boolean nyloBossTotalTickCount()
 	{
-		return true;
+		return false;
 	}
 
-	/**
-	 * @ConfigItem( position = 8,
-	 * keyName = "showNylocasSpawns",
-	 * name = "Show Nylocas Pre-spawns",
-	 * description = "Know the contents of the next upcoming wave."
-	 * )
-	 * default boolean showNylocasSpawns()
-	 * {
-	 * return true;
-	 * }
-	 * @ConfigItem( position = 9,
-	 * keyName = "highlightNyloRoles",
-	 * name = "Highlight Nylo Prespawns",
-	 * description = "Highlights the next upcoming wave based on role. FOR BEGINNERS"
-	 * )
-	 * default NYLOCAS highlightNyloRoles()
-	 * {
-	 * return NYLOCAS.NONE;
-	 * }
-	 * @ConfigItem( position = 10,
-	 * keyName = "highlightNyloParents",
-	 * name = "Show Nylo Parents (Un-used)",
-	 * description = "Highlight the Nylocas that spawn outside the center."
-	 * )
-	 * default boolean highlightNyloParents()
-	 * {
-	 * return true;
-	 * }
-	 **/
-
-	@ConfigItem(
-		position = 14,
-		keyName = "highlightNyloAgros",
-		name = "Show Nylocas Agros",
-		description = "Highlight the Nylocas that are aggressive to the player.",
-		section = "nylocasSection"
-	)
-	default boolean highlightNyloAgros()
-	{
-		return true;
-	}
-
-
-	@ConfigSection(
-		position = 15,
-		keyName = "sotetsegSection",
+	@ConfigTitleSection(
 		name = "Sotetseg",
-		description = ""
+		description = "Sotetseg's Configuration",
+		position = 4,
+		keyName = "sotetsegSection"
 	)
 	default boolean sotetsegSection()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigItem(
-		position = 16,
-		keyName = "showSotetsegAttacks",
-		name = "Show Sotetseg Attacks",
-		description = "Highlight the attacks which Sotetseg throws at you.",
-		section = "sotetsegSection"
+		position = 1,
+		keyName = "sotetsegMaze",
+		name = "Sotetseg Maze",
+		description = "Memorizes Solo Mazes and displays tiles of other chosen players",
+		titleSection = "sotetsegSection"
 	)
-	default boolean showSotetsegAttacks()
+	default boolean sotetsegMaze()
 	{
 		return true;
 	}
 
 	@ConfigItem(
-		position = 17,
-		keyName = "showSotetsegMaze",
-		name = "Mark Sotetseg Maze",
-		description = "Marks the tiles of Sotetseg's maze while in the overworld.",
-		section = "sotetsegSection"
+		position = 2,
+		keyName = "sotetsegOrbAttacksTicks",
+		name = "Sotetseg Small Attack Orb Ticks",
+		description = "Displays the amount of ticks until it will hit you (change prayers when you see 1)",
+		titleSection = "sotetsegSection"
 	)
-	default boolean showSotetsegMaze()
+	default boolean sotetsegOrbAttacksTicks()
 	{
 		return true;
 	}
 
 	@ConfigItem(
-		position = 18,
-		keyName = "showSotetsegSolo",
-		name = "Mark Sotetseg Maze (Solo)",
-		description = "Marks the tiles of Sotetseg's maze while in the underworld.",
-		section = "sotetsegSection"
+		position = 3,
+		keyName = "sotetsegAutoAttacksTicks",
+		name = "Sotetseg Auto Attack Ticks",
+		description = "Displays a tick counter for when Sotetseg will attack next",
+		titleSection = "sotetsegSection"
 	)
-	default boolean showSotetsegSolo()
+	default boolean sotetsegAutoAttacksTicks()
 	{
 		return true;
 	}
 
 	@ConfigItem(
-		position = 19,
-		keyName = "markerColor",
-		name = "Sotey Tile Colour",
-		description = "Configures the color of marked tile",
-		section = "sotetsegSection"
+		position = 4,
+		keyName = "sotetsegBigOrbTicks",
+		name = "Sotetseg Ball Tick Overlay",
+		description = "Displays how many ticks until the ball will explode (eat when you see 1)",
+		titleSection = "sotetsegSection"
 	)
-	default Color mazeTileColour()
+	default boolean sotetsegBigOrbTicks()
 	{
-		return Color.WHITE;
+		return true;
 	}
 
-	@ConfigSection(
-		position = 20,
-		keyName = "xarpusSection",
+	@ConfigTitleSection(
 		name = "Xarpus",
-		description = ""
+		description = "Xarpus's Configuration",
+		position = 5,
+		keyName = "xarpusSection"
 	)
 	default boolean xarpusSection()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigItem(
-		position = 21,
-		keyName = "showXarpusHeals",
-		name = "Show Xarpus Heals",
-		description = "Highlights the tiles that Xarpus is healing with.",
-		section = "xarpusSection"
+		position = 1,
+		keyName = "xarpusInstanceTimer",
+		name = "Xarpus Instance Timer",
+		description = "Displays the Xarpus Instance timer to be tick efficient with the first spawn of an exhumed",
+		titleSection = "xarpusSection"
 	)
-	default boolean showXarpusHeals()
+	default boolean xarpusInstanceTimer()
 	{
 		return true;
 	}
 
 	@ConfigItem(
-		position = 22,
-		keyName = "showXarpusTick",
-		name = "Show Xarpus Turn Tick",
-		description = "Count down the ticks until Xarpus turns their head.",
-		section = "xarpusSection"
+		position = 2,
+		keyName = "xarpusExhumed",
+		name = "Xarpus Exhumed Markers",
+		description = "Highlights the tiles of exhumed spawns",
+		titleSection = "xarpusSection"
 	)
-	default boolean showXarpusTick()
+	default boolean xarpusExhumed()
 	{
 		return true;
 	}
 
-	@ConfigSection(
-		position = 23,
-		keyName = "verzikSection",
+	@ConfigItem(
+		position = 3,
+		keyName = "xarpusExhumedTick",
+		name = "Xarpus Exhumed Ticks",
+		description = "Displays how many ticks until the exhumeds will despawn",
+		titleSection = "xarpusSection"
+	)
+	default boolean xarpusExhumedTick()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "xarpusTickP2",
+		name = "Xarpus Attack Tick - P2",
+		description = "Displays a tick counter for when Xarpus faces a new target to spit at",
+		titleSection = "xarpusSection"
+	)
+	default boolean xarpusTickP2()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 5,
+		keyName = "xarpusTickP3",
+		name = "Xarpus Attack Tick - P3",
+		description = "Displays a tick counter for when Xarpus will rotate",
+		titleSection = "xarpusSection"
+	)
+	default boolean xarpusTickP3()
+	{
+		return true;
+	}
+
+	@ConfigTitleSection(
 		name = "Verzik",
-		description = ""
+		description = "Verzik's Configuration",
+		position = 6,
+		keyName = "verzikSection"
 	)
 	default boolean verzikSection()
 	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "verzikTileOverlay",
+		name = "Verzik Tile Indicator",
+		description = "Highlights Verzik's tile - If you are next to or inside of the indicator, you can be meleed",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikTileOverlay()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "verzikProjectiles",
+		name = "Verzik Range Tile Markers",
+		description = "Highlights the tiles of Verzik's range projectiles",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikProjectiles()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "verzikDisplayTank",
+		name = "Verzik Display Tank",
+		description = "Highlights the tile of the player tanking to help clarify",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikDisplayTank()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "VerzikRedHP",
+		name = "Verzik Reds Health Overlay",
+		description = "Displays the health of red crabs during Verzik",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikReds()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 5,
+		keyName = "verzikAutosTick",
+		name = "Verzik Attack Tick Counter",
+		description = "Displays the ticks until Verzik will attack next",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikAutosTick()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 6,
+		keyName = "verzikAttackCounter",
+		name = "Verzik Attack Counter",
+		description = "Displays Verzik's Attack Count (useful for when P2 reds as they despawn after the 7th attack)",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikAttackCounter()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 7,
+		keyName = "verzikTotalTickCounter",
+		name = "Verzik Total Tick Counter",
+		description = "Displays the total amount of ticks Verzik has been alive for",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikTotalTickCounter()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 8,
+		keyName = "verzikNyloPersonalWarning",
+		name = "Verzik Nylo Direct Aggro Warning",
+		description = "Highlights the Nylocas that are targeting YOU and ONLY you",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikNyloPersonalWarning()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 9,
+		keyName = "verzikNyloOtherWarning",
+		name = "Verzik Nylo Indirect Aggro Warnings",
+		description = "Highlights the Nylocas that are targeting OTHER players",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikNyloOtherWarning()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 10,
+		keyName = "verzikNyloExplodeAOE",
+		name = "Verzik Nylo Explosion Area",
+		description = "Highlights the area of explosion for the Nylocas (Personal or Indirect Warnings MUST be enabled)",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikNyloExplodeAOE()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 11,
+		keyName = "verzikYellows",
+		name = "Verzik Yellows Overlay",
+		description = "Highlights the yellow pools and displays the amount of ticks until you can move away or tick eat",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikYellows()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 12,
+		keyName = "verzikGreenBall",
+		name = "Verzik Green Ball Tank",
+		description = "Displays who the green ball is targeting",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikGreenBall()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 13,
+		keyName = "verzikTornado",
+		name = "Verzik Personal Tornado Highlight",
+		description = "Displays the tornado that is targeting you",
+		titleSection = "verzikSection"
+	)
+	default boolean verzikTornado()
+	{
+		return true;
+	}
+
+	/* Nylocas Highlighting Configuration Selectors */
+	@ConfigItem(
+		keyName = "highlightMelee",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default boolean getHighlightMeleeNylo()
+	{
 		return false;
 	}
 
 	@ConfigItem(
-		position = 24,
-		keyName = "showVerzikAttacks",
-		name = "Show Verzik Attack Tick",
-		description = "Count down the ticks until Verzik attacks.",
-		section = "verzikSection"
-	)
-	default boolean showVerzikAttacks()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 25,
-		keyName = "showVerzikYellows",
-		name = "Show Yellows Tick",
-		description = "Count down the ticks until Verzik yellow's damage tick.",
-		section = "verzikSection"
-	)
-	default boolean showVerzikYellows()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 26,
-		keyName = "showCrabTargets",
-		name = "Show Crab Targets",
-		description = "Shows the target of crabs at Verzik.",
-		section = "verzikSection"
-	)
-	default boolean showCrabTargets()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 27,
-		keyName = "VerzikTankTile",
-		name = "Verzik P3 Tile Overlay",
+		keyName = "highlightMelee",
+		name = "",
 		description = "",
-		section = "verzikSection"
+		hidden = true
 	)
-	default boolean VerzikTankTile()
+	void setHighlightMeleeNylo(boolean set);
+
+	@ConfigItem(
+		keyName = "highlightMage",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default boolean getHighlightMageNylo()
 	{
 		return false;
 	}
 
 	@ConfigItem(
-		position = 28,
-		keyName = "verzikrangeattacks",
-		name = "Show Verzik Range Attacks",
+		keyName = "highlightMage",
+		name = "",
 		description = "",
-		section = "verzikSection"
+		hidden = true
 	)
-	default boolean verzikRangeAttacks()
-	{
-		return true;
-	}
+	void setHighlightMageNylo(boolean set);
 
 	@ConfigItem(
-		position = 29,
-		keyName = "extratimers",
-		name = "Show Extra Timers",
+		keyName = "highlightRange",
+		name = "",
 		description = "",
-		section = "verzikSection"
+		hidden = true
 	)
-	default boolean extraTimers()
+	default boolean getHighlightRangeNylo()
 	{
 		return false;
 	}
 
 	@ConfigItem(
-		position = 30,
-		keyName = "p1attacks",
-		name = "Verzik P1 Timer",
+		keyName = "highlightRange",
+		name = "",
 		description = "",
-		section = "verzikSection"
+		hidden = true
 	)
-	default boolean p1attacks()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 31,
-		keyName = "p2attacks",
-		name = "Verzik P2 Timer",
-		description = "",
-		section = "verzikSection"
-	)
-	default boolean p2attacks()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 32,
-		keyName = "p3attacks",
-		name = "Verzik P3 Timer",
-		description = "",
-		section = "verzikSection"
-	)
-	default boolean p3attacks()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 33,
-		keyName = "highlightPurpleTornado",
-		name = "Show Your Purple Tornado",
-		description = "Finds the tornado that is following you and highlights it",
-		section = "verzikSection"
-	)
-	default boolean highlightPurpleTornado()
-	{
-		return true;
-	}
-
-	enum NYLOCAS
-	{
-		NONE,
-		MAGE,
-		MELEE,
-		RANGER
-	}
-
-	enum NYLOOPTION
-	{
-		NONE,
-		TILE,
-		TIMER
-	}
+	void setHighlightRangeNylo(boolean set);
 }
