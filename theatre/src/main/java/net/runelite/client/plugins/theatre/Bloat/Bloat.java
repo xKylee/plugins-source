@@ -159,7 +159,11 @@ public class Bloat extends Room
 			}
 			else
 			{
-				if (25 < bloatDownCount && bloatDownCount < 35)
+				if (bloatTickCount >= 38)
+				{
+					bloatState = 4;
+				}
+				else if (25 < bloatDownCount && bloatDownCount < 35)
 				{
 					bloatState = 3;
 				}
@@ -252,6 +256,9 @@ public class Bloat extends Room
 				break;
 			case 4:
 				col = config.bloatIndicatorColorTHRESH();
+				break;
+			case 4:
+				col = Color.ORANGE;
 				break;
 		}
 		return col;
