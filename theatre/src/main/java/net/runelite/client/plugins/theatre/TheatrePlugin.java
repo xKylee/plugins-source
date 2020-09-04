@@ -11,6 +11,7 @@ import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicsObjectCreated;
@@ -154,6 +155,13 @@ public class TheatrePlugin extends Plugin
 		sotetseg.onGameTick(event);
 		xarpus.onGameTick(event);
 		verzik.onGameTick(event);
+	}
+
+	@Subscribe
+	public void onClientTick(ClientTick event)
+	{
+		nylocas.onClientTick(event);
+		xarpus.onClientTick(event);
 	}
 
 	@Subscribe

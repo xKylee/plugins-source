@@ -7,6 +7,7 @@
 package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import net.runelite.api.Point;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectDespawned;
@@ -238,6 +240,15 @@ public class Xarpus extends Room
 			}
 		}
 
+		if (isInstanceTimerRunning)
+		{
+			instanceTimer = (instanceTimer + 1) % 4;
+		}
+	}
+
+	@Subscribe
+	public void onClientTick(ClientTick event)
+	{
 		if (client.getLocalPlayer() != null)
 		{
 			List<Player> players = client.getPlayers();
@@ -274,7 +285,7 @@ public class Xarpus extends Room
 								lpChest = LocalPoint.fromWorld(client, wpChest.getX(), wpChest.getY());
 							} while (lpChest == null);
 							point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
-						} while (this.isInXarpusRegion());
+						} while (!this.isInSotetsegRegion());
 					} while (point.getY() != 1);
 				} while (point.getX() != 1 && point.getX() != 2 && point.getX() != 3);
 
@@ -286,11 +297,6 @@ public class Xarpus extends Room
 					nextInstance = false;
 				}
 			}
-		}
-
-		if (isInstanceTimerRunning)
-		{
-			instanceTimer = (instanceTimer + 1) % 4;
 		}
 	}
 
@@ -306,5 +312,13 @@ public class Xarpus extends Room
 	boolean isInXarpusRegion()
 	{
 		return ArrayUtils.contains(client.getMapRegions(), XARPUS_REGION);
+	}
+
+	boolean isInSotetsegRegion()
+	{
+		return client.getMapRegions() != null && client.getMapRegions().length > 0 && Arrays.stream(client.getMapRegions()).anyMatch((s) ->
+		{
+			return s == 13123 || s == 13379;
+		});
 	}
 }
