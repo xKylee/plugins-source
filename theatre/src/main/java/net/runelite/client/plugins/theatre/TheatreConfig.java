@@ -282,6 +282,18 @@ public interface TheatreConfig extends Config
 
 	@ConfigItem(
 		position = 9,
+		keyName = "removeNyloEntries",
+		name = "Remove Attack Options",
+		description = "Removes the attack options for Nylocas immune to your current attack style",
+		titleSection = "nylocasSection"
+	)
+	default boolean removeNyloEntries()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 10,
 		keyName = "nyloInstanceTimer",
 		name = "Nylocas Instance Timer",
 		description = "Displays an instance timer when the next set will potentially spawn",
@@ -293,7 +305,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 10,
+		position = 11,
 		keyName = "nyloStallMessage",
 		name = "Nylocas Stall Wave Messages",
 		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped",
@@ -305,7 +317,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 11,
+		position = 12,
 		keyName = "nyloBossAttackTickCount",
 		name = "Nylocas Boss Attack Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST)",
@@ -317,7 +329,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 12,
+		position = 13,
 		keyName = "nyloBossSwitchTickCount",
 		name = "Nylocas Boss Switch Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE)",
@@ -329,7 +341,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 13,
+		position = 14,
 		keyName = "nyloBossTotalTickCount",
 		name = "Nylocas Boss Total Tick Counter",
 		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST)",
