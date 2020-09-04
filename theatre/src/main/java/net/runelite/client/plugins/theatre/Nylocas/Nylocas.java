@@ -133,6 +133,7 @@ public class Nylocas extends Room
 	private int nyloBossStage = 0;
 
 	private WeaponStyle currentWeaponStyle = null;
+	private WeaponStyle prioritizedWeaponStyle = null;
 
 	private HashMap<NyloNPC, NPC> currentWave = new HashMap<>();
 
@@ -563,7 +564,7 @@ public class Nylocas extends Room
 				return;
 			}
 
-			currentWeaponStyle = weaponStyle;
+			prioritizedWeaponStyle = weaponStyle;
 		}
 	}
 
@@ -659,15 +660,17 @@ public class Nylocas extends Room
 
 		if (config.removeNyloEntries()  && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
 		{
-			if (entry.getTarget().contains("Nylocas Ischyros") && (currentWeaponStyle == WeaponStyle.MAGIC || currentWeaponStyle == WeaponStyle.RANGE))
+			WeaponStyle weaponStyle = prioritizedWeaponStyle == null ? currentWeaponStyle : prioritizedWeaponStyle;
+
+			if (entry.getTarget().contains("Nylocas Ischyros") && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.RANGE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
-			if (entry.getTarget().contains("Nylocas Hagios") && (this.currentWeaponStyle == WeaponStyle.RANGE || this.currentWeaponStyle == WeaponStyle.MELEE))
+			if (entry.getTarget().contains("Nylocas Hagios") && (weaponStyle == WeaponStyle.RANGE || weaponStyle == WeaponStyle.MELEE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
-			if (entry.getTarget().contains("Nylocas Toxobolos") && (this.currentWeaponStyle == WeaponStyle.MAGIC || this.currentWeaponStyle == WeaponStyle.MELEE))
+			if (entry.getTarget().contains("Nylocas Toxobolos") && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.MELEE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
