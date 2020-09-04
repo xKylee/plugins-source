@@ -236,6 +236,7 @@ public class Nylocas extends Room
 		currentWave.clear();
 		totalStalledWaves = 0;
 		currentWeaponStyle = null;
+		prioritizedWeaponStyle = null;
 	}
 
 	private void setNyloWave(int wave)
