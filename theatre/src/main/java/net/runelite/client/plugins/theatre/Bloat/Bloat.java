@@ -257,9 +257,6 @@ public class Bloat extends Room
 			case 4:
 				col = config.bloatIndicatorColorTHRESH();
 				break;
-			case 4:
-				col = Color.ORANGE;
-				break;
 		}
 		return col;
 	}
