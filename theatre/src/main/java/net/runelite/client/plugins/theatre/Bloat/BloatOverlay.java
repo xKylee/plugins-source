@@ -50,7 +50,7 @@ public class BloatOverlay extends RoomOverlay
 			{
 				for (WorldPoint point : bloat.getBloatHands().keySet())
 				{
-					drawTile(graphics, point, config.bloatHandsColor(), 1, 255, 10);
+					drawTile(graphics, point, config.bloatHandsColor(), config.bloatHandsWidth(), 255, 10);
 				}
 			}
 		}

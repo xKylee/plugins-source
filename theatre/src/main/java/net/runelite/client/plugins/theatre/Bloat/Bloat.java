@@ -173,7 +173,14 @@ public class Bloat extends Room
 				}
 				else
 				{
-					bloatState = 1;
+					if (bloatTickCount >= 32)
+					{
+						bloatState = 4;
+					}
+					else
+					{
+						bloatState = 1;
+					}
 				}
 			}
 		}
@@ -208,6 +215,7 @@ public class Bloat extends Room
 		switch (bloatState)
 		{
 			case 1:
+			case 4:
 				lp = bloatNPC.getLocalLocation();
 
 				if (lp == null)
@@ -241,6 +249,9 @@ public class Bloat extends Room
 				break;
 			case 3:
 				col = Color.RED;
+				break;
+			case 4:
+				col = Color.ORANGE;
 				break;
 		}
 		return col;

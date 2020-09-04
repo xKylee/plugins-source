@@ -126,7 +126,11 @@ public class NylocasOverlay extends RoomOverlay
 				{
 					if (config.nyloTimeAlive() && !npc.isDead())
 					{
-						int ticksAlive = 52 - ticksLeft;
+						int ticksAlive = ticksLeft;
+						if (config.nyloTimeAliveCountStyle() == TheatreConfig.NYLOTIMEALIVE.COUNTUP)
+						{
+							ticksAlive = 52 - ticksLeft;
+						}
 						Point textLocation = npc.getCanvasTextLocation(graphics, String.valueOf(ticksAlive), 60);
 						if (textLocation != null)
 						{

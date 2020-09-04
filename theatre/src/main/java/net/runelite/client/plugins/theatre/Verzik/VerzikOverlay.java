@@ -162,18 +162,18 @@ public class VerzikOverlay extends RoomOverlay
 					}
 				}
 
-				if (config.verzikTornado())
+				if (config.verzikTornado() && (!config.verzikPersonalTornadoOnly() || (config.verzikPersonalTornadoOnly() && verzik.getVerzikLocalTornado() != null)))
 				{
 					verzik.getVerzikTornadoes().forEach(k ->
 					{
 						if (k.getCurrentPosition() != null)
 						{
-							drawTile(graphics, k.getCurrentPosition(), new Color(0, 200, 255), 1, 120, 10);
+							drawTile(graphics, k.getCurrentPosition(), config.verzikTornadoColor(), 1, 120, 10);
 						}
 
 						if (k.getLastPosition() != null)
 						{
-							drawTile(graphics, k.getLastPosition(), new Color(0, 200, 255), 2, 180, 20);
+							drawTile(graphics, k.getLastPosition(), config.verzikTornadoColor(), 2, 180, 20);
 						}
 					});
 				}

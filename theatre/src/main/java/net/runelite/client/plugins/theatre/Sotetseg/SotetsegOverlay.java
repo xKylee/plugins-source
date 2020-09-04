@@ -62,7 +62,7 @@ public class SotetsegOverlay extends RoomOverlay
 
 					if ((p.getInteracting() == client.getLocalPlayer()) && (id == Sotetseg.SOTETSEG_MAGE_ORB || id == Sotetseg.SOTETSEG_RANGE_ORB) && config.sotetsegOrbAttacksTicks())
 					{
-						renderTextLocation(graphics, String.valueOf(p.getRemainingCycles() / 30), (id == Sotetseg.SOTETSEG_MAGE_ORB ? Color.CYAN : Color.GREEN), point);
+						renderTextLocation(graphics, (id == Sotetseg.SOTETSEG_MAGE_ORB ? "M" : "R") + (p.getRemainingCycles() / 30), (id == Sotetseg.SOTETSEG_MAGE_ORB ? Color.CYAN : Color.GREEN), point);
 					}
 
 					if (id == Sotetseg.SOTETSEG_BIG_AOE_ORB && config.sotetsegBigOrbTicks())
