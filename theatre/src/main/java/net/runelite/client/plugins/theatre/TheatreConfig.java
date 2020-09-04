@@ -67,7 +67,8 @@ public interface TheatreConfig extends Config
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Bold/Italics/Plain",
-		position = 15
+		position = 15,
+		section = "generalSection"
 	)
 	default FontStyle fontStyle()
 	{
@@ -168,8 +169,60 @@ public interface TheatreConfig extends Config
 		return true;
 	}
 
+	@Alpha
 	@ConfigItem(
 		position = 2,
+		keyName = "bloatIndicatorColorUP",
+		name = "Bloat Indicator Color - UP",
+		description = "Select a color for when Bloat is UP",
+		section = "bloatSection"
+	)
+	default Color bloatIndicatorColorUP()
+	{
+		return Color.CYAN;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 3,
+		keyName = "bloatIndicatorColorTHRESH",
+		name = "Bloat Indicator Color - THRESHOLD",
+		description = "Select a color for when Bloat UP and goes over 37 ticks, which allows you to know when he can go down",
+		section = "bloatSection"
+	)
+	default Color bloatIndicatorColorTHRESH()
+	{
+		return Color.ORANGE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 3,
+		keyName = "bloatIndicatorColorDOWN",
+		name = "Bloat Indicator Color - DOWN",
+		description = "Select a color for when Bloat is DOWN",
+		section = "bloatSection"
+	)
+	default Color bloatIndicatorColorDOWN()
+	{
+		return Color.WHITE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 4,
+		keyName = "bloatIndicatorColorWARN",
+		name = "Bloat Indicator Color - WARN",
+		description = "Select a color for when Bloat is down and about to go UP",
+		section = "bloatSection"
+	)
+	default Color bloatIndicatorColorWARN()
+	{
+		return Color.RED;
+	}
+
+	@ConfigItem(
+		position = 5,
 		keyName = "bloatTickCounter",
 		name = "Bloat Tick Counter",
 		description = "Displays the tick counter for how long Bloat has been up or down",
@@ -181,7 +234,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 6,
 		keyName = "bloatHands",
 		name = "Bloat Hands Overlay",
 		description = "Highlights the tiles where Bloat's hands will fall",
@@ -194,7 +247,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 4,
+		position = 7,
 		keyName = "bloatHandsColor",
 		name = "Bloat Hands Overlay Color",
 		description = "Select a color for the Bloat Hands Overlay to be",
@@ -207,7 +260,7 @@ public interface TheatreConfig extends Config
 
 	@Range(max = 10)
 	@ConfigItem(
-		position = 5,
+		position = 8,
 		keyName = "bloatHandsWidth",
 		name = "Bloat Hands Overlay Thickness",
 		description = "Sets the stroke width of the tile overlay where the hands fall. (BIGGER = THICKER)",
@@ -454,13 +507,39 @@ public interface TheatreConfig extends Config
 	@ConfigItem(
 		position = 4,
 		keyName = "sotetsegBigOrbTicks",
-		name = "Sotetseg Ball Tick Overlay",
+		name = "Sotetseg Big Ball Tick Overlay",
 		description = "Displays how many ticks until the ball will explode (eat when you see 1)",
 		section = "sotetsegSection"
 	)
 	default boolean sotetsegBigOrbTicks()
 	{
 		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 5,
+		keyName = "sotetsegBigOrbTickColor",
+		name = "Sotetseg Big Ball Tick Color",
+		description = "Select a color for the Sotetseg Big Ball tick countdown text",
+		section = "sotetsegSection"
+	)
+	default Color sotetsegBigOrbTickColor()
+	{
+		return Color.WHITE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 6,
+		keyName = "sotetsegBigOrbTileColor",
+		name = "Sotetseg Big Ball Tile Color",
+		description = "Select a color for the Sotetseg Big Ball tick countdown text",
+		section = "sotetsegSection"
+	)
+	default Color sotetsegBigOrbTileColor()
+	{
+		return new Color(188, 74, 74);
 	}
 
 	@ConfigSection(

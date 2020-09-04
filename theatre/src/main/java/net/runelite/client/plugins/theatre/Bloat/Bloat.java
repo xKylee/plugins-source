@@ -145,7 +145,7 @@ public class Bloat extends Room
 			bloatHands.values().removeIf(v -> v <= 0);
 			bloatHands.replaceAll((k, v) -> v - 1);
 
-			if (bloatNPC.getAnimation() == -1) // 1 = UP, 2 = DOWN, 3 = WARN;
+			if (bloatNPC.getAnimation() == -1) // 1 = UP, 2 = DOWN, 3 = WARN, 4 = PAST THRESHOLD;
 			{
 				bloatDownCount = 0;
 				if (bloatNPC.getHealthScale() == 0)
@@ -177,7 +177,14 @@ public class Bloat extends Room
 				}
 				else
 				{
-					bloatState = 1;
+					if (bloatTickCount >= 38)
+					{
+						bloatState = 4;
+					}
+					else
+					{
+						bloatState = 1;
+					}
 				}
 			}
 		}
@@ -238,17 +245,17 @@ public class Bloat extends Room
 
 	Color getBloatStateColor()
 	{
-		Color col = Color.CYAN;
+		Color col = config.bloatIndicatorColorUP();
 		switch (bloatState)
 		{
 			case 2:
-				col = Color.WHITE;
+				col = config.bloatIndicatorColorDOWN();
 				break;
 			case 3:
-				col = Color.RED;
+				col = config.bloatIndicatorColorWARN();
 				break;
 			case 4:
-				col = Color.ORANGE;
+				col = config.bloatIndicatorColorTHRESH();
 				break;
 		}
 		return col;

@@ -67,8 +67,8 @@ public class SotetsegOverlay extends RoomOverlay
 
 					if (id == Sotetseg.SOTETSEG_BIG_AOE_ORB && config.sotetsegBigOrbTicks())
 					{
-						renderTextLocation(graphics, String.valueOf(p.getRemainingCycles() / 30), Color.WHITE, point);
-						renderPoly(graphics, new Color(188, 74, 74), p.getInteracting().getCanvasTilePoly());
+						renderTextLocation(graphics, String.valueOf(p.getRemainingCycles() / 30), config.sotetsegBigOrbTickColor(), point);
+						renderPoly(graphics, config.sotetsegBigOrbTileColor(), p.getInteracting().getCanvasTilePoly());
 					}
 				}
 			}
