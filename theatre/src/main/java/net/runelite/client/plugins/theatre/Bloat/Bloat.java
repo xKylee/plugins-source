@@ -173,7 +173,7 @@ public class Bloat extends Room
 				}
 				else
 				{
-					if (bloatTickCount >= 32)
+					if (bloatTickCount >= 38)
 					{
 						bloatState = 4;
 					}

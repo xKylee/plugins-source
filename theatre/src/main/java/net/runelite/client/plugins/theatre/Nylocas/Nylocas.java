@@ -30,6 +30,7 @@ import net.runelite.api.Skill;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
@@ -574,6 +575,11 @@ public class Nylocas extends Room
 			nyloBossTotalTickCount++;
 		}
 
+		instanceTimer = (instanceTimer + 1) % 4;
+	}
+
+	public void onClientTick(ClientTick event)
+	{
 		List<Player> players = client.getPlayers();
 		for (Player player : players)
 		{
@@ -598,8 +604,6 @@ public class Nylocas extends Room
 				}
 			}
 		}
-
-		instanceTimer = (instanceTimer + 1) % 4;
 	}
 
 	@Subscribe

@@ -109,7 +109,7 @@ public class VerzikOverlay extends RoomOverlay
 
 					while (iterator.hasNext())
 					{
-						drawTile(graphics, (WorldPoint) iterator.next(), new Color(255, 0, 0, 50), 1, 255, 20);
+						drawTile(graphics, (WorldPoint) iterator.next(), config.verzikProjectilesColor(), 1, 255, 20);
 					}
 				}
 
@@ -203,10 +203,19 @@ public class VerzikOverlay extends RoomOverlay
 					{
 						if (p.getId() == VERZIK_GREEN_BALL)
 						{
-							Polygon tilePoly = p.getInteracting().getCanvasTilePoly();
+							Polygon tilePoly;
+							if (config.verzikGreenBallMarker() == TheatreConfig.VERZIKBALLTILE.TILE)
+							{
+								tilePoly = p.getInteracting().getCanvasTilePoly();
+							}
+							else
+							{
+								tilePoly = getCanvasTileAreaPoly(client, p.getInteracting().getLocalLocation(), 3, true);
+							}
+
 							if (tilePoly != null)
 							{
-								renderPoly(graphics, new Color(59, 140, 83), tilePoly);
+								renderPoly(graphics, config.verzikGreenBallColor(), tilePoly);
 							}
 						}
 					}

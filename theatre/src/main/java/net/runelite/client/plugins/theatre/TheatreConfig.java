@@ -278,7 +278,8 @@ public interface TheatreConfig extends Config
 		return false;
 	}
 
-	enum NYLOTIMEALIVE {
+	enum NYLOTIMEALIVE
+	{
 		COUNTUP,
 		COUNTDOWN
 	}
@@ -347,7 +348,7 @@ public interface TheatreConfig extends Config
 		position = 10,
 		keyName = "nyloInstanceTimer",
 		name = "Nylocas Instance Timer",
-		description = "Displays an instance timer when the next set will potentially spawn",
+		description = "Displays an instance timer when the next set will potentially spawn - ENTER ON ZERO",
 		section = "nylocasSection"
 	)
 	default boolean nyloInstanceTimer()
@@ -477,7 +478,7 @@ public interface TheatreConfig extends Config
 		position = 1,
 		keyName = "xarpusInstanceTimer",
 		name = "Xarpus Instance Timer",
-		description = "Displays the Xarpus Instance timer to be tick efficient with the first spawn of an exhumed",
+		description = "Displays the Xarpus Instance timer to be tick efficient with the first spawn of an exhumed - ENTER ON ZERO",
 		section = "xarpusSection"
 	)
 	default boolean xarpusInstanceTimer()
@@ -568,8 +569,21 @@ public interface TheatreConfig extends Config
 		return true;
 	}
 
+	@Alpha
 	@ConfigItem(
 		position = 3,
+		keyName = "verzikProjectilesColor",
+		name = "Verzik Range Tile Markers Color",
+		description = "Select a color for the Verzik's Range Projectile Tile Overlay to be",
+		section = "verzikSection"
+	)
+	default Color verzikProjectilesColor()
+	{
+		return new Color(255, 0, 0, 50);
+	}
+
+	@ConfigItem(
+		position = 4,
 		keyName = "verzikDisplayTank",
 		name = "Verzik Display Tank",
 		description = "Highlights the tile of the player tanking to help clarify",
@@ -581,7 +595,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
+		position = 5,
 		keyName = "VerzikRedHP",
 		name = "Verzik Reds Health Overlay",
 		description = "Displays the health of red crabs during Verzik",
@@ -593,7 +607,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 6,
 		keyName = "verzikAutosTick",
 		name = "Verzik Attack Tick Counter",
 		description = "Displays the ticks until Verzik will attack next",
@@ -605,7 +619,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 6,
+		position = 7,
 		keyName = "verzikAttackCounter",
 		name = "Verzik Attack Counter",
 		description = "Displays Verzik's Attack Count (useful for when P2 reds as they despawn after the 7th attack)",
@@ -617,7 +631,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 7,
+		position = 8,
 		keyName = "verzikTotalTickCounter",
 		name = "Verzik Total Tick Counter",
 		description = "Displays the total amount of ticks Verzik has been alive for",
@@ -629,7 +643,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 8,
+		position = 9,
 		keyName = "verzikNyloPersonalWarning",
 		name = "Verzik Nylo Direct Aggro Warning",
 		description = "Highlights the Nylocas that are targeting YOU and ONLY you",
@@ -641,7 +655,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 9,
+		position = 10,
 		keyName = "verzikNyloOtherWarning",
 		name = "Verzik Nylo Indirect Aggro Warnings",
 		description = "Highlights the Nylocas that are targeting OTHER players",
@@ -653,7 +667,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 10,
+		position = 11,
 		keyName = "verzikNyloExplodeAOE",
 		name = "Verzik Nylo Explosion Area",
 		description = "Highlights the area of explosion for the Nylocas (Personal or Indirect Warnings MUST be enabled)",
@@ -665,7 +679,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 11,
+		position = 12,
 		keyName = "verzikYellows",
 		name = "Verzik Yellows Overlay",
 		description = "Highlights the yellow pools and displays the amount of ticks until you can move away or tick eat",
@@ -677,7 +691,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 12,
+		position = 13,
 		keyName = "verzikGreenBall",
 		name = "Verzik Green Ball Tank",
 		description = "Displays who the green ball is targeting",
@@ -688,8 +702,39 @@ public interface TheatreConfig extends Config
 		return true;
 	}
 
+	@Alpha
 	@ConfigItem(
-		position = 13,
+		position = 14,
+		keyName = "verzikGreenBallColor",
+		name = "Verzik Green Ball Highlight Color",
+		description = "Select a color for the Verzik's Green Ball Tile Overlay to be",
+		section = "verzikSection"
+	)
+	default Color verzikGreenBallColor()
+	{
+		return new Color(59, 140, 83);
+	}
+
+	enum VERZIKBALLTILE
+	{
+		TILE,
+		AREA
+	}
+
+	@ConfigItem(
+		position = 15,
+		keyName = "verzikGreenBallMarker",
+		name = "Verzik Green Ball Marker",
+		description = "Choose between a tile or 3-by-3 area marker",
+		section = "verzikSection"
+	)
+	default VERZIKBALLTILE verzikGreenBallMarker()
+	{
+		return VERZIKBALLTILE.TILE;
+	}
+
+	@ConfigItem(
+		position = 16,
 		keyName = "verzikTornado",
 		name = "Verzik Personal Tornado Highlight",
 		description = "Displays the tornado that is targeting you",
@@ -701,7 +746,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 13,
+		position = 17,
 		keyName = "verzikPersonalTornadoOnly",
 		name = "Verzik ONLY Highlight Personal",
 		description = "Displays the tornado that is targeting you ONLY after it solves which one is targeting you",
@@ -714,7 +759,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 14,
+		position = 18,
 		keyName = "verzikTornadoColor",
 		name = "Verzik Tornado Highlight Color",
 		description = "Select a color for the Verzik Tornadoes Overlay to be",
