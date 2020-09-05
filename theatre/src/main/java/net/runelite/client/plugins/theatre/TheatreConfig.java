@@ -402,7 +402,7 @@ public interface TheatreConfig extends Config
 		keyName = "removeNyloEntries",
 		name = "Remove Attack Options",
 		description = "Removes the attack options for Nylocas immune to your current attack style",
-		titleSection = "nylocasSection"
+		section = "nylocasSection"
 	)
 	default boolean removeNyloEntries()
 	{
