@@ -78,6 +78,7 @@ public class MaidenOverlay extends RoomOverlay
 				maiden.getMaidenReds().forEach((k, v) ->
 				{
 					String string = "";
+					Color color = Color.WHITE;
 					if (config.maidenRedsHealth())
 					{
 						int v_health = v.getValue();
@@ -88,6 +89,7 @@ public class MaidenOverlay extends RoomOverlay
 							v_healthRation = Math.min(v_healthRation, k.getHealthRatio());
 						}
 						float percentage = ((float) v_healthRation / (float) v_health) * 100f;
+						color = percentageToColor(percentage);
 						string = (String.valueOf(DECIMAL_FORMAT.format(percentage)));
 					}
 
@@ -108,7 +110,7 @@ public class MaidenOverlay extends RoomOverlay
 
 					if (textLocation != null)
 					{
-						renderTextLocation(graphics, string, Color.WHITE, textLocation);
+						renderTextLocation(graphics, string, color, textLocation);
 					}
 
 				});
@@ -128,5 +130,14 @@ public class MaidenOverlay extends RoomOverlay
 			}
 		}
 		return null;
+	}
+
+	private Color percentageToColor(float percentage)
+	{
+		percentage = Math.max(Math.min(100.0F, percentage), 0.0F);
+		double rMod = 130.0D * percentage / 100.0D;
+		double gMod = 235.0D * percentage / 100.0D;
+		double bMod = 125.0D * percentage / 100.0D;
+		return new Color((int) Math.min(255.0D, 255.0D - rMod), Math.min(255, (int)(20.0D + gMod)), Math.min(255, (int)(0.0D + bMod)));
 	}
 }
