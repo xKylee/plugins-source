@@ -132,8 +132,8 @@ public class Nylocas extends Room
 	@Getter
 	private int nyloBossStage = 0;
 
-	private WeaponStyle currentWeaponStyle = null;
-	private WeaponStyle prioritizedWeaponStyle = null;
+	private WeaponStyle weaponStyle = null;
+	private int weaponTypeTimeout = 0;
 
 	private HashMap<NyloNPC, NPC> currentWave = new HashMap<>();
 
@@ -235,8 +235,8 @@ public class Nylocas extends Room
 		setNyloWave(0);
 		currentWave.clear();
 		totalStalledWaves = 0;
-		currentWeaponStyle = null;
-		prioritizedWeaponStyle = null;
+		weaponStyle = null;
+		weaponTypeTimeout = 0;
 	}
 
 	private void setNyloWave(int wave)
@@ -559,13 +559,14 @@ public class Nylocas extends Room
 	{
 		if (event.getMenuOpcode() == MenuOpcode.ITEM_SECOND_OPTION)
 		{
-			WeaponStyle weaponStyle = WeaponMap.StyleMap.get(event.getIdentifier());
-			if (weaponStyle == null)
+			WeaponStyle menuEntryWeaponStyle = WeaponMap.StyleMap.get(event.getIdentifier());
+			if (menuEntryWeaponStyle == null)
 			{
 				return;
 			}
 
-			prioritizedWeaponStyle = weaponStyle;
+			weaponStyle = menuEntryWeaponStyle;
+			weaponTypeTimeout = 1;
 		}
 	}
 
@@ -574,7 +575,14 @@ public class Nylocas extends Room
 	{
 		if (nyloActive && isInNyloRegion())
 		{
-			currentWeaponStyle = WeaponMap.StyleMap.get(getEquippedWeapon());
+			if (weaponTypeTimeout > 0)
+			{
+				weaponTypeTimeout--;
+			}
+			else if (weaponTypeTimeout == 0)
+			{
+				weaponStyle = WeaponMap.StyleMap.get(getEquippedWeapon());
+			}
 
 			for (Iterator<NPC> it = nylocasNpcs.keySet().iterator(); it.hasNext(); )
 			{
@@ -661,8 +669,6 @@ public class Nylocas extends Room
 
 		if (config.removeNyloEntries()  && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
 		{
-			WeaponStyle weaponStyle = prioritizedWeaponStyle == null ? currentWeaponStyle : prioritizedWeaponStyle;
-
 			if (entry.getTarget().contains("Nylocas Ischyros") && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.RANGE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
