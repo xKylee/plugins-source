@@ -6,10 +6,12 @@
 
 package net.runelite.client.plugins.theatre.Nylocas;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Shape;
 import java.util.Map;
 import javax.inject.Inject;
 import net.runelite.api.NPC;
@@ -113,12 +115,29 @@ public class NylocasOverlay extends RoomOverlay
 			{
 				if (config.nyloAggressiveOverlay() && nylocas.getAggressiveNylocas().contains(npc) && !npc.isDead())
 				{
-					LocalPoint lp = npc.getLocalLocation();
-					if (lp != null)
+					if (config.nyloAggressiveOverlayStyle() == TheatreConfig.AGGRESSIVENYLORENDERSTYLE.TILE)
 					{
-						Polygon poly = getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -25);
-						renderPoly(graphics, Color.RED, poly, 1);
+						LocalPoint lp = npc.getLocalLocation();
+						if (lp != null)
+						{
+							Polygon poly = getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -25);
+							renderPoly(graphics, Color.RED, poly, 1);
+						}
 					}
+					else if (config.nyloAggressiveOverlayStyle() == TheatreConfig.AGGRESSIVENYLORENDERSTYLE.HULL)
+					{
+						Shape objectClickbox = npc.getConvexHull();
+						if (objectClickbox != null)
+						{
+							Color color = Color.RED;
+							graphics.setColor(color);
+							graphics.setStroke(new BasicStroke(2));
+							graphics.draw(objectClickbox);
+							graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
+							graphics.fill(objectClickbox);
+						}
+					}
+
 				}
 
 				int ticksLeft = npcMap.get(npc);
@@ -134,16 +153,27 @@ public class NylocasOverlay extends RoomOverlay
 						Point textLocation = npc.getCanvasTextLocation(graphics, String.valueOf(ticksAlive), 60);
 						if (textLocation != null)
 						{
-							renderTextLocation(graphics, String.valueOf(ticksAlive), Color.WHITE, textLocation);
+							if (config.nyloExplosionOverlayStyle() == TheatreConfig.EXPLOSIVENYLORENDERSTYLE.RECOLOR_TICK
+									&& config.nyloExplosions() && ticksLeft <= 6)
+							{
+								renderTextLocation(graphics, String.valueOf(ticksAlive), Color.RED, textLocation);
+							}
+							else
+							{
+								renderTextLocation(graphics, String.valueOf(ticksAlive), Color.WHITE, textLocation);
+							}
 						}
 					}
 
 					if (config.nyloExplosions() && ticksLeft <= 6)
 					{
-						LocalPoint lp = npc.getLocalLocation();
-						if (lp != null)
+						if (config.nyloExplosionOverlayStyle() == TheatreConfig.EXPLOSIVENYLORENDERSTYLE.TILE)
 						{
-							renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -15), 1);
+							LocalPoint lp = npc.getLocalLocation();
+							if (lp != null)
+							{
+								renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -15), 1);
+							}
 						}
 					}
 				}

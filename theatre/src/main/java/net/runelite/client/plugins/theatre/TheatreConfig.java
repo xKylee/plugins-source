@@ -319,8 +319,26 @@ public interface TheatreConfig extends Config
 		return 46;
 	}
 
+	enum EXPLOSIVENYLORENDERSTYLE
+	{
+		TILE,
+		RECOLOR_TICK
+	}
+
 	@ConfigItem(
 		position = 4,
+		keyName = "nyloExplosionDisplayStyle",
+		name = "Nylocas Display Explosion Style",
+		description = "How to display when a nylocas is about to explode.",
+		section = "nylocasSection"
+	)
+	default EXPLOSIVENYLORENDERSTYLE nyloExplosionOverlayStyle()
+	{
+		return EXPLOSIVENYLORENDERSTYLE.RECOLOR_TICK;
+	}
+
+	@ConfigItem(
+		position = 5,
 		keyName = "nyloTimeAlive",
 		name = "Nylocas Tick Time Alive",
 		description = "Displays the tick counter of each nylocas spawn (Explodes on 52)",
@@ -338,7 +356,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 6,
 		keyName = "nyloTimeAliveCountStyle",
 		name = "Nylocas Tick Time Alive Style",
 		description = "Count up or Count down options on the tick time alive",
@@ -350,7 +368,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 6,
+		position = 7,
 		keyName = "nyloRecolorMenu",
 		name = "Nylocas Recolor Menu Options",
 		description = "Recolors the menu options of each Nylocas to it's respective attack style",
@@ -362,7 +380,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 7,
+		position = 8,
 		keyName = "nyloHighlightOverlay",
 		name = "Nylocas Highlight Overlay",
 		description = "Select your role to highlight respective Nylocas to attack",
@@ -374,7 +392,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 8,
+		position = 9,
 		keyName = "nyloAliveCounter",
 		name = "Nylocas Alive Counter Panel",
 		description = "Displays how many Nylocas are currently alive",
@@ -386,7 +404,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 9,
+		position = 10,
 		keyName = "nyloAggressiveOverlay",
 		name = "Highlight Aggressive Nylocas",
 		description = "Highlights aggressive Nylocas after they spawn",
@@ -397,8 +415,27 @@ public interface TheatreConfig extends Config
 		return true;
 	}
 
+	enum AGGRESSIVENYLORENDERSTYLE
+	{
+		TILE,
+		HULL
+	}
+
 	@ConfigItem(
-		position = 10,
+		position = 11,
+		keyName = "nyloAggressiveOverlayStyle",
+		name = "Highlight Aggressive Nylocas Style",
+		description = "Highlight style for aggressive Nylocas after they spawn",
+		section = "nylocasSection"
+	)
+	default AGGRESSIVENYLORENDERSTYLE nyloAggressiveOverlayStyle()
+	{
+		return AGGRESSIVENYLORENDERSTYLE.TILE;
+	}
+
+
+	@ConfigItem(
+		position = 12,
 		keyName = "removeNyloEntries",
 		name = "Remove Attack Options",
 		description = "Removes the attack options for Nylocas immune to your current attack style",
@@ -410,7 +447,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 11,
+		position = 13,
 		keyName = "nyloInstanceTimer",
 		name = "Nylocas Instance Timer",
 		description = "Displays an instance timer when the next set will potentially spawn - ENTER ON ZERO",
@@ -422,7 +459,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 12,
+		position = 14,
 		keyName = "nyloStallMessage",
 		name = "Nylocas Stall Wave Messages",
 		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped",
@@ -434,7 +471,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 13,
+		position = 15,
 		keyName = "nyloBossAttackTickCount",
 		name = "Nylocas Boss Attack Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST)",
@@ -446,7 +483,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 14,
+		position = 16,
 		keyName = "nyloBossSwitchTickCount",
 		name = "Nylocas Boss Switch Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE)",
@@ -458,7 +495,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 15,
+		position = 17,
 		keyName = "nyloBossTotalTickCount",
 		name = "Nylocas Boss Total Tick Counter",
 		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST)",
