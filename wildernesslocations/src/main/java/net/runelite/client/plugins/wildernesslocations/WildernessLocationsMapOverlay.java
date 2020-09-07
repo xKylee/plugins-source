@@ -92,10 +92,11 @@ public class WildernessLocationsMapOverlay extends Overlay
 
 		for (WorldLocation worldLocation : WorldLocation.getWildernessLocations())
 		{
-			final int x1 = worldLocation.getWorldArea().getX();
-			final int x2 = worldLocation.getWorldArea().getX() + worldLocation.getWorldArea().getWidth();
-			final int y1 = worldLocation.getWorldArea().getY();
-			final int y2 = worldLocation.getWorldArea().getY() + worldLocation.getWorldArea().getHeight();
+			final int x1 = Math.min(worldLocation.getLocation().getX(), worldLocation.getLocation().getX1());
+			final int y1 = Math.min(worldLocation.getLocation().getY(), worldLocation.getLocation().getY1());
+			final int x2 = Math.max(worldLocation.getLocation().getX(), worldLocation.getLocation().getX1());
+			final int y2 = Math.max(worldLocation.getLocation().getY(), worldLocation.getLocation().getY1());
+
 			final int plane = worldLocation.getWorldArea().getPlane();
 			final Point point = mapWorldPointToGraphicsPoint(new WorldPoint(x1, y1, plane));
 			final Point point1 = mapWorldPointToGraphicsPoint(new WorldPoint(x2, y2, plane));
@@ -103,11 +104,11 @@ public class WildernessLocationsMapOverlay extends Overlay
 			{
 				continue;
 			}
-			int width = point1.getX() - point.getX();
-			int height = point.getY() - point1.getY();
+			int width = Math.abs(point1.getX() - point.getX());
+			int height = Math.abs(point.getY() - point1.getY());
 
 
-			Rectangle rectangle = new Rectangle(point.getX(), point.getY(), width, height);
+			Rectangle rectangle = new Rectangle(point.getX(), point1.getY(), width, height);
 
 			// These would be unreadable unless font color is black
 			if (worldLocation.equals(WorldLocation.ICE_GATE) || worldLocation.equals(WorldLocation.ICE_ROCK))
@@ -127,7 +128,7 @@ public class WildernessLocationsMapOverlay extends Overlay
 				graphics.setColor(config.mapOverlayColor());
 				if (config.worldMapOverlay())
 				{
-					graphics.drawString(worldLocation.getName(), point.getX(), point.getY());
+					graphics.drawString(worldLocation.getName(), point.getX(), point1.getY());
 				}
 				if (config.outlineLocations())
 				{
