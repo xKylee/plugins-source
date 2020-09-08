@@ -677,17 +677,26 @@ public class Nylocas extends Room
 
 		if (config.removeNyloEntries() && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION && weaponStyle != null)
 		{
-			if (target.contains(MELEE_NYLO) && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.RANGE))
+			switch (weaponStyle)
 			{
-				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
-			}
-			if (target.contains(MAGE_NYLO) && (weaponStyle == WeaponStyle.RANGE || weaponStyle == WeaponStyle.MELEE))
-			{
-				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
-			}
-			if (target.contains(RANGE_NYLO) && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.MELEE))
-			{
-				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+				case MAGIC:
+					if (target.contains(MELEE_NYLO) || target.contains(RANGE_NYLO))
+					{
+						client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+					}
+					break;
+				case MELEE:
+					if (target.contains(RANGE_NYLO) || target.contains(MAGE_NYLO))
+					{
+						client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+					}
+					break;
+				case RANGE:
+					if (target.contains(MELEE_NYLO) || target.contains(MAGE_NYLO))
+					{
+						client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+					}
+					break;
 			}
 		}
 
