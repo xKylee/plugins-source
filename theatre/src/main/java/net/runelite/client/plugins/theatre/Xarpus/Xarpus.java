@@ -7,7 +7,6 @@
 package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +33,7 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
@@ -114,6 +114,17 @@ public class Xarpus extends Room
 	}
 
 	@Subscribe
+	public void onConfigChanged(ConfigChanged change)
+	{
+		if (change.getKey().equals("mirrorMode"))
+		{
+			xarpusOverlay.determineLayer();
+			overlayManager.remove(xarpusOverlay);
+			overlayManager.add(xarpusOverlay);
+		}
+	}
+
+	@Subscribe
 	public void onNpcSpawned(NpcSpawned npcSpawned)
 	{
 		NPC npc = npcSpawned.getNpc();
@@ -156,24 +167,24 @@ public class Xarpus extends Room
 	@Subscribe
 	public void onGroundObjectSpawned(GroundObjectSpawned event)
 	{
-		if (this.xarpusActive)
+		if (xarpusActive)
 		{
 			GroundObject o = event.getGroundObject();
 			if (o.getId() == 32743)
 			{
-				if (this.exhumedCounter == null)
+				if (exhumedCounter == null)
 				{
 
-					this.exhumedCounter = new Counter(EXHUMED_COUNT_ICON, this.p, 1);
-					this.infoBoxManager.addInfoBox(this.exhumedCounter);
+					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, 1);
+					infoBoxManager.addInfoBox(exhumedCounter);
 				}
 				else
 				{
 
-					this.exhumedCounter.setCount(this.exhumedCounter.getCount() + 1);
+					exhumedCounter.setCount(exhumedCounter.getCount() + 1);
 				}
 
-				this.xarpusExhumeds.put(o, 11);
+				xarpusExhumeds.put(o, 11);
 			}
 		}
 	}
@@ -206,11 +217,11 @@ public class Xarpus extends Room
 	{
 		if (xarpusActive)
 		{
-			for (Iterator<GroundObject> it = this.xarpusExhumeds.keySet().iterator(); it.hasNext(); )
+			for (Iterator<GroundObject> it = xarpusExhumeds.keySet().iterator(); it.hasNext(); )
 			{
 				GroundObject key = it.next();
-				this.xarpusExhumeds.replace(key, this.xarpusExhumeds.get(key) - 1);
-				if (this.xarpusExhumeds.get(key) < 0)
+				xarpusExhumeds.replace(key, xarpusExhumeds.get(key) - 1);
+				if (xarpusExhumeds.get(key) < 0)
 				{
 					it.remove();
 				}
@@ -285,7 +296,7 @@ public class Xarpus extends Room
 								lpChest = LocalPoint.fromWorld(client, wpChest.getX(), wpChest.getY());
 							} while (lpChest == null);
 							point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
-						} while (!this.isInSotetsegRegion());
+						} while (isInXarpusRegion());
 					} while (point.getY() != 1);
 				} while (point.getX() != 1 && point.getX() != 2 && point.getX() != 3);
 
@@ -312,13 +323,5 @@ public class Xarpus extends Room
 	boolean isInXarpusRegion()
 	{
 		return ArrayUtils.contains(client.getMapRegions(), XARPUS_REGION);
-	}
-
-	boolean isInSotetsegRegion()
-	{
-		return client.getMapRegions() != null && client.getMapRegions().length > 0 && Arrays.stream(client.getMapRegions()).anyMatch((s) ->
-		{
-			return s == 13123 || s == 13379;
-		});
 	}
 }

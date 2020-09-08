@@ -19,13 +19,13 @@ import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
@@ -44,7 +44,7 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Theatre of Blood",
 	description = "All-in-one plugin for Theatre of Blood",
-	tags = {"ToB"},
+	tags = {"ToB", "Theatre", "raids", "bloat", "verzik", "nylo", "xarpus", "sotetseg", "maiden"},
 	enabledByDefault = false,
 	type = PluginType.PVM
 )
@@ -52,14 +52,8 @@ import org.pf4j.Extension;
 @Slf4j
 public class TheatrePlugin extends Plugin
 {
-	private Room[] rooms = null;
-
 	@Inject
 	private Client client;
-
-	@Inject
-	private EventBus eventBus;
-
 	@Inject
 	private Maiden maiden;
 
@@ -78,6 +72,8 @@ public class TheatrePlugin extends Plugin
 	@Inject
 	private Verzik verzik;
 
+	private Room[] rooms = null;
+
 	@Override
 	public void configure(Binder binder)
 	{
@@ -93,17 +89,17 @@ public class TheatrePlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		if (this.rooms == null)
+		if (rooms == null)
 		{
-			this.rooms = new Room[]{(Room) this.maiden, (Room) this.bloat, (Room) this.nylocas, (Room) this.sotetseg, (Room) this.xarpus, (Room) this.verzik};
+			rooms = new Room[]{ maiden, bloat, nylocas, sotetseg, xarpus, verzik};
 
-			for (Room room : this.rooms)
+			for (Room room : rooms)
 			{
 				room.init();
 			}
 		}
 
-		for (Room room : this.rooms)
+		for (Room room : rooms)
 		{
 			room.load();
 		}
@@ -112,7 +108,7 @@ public class TheatrePlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		for (Room room : this.rooms)
+		for (Room room : rooms)
 		{
 			room.unload();
 		}
@@ -186,6 +182,12 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
+	public void onMenuOptionClicked(MenuOptionClicked option)
+	{
+		nylocas.onMenuOptionClicked(option);
+
+	}
+	@Subscribe
 	public void onMenuOpened(MenuOpened menu)
 	{
 		nylocas.onMenuOpened(menu);
@@ -194,7 +196,17 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged change)
 	{
+		if (!change.getGroup().equals("Theatre"))
+		{
+			return;
+		}
+
 		nylocas.onConfigChanged(change);
+		bloat.onConfigChanged(change);
+		maiden.onConfigChanged(change);
+		sotetseg.onConfigChanged(change);
+		verzik.onConfigChanged(change);
+		xarpus.onConfigChanged(change);
 	}
 
 	@Subscribe

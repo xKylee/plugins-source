@@ -39,7 +39,7 @@ public abstract class RoomOverlay extends Overlay
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 	}
 
 	protected void drawTile(Graphics2D graphics, WorldPoint point, Color color, int strokeWidth, int outlineAlpha, int fillAlpha)
@@ -189,5 +189,10 @@ public abstract class RoomOverlay extends Overlay
 		}
 
 		return 0;
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

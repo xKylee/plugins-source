@@ -21,9 +21,6 @@ import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.InventoryID;
-import net.runelite.api.Item;
-import net.runelite.api.ItemContainer;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.MenuOpcode;
 import net.runelite.api.NPC;
@@ -44,6 +41,8 @@ import net.runelite.api.events.NpcDefinitionChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.kit.KitType;
+import net.runelite.api.util.Text;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
@@ -56,6 +55,7 @@ import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.WeaponMap;
 import net.runelite.client.util.WeaponStyle;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class Nylocas extends Room
 {
@@ -132,8 +132,7 @@ public class Nylocas extends Room
 	@Getter
 	private int nyloBossStage = 0;
 
-	private WeaponStyle weaponStyle = null;
-	private int weaponTypeTimeout = 0;
+	private WeaponStyle weaponStyle;
 
 	private HashMap<NyloNPC, NPC> currentWave = new HashMap<>();
 
@@ -147,6 +146,12 @@ public class Nylocas extends Room
 	private static final int NPCID_NYLOCAS_PILLAR = 8358;
 	private static final int NYLO_MAP_REGION = 13122;
 	private static final int BLOAT_MAP_REGION = 13125;
+
+	private boolean skipTickCheck = false;
+
+	private static final String MAGE_NYLO = "Nylocas Hagios";
+	private static final String RANGE_NYLO = "Nylocas Toxobolos";
+	private static final String MELEE_NYLO = "Nylocas Ischyros";
 
 	@Override
 	public void init()
@@ -213,6 +218,7 @@ public class Nylocas extends Room
 	public void load()
 	{
 		overlayManager.add(nylocasOverlay);
+		weaponStyle = null;
 	}
 
 	public void unload()
@@ -223,6 +229,7 @@ public class Nylocas extends Room
 		nyloBossNPC = null;
 		nyloBossAlive = false;
 		nyloWaveStart = null;
+		weaponStyle = null;
 	}
 
 	private void resetNylo()
@@ -236,7 +243,6 @@ public class Nylocas extends Room
 		currentWave.clear();
 		totalStalledWaves = 0;
 		weaponStyle = null;
-		weaponTypeTimeout = 0;
 	}
 
 	private void setNyloWave(int wave)
@@ -287,6 +293,16 @@ public class Nylocas extends Room
 		if (change.getKey().equals("nyloAliveCounter"))
 		{
 			nylocasAliveCounterOverlay.setHidden(!config.nyloAlivePanel());
+		}
+
+		if (change.getKey().equals("mirrorMode"))
+		{
+			nylocasAliveCounterOverlay.determineLayer();
+			nylocasOverlay.determineLayer();
+			overlayManager.remove(nylocasAliveCounterOverlay);
+			overlayManager.remove(nylocasOverlay);
+			overlayManager.add(nylocasOverlay);
+			overlayManager.add(nylocasAliveCounterOverlay);
 		}
 	}
 
@@ -538,50 +554,24 @@ public class Nylocas extends Room
 		nextInstance = true;
 	}
 
-	public final int getEquippedWeapon()
-	{
-		ItemContainer itemContainer = client.getItemContainer(InventoryID.EQUIPMENT);
-		if (itemContainer != null)
-		{
-			Item[] items = itemContainer.getItems();
-			Item weapon = items[3];
-			if (weapon != null)
-			{
-				return weapon.getId();
-			}
-		}
-
-		return -1;
-	}
-
-	@Subscribe
-	public void onMenuOptionClicked(MenuOptionClicked event)
-	{
-		if (event.getMenuOpcode() == MenuOpcode.ITEM_SECOND_OPTION)
-		{
-			WeaponStyle menuEntryWeaponStyle = WeaponMap.StyleMap.get(event.getIdentifier());
-			if (menuEntryWeaponStyle == null)
-			{
-				return;
-			}
-
-			weaponStyle = menuEntryWeaponStyle;
-			weaponTypeTimeout = 1;
-		}
-	}
-
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (nyloActive && isInNyloRegion())
+		if (isInNyloRegion() && nyloActive)
 		{
-			if (weaponTypeTimeout > 0)
+			if (skipTickCheck)
 			{
-				weaponTypeTimeout--;
+				skipTickCheck = false;
 			}
-			else if (weaponTypeTimeout == 0)
+			else
 			{
-				weaponStyle = WeaponMap.StyleMap.get(getEquippedWeapon());
+				if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerAppearance() == null)
+				{
+					return;
+				}
+
+				int equippedWeapon = ObjectUtils.defaultIfNull(client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.WEAPON), -1);
+				weaponStyle = WeaponMap.StyleMap.get(equippedWeapon);
 			}
 
 			for (Iterator<NPC> it = nylocasNpcs.keySet().iterator(); it.hasNext(); )
@@ -621,6 +611,7 @@ public class Nylocas extends Room
 			ticksSinceLastWave = Math.max(0, ticksSinceLastWave - 1);
 		}
 
+
 		if (nyloActive && nyloBossAlive)
 		{
 			nyloBossAttackTickCount--;
@@ -631,6 +622,7 @@ public class Nylocas extends Room
 		instanceTimer = (instanceTimer + 1) % 4;
 	}
 
+	@Subscribe
 	public void onClientTick(ClientTick event)
 	{
 		List<Player> players = client.getPlayers();
@@ -660,6 +652,20 @@ public class Nylocas extends Room
 	}
 
 	@Subscribe
+	public void onMenuOptionClicked(MenuOptionClicked option)
+	{
+		if (option.getMenuOpcode() == MenuOpcode.ITEM_SECOND_OPTION)
+		{
+			WeaponStyle newStyle = WeaponMap.StyleMap.get(option.getIdentifier());
+			if (newStyle != null)
+			{
+				skipTickCheck = true;
+				weaponStyle = newStyle;
+			}
+		}
+	}
+
+	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
 		if (!nyloActive)
@@ -667,17 +673,19 @@ public class Nylocas extends Room
 			return;
 		}
 
-		if (config.removeNyloEntries()  && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
+		String target = entry.getTarget();
+
+		if (config.removeNyloEntries() && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION && weaponStyle != null)
 		{
-			if (entry.getTarget().contains("Nylocas Ischyros") && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.RANGE))
+			if (target.contains(MELEE_NYLO) && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.RANGE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
-			if (entry.getTarget().contains("Nylocas Hagios") && (weaponStyle == WeaponStyle.RANGE || weaponStyle == WeaponStyle.MELEE))
+			if (target.contains(MAGE_NYLO) && (weaponStyle == WeaponStyle.RANGE || weaponStyle == WeaponStyle.MELEE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
-			if (entry.getTarget().contains("Nylocas Toxobolos") && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.MELEE))
+			if (target.contains(RANGE_NYLO) && (weaponStyle == WeaponStyle.MAGIC || weaponStyle == WeaponStyle.MELEE))
 			{
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
@@ -688,28 +696,22 @@ public class Nylocas extends Room
 			MenuEntry[] entries = client.getMenuEntries();
 			MenuEntry toEdit = entries[entries.length - 1];
 
-			String target = entry.getTarget();
-			String strippedTarget = stripColor(target);
+			String strippedTarget = Text.removeTags(target);
 
-			if (strippedTarget.startsWith("Nylocas Hagios"))
+			if (strippedTarget.startsWith(MAGE_NYLO))
 			{
 				toEdit.setTarget(ColorUtil.prependColorTag(strippedTarget, Color.CYAN));
 			}
-			else if (strippedTarget.startsWith("Nylocas Ischyros"))
+			else if (strippedTarget.startsWith(MELEE_NYLO))
 			{
 				toEdit.setTarget(ColorUtil.prependColorTag(strippedTarget, new Color(255, 188, 188)));
 			}
-			else if (strippedTarget.startsWith("Nylocas Toxobolos"))
+			else if (strippedTarget.startsWith(RANGE_NYLO))
 			{
 				toEdit.setTarget(ColorUtil.prependColorTag(strippedTarget, Color.GREEN));
 			}
 			client.setMenuEntries(entries);
 		}
-	}
-
-	static String stripColor(String str)
-	{
-		return str.replaceAll("(<col=[0-9a-f]+>|</col>)", "");
 	}
 
 	@Subscribe

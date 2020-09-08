@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
@@ -56,6 +57,7 @@ public class NylocasAliveCounterOverlay extends Overlay
 
 		setPosition(OverlayPosition.TOP_LEFT);
 		setPriority(OverlayPriority.HIGH);
+		determineLayer();
 		refreshPanel();
 	}
 
@@ -123,5 +125,10 @@ public class NylocasAliveCounterOverlay extends Overlay
 		Duration duration = Duration.between(nyloWaveStart, Instant.now());
 		LocalTime localTime = LocalTime.ofSecondOfDay(duration.getSeconds());
 		return localTime.format(DateTimeFormatter.ofPattern("mm:ss"));
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

@@ -17,13 +17,13 @@ import net.runelite.client.ui.overlay.Overlay;
 public class NyloSelectionManager extends Overlay
 {
 	@Getter
-	private NyloSelectionBox melee;
+	private final NyloSelectionBox melee;
 
 	@Getter
-	private NyloSelectionBox mage;
+	private final NyloSelectionBox mage;
 
 	@Getter
-	private NyloSelectionBox range;
+	private final NyloSelectionBox range;
 
 	@Getter
 	@Setter

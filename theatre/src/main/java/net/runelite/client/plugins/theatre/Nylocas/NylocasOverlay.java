@@ -22,6 +22,7 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.ui.overlay.OverlayLayer;
 
 public class NylocasOverlay extends RoomOverlay
 {
@@ -32,6 +33,7 @@ public class NylocasOverlay extends RoomOverlay
 	protected NylocasOverlay(TheatreConfig config)
 	{
 		super(config);
+		determineLayer();
 	}
 
 	@Override
@@ -89,7 +91,7 @@ public class NylocasOverlay extends RoomOverlay
 				for (NPC npc : pillars.keySet())
 				{
 					final int health = pillars.get(npc);
-					final String healthStr = String.valueOf(health) + "%";
+					final String healthStr = health + "%";
 
 					WorldPoint p = npc.getWorldLocation();
 					LocalPoint lp = LocalPoint.fromWorld(client, p.getX() + 1, p.getY() + 1);
@@ -202,5 +204,10 @@ public class NylocasOverlay extends RoomOverlay
 			}
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

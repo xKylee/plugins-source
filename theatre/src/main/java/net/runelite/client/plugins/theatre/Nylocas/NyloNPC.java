@@ -38,12 +38,12 @@ class NyloNPC
 			return false;
 		}
 		NyloNPC otherNpc = (NyloNPC) other;
-		return this.nyloType.equals(otherNpc.getNyloType()) && this.spawnPoint.equals(otherNpc.getSpawnPoint());
+		return nyloType.equals(otherNpc.getNyloType()) && spawnPoint.equals(otherNpc.getSpawnPoint());
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(this.nyloType, this.spawnPoint);
+		return Objects.hash(nyloType, spawnPoint);
 	}
 }
