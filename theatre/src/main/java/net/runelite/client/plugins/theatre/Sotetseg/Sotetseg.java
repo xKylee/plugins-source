@@ -26,6 +26,7 @@ import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
@@ -96,6 +97,17 @@ public class Sotetseg extends Room
 	public void unload()
 	{
 		overlayManager.remove(sotetsegOverlay);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged change)
+	{
+		if (change.getKey().equals("mirrorMode"))
+		{
+			sotetsegOverlay.determineLayer();
+			overlayManager.remove(sotetsegOverlay);
+			overlayManager.add(sotetsegOverlay);
+		}
 	}
 
 	@Subscribe

@@ -23,6 +23,7 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,6 +40,7 @@ public class VerzikOverlay extends RoomOverlay
 	protected VerzikOverlay(TheatreConfig config)
 	{
 		super(config);
+		determineLayer();
 	}
 
 	@Override
@@ -277,4 +279,10 @@ public class VerzikOverlay extends RoomOverlay
 		}
 		return null;
 	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
+	}
+
 }

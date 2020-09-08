@@ -21,6 +21,7 @@ import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.ui.overlay.OverlayLayer;
 
 public class XarpusOverlay extends RoomOverlay
 {
@@ -31,6 +32,7 @@ public class XarpusOverlay extends RoomOverlay
 	protected XarpusOverlay(TheatreConfig config)
 	{
 		super(config);
+		determineLayer();
 	}
 
 	public Dimension render(Graphics2D graphics)
@@ -88,5 +90,10 @@ public class XarpusOverlay extends RoomOverlay
 			}
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

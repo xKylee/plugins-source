@@ -18,6 +18,7 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.ui.overlay.OverlayLayer;
 
 public class SotetsegOverlay extends RoomOverlay
 {
@@ -28,6 +29,7 @@ public class SotetsegOverlay extends RoomOverlay
 	protected SotetsegOverlay(TheatreConfig config)
 	{
 		super(config);
+		determineLayer();
 	}
 
 	@Override
@@ -100,5 +102,10 @@ public class SotetsegOverlay extends RoomOverlay
 			}
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }
