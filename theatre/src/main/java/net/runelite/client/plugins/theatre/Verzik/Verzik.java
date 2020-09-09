@@ -25,6 +25,7 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
@@ -136,6 +137,17 @@ public class Verzik extends Room
 	{
 		overlayManager.remove(verzikOverlay);
 		verzikCleanup();
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged change)
+	{
+		if (change.getKey().equals("mirrorMode"))
+		{
+			verzikOverlay.determineLayer();
+			overlayManager.remove(verzikOverlay);
+			overlayManager.add(verzikOverlay);
+		}
 	}
 
 	@Subscribe

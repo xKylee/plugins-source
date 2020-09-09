@@ -53,8 +53,8 @@ public interface TheatreConfig extends Config
 		ITALIC("Italic", Font.ITALIC),
 		PLAIN("Plain", Font.PLAIN);
 
-		private String name;
-		private int font;
+		private final String name;
+		private final int font;
 
 		@Override
 		public String toString()
@@ -67,12 +67,24 @@ public interface TheatreConfig extends Config
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Bold/Italics/Plain",
-		position = 15,
+		position = 1,
 		section = "generalSection"
 	)
 	default FontStyle fontStyle()
 	{
 		return FontStyle.BOLD;
+	}
+
+	@ConfigItem(
+		name = "Enable mirror mode",
+		description = "Toggle mirror mode compatibility.",
+		position = 2,
+		keyName = "mirrorMode",
+		section = "generalSection"
+	)
+	default boolean mirrorMode()
+	{
+		return false;
 	}
 
 	@ConfigSection(

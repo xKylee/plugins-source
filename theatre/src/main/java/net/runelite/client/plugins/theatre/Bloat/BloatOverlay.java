@@ -15,6 +15,7 @@ import net.runelite.api.Point;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.ui.overlay.OverlayLayer;
 
 public class BloatOverlay extends RoomOverlay
 {
@@ -25,6 +26,7 @@ public class BloatOverlay extends RoomOverlay
 	protected BloatOverlay(TheatreConfig config)
 	{
 		super(config);
+		determineLayer();
 	}
 
 	public Dimension render(Graphics2D graphics)
@@ -55,5 +57,10 @@ public class BloatOverlay extends RoomOverlay
 			}
 		}
 		return null;
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

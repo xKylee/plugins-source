@@ -17,6 +17,7 @@ import net.runelite.api.Point;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -34,6 +35,7 @@ public class MaidenOverlay extends RoomOverlay
 	protected MaidenOverlay(TheatreConfig config)
 	{
 		super(config);
+		determineLayer();
 	}
 
 	@Override
@@ -139,5 +141,10 @@ public class MaidenOverlay extends RoomOverlay
 		double gMod = 235.0D * percentage / 100.0D;
 		double bMod = 125.0D * percentage / 100.0D;
 		return new Color((int) Math.min(255.0D, 255.0D - rMod), Math.min(255, (int)(20.0D + gMod)), Math.min(255, (int)(0.0D + bMod)));
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

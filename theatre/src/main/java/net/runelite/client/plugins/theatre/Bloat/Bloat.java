@@ -27,6 +27,7 @@ import net.runelite.api.events.GraphicsObjectCreated;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
@@ -81,14 +82,12 @@ public class Bloat extends Room
 	public void onNpcSpawned(NpcSpawned npcSpawned)
 	{
 		NPC npc = npcSpawned.getNpc();
-		switch (npc.getId())
+		if (npc.getId() == NpcID.PESTILENT_BLOAT)
 		{
-			case NpcID.PESTILENT_BLOAT:
-				bloatActive = true;
-				bloatNPC = npc;
-				bloatTickCount = 0;
-				bloatStarted = false;
-				break;
+			bloatActive = true;
+			bloatNPC = npc;
+			bloatTickCount = 0;
+			bloatStarted = false;
 		}
 	}
 
@@ -96,13 +95,22 @@ public class Bloat extends Room
 	public void onNpcDespawned(NpcDespawned npcDespawned)
 	{
 		NPC npc = npcDespawned.getNpc();
-		switch (npc.getId())
+		if (npc.getId() == NpcID.PESTILENT_BLOAT)
 		{
-			case NpcID.PESTILENT_BLOAT:
-				bloatActive = false;
-				bloatNPC = null;
-				bloatTickCount = -1;
-				break;
+			bloatActive = false;
+			bloatNPC = null;
+			bloatTickCount = -1;
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged change)
+	{
+		if (change.getKey().equals("mirrorMode"))
+		{
+			bloatOverlay.determineLayer();
+			overlayManager.remove(bloatOverlay);
+			overlayManager.add(bloatOverlay);
 		}
 	}
 
@@ -264,4 +272,5 @@ public class Bloat extends Room
 		}
 		return col;
 	}
+
 }

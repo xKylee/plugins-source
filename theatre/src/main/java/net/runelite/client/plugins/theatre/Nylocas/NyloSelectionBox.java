@@ -16,7 +16,7 @@ import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 
 public class NyloSelectionBox extends Overlay
 {
-	private InfoBoxComponent component;
+	private final InfoBoxComponent component;
 
 	@Getter
 	@Setter
