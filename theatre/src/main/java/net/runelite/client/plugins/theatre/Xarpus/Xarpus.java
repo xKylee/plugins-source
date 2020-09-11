@@ -300,7 +300,7 @@ public class Xarpus extends Room
 					} while (point.getY() != 1);
 				} while (point.getX() != 1 && point.getX() != 2 && point.getX() != 3);
 
-				if (nextInstance)
+				if (nextInstance && isInXarpusRegion())
 				{
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Xarpus instance timer started.", "");
 					instanceTimer = 2;
