@@ -400,7 +400,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position =7,
+		position = 7,
 		keyName = "nyloHighlightOverlay",
 		name = "Nylocas Highlight Overlay",
 		description = "Select your role to highlight respective Nylocas to attack.",
