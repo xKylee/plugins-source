@@ -21,7 +21,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Sorceress's Garden",
+	name = "Sorceress' Garden",
 	enabledByDefault = false,
 	description = "Provides various utilities for the Sorceress's Garden minigame",
 	tags = {"sorceress", "garden", "sqirk", "sq'irk", "thieving", "farming"},
@@ -87,7 +87,6 @@ public class SorceressGardenPlugin extends Plugin
 			switch (event.getExp())
 			{
 				case 30:
-					log.info("Winter sqirk picked");
 					sorceressSession.incrementSqirks(ItemID.WINTER_SQIRK);
 					break;
 				case 40:

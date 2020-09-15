@@ -28,7 +28,6 @@ public class SorceressSession
 		{
 			case ItemID.WINTER_SQIRK:
 				winterSqirk++;
-				log.info("Winter sqirk is now " + Integer.toString(winterSqirk));
 				break;
 			case ItemID.SPRING_SQIRK:
 				springSqirk++;

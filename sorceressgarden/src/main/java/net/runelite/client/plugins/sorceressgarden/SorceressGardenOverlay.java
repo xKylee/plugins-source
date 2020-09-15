@@ -9,8 +9,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY;
-import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY_CONFIG;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
@@ -20,8 +18,6 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.queries.NPCQuery;
 import net.runelite.client.ui.overlay.OverlayLayer;
-import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
-import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -30,7 +26,6 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 @Slf4j
 public class SorceressGardenOverlay extends OverlayPanel
 {
-	static final String GARDEN_RESET = "Reset";
 	final SorceressGardenPlugin plugin;
 	private final SorceressGardenConfig config;
 	private final Client client;
@@ -38,18 +33,12 @@ public class SorceressGardenOverlay extends OverlayPanel
 	@Inject
 	public SorceressGardenOverlay(final SorceressGardenPlugin plugin, final SorceressGardenConfig config, Client client)
 	{
-		setPosition(OverlayPosition.TOP_LEFT);
-		this.plugin = plugin;
-		this.config = config;
-		this.client = client;
-
-		// I am unsure what the below two lines do!
-		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "Sorceress Garden Overlay"));
-		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY, GARDEN_RESET, "Sorceress Garden Overlay"));
-
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPriority(OverlayPriority.HIGH);
+		this.plugin = plugin;
+		this.config = config;
+		this.client = client;
 	}
 
 	@Override

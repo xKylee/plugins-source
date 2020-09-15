@@ -4,10 +4,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY;
 import net.runelite.api.Skill;
 import net.runelite.client.plugins.xptracker.XpTrackerService;
-import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.TitleComponent;
@@ -17,10 +15,10 @@ import net.runelite.client.ui.overlay.components.table.TableComponent;
 @Slf4j
 public class SorceressSqirkOverlay extends OverlayPanel
 {
-	static final String SQIRK_RESET = "Reset";
 	final SorceressGardenPlugin plugin;
 	private final SorceressGardenConfig config;
 	private final SorceressSession sorceressSession;
+
 	@Inject
 	XpTrackerService xpTrackerService;
 
@@ -32,7 +30,6 @@ public class SorceressSqirkOverlay extends OverlayPanel
 		this.plugin = plugin;
 		this.config = config;
 		this.sorceressSession = sorceressSession;
-		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY, SQIRK_RESET, "Sorceress Sqirks Overlay"));
 	}
 
 	@Override
