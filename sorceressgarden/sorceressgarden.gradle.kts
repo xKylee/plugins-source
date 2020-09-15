@@ -43,6 +43,7 @@ dependencies {
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+    compileOnly(Libraries.apacheCommonsText)
 }
 
 tasks {

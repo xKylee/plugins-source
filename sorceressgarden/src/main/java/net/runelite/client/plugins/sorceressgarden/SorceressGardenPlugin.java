@@ -1,15 +1,13 @@
 package net.runelite.client.plugins.sorceressgarden;
 
 import com.google.inject.Provides;
-import java.util.Arrays;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
 import net.runelite.api.ItemID;
 import net.runelite.api.Skill;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.XpDropEvent;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
@@ -17,6 +15,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
 
 @Extension
@@ -28,7 +27,6 @@ import org.pf4j.Extension;
 	type = PluginType.MINIGAME
 )
 @PluginDependency(XpTrackerPlugin.class)
-@Slf4j
 public class SorceressGardenPlugin extends Plugin
 {
 	private static final int GARDEN_REGION = 11605;
@@ -74,6 +72,25 @@ public class SorceressGardenPlugin extends Plugin
 	}
 
 	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (!event.getGroup().equals("SorceressGarden"))
+		{
+			return;
+		}
+
+		if (event.getKey().equals("mirrorMode"))
+		{
+			sorceressGardenOverlay.determineLayer();
+			sorceressGardenOverlay.determineLayer();
+			overlayManager.remove(sorceressGardenOverlay);
+			overlayManager.remove(sorceressSqirkOverlay);
+			overlayManager.add(sorceressSqirkOverlay);
+			overlayManager.add(sorceressGardenOverlay);
+		}
+	}
+
+	@Subscribe
 	private void onXpDropEvent(XpDropEvent event)
 	{
 		if (!isInGarden() || !config.showSqirksStats())
@@ -104,15 +121,6 @@ public class SorceressGardenPlugin extends Plugin
 
 	boolean isInGarden()
 	{
-		GameState gameState = client.getGameState();
-		if (gameState != GameState.LOGGED_IN
-			&& gameState != GameState.LOADING)
-		{
-			return false;
-		}
-
-		int[] currentMapRegions = client.getMapRegions();
-
-		return Arrays.stream(currentMapRegions).anyMatch(region -> region == GARDEN_REGION);
+		return client.getMapRegions() != null && ArrayUtils.contains(client.getMapRegions(), GARDEN_REGION);
 	}
 }

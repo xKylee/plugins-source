@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Skill;
 import net.runelite.client.plugins.xptracker.XpTrackerService;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.TitleComponent;
@@ -30,6 +31,7 @@ public class SorceressSqirkOverlay extends OverlayPanel
 		this.plugin = plugin;
 		this.config = config;
 		this.sorceressSession = sorceressSession;
+		determineLayer();
 	}
 
 	@Override
@@ -51,6 +53,11 @@ public class SorceressSqirkOverlay extends OverlayPanel
 		}
 
 		return super.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 
 	private void renderGardenStats(Graphics2D graphics)

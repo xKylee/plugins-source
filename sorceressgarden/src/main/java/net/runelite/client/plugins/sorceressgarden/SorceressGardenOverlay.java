@@ -34,7 +34,7 @@ public class SorceressGardenOverlay extends OverlayPanel
 	public SorceressGardenOverlay(final SorceressGardenPlugin plugin, final SorceressGardenConfig config, Client client)
 	{
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		determineLayer();
 		setPriority(OverlayPriority.HIGH);
 		this.plugin = plugin;
 		this.config = config;
@@ -73,6 +73,11 @@ public class SorceressGardenOverlay extends OverlayPanel
 		}
 
 		return super.render(graphics);
+	}
+
+	public void determineLayer()
+	{
+		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 
 	private void renderTile(final Graphics2D graphics, final LocalPoint dest, final Color color)
