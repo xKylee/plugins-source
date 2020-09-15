@@ -3,10 +3,8 @@ package net.runelite.client.plugins.sorceressgarden;
 import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 
-@Slf4j
 @Singleton
 public class SorceressSession
 {
@@ -38,8 +36,6 @@ public class SorceressSession
 			case ItemID.SUMMER_SQIRK:
 				summerSqirk++;
 				break;
-			default:
-				log.debug("Invalid sqirk specified. The sqirk count will not be updated.");
 		}
 	}
 }

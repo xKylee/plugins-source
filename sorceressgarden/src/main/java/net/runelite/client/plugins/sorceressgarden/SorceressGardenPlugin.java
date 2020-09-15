@@ -10,21 +10,24 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.XpDropEvent;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Sorceress' Garden",
+	name = "Sorceress Garden",
 	enabledByDefault = false,
 	description = "Provides various utilities for the Sorceress's Garden minigame",
 	tags = {"sorceress", "garden", "sqirk", "sq'irk", "thieving", "farming"},
 	type = PluginType.MINIGAME
 )
 
+@PluginDependency(XpTrackerPlugin.class)
 public class SorceressGardenPlugin extends Plugin
 {
 	private static final int GARDEN_REGION = 11605;

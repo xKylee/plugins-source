@@ -3,34 +3,37 @@ package net.runelite.client.plugins.sorceressgarden;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Skill;
 import net.runelite.client.plugins.xptracker.XpTrackerService;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 import net.runelite.client.ui.overlay.components.table.TableAlignment;
 import net.runelite.client.ui.overlay.components.table.TableComponent;
 
-@Slf4j
 public class SorceressSqirkOverlay extends OverlayPanel
 {
 	final SorceressGardenPlugin plugin;
+
 	private final SorceressGardenConfig config;
+
 	private final SorceressSession sorceressSession;
 
-	@Inject
-	XpTrackerService xpTrackerService;
+	private final XpTrackerService xpTrackerService;
+
+	private final PanelComponent panelComponent = new PanelComponent();
 
 	@Inject
-	public SorceressSqirkOverlay(final SorceressGardenPlugin plugin, final SorceressGardenConfig config, final SorceressSession sorceressSession)
+	public SorceressSqirkOverlay(final SorceressGardenPlugin plugin, final SorceressGardenConfig config, final SorceressSession sorceressSession, final XpTrackerService xpTrackerService)
 	{
 		super(plugin);
-		setPosition(OverlayPosition.TOP_LEFT);
 		this.plugin = plugin;
 		this.config = config;
 		this.sorceressSession = sorceressSession;
+		this.xpTrackerService = xpTrackerService;
+		setPosition(OverlayPosition.TOP_LEFT);
 		determineLayer();
 	}
 
@@ -42,15 +45,9 @@ public class SorceressSqirkOverlay extends OverlayPanel
 			return null;
 		}
 
-		if (config.showGardenStats())
-		{
-			renderGardenStats(graphics);
-		}
+		renderGardenStats(graphics);
 
-		if (config.showSqirksStats())
-		{
-			renderSqirksStats(graphics);
-		}
+		renderSqirksStats(graphics);
 
 		return super.render(graphics);
 	}
@@ -62,6 +59,12 @@ public class SorceressSqirkOverlay extends OverlayPanel
 
 	private void renderGardenStats(Graphics2D graphics)
 	{
+		panelComponent.getChildren().clear();
+
+		if (!config.showGardenStats())
+		{
+			return;
+		}
 		TableComponent tableComponent = new TableComponent();
 		tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
 
@@ -78,6 +81,12 @@ public class SorceressSqirkOverlay extends OverlayPanel
 
 	private void renderSqirksStats(Graphics2D graphics)
 	{
+		panelComponent.getChildren().clear();
+
+		if (!config.showSqirksStats())
+		{
+			return;
+		}
 		SorceressSession session = sorceressSession;
 
 		int winterSqirks = session.getWinterSqirk();

@@ -7,7 +7,6 @@ import java.awt.Polygon;
 import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
@@ -23,7 +22,6 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
-@Slf4j
 public class SorceressGardenOverlay extends OverlayPanel
 {
 	final SorceressGardenPlugin plugin;
@@ -33,12 +31,12 @@ public class SorceressGardenOverlay extends OverlayPanel
 	@Inject
 	public SorceressGardenOverlay(final SorceressGardenPlugin plugin, final SorceressGardenConfig config, Client client)
 	{
-		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
-		setPriority(OverlayPriority.HIGH);
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
+		setPosition(OverlayPosition.DYNAMIC);
+		determineLayer();
+		setPriority(OverlayPriority.HIGH);
 	}
 
 	@Override
@@ -49,28 +47,13 @@ public class SorceressGardenOverlay extends OverlayPanel
 			return null;
 		}
 
-		if (config.showSafeTiles())
-		{
-			renderSafeTiles(graphics);
-		}
+		renderSafeTiles(graphics);
 
-		if (config.highlightElementals())
-		{
-			renderElementals(graphics);
-		}
+		renderElementals(graphics);
 
-		if (config.showOneClickSync())
-		{
-			if (config.showWinterOneClick())
-			{
-				renderWinterOneClick(graphics);
-			}
+		renderWinterOneClick(graphics);
 
-			if (config.showSummerOneClick())
-			{
-				renderSummerOneClick(graphics);
-			}
-		}
+		renderSummerOneClick(graphics);
 
 		return super.render(graphics);
 	}
@@ -113,6 +96,11 @@ public class SorceressGardenOverlay extends OverlayPanel
 
 	private void renderSafeTiles(Graphics2D graphics)
 	{
+		if (!config.showSafeTiles())
+		{
+			return;
+		}
+
 		final Set<WorldPoint> SAFE_TILES = Set.of(
 			// Winter Garden
 			new WorldPoint(2900, 5470, 0),
@@ -210,6 +198,11 @@ public class SorceressGardenOverlay extends OverlayPanel
 
 	private void renderElementals(Graphics2D graphics)
 	{
+		if (!config.highlightElementals())
+		{
+			return;
+		}
+
 		for (NPC nearbyNPC : client.getNpcs())
 		{
 			Color color;
@@ -240,6 +233,10 @@ public class SorceressGardenOverlay extends OverlayPanel
 
 	private void renderWinterOneClick(Graphics2D graphics)
 	{
+		if (!config.showOneClickSync() && !config.showWinterOneClick())
+			{
+				return;
+			}
 		WorldPoint winterCheckTile = new WorldPoint(2899, 5468, 0);
 		WorldPoint winterStartTile = new WorldPoint(2902, 5470, 0);
 		int winterNPCID = NpcID.WINTER_ELEMENTAL;
@@ -255,7 +252,6 @@ public class SorceressGardenOverlay extends OverlayPanel
 
 		if (checkTileLocal == null)
 		{
-			log.info("Sync tile local is null");
 			return;
 		}
 
@@ -294,6 +290,12 @@ public class SorceressGardenOverlay extends OverlayPanel
 
 	private void renderSummerOneClick(Graphics2D graphics)
 	{
+
+		if (!config.showOneClickSync() && !config.showSummerOneClick())
+		{
+			return;
+		}
+
 		WorldPoint summerSyncTile = new WorldPoint(2907, 5489, 0);
 		WorldPoint summerCheckTile = new WorldPoint(2907, 5485, 0);
 		WorldPoint summerStartTile = new WorldPoint(2908, 5482, 0);
