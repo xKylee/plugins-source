@@ -65,6 +65,7 @@ include(":socket")
 include(":socketplayerstatus")
 include(":socketsotetseg")
 include(":socketspecialcounter")
+include(":sorceressgarden")
 include(":specbar")
 include(":specorb")
 include(":spellbook")
@@ -89,4 +90,4 @@ for (project in rootProject.children) {
         require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
     }
 }
-
+include("sorceressgarden")
