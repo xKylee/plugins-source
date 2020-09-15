@@ -46,7 +46,7 @@ public class SorceressGardenPlugin extends Plugin
 	private SorceressSqirkOverlay sorceressSqirkOverlay;
 
 	@Inject
-	private SorceressSqirks sorceressSqirks;
+	private SorceressSession sorceressSession;
 
 	@Inject
 	private Client client;
@@ -87,16 +87,17 @@ public class SorceressGardenPlugin extends Plugin
 			switch (event.getExp())
 			{
 				case 30:
-					sorceressSqirks.incrementSqirks(ItemID.WINTER_SQIRK);
+					log.info("Winter sqirk picked");
+					sorceressSession.incrementSqirks(ItemID.WINTER_SQIRK);
 					break;
 				case 40:
-					sorceressSqirks.incrementSqirks(ItemID.SPRING_SQIRK);
+					sorceressSession.incrementSqirks(ItemID.SPRING_SQIRK);
 					break;
 				case 50:
-					sorceressSqirks.incrementSqirks(ItemID.AUTUMN_SQIRK);
+					sorceressSession.incrementSqirks(ItemID.AUTUMN_SQIRK);
 					break;
 				case 60:
-					sorceressSqirks.incrementSqirks(ItemID.SUMMER_SQIRK);
+					sorceressSession.incrementSqirks(ItemID.SUMMER_SQIRK);
 					break;
 			}
 		}

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class SorceressGardenOverlay extends OverlayPanel
 
 		// I am unsure what the below two lines do!
 		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "Sorceress Garden Overlay"));
-		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY, GARDEN_RESET, "Sorceress Garden overlay"));
+		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY, GARDEN_RESET, "Sorceress Garden Overlay"));
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_SCENE);
@@ -224,7 +225,7 @@ public class SorceressGardenOverlay extends OverlayPanel
 				continue;
 			}
 
-			if (nearbyNPC.getName().contains("Elemental"))
+			if (Objects.requireNonNull(nearbyNPC.getName()).contains("Elemental"))
 			{
 				color = Color.ORANGE;
 			}

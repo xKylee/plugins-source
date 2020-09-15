@@ -4,9 +4,10 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
+import static net.runelite.api.MenuOpcode.RUNELITE_OVERLAY;
 import net.runelite.api.Skill;
 import net.runelite.client.plugins.xptracker.XpTrackerService;
+import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.TitleComponent;
@@ -16,20 +17,22 @@ import net.runelite.client.ui.overlay.components.table.TableComponent;
 @Slf4j
 public class SorceressSqirkOverlay extends OverlayPanel
 {
+	static final String SQIRK_RESET = "Reset";
 	final SorceressGardenPlugin plugin;
 	private final SorceressGardenConfig config;
-	private final SorceressSqirks sorceressSqirks;
-
+	private final SorceressSession sorceressSession;
 	@Inject
 	XpTrackerService xpTrackerService;
 
 	@Inject
-	public SorceressSqirkOverlay(final SorceressGardenPlugin plugin, final Client client, final SorceressGardenConfig config, SorceressSqirks sorceressSqirks)
+	public SorceressSqirkOverlay(final SorceressGardenPlugin plugin, final SorceressGardenConfig config, final SorceressSession sorceressSession)
 	{
+		super(plugin);
 		setPosition(OverlayPosition.TOP_LEFT);
 		this.plugin = plugin;
 		this.config = config;
-		this.sorceressSqirks = sorceressSqirks;
+		this.sorceressSession = sorceressSession;
+		getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY, SQIRK_RESET, "Sorceress Sqirks Overlay"));
 	}
 
 	@Override
@@ -71,12 +74,12 @@ public class SorceressSqirkOverlay extends OverlayPanel
 
 	private void renderSqirksStats(Graphics2D graphics)
 	{
-		SorceressSqirks sqirks = sorceressSqirks;
+		SorceressSession session = sorceressSession;
 
-		int winterSqirks = sqirks.getWinterSqirk();
-		int springSqirks = sqirks.getSpringSqirk();
-		int autumnSqirks = sqirks.getAutumnSqirk();
-		int summerSqirks = sqirks.getSummerSqirk();
+		int winterSqirks = session.getWinterSqirk();
+		int springSqirks = session.getSpringSqirk();
+		int autumnSqirks = session.getAutumnSqirk();
+		int summerSqirks = session.getSummerSqirk();
 
 		if (winterSqirks == 0 && springSqirks == 0 && autumnSqirks == 0 && summerSqirks == 0)
 		{
@@ -90,22 +93,22 @@ public class SorceressSqirkOverlay extends OverlayPanel
 		if (winterSqirks > 0)
 		{
 			int xpFromWinter = winterSqirks * 70;
-			tableComponent.addRow("Winter Sq'irks: ", Integer.toString(winterSqirks) + " (" + Integer.toString(xpFromWinter) + " XP)");
+			tableComponent.addRow("Winter Sq'irks: ", winterSqirks + " (" + xpFromWinter + " XP)");
 		}
 		if (springSqirks > 0)
 		{
 			double xpFromSpring = springSqirks * 337.5;
-			tableComponent.addRow("Spring Sq'irks: ", Integer.toString(springSqirks) + " (" + Double.toString(xpFromSpring) + " XP)");
+			tableComponent.addRow("Spring Sq'irks: ", springSqirks + " (" + xpFromSpring + " XP)");
 		}
 		if (autumnSqirks > 0)
 		{
 			double xpFromAutumn = autumnSqirks * 783.3;
-			tableComponent.addRow("Autumn Sq'irks: ", Integer.toString(autumnSqirks) + " (" + Double.toString(xpFromAutumn) + " XP)");
+			tableComponent.addRow("Autumn Sq'irks: ", autumnSqirks + " (" + xpFromAutumn + " XP)");
 		}
 		if (summerSqirks > 0)
 		{
 			int xpFromSummer = summerSqirks * 1500;
-			tableComponent.addRow("Summer Sq'irks: ", Integer.toString(summerSqirks) + " (" + Integer.toString(xpFromSummer) + " XP)");
+			tableComponent.addRow("Summer Sq'irks: ", summerSqirks + " (" + xpFromSummer + " XP)");
 		}
 
 		panelComponent.getChildren().add(tableComponent);

@@ -1,12 +1,14 @@
 package net.runelite.client.plugins.sorceressgarden;
 
+import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 
 @Slf4j
-public class SorceressSqirks
+@Singleton
+public class SorceressSession
 {
 	@Getter(AccessLevel.PACKAGE)
 	private int winterSqirk;
@@ -26,6 +28,7 @@ public class SorceressSqirks
 		{
 			case ItemID.WINTER_SQIRK:
 				winterSqirk++;
+				log.info("Winter sqirk is now " + Integer.toString(winterSqirk));
 				break;
 			case ItemID.SPRING_SQIRK:
 				springSqirk++;
