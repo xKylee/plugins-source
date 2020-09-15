@@ -10,10 +10,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.XpDropEvent;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
@@ -26,7 +24,7 @@ import org.pf4j.Extension;
 	tags = {"sorceress", "garden", "sqirk", "sq'irk", "thieving", "farming"},
 	type = PluginType.MINIGAME
 )
-@PluginDependency(XpTrackerPlugin.class)
+
 public class SorceressGardenPlugin extends Plugin
 {
 	private static final int GARDEN_REGION = 11605;
@@ -93,13 +91,13 @@ public class SorceressGardenPlugin extends Plugin
 	@Subscribe
 	private void onXpDropEvent(XpDropEvent event)
 	{
-		if (!isInGarden() || !config.showSqirksStats())
+		if (!config.showSqirksStats())
 		{
 			return;
 		}
 
 		// Switch based off of XP gained, this is how we determine which Sqi'rk was picked
-		if (event.getSkill() == Skill.FARMING)
+		if (event.getSkill() == Skill.FARMING && isInGarden())
 		{
 			switch (event.getExp())
 			{
