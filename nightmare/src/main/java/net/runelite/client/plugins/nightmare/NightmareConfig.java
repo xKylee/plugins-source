@@ -105,7 +105,7 @@ public interface NightmareConfig extends Config
 	@ConfigItem(
 		keyName = "highlightShadows",
 		name = "Highlight Shadows",
-		description = "prayerHelper the Shadow Attacks",
+		description = "Highlights the Shadow Attacks",
 		position = 4,
 		titleSection = "generalSection"
 	)
