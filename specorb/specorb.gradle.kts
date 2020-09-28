@@ -25,33 +25,53 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.16"
+plugins {
+	kotlin("jvm") version ProjectVersions.kotlinVersion
+	kotlin("kapt") version ProjectVersions.kotlinVersion
+}
 
-project.extra["PluginName"] = "Nightmare of Ashihama"
-project.extra["PluginDescription"] = "Shows what to pray and what to do at Nightmare of Ashihama"
+
+version = "0.0.1"
+
+project.extra["PluginName"] = "Spec Orb"
+project.extra["PluginDescription"] = "Make the special attack orb work everywhere with all weapons"
+
 
 dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+	kapt(Libraries.pf4j)
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+	annotationProcessor(Libraries.lombok)
+	annotationProcessor(Libraries.pf4j)
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
+	compileOnly("com.openosrs:runelite-api:$rlVersion")
+	compileOnly("com.openosrs:runelite-client:$rlVersion")
+
+	compileOnly(Libraries.apacheCommonsText)
+	compileOnly(Libraries.guice)
+	compileOnly(Libraries.lombok)
+	compileOnly(Libraries.pf4j)
+
+	compileOnly(kotlin("stdlib"))
 }
 
 tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	compileKotlin {
+		kotlinOptions {
+			jvmTarget = "11"
+			freeCompilerArgs = listOf("-Xjvm-default=enable")
+		}
+		sourceCompatibility = "11"
+	}
+
+	jar {
+		manifest {
+			attributes(mapOf(
+					"Plugin-Version" to project.version,
+					"Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+					"Plugin-Provider" to project.extra["PluginProvider"],
+					"Plugin-Description" to project.extra["PluginDescription"],
+					"Plugin-License" to project.extra["PluginLicense"]
+			))
+		}
+	}
 }
