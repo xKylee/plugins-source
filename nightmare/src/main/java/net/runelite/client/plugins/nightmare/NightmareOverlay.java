@@ -179,6 +179,11 @@ class NightmareOverlay extends Overlay
 			drawNightmareChargeRange(graphics, plugin.getNm(), plugin.isNightmareCharging());
 		}
 
+		if (config.huskHighlight())
+		{
+			renderHuskHighlights(graphics);
+		}
+
 		if (plugin.isFlash() && config.flash())
 		{
 			final Color flash = graphics.getColor();
@@ -340,6 +345,31 @@ class NightmareOverlay extends Overlay
 		graphics.setColor(config.nightmareChargeCol());
 		graphics.fill(path);
 
+	}
+
+	private void renderHuskHighlights(Graphics2D graphics)
+	{
+		client.getNpcs().forEach((npc) ->
+		{
+			int id = npc.getId();
+			Color color;
+			switch (id)
+			{
+				case 9454:
+					color = Color.CYAN;
+					break;
+				case 9455:
+					color = Color.GREEN;
+					break;
+				default:
+					return;
+			}
+
+			if (!npc.isDead())
+			{
+				OverlayUtil.renderPolygon(graphics, npc.getConvexHull(), color);
+			}
+		});
 	}
 
 	private void drawHuskTarget(Graphics2D graphics, Map<Polygon, Player> huskTarget)
