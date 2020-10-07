@@ -1000,24 +1000,6 @@ public interface GauntletConfig extends Config
 		return false;
 	}
 
-	@Range(
-		min = 10,
-		max = 50
-	)
-	@ConfigItem(
-		name = "Flash duration",
-		description = "Change the duration of the flash.",
-		position = 2,
-		keyName = "flashOnWrongAttackDuration",
-		section = "playerSection",
-		hidden = true,
-		unhide = "flashOnWrongAttack"
-	)
-	default int flashOnWrongAttackDuration()
-	{
-		return 25;
-	}
-
 	@Alpha
 	@ConfigItem(
 		name = "Flash color",

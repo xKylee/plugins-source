@@ -246,11 +246,7 @@ public class GauntletPlugin extends Plugin
 
 	@Getter
 	@Setter
-	private boolean wrongAttackStyle;
-
-	@Getter
-	@Setter
-	private boolean switchWeapon;
+	private boolean switchWeapon51;
 
 	private boolean inGauntlet;
 	private boolean inHunllef;
@@ -287,8 +283,7 @@ public class GauntletPlugin extends Plugin
 
 		hunllef = null;
 		missile = null;
-		wrongAttackStyle = false;
-		switchWeapon = false;
+		switchWeapon51 = false;
 
 		overlayTimer.reset();
 		resourceManager.reset();
@@ -573,17 +568,12 @@ public class GauntletPlugin extends Plugin
 
 			if (validAttack)
 			{
-				wrongAttackStyle = false;
 				hunllef.updatePlayerAttackCount();
 
 				if (hunllef.getPlayerAttackCount() == 1)
 				{
-					switchWeapon = true;
+					switchWeapon51 = true;
 				}
-			}
-			else
-			{
-				wrongAttackStyle = true;
 			}
 		}
 		else if (actor instanceof NPC)

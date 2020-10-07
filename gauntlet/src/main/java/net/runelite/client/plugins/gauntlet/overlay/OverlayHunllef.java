@@ -36,9 +36,12 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
+import net.runelite.api.InventoryID;
+import net.runelite.api.ItemID;
 import net.runelite.api.Model;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCDefinition;
@@ -46,6 +49,7 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.kit.KitType;
 import net.runelite.api.model.Jarvis;
 import net.runelite.api.model.Vertex;
 import net.runelite.client.graphics.ModelOutlineRenderer;
@@ -79,6 +83,24 @@ public class OverlayHunllef extends Overlay
 	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
 	private static final int COLOR_DURATION = 10;
+
+	private static final Set<Integer> MELEE_WEAPONS = Set.of(
+		ItemID.CRYSTAL_HALBERD_BASIC, ItemID.CORRUPTED_HALBERD_BASIC,
+		ItemID.CRYSTAL_HALBERD_ATTUNED, ItemID.CORRUPTED_HALBERD_ATTUNED,
+		ItemID.CRYSTAL_HALBERD_PERFECTED, ItemID.CORRUPTED_HALBERD_PERFECTED
+	);
+
+	private static final Set<Integer> RANGE_WEAPONS = Set.of(
+		ItemID.CRYSTAL_BOW_BASIC, ItemID.CORRUPTED_BOW_BASIC,
+		ItemID.CRYSTAL_BOW_ATTUNED, ItemID.CORRUPTED_BOW_ATTUNED,
+		ItemID.CRYSTAL_BOW_PERFECTED, ItemID.CORRUPTED_BOW_PERFECTED
+	);
+
+	private static final Set<Integer> MAGE_WEAPONS = Set.of(
+		ItemID.CRYSTAL_STAFF_BASIC, ItemID.CORRUPTED_STAFF_BASIC,
+		ItemID.CRYSTAL_STAFF_ATTUNED,  ItemID.CORRUPTED_STAFF_ATTUNED,
+		ItemID.CRYSTAL_STAFF_PERFECTED,  ItemID.CORRUPTED_STAFF_PERFECTED
+	);
 
 	private final Client client;
 	private final GauntletPlugin plugin;
@@ -341,31 +363,9 @@ public class OverlayHunllef extends Overlay
 			config.hunllefTileOutlineWidth(), polygon);
 	}
 
-	private void renderFlashOnWrongAttack(final Graphics2D graphics2D)
-	{
-		if (!config.flashOnWrongAttack() || !plugin.isWrongAttackStyle())
-		{
-			return;
-		}
-
-		final Color originalColor = graphics2D.getColor();
-
-		graphics2D.setColor(config.flashOnWrongAttackColor());
-
-		graphics2D.fill(client.getCanvas().getBounds());
-
-		graphics2D.setColor(originalColor);
-
-		if (++timeout >= config.flashOnWrongAttackDuration())
-		{
-			timeout = 0;
-			plugin.setWrongAttackStyle(false);
-		}
-	}
-
 	private void renderFlashOn51Method(final Graphics2D graphics2D)
 	{
-		if (!config.flashOn51Method() || !plugin.isSwitchWeapon())
+		if (!config.flashOn51Method() || !plugin.isSwitchWeapon51())
 		{
 			return;
 		}
@@ -381,7 +381,46 @@ public class OverlayHunllef extends Overlay
 		if (++timeout >= config.flashOn51MethodDuration())
 		{
 			timeout = 0;
-			plugin.setSwitchWeapon(false);
+			plugin.setSwitchWeapon51(false);
+		}
+	}
+
+	private void renderFlashOnWrongAttack(final Graphics2D graphics2D)
+	{
+		if (!config.flashOnWrongAttack() && hunllef != null)
+		{
+			return;
+		}
+
+		var itemInHand = client.getItemContainer(InventoryID.EQUIPMENT).getItem(KitType.WEAPON.getIndex());
+		if (itemInHand == null)
+		{
+			return;
+		}
+
+		var draw = false;
+		switch (hunllef.getNpc().getDefinition().getOverheadIcon())
+		{
+			case MAGIC:
+				draw = MAGE_WEAPONS.contains(itemInHand.getId());
+				break;
+			case RANGED:
+				draw = RANGE_WEAPONS.contains(itemInHand.getId());
+				break;
+			case MELEE:
+				draw = MELEE_WEAPONS.contains(itemInHand.getId());
+				break;
+		}
+
+		if (draw)
+		{
+			final Color originalColor = graphics2D.getColor();
+
+			graphics2D.setColor(config.flashOnWrongAttackColor());
+
+			graphics2D.fill(client.getCanvas().getBounds());
+
+			graphics2D.setColor(originalColor);
 		}
 	}
 
