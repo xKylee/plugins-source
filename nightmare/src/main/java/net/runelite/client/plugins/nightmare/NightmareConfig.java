@@ -105,7 +105,7 @@ public interface NightmareConfig extends Config
 	@ConfigItem(
 		keyName = "highlightShadows",
 		name = "Highlight Shadows",
-		description = "prayerHelper the Shadow Attacks",
+		description = "Highlights the Shadow Attacks",
 		position = 4,
 		titleSection = "generalSection"
 	)
@@ -166,10 +166,22 @@ public interface NightmareConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "highlightHusk",
+			name = "Highlight Husk",
+			description = "Highlights the mage and range husk",
+			position = 9,
+			titleSection = "generalSection"
+	)
+	default boolean huskHighlight()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "highlightHuskTarget",
 		name = "Highlight Husk Target(s)",
 		description = "Highlights whoever the husks will spawn on",
-		position = 9,
+		position = 10,
 		titleSection = "generalSection"
 	)
 	default boolean highlightHuskTarget()
@@ -182,7 +194,7 @@ public interface NightmareConfig extends Config
 		keyName = "huskBorderCol",
 		name = "Husk Target Border Color",
 		description = "Colour the edges of the area highlighted by poison special will be",
-		position = 10,
+		position = 11,
 		titleSection = "generalSection"
 	)
 
@@ -195,7 +207,7 @@ public interface NightmareConfig extends Config
 		keyName = "highlightNightmareHitboxOnCharge",
 		name = "Highlight Nightmare's Hitbox On Charge",
 		description = "Highlights the hitbox of the Nightmare when she charges",
-		position = 11,
+		position = 12,
 		titleSection = "generalSection"
 	)
 	default boolean highlightNightmareHitboxOnCharge()
@@ -207,7 +219,7 @@ public interface NightmareConfig extends Config
 		keyName = "highlightNightmareChargeRange",
 		name = "Highlight Nightmare's Charge Range",
 		description = "Highlights the range the Nightmare will damage you with her charge attack",
-		position = 12,
+		position = 13,
 		titleSection = "generalSection"
 	)
 	default boolean highlightNightmareChargeRange()
@@ -220,7 +232,7 @@ public interface NightmareConfig extends Config
 		keyName = "nightmareChargeBorderCol",
 		name = "Nightmare Charge Border Color",
 		description = "Color the edges of the area highlighted by the nightmare's charge attack",
-		position = 13,
+		position = 14,
 		titleSection = "generalSection"
 	)
 
@@ -234,7 +246,7 @@ public interface NightmareConfig extends Config
 		keyName = "nightmareChargeCol",
 		name = "Nightmare charge fill color",
 		description = "Color the fill of the area highlighted by the nightmare's charge attack",
-		position = 14,
+		position = 15,
 		titleSection = "generalSection"
 	)
 	default Color nightmareChargeCol()
@@ -246,7 +258,7 @@ public interface NightmareConfig extends Config
 		keyName = "flash",
 		name = "Flash your screen when you get impregnated",
 		description = "Your Screen flashes when the nightmare infects you with her parasite",
-		position = 15,
+		position = 16,
 		titleSection = "generalSection"
 	)
 	default boolean flash()
@@ -258,7 +270,7 @@ public interface NightmareConfig extends Config
 		name = "Mirror Mode Compatibility?",
 		keyName = "mirrorMode",
 		description = "Should we show the overlay on Mirror Mode?",
-		position = 16,
+		position = 17,
 		titleSection = "generalSection"
 	)
 	default boolean mirrorMode()

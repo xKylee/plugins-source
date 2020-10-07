@@ -30,13 +30,18 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Area;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
+import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
+import net.runelite.api.Perspective;
 import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
 import net.runelite.api.Point;
 import net.runelite.api.Projectile;
@@ -47,6 +52,7 @@ import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraConfig;
 import net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin;
 import net.runelite.client.plugins.alchemicalhydra.entity.Hydra;
+import net.runelite.client.plugins.alchemicalhydra.entity.HydraPhase;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -56,9 +62,9 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 @Singleton
 public class SceneOverlay extends Overlay
 {
-	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+	private static final int LIGHTNING_ID = 1666;
 
-	private static final BasicStroke FOUNTAINE_OUTLINE_STROKE = new BasicStroke(1);
+	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
 	private static final Area POISON_AREA = new Area();
 
@@ -97,10 +103,11 @@ public class SceneOverlay extends Overlay
 			return null;
 		}
 
-		renderPoisonProjectileAreaTiles(graphics2D);
-		renderHydraImmunityOutline();
-		renderFountainOutline(graphics2D);
 		renderHpUntilPhaseChange(graphics2D);
+		renderHydraImmunityOutline();
+		renderPoisonProjectileAreaTiles(graphics2D);
+		renderLightning(graphics2D);
+		renderFountainOutline(graphics2D);
 
 		return null;
 	}
@@ -110,11 +117,11 @@ public class SceneOverlay extends Overlay
 		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 
-	private void renderPoisonProjectileAreaTiles(final Graphics2D graphics)
+	private void renderPoisonProjectileAreaTiles(final Graphics2D graphics2D)
 	{
 		final Map<LocalPoint, Projectile> poisonProjectiles = plugin.getPoisonProjectiles();
 
-		if (poisonProjectiles.isEmpty())
+		if (!config.poisonOutline() || poisonProjectiles.isEmpty())
 		{
 			return;
 		}
@@ -138,11 +145,42 @@ public class SceneOverlay extends Overlay
 			}
 		}
 
-		graphics.setPaintMode();
-		graphics.setColor(config.poisonOutlineColor());
-		graphics.draw(POISON_AREA);
-		graphics.setColor(config.poisonFillColor());
-		graphics.fill(POISON_AREA);
+		drawOutlineAndFill(graphics2D, config.poisonOutlineColor(), config.poisonFillColor(), config.poisonStroke(), POISON_AREA);
+	}
+
+	private void renderLightning(final Graphics2D graphics2D)
+	{
+		final List<GraphicsObject> graphicsObjects = client.getGraphicsObjects();
+
+		if (!config.lightningOutline() || hydra.getPhase() != HydraPhase.LIGHTNING || graphicsObjects.isEmpty())
+		{
+			return;
+		}
+
+		for (final GraphicsObject graphicsObject : graphicsObjects)
+		{
+			if (graphicsObject.getId() != LIGHTNING_ID)
+			{
+				continue;
+			}
+
+			final LocalPoint localPoint = graphicsObject.getLocation();
+
+			if (localPoint == null)
+			{
+				return;
+			}
+
+			final Polygon polygon = Perspective.getCanvasTilePoly(client, localPoint);
+
+			if (polygon == null)
+			{
+				return;
+			}
+
+			drawOutlineAndFill(graphics2D, config.lightningOutlineColor(), config.lightningFillColor(),
+				config.lightningStroke(), polygon);
+		}
 	}
 
 	private void renderHydraImmunityOutline()
@@ -240,9 +278,7 @@ public class SceneOverlay extends Overlay
 			color = color.darker();
 		}
 
-		graphics2D.setColor(color);
-		graphics2D.setStroke(FOUNTAINE_OUTLINE_STROKE);
-		graphics2D.draw(polygon);
+		drawOutlineAndFill(graphics2D, color, new Color(color.getRed(), color.getGreen(), color.getBlue(), 30), 1, polygon);
 	}
 
 	private void renderHpUntilPhaseChange(final Graphics2D graphics2D)
@@ -280,5 +316,21 @@ public class SceneOverlay extends Overlay
 			config.fontShadow(),
 			config.fontZOffset() * -1
 		);
+	}
+
+	private static void drawOutlineAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
+	{
+		final Color originalColor = graphics2D.getColor();
+		final Stroke originalStroke = graphics2D.getStroke();
+
+		graphics2D.setStroke(new BasicStroke(strokeWidth));
+		graphics2D.setColor(outlineColor);
+		graphics2D.draw(shape);
+
+		graphics2D.setColor(fillColor);
+		graphics2D.fill(shape);
+
+		graphics2D.setColor(originalColor);
+		graphics2D.setStroke(originalStroke);
 	}
 }

@@ -60,7 +60,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 1,
+		position = 0,
 		keyName = "prayerWidgetHelper",
 		name = "Prayer Widget Helper",
 		description = "Shows you which prayer to click and the time until click.",
@@ -72,7 +72,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 2,
+		position = 1,
 		keyName = "showHitSquares",
 		name = "Show Hit Squares",
 		description = "Shows you where the melee bosses can hit you from.",
@@ -84,7 +84,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 2,
 		keyName = "changeTickColor",
 		name = "Change Tick Color",
 		description = "If this is enabled, it will change the tick color to white" +
@@ -97,7 +97,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
+		position = 3,
 		keyName = "ignoreNonAttacking",
 		name = "Ignore Non-Attacking",
 		description = "Ignore monsters that are not attacking you",
@@ -109,7 +109,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 4,
 		keyName = "guitarHeroMode",
 		name = "Guitar Hero Mode",
 		description = "Render \"Guitar Hero\" style prayer helper",
@@ -122,7 +122,7 @@ public interface TickTimersConfig extends Config
 
 	@ConfigTitleSection(
 		keyName = "bosses",
-		position = 4,
+		position = 1,
 		name = "Bosses",
 		description = ""
 	)
@@ -132,7 +132,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 0,
 		keyName = "gwd",
 		name = "God Wars Dungeon",
 		description = "Show tick timers for GWD Bosses. This must be enabled before you zone in.",
@@ -143,21 +143,9 @@ public interface TickTimersConfig extends Config
 		return true;
 	}
 
-	@ConfigItem(
-		position = 6,
-		keyName = "dks",
-		name = "Dagannoth Kings",
-		description = "Show tick timers for Dagannoth Kings. This must be enabled before you zone in.",
-		titleSection = "bosses"
-	)
-	default boolean dks()
-	{
-		return true;
-	}
-
 	@ConfigTitleSection(
 		keyName = "text",
-		position = 7,
+		position = 2,
 		name = "Text",
 		description = ""
 	)
@@ -167,7 +155,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 8,
+		position = 0,
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Plain | Bold | Italics",
@@ -179,11 +167,11 @@ public interface TickTimersConfig extends Config
 	}
 
 	@Range(
-		min = 14,
+		min = 1,
 		max = 40
 	)
 	@ConfigItem(
-		position = 9,
+		position = 1,
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
@@ -195,7 +183,7 @@ public interface TickTimersConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 10,
+		position = 2,
 		keyName = "shadows",
 		name = "Shadows",
 		description = "Adds Shadows to text.",

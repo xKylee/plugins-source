@@ -30,6 +30,10 @@ import java.util.Map;
 
 public final class ConfigParser
 {
+	private ConfigParser()
+	{
+	}
+
 	public static boolean parse(final String value)
 	{
 		if (value.isEmpty() || value.isBlank())
@@ -39,26 +43,17 @@ public final class ConfigParser
 
 		try
 		{
-			final StringBuilder sb = new StringBuilder();
-
-			for (final String str : value.split("\n"))
-			{
-				if (!str.startsWith("//"))
-				{
-					sb.append(str).append("\n");
-				}
-			}
-
 			final Splitter NEWLINE_SPLITTER = Splitter
 				.on("\n")
 				.omitEmptyStrings()
 				.trimResults();
 
-			final Map<String, String> tmp = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
+			final Map<String, String> tmp = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(value);
 
-			for (final String str : tmp.values())
+			for (final Map.Entry<String, String> entry : tmp.entrySet())
 			{
-				Integer.parseInt(str.trim());
+				Integer.parseInt(entry.getKey());
+				Integer.parseInt(entry.getValue());
 			}
 
 			return true;

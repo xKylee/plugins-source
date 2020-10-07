@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.2"
+version = "0.0.3"
 
 project.extra["PluginName"] = "Player Attack Timer"
-project.extra["PluginDescription"] = "Tick delay timer for player attacks."
+project.extra["PluginDescription"] = "Display the tick delay for your current weapon.<br>Helps with lazy prayer flicking and flinching."
 
 dependencies {
     annotationProcessor(Libraries.lombok)

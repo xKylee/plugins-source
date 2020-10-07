@@ -62,7 +62,6 @@ public class TickTimersPlugin extends Plugin
 	private static final int ARMA_REGION = 11346;
 	private static final int SARA_REGION = 11601;
 	private static final int ZAMMY_REGION = 11603;
-	private static final int WATERBITH_REGION = 11589;
 
 	@Inject
 	private Client client;
@@ -210,7 +209,7 @@ public class TickTimersPlugin extends Plugin
 	private boolean regionCheck()
 	{
 		return Arrays.stream(client.getMapRegions()).anyMatch(
-			x -> x == ARMA_REGION || x == GENERAL_REGION || x == ZAMMY_REGION || x == SARA_REGION || x == WATERBITH_REGION
+			x -> x == ARMA_REGION || x == GENERAL_REGION || x == ZAMMY_REGION || x == SARA_REGION
 		);
 	}
 
@@ -263,14 +262,6 @@ public class TickTimersPlugin extends Plugin
 					npcContainers.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
 				}
 				break;
-			case NpcID.DAGANNOTH_REX:
-			case NpcID.DAGANNOTH_SUPREME:
-			case NpcID.DAGANNOTH_PRIME:
-				if (config.dks())
-				{
-					npcContainers.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
-				}
-				break;
 		}
 	}
 
@@ -299,9 +290,6 @@ public class TickTimersPlugin extends Plugin
 			case NpcID.FLOCKLEADER_GEERIN:
 			case NpcID.WINGMAN_SKREE:
 			case NpcID.KREEARRA:
-			case NpcID.DAGANNOTH_REX:
-			case NpcID.DAGANNOTH_SUPREME:
-			case NpcID.DAGANNOTH_PRIME:
 				npcContainers.removeIf(c -> c.getNpc() == npc);
 				break;
 		}
