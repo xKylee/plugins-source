@@ -24,7 +24,6 @@ import net.runelite.api.Point;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectDespawned;
@@ -255,57 +254,32 @@ public class Xarpus extends Room
 		{
 			instanceTimer = (instanceTimer + 1) % 4;
 		}
-	}
 
-	@Subscribe
-	public void onClientTick(ClientTick event)
-	{
-		if (client.getLocalPlayer() != null)
+		if (client.getLocalPlayer() == null)
 		{
-			List<Player> players = client.getPlayers();
-			Iterator var = players.iterator();
-
-			while (true)
+			return;
+		}
+		List<Player> players = client.getPlayers();
+		for (Player player : players)
+		{
+			if (player.getWorldLocation() != null)
 			{
-				Point point;
-				do
+				WorldPoint wpPlayer = player.getWorldLocation();
+				LocalPoint lpPlayer = LocalPoint.fromWorld(client, wpPlayer.getX(), wpPlayer.getY());
+
+				WorldPoint wpChest = WorldPoint.fromRegion(player.getWorldLocation().getRegionID(), 17, 5, player.getWorldLocation().getPlane());
+				LocalPoint lpChest = LocalPoint.fromWorld(client, wpChest.getX(), wpChest.getY());
+				if (lpChest != null)
 				{
-					do
+					Point point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
+
+					if (isInXarpusRegion() && point.getY() == 1 && (point.getX() == 1 || point.getX() == 2 || point.getX() == 3) && nextInstance)
 					{
-						do
-						{
-							LocalPoint lpPlayer;
-							LocalPoint lpChest;
-							do
-							{
-								Player player;
-								do
-								{
-									if (!var.hasNext())
-									{
-										return;
-									}
-
-									player = (Player) var.next();
-								} while (player.getWorldLocation() == null);
-
-								WorldPoint wpPlayer = player.getWorldLocation();
-								lpPlayer = LocalPoint.fromWorld(client, wpPlayer.getX(), wpPlayer.getY());
-
-								WorldPoint wpChest = WorldPoint.fromRegion(player.getWorldLocation().getRegionID(), 17, 5, player.getWorldLocation().getPlane());
-								lpChest = LocalPoint.fromWorld(client, wpChest.getX(), wpChest.getY());
-							} while (lpChest == null);
-							point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
-						} while (isInXarpusRegion());
-					} while (point.getY() != 1);
-				} while (point.getX() != 1 && point.getX() != 2 && point.getX() != 3);
-
-				if (nextInstance && isInXarpusRegion())
-				{
-					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Xarpus instance timer started.", "");
-					instanceTimer = 2;
-					isInstanceTimerRunning = true;
-					nextInstance = false;
+						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Xarpus instance timer started", "");
+						instanceTimer = 2;
+						isInstanceTimerRunning = true;
+						nextInstance = false;
+					}
 				}
 			}
 		}
