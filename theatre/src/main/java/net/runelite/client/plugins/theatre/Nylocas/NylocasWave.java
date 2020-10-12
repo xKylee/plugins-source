@@ -75,6 +75,40 @@ public class NylocasWave
 			new NyloNPC(NylocasType.MAGE_SMALL, NylocasSpawnPoint.EAST_NORTH), new NyloNPC(NylocasType.RANGE_SMALL, NylocasSpawnPoint.EAST_SOUTH)}))
 		.build();
 
+	static final ImmutableMap<Integer, String[]> wavesHelper = ImmutableMap.<Integer, String[]>builder()
+			.put(1, new String[]{"melee", "mage", "range"})
+			.put(2, new String[]{"range", "melee", "mage"})
+			.put(3, new String[]{"mage", "range", "melee"})
+			.put(4, new String[]{"melee", "MAGE", "range"})
+			.put(5, new String[]{"mage", "melee", "RANGE"})
+			.put(6, new String[]{"MELEE", "range", "mage"})
+			.put(7, new String[]{"MELEE", "mage|RANGE", ""})
+			.put(8, new String[]{"range", "melee", "MAGE"})
+			.put(9, new String[]{"mage", "", "melee|RANGE"})
+			.put(10, new String[]{"range|RANGE", "range|range", "range|range"})
+			.put(11, new String[]{"mage|MAGE", "mage|mage", "MAGE"})
+			.put(12, new String[]{"melee|melee", "MELEE", "melee|melee"})
+			.put(13, new String[]{"MELEE", "range|melee", "mage|range"})
+			.put(14, new String[]{"RANGE", "mage|range", "melee|mage"})
+			.put(15, new String[]{"mage|range", "MAGE", "range|melee"})
+			.put(16, new String[]{"mage-melee-range", "melee-mage-range", "range-mage-range"})
+			.put(17, new String[]{"MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE"})
+			.put(18, new String[]{"RANGE-MAGE-RANGE", "RANGE-MAGE-RANGE", "MAGE-MELEE-MAGE"})
+			.put(19, new String[]{"MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE"})
+			.put(20, new String[]{"MELEE-RANGE-MELEE", "MAGE-RANGE-MELEE", "MELEE-RANGE-MELEE"})
+			.put(21, new String[]{"range-melee-range|range-melee-range", "melee-mage-melee|melee-range-melee", "mage-melee-range|mage-range-mage"})
+			.put(22, new String[]{"MAGE-RANGE-MELEE", "range-mage-melee|mage-range-melee", "MELEE-RANGE-MELEE"})
+			.put(23, new String[]{"MAGE-RANGE-MELEE", "RANGE-MAGE-MELEE", "range-mage-range|mage-range-melee"})
+			.put(24, new String[]{"MELEE", "MAGE", "RANGE-MAGE-MELEE"})
+			.put(25, new String[]{"MAGE-MELEE-MAGE", "RANGE", "MELEE"})
+			.put(26, new String[]{"MAGE", "MELEE-MAGE-MELEE", "MAGE"})
+			.put(27, new String[]{"MAGE-MELEE-MAGE", "MELEE-MAGE-RANGE", "MAGE"})
+			.put(28, new String[]{"mage-melee-mage|range-mage-melee", "melee-range-melee|mage-melee-range", "range-melee-mage|melee-mage-melee"})
+			.put(29, new String[]{"mage-range-melee|range-melee-mage", "MELEE", "range-melee-range|melee-range-mage"})
+			.put(30, new String[]{"MAGE", "melee-range-melee|mage-range-melee", "RANGE-MELEE-RANGE"})
+			.put(31, new String[]{"mage-range-mage|range-melee-range", "melee-mage-range|mage-melee-range", "range-mage-range|melee-range-mage"})
+			.build();
+
 	@Getter
 	private final int wave;
 

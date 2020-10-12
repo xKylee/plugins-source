@@ -7,6 +7,7 @@
 package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,6 +77,9 @@ public class Xarpus extends Room
 	private boolean nextInstance = true;
 
 	@Getter
+	private boolean exhumedSpawned = false;
+
+	@Getter
 	private final Map<GroundObject, Integer> xarpusExhumeds = new HashMap<>();
 
 	@Getter
@@ -83,6 +87,9 @@ public class Xarpus extends Room
 
 	@Getter
 	private int xarpusTicksUntilAttack;
+
+	@Getter
+	private boolean postScreech = false;
 
 	private boolean xarpusStare;
 
@@ -137,6 +144,8 @@ public class Xarpus extends Room
 				xarpusNPC = npc;
 				xarpusStare = false;
 				xarpusTicksUntilAttack = 9;
+				exhumedSpawned = false;
+				postScreech = false;
 				break;
 		}
 	}
@@ -159,6 +168,8 @@ public class Xarpus extends Room
 				infoBoxManager.removeInfoBox(exhumedCounter);
 				exhumedCounter = null;
 				isInstanceTimerRunning = false;
+				exhumedSpawned = false;
+				postScreech = false;
 				break;
 		}
 	}
@@ -171,6 +182,7 @@ public class Xarpus extends Room
 			GroundObject o = event.getGroundObject();
 			if (o.getId() == 32743)
 			{
+				exhumedSpawned = true;
 				if (exhumedCounter == null)
 				{
 
@@ -248,6 +260,11 @@ public class Xarpus extends Room
 					xarpusTicksUntilAttack = 4;
 				}
 			}
+
+			if (xarpusNPC.getOverheadText() != null && !postScreech)
+			{
+				postScreech = true;
+			}
 		}
 
 		if (isInstanceTimerRunning)
@@ -273,7 +290,7 @@ public class Xarpus extends Room
 				{
 					Point point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
 
-					if (isInXarpusRegion() && point.getY() == 1 && (point.getX() == 1 || point.getX() == 2 || point.getX() == 3) && nextInstance)
+					if (isInSotetsegRegion() && point.getY() == 1 && (point.getX() == 1 || point.getX() == 2 || point.getX() == 3) && nextInstance)
 					{
 						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Xarpus instance timer started", "");
 						instanceTimer = 2;
@@ -297,5 +314,11 @@ public class Xarpus extends Room
 	boolean isInXarpusRegion()
 	{
 		return ArrayUtils.contains(client.getMapRegions(), XARPUS_REGION);
+	}
+
+	boolean isInSotetsegRegion()
+	{
+		return client.getMapRegions() != null && client.getMapRegions().length > 0 && Arrays.stream(client.getMapRegions()).anyMatch((s) ->
+				s == 13123 || s == 13379);
 	}
 }

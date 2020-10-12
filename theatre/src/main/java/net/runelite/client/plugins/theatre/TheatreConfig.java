@@ -462,6 +462,18 @@ public interface TheatreConfig extends Config
 
 	@ConfigItem(
 		position = 12,
+		keyName = "nylocasWavesHelper",
+		name = "Nylocas Waves Helper",
+		description = "Overlay's squares with wave numbers on nylo entry bridges for upcoming nylos",
+		section = "nylocasSection"
+	)
+	default boolean nyloWavesHelper()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 13,
 		keyName = "nyloInstanceTimer",
 		name = "Nylocas Instance Timer",
 		description = "Displays an instance timer when the next set will potentially spawn - ENTER ON ZERO.",
@@ -473,7 +485,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 13,
+		position = 14,
 		keyName = "nyloStallMessage",
 		name = "Nylocas Stall Wave Messages",
 		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped.",
@@ -485,7 +497,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 14,
+		position = 15,
 		keyName = "nyloBossAttackTickCount",
 		name = "Nylocas Boss Attack Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST).",
@@ -497,7 +509,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 15,
+		position = 16,
 		keyName = "nyloBossSwitchTickCount",
 		name = "Nylocas Boss Switch Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE).",
@@ -509,7 +521,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 17,
 		keyName = "nyloBossTotalTickCount",
 		name = "Nylocas Boss Total Tick Counter",
 		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST).",
@@ -654,6 +666,31 @@ public interface TheatreConfig extends Config
 	default boolean xarpusTickP3()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		name = "Line of Sight",
+		keyName = "xarpusLineOfSight",
+		description = "Displays Xarpus's Line of Sight on P3<br>Melee Tiles: Displays only the melee tiles that Xarpus can see<br>Square: Displays the whole region that Xarpus can see",
+		position = 5,
+		section = "xarpusSection"
+	)
+	default XARPUS_LINE_OF_SIGHT xarpusLineOfSight()
+	{
+		return XARPUS_LINE_OF_SIGHT.OFF;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Line of Sight Color",
+		keyName = "xarpusLineOfSightColor",
+		description = "Customize the color for Xarpus's Line of Sight",
+		position = 6,
+		section = "xarpusSection"
+	)
+	default Color xarpusLineOfSightColor()
+	{
+		return Color.RED;
 	}
 
 	//Verzik Section
@@ -841,6 +878,43 @@ public interface TheatreConfig extends Config
 
 	@ConfigItem(
 		position = 15,
+		keyName = "verzikGreenBallTick",
+		name = "Verzik Green Ball Tick",
+		description = "Displays the number of ticks until the green ball nukes you.",
+		section = "verzikSection"
+	)
+	default boolean verzikGreenBallTick()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 16,
+		keyName = "lightningAttackHelper",
+		name = "Lightning Attack Helper",
+		description = "Displays the number of attacks before a lightning ball.",
+		section = "verzikSection"
+	)
+	default boolean lightningAttackHelper()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 17,
+		keyName = "lightningAttackTick",
+		name = "Lightning Attack Tick",
+		description = "Displays the number of ticks before a lightning ball hits you.",
+		section = "verzikSection"
+	)
+	default boolean lightningAttackTick()
+	{
+		return false;
+	}
+
+
+	@ConfigItem(
+		position = 18,
 		keyName = "verzikTornado",
 		name = "Verzik Personal Tornado Highlight",
 		description = "Displays the tornado that is targeting you.",
@@ -852,7 +926,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 19,
 		keyName = "verzikPersonalTornadoOnly",
 		name = "Verzik ONLY Highlight Personal",
 		description = "Displays the tornado that is targeting you ONLY after it solves which one is targeting you.",
@@ -865,7 +939,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 17,
+		position = 20,
 		keyName = "verzikTornadoColor",
 		name = "Verzik Tornado Highlight Color",
 		description = "Select a color for the Verzik Tornadoes Overlay to be.",
@@ -969,7 +1043,14 @@ public interface TheatreConfig extends Config
 		TILE,
 		HULL
 	}
-	
+
+	enum XARPUS_LINE_OF_SIGHT
+	{
+		OFF,
+		SQUARE,
+		MELEE_TILES;
+	}
+
 	enum VERZIKBALLTILE
 	{
 		TILE,
