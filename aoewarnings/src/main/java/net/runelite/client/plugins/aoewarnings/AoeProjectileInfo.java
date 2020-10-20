@@ -76,6 +76,12 @@ public enum AoeProjectileInfo
 	VETION_LIGHTNING(ProjectileID.VETION_LIGHTNING, 1),
 
 	/**
+	 * The AOE of Mage Arena 2 Bosses
+	 */
+	JUSTICIAR_LEASH(ProjectileID.JUSTICIAR_LEASH, 1),
+	MAGE_ARENA_BOSS_FREEZE(ProjectileID.MAGE_ARENA_BOSS_FREEZE, 1),
+
+	/**
 	 * the AOE of Chaos Fanatic
 	 */
 	CHAOS_FANATIC(ProjectileID.CHAOS_FANATIC_AOE, 1),
