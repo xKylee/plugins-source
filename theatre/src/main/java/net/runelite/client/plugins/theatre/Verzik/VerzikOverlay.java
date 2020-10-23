@@ -182,17 +182,19 @@ public class VerzikOverlay extends RoomOverlay
 				if (config.lightningAttackTick())
 				{
 					client.getProjectiles().forEach((p) -> {
-						int id = p.getId();
 						Actor getInteracting = p.getInteracting();
 
-						if (id == VERZIK_LIGHTNING_BALL)
+						if (p.getId() == VERZIK_LIGHTNING_BALL)
 						{
 							Player localPlayer = client.getLocalPlayer();
 							if (getInteracting != null && getInteracting == localPlayer)
 							{
-								LocalPoint localPoint = localPlayer.getLocalLocation();
-								Point textLocation = Perspective.getCanvasTextLocation(client, graphics, localPoint, "", 0);
-								renderTextLocation(graphics, Integer.toString(p.getRemainingCycles() / 30), Color.GREEN, textLocation);
+								Point point = getProjectilePoint(p);
+								if (point != null)
+								{
+									Point textLocation = new Point(point.getX(), point.getY());
+									renderTextLocation(graphics, Integer.toString(p.getRemainingCycles() / 30), Color.ORANGE, textLocation);
+								}
 							}
 						}
 
@@ -257,10 +259,7 @@ public class VerzikOverlay extends RoomOverlay
 						{
 							if (config.verzikGreenBallTick())
 							{
-								int x = (int) p.getX();
-								int y = (int) p.getY();
-								int z = (int) p.getZ();
-								Point point = Perspective.localToCanvas(client, new LocalPoint(x, y), 0, Perspective.getTileHeight(client, new LocalPoint(x, y), p.getFloor()) - z);
+								Point point = getProjectilePoint(p);
 								if (point != null)
 								{
 									Point textLocation = new Point(point.getX(), point.getY());
@@ -344,6 +343,14 @@ public class VerzikOverlay extends RoomOverlay
 
 		}
 		return null;
+	}
+
+	private Point getProjectilePoint(Projectile p)
+	{
+		int x = (int) p.getX();
+		int y = (int) p.getY();
+		int z = (int) p.getZ();
+		return Perspective.localToCanvas(client, new LocalPoint(x, y), 0, Perspective.getTileHeight(client, new LocalPoint(x, y), p.getFloor()) - z);
 	}
 
 	public void determineLayer()

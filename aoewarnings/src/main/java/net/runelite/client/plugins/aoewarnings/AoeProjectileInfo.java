@@ -134,7 +134,7 @@ public enum AoeProjectileInfo
 	/**
 	 * Verzik
 	 */
-	VERZIK_PURPLE_SPAWN(1586, 3);
+	VERZIK_PURPLE_SPAWN(ProjectileID.VERZIK_PURPLE_SPAWN, 3);
 
 	private static final Map<Integer, AoeProjectileInfo> map = new HashMap<>();
 

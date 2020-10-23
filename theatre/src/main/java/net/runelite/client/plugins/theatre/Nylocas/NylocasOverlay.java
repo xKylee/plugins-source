@@ -53,7 +53,7 @@ public class NylocasOverlay extends RoomOverlay
 	private final List<Point> southSpawnEastLocalPoints = new ImmutableList.Builder<Point>()
 			.add(new Point(24, 9))
 			.add(new Point(24, 14))
-			.add(new Point(23, 16))
+			.add(new Point(24, 16))
 			.build();
 	private final List<Point> southSpawnWestLocalPoints = new ImmutableList.Builder<Point>()
 			.add(new Point(23, 9))
@@ -117,55 +117,57 @@ public class NylocasOverlay extends RoomOverlay
 			renderTextLocation(graphics, text, Color.WHITE, canvasPoint);
 		}
 
-		if (nylocas.isNyloActive() && config.nyloWavesHelper())
+		if (nylocas.isNyloActive())
 		{
-			String[] nylocasWave = NylocasWave.wavesHelper.get(nylocas.getNyloWave() + 1);
-			if (nylocasWave != null)
+			if (config.nyloWavesHelper())
 			{
-				String eastSpawn = nylocasWave[0];
-				String southSpawn = nylocasWave[1];
-				String westSpawn = nylocasWave[2];
-				String[] eastSpawnSplit = eastSpawn.split("\\|");
-				String[] southSpawnSplit = southSpawn.split("\\|");
-				String[] westSpawnSplit = westSpawn.split("\\|");
+				String[] nylocasWave = NylocasWave.wavesHelper.get(nylocas.getNyloWave() + 1);
+				if (nylocasWave != null)
+				{
+					String eastSpawn = nylocasWave[0];
+					String southSpawn = nylocasWave[1];
+					String westSpawn = nylocasWave[2];
+					String[] eastSpawnSplit = eastSpawn.split("\\|");
+					String[] southSpawnSplit = southSpawn.split("\\|");
+					String[] westSpawnSplit = westSpawn.split("\\|");
 
-				// more than one nylo spawning
-				if (eastSpawnSplit.length > 1)
-				{
-					renderNyloHelperOnWalkup(graphics, eastSpawnSplit[0], eastSpawnNorthLocalPoints);
-					renderNyloHelperOnWalkup(graphics, eastSpawnSplit[1], eastSpawnSouthLocalPoints);
-				}
-				// only one nylo spawning
-				else
-				{
-					renderNyloHelperOnWalkup(graphics, eastSpawn, eastSpawnNorthLocalPoints);
-				}
+					// more than one nylo spawning
+					if (eastSpawnSplit.length > 1)
+					{
+						renderNyloHelperOnWalkup(graphics, eastSpawnSplit[0], eastSpawnNorthLocalPoints, "east");
+						renderNyloHelperOnWalkup(graphics, eastSpawnSplit[1], eastSpawnSouthLocalPoints, "east");
+					}
+					// only one nylo spawning
+					else
+					{
+						renderNyloHelperOnWalkup(graphics, eastSpawn, eastSpawnNorthLocalPoints, "east");
+					}
 
-				// more than one nylo spawning
-				if (southSpawnSplit.length > 1)
-				{
-					renderNyloHelperOnWalkup(graphics, southSpawnSplit[0], southSpawnEastLocalPoints);
-					renderNyloHelperOnWalkup(graphics, southSpawnSplit[1], southSpawnWestLocalPoints);
-				}
-				// only one nylo spawning
-				else
-				{
-					renderNyloHelperOnWalkup(graphics, southSpawn, southSpawnEastLocalPoints);
-				}
+					// more than one nylo spawning
+					if (southSpawnSplit.length > 1)
+					{
+						renderNyloHelperOnWalkup(graphics, southSpawnSplit[0], southSpawnEastLocalPoints, "south");
+						renderNyloHelperOnWalkup(graphics, southSpawnSplit[1], southSpawnWestLocalPoints, "south");
+					}
+					// only one nylo spawning
+					else
+					{
+						renderNyloHelperOnWalkup(graphics, southSpawn, southSpawnEastLocalPoints, "south");
+					}
 
-				// more than one nylo spawning
-				if (westSpawnSplit.length > 1)
-				{
-					renderNyloHelperOnWalkup(graphics, westSpawnSplit[0], westSpawnSouthLocalPoints);
-					renderNyloHelperOnWalkup(graphics, westSpawnSplit[1], westSpawnNorthLocalPoints);
-				}
-				// only one nylo spawning
-				else
-				{
-					renderNyloHelperOnWalkup(graphics, westSpawn, westSpawnSouthLocalPoints);
+					// more than one nylo spawning
+					if (westSpawnSplit.length > 1)
+					{
+						renderNyloHelperOnWalkup(graphics, westSpawnSplit[0], westSpawnSouthLocalPoints, "west");
+						renderNyloHelperOnWalkup(graphics, westSpawnSplit[1], westSpawnNorthLocalPoints, "west");
+					}
+					// only one nylo spawning
+					else
+					{
+						renderNyloHelperOnWalkup(graphics, westSpawn, westSpawnSouthLocalPoints, "west");
+					}
 				}
 			}
-
 
 			if (config.nyloPillars())
 			{
@@ -289,7 +291,7 @@ public class NylocasOverlay extends RoomOverlay
 		return null;
 	}
 
-	private void renderNyloHelperOnWalkup(Graphics2D graphics, String nyloHelperString, List<Point> pointArray)
+	private void renderNyloHelperOnWalkup(Graphics2D graphics, String nyloHelperString, List<Point> pointArray, String direction)
 	{
 		if (pointArray.isEmpty())
 		{
@@ -301,7 +303,7 @@ public class NylocasOverlay extends RoomOverlay
 		{
 			for (int i = 0; i < nyloSpawnSplitCsv.length; i++)
 			{
-				drawPoly(graphics, nyloSpawnSplitCsv[i], LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), pointArray.get(i).getX(), pointArray.get(i).getY(), client.getLocalPlayer().getWorldLocation().getPlane())));
+				drawPoly(graphics, nyloSpawnSplitCsv[i], direction, LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), pointArray.get(i).getX(), pointArray.get(i).getY(), client.getLocalPlayer().getWorldLocation().getPlane())));
 			}
 		}
 		// does not change colors on walkup
@@ -310,16 +312,43 @@ public class NylocasOverlay extends RoomOverlay
 			if (!nyloHelperString.isBlank())
 
 			{
-				drawPoly(graphics, nyloHelperString, LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), pointArray.get(0).getX(), pointArray.get(0).getY(), client.getLocalPlayer().getWorldLocation().getPlane())));
+				drawPoly(graphics, nyloHelperString, direction, LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), pointArray.get(0).getX(), pointArray.get(0).getY(), client.getLocalPlayer().getWorldLocation().getPlane())));
 			}
 		}
 	}
 
-	private void drawPoly(Graphics2D graphics, String nyloType, LocalPoint localPoint)
+	private void drawPoly(Graphics2D graphics, String nyloType, String direction, LocalPoint localPoint)
 	{
-		Polygon poly = Perspective.getCanvasTilePoly(client, localPoint);
-		renderPolyWithFillAlpha(graphics, getColor(nyloType), poly, 2, 60);
-		renderTextLocation(graphics, String.valueOf(nylocas.getNyloWave() + 1), Color.YELLOW, centerPoint(poly.getBounds()));
+		Polygon poly = null;
+		if (nyloType.equals("mage") || nyloType.equals("melee") || nyloType.equals("range"))
+		{
+			poly = Perspective.getCanvasTilePoly(client, localPoint);
+		}
+		else
+		{
+			LocalPoint localPointBig = null;
+			switch (direction)
+			{
+				case "east":
+					localPointBig = new LocalPoint(localPoint.getX() - 64, localPoint.getY() - 64);
+					break;
+				case "west":
+					localPointBig = new LocalPoint(localPoint.getX() + 64, localPoint.getY() + 64);
+					break;
+				case "south":
+					localPointBig = new LocalPoint(localPoint.getX() - 64, localPoint.getY() + 64);
+					break;
+			}
+			if (localPointBig != null) 
+			{
+				poly = Perspective.getCanvasTileAreaPoly(client, localPointBig, 2);
+			}
+		}
+		if (poly != null)
+		{
+			renderPolyWithFillAlpha(graphics, getColor(nyloType), poly, 2, 60);
+			renderTextLocation(graphics, String.valueOf(nylocas.getNyloWave() + 1), Color.YELLOW, centerPoint(poly.getBounds()));
+		}
 	}
 
 	private Point centerPoint(Rectangle rect)

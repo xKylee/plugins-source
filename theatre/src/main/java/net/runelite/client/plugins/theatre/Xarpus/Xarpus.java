@@ -249,6 +249,10 @@ public class Xarpus extends Room
 				xarpusTicksUntilAttack--;
 				if (xarpusTicksUntilAttack <= 0)
 				{
+					if (!postScreech)
+					{
+						postScreech = true;
+					}
 					xarpusTicksUntilAttack = 8;
 				}
 			}
@@ -261,10 +265,6 @@ public class Xarpus extends Room
 				}
 			}
 
-			if (xarpusNPC.getOverheadText() != null && !postScreech)
-			{
-				postScreech = true;
-			}
 		}
 
 		if (isInstanceTimerRunning)
