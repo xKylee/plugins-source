@@ -138,6 +138,8 @@ public class Nylocas extends Room
 
 	private int varbit6447 = -1;
 	private boolean nextInstance = true;
+
+	@Getter
 	private int nyloWave = 0;
 
 	private int ticksSinceLastWave = 0;

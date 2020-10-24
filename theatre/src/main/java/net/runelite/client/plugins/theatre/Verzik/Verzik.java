@@ -7,11 +7,14 @@
 package net.runelite.client.plugins.theatre.Verzik;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.inject.Inject;
 import lombok.Getter;
 import net.runelite.api.Client;
@@ -96,6 +99,14 @@ public class Verzik extends Room
 	private WorldPoint lastPlayerLocation1;
 
 	@Getter
+	private int verzikLightningAttacks = 4;
+
+	private final List<Projectile> verzikRangedAttacks = new ArrayList();
+
+	private final Predicate<Projectile> isValidVerzikAttack = (p) ->
+			p.getRemainingCycles() > 0 && (p.getId() == VERZIK_RANGE_BALL || p.getId() == VERZIK_LIGHTNING_BALL);
+
+	@Getter
 	private int verzikTicksUntilAttack = -1;
 
 	@Getter
@@ -114,6 +125,7 @@ public class Verzik extends Room
 
 	private static final int NPC_ID_TORNADO = 8386;
 	private static final int VERZIK_RANGE_BALL = 1583;
+	private static final int VERZIK_LIGHTNING_BALL = 1585;
 
 	private static final int VERZIK_P1_MAGIC = 8109;
 	private static final int VERZIK_P2_REG = 8114;
@@ -251,21 +263,53 @@ public class Verzik extends Room
 		}
 	}
 
+	private void handleVerzikAttacks(Projectile p)
+	{
+		int id = p.getId();
+		switch (id)
+		{
+			case VERZIK_RANGE_BALL:
+				if (!verzikRangedAttacks.contains(p))
+				{
+					verzikRangedAttacks.add(p);
+					--verzikLightningAttacks;
+				}
+				break;
+			case VERZIK_LIGHTNING_BALL:
+				if (!verzikRangedAttacks.contains(p))
+				{
+					verzikRangedAttacks.add(p);
+					verzikLightningAttacks = 4;
+				}
+				break;
+		}
+
+	}
+
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
 		if (verzikActive)
 		{
-			if (verzikPhase == Phase.PHASE2 && !verzikRangeProjectiles.isEmpty())
+			if (verzikPhase == Phase.PHASE2)
 			{
-				Iterator iterator = verzikRangeProjectiles.keySet().iterator();
-
-				while (iterator.hasNext())
+				if (verzikNPC.getId() == NpcID.VERZIK_VITUR_8372)
 				{
-					Projectile projectile = (Projectile)iterator.next();
-					if (projectile.getRemainingCycles() < 1)
+					client.getProjectiles().stream().filter(isValidVerzikAttack).findFirst().ifPresent(this::handleVerzikAttacks);
+					verzikRangedAttacks.removeIf((Projectile p) -> p.getRemainingCycles() <= 0);
+				}
+
+				if (!verzikRangeProjectiles.isEmpty())
+				{
+					Iterator<Projectile> iterator = verzikRangeProjectiles.keySet().iterator();
+
+					while (iterator.hasNext())
 					{
-						iterator.remove();
+						Projectile projectile = (Projectile)iterator.next();
+						if (projectile.getRemainingCycles() < 1)
+						{
+							iterator.remove();
+						}
 					}
 				}
 			}
@@ -506,6 +550,7 @@ public class Verzik extends Room
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
 		verzikYellows = 0;
+		verzikLightningAttacks = 4;
 	}
 
 	private void verzikCleanup()
@@ -525,5 +570,7 @@ public class Verzik extends Room
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
 		verzikYellows = 0;
+		verzikRangedAttacks.clear();
+		verzikLightningAttacks = 4;
 	}
 }

@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.25"
+version = "0.0.1"
 
-project.extra["PluginName"] = "Theatre Of Blood"
-project.extra["PluginDescription"] = "All-in-one plugin for Theatre of Blood"
+project.extra["PluginName"] = "Godbook"
+project.extra["PluginDescription"] = "Tracks the ticks since someone preached from their godbook"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -38,10 +38,10 @@ dependencies {
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
     compileOnly(Libraries.guice)
+    compileOnly(Libraries.gson)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
     compileOnly(Libraries.rxjava)
-    compileOnly(Libraries.apacheCommonsText)
 }
 
 tasks {

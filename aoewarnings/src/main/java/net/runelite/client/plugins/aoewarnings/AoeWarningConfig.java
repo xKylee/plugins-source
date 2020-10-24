@@ -998,4 +998,41 @@ public interface AoeWarningConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigTitleSection(
+		keyName = "verzikTitle",
+		name = "Verzik",
+		description = "",
+		position = 72,
+		titleSection = "npcTitle"
+	)
+	default Title verzikTitle()
+	{
+		return new Title();
+	}
+
+	@ConfigItem(
+		keyName = "verzik",
+		name = "Verzik",
+		description = "Configures if Verzik purple Nylo AOE is shown",
+		titleSection = "verzikTitle",
+		position = 73
+	)
+	default boolean isVerzikEnabled()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "verzikNotify",
+		name = "Verzik Notify",
+		description = "Configures whether or not AoE Projectile Warnings for Verzik boulders should trigger a notification",
+		titleSection = "verzikTitle",
+		position = 74,
+		hide = "aoeNotifyAll"
+	)
+	default boolean isVerzikNotifyEnabled()
+	{
+		return false;
+	}
 }

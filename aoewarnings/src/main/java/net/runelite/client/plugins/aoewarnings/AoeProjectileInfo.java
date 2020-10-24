@@ -128,7 +128,13 @@ public enum AoeProjectileInfo
 	/**
 	 * Marble gargoyle (Superior Gargoyle)
 	 */
-	MARBLE_GARGOYLE_AOE(ProjectileID.MARBLE_GARGOYLE_AOE, 1);
+	MARBLE_GARGOYLE_AOE(ProjectileID.MARBLE_GARGOYLE_AOE, 1),
+
+
+	/**
+	 * Verzik
+	 */
+	VERZIK_PURPLE_SPAWN(ProjectileID.VERZIK_PURPLE_SPAWN, 3);
 
 	private static final Map<Integer, AoeProjectileInfo> map = new HashMap<>();
 

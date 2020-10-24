@@ -10,17 +10,22 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import javax.inject.Inject;
+import net.runelite.api.Actor;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCDefinition;
+import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
+import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -32,14 +37,19 @@ public class VerzikOverlay extends RoomOverlay
 {
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.0");
 	private static final int VERZIK_GREEN_BALL = 1598;
+	private static final int VERZIK_LIGHTNING_BALL = 1585;
 
 	@Inject
 	private Verzik verzik;
 
 	@Inject
-	protected VerzikOverlay(TheatreConfig config)
+	private SpriteManager spriteManager;
+
+	@Inject
+	protected VerzikOverlay(TheatreConfig config, SpriteManager spriteManager)
 	{
 		super(config);
+		this.spriteManager = spriteManager;
 		determineLayer();
 	}
 
@@ -148,6 +158,48 @@ public class VerzikOverlay extends RoomOverlay
 						}
 					}
 				}
+
+				if (verzik.getVerzikNPC().getId() == NpcID.VERZIK_VITUR_8372 && config.lightningAttackHelper())
+				{
+					Point imageLocation;
+					if (verzik.getVerzikLightningAttacks() == 0)
+					{
+						BufferedImage lightningIcon = spriteManager.getSprite(558, 0);
+						imageLocation = verzik.getVerzikNPC().getCanvasImageLocation(lightningIcon, 200);
+						if (imageLocation != null)
+						{
+							OverlayUtil.renderImageLocation(graphics, imageLocation, lightningIcon);
+						}
+					}
+					else
+					{
+						String attacksLeft = Integer.toString(verzik.getVerzikLightningAttacks());
+						imageLocation = Perspective.getCanvasTextLocation(client, graphics, verzik.getVerzikNPC().getLocalLocation(), attacksLeft, 200);
+						renderTextLocation(graphics, attacksLeft, Color.WHITE, imageLocation);
+					}
+				}
+
+				if (config.lightningAttackTick())
+				{
+					client.getProjectiles().forEach((p) -> {
+						Actor getInteracting = p.getInteracting();
+
+						if (p.getId() == VERZIK_LIGHTNING_BALL)
+						{
+							Player localPlayer = client.getLocalPlayer();
+							if (getInteracting != null && getInteracting == localPlayer)
+							{
+								Point point = getProjectilePoint(p);
+								if (point != null)
+								{
+									Point textLocation = new Point(point.getX(), point.getY());
+									renderTextLocation(graphics, Integer.toString(p.getRemainingCycles() / 30), Color.ORANGE, textLocation);
+								}
+							}
+						}
+
+					});
+				}
 			}
 
 			if (verzik.getVerzikPhase() == Verzik.Phase.PHASE3)
@@ -199,25 +251,38 @@ public class VerzikOverlay extends RoomOverlay
 					}
 				}
 
-				if (config.verzikGreenBall())
+				if (config.verzikGreenBall() || config.verzikGreenBallTick())
 				{
 					for (Projectile p : client.getProjectiles())
 					{
 						if (p.getId() == VERZIK_GREEN_BALL)
 						{
-							Polygon tilePoly;
-							if (config.verzikGreenBallMarker() == TheatreConfig.VERZIKBALLTILE.TILE)
+							if (config.verzikGreenBallTick())
 							{
-								tilePoly = p.getInteracting().getCanvasTilePoly();
-							}
-							else
-							{
-								tilePoly = getCanvasTileAreaPoly(client, p.getInteracting().getLocalLocation(), 3, true);
+								Point point = getProjectilePoint(p);
+								if (point != null)
+								{
+									Point textLocation = new Point(point.getX(), point.getY());
+									renderTextLocation(graphics, Integer.toString(p.getRemainingCycles() / 30), Color.GREEN, textLocation);
+								}
 							}
 
-							if (tilePoly != null)
+							if (config.verzikGreenBall())
 							{
-								renderPoly(graphics, config.verzikGreenBallColor(), tilePoly);
+								Polygon tilePoly;
+								if (config.verzikGreenBallMarker() == TheatreConfig.VERZIKBALLTILE.TILE)
+								{
+									tilePoly = p.getInteracting().getCanvasTilePoly();
+								}
+								else
+								{
+									tilePoly = getCanvasTileAreaPoly(client, p.getInteracting().getLocalLocation(), 3, true);
+								}
+
+								if (tilePoly != null)
+								{
+									renderPoly(graphics, config.verzikGreenBallColor(), tilePoly);
+								}
 							}
 						}
 					}
@@ -278,6 +343,14 @@ public class VerzikOverlay extends RoomOverlay
 
 		}
 		return null;
+	}
+
+	private Point getProjectilePoint(Projectile p)
+	{
+		int x = (int) p.getX();
+		int y = (int) p.getY();
+		int z = (int) p.getZ();
+		return Perspective.localToCanvas(client, new LocalPoint(x, y), 0, Perspective.getTileHeight(client, new LocalPoint(x, y), p.getFloor()) - z);
 	}
 
 	public void determineLayer()
