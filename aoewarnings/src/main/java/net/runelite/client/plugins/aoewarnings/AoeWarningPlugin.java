@@ -353,6 +353,8 @@ public class AoeWarningPlugin extends Plugin
 				return notify ? config.isCerbFireNotifyEnabled() : config.isCerbFireEnabled();
 			case DEMONIC_GORILLA_BOULDER:
 				return notify ? config.isDemonicGorillaNotifyEnabled() : config.isDemonicGorillaEnabled();
+			case VERZIK_PURPLE_SPAWN:
+				return notify ? config.isVerzikNotifyEnabled() : config.isVerzikEnabled();
 		}
 
 		return false;

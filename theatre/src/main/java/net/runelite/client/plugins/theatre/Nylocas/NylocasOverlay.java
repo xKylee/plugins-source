@@ -11,9 +11,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.inject.Inject;
+import com.google.common.collect.ImmutableList;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
@@ -35,6 +39,37 @@ public class NylocasOverlay extends RoomOverlay
 		super(config);
 		determineLayer();
 	}
+
+	private final List<Point> eastSpawnNorthLocalPoints = new ImmutableList.Builder<Point>()
+			.add(new Point(38, 25))
+			.add(new Point(34, 25))
+			.add(new Point(32, 25))
+			.build();
+	private final List<Point> eastSpawnSouthLocalPoints = new ImmutableList.Builder<Point>()
+			.add(new Point(38, 24))
+			.add(new Point(34, 24))
+			.add(new Point(32, 24))
+			.build();
+	private final List<Point> southSpawnEastLocalPoints = new ImmutableList.Builder<Point>()
+			.add(new Point(24, 9))
+			.add(new Point(24, 14))
+			.add(new Point(24, 16))
+			.build();
+	private final List<Point> southSpawnWestLocalPoints = new ImmutableList.Builder<Point>()
+			.add(new Point(23, 9))
+			.add(new Point(23, 14))
+			.add(new Point(23, 16))
+			.build();
+	private final List<Point> westSpawnSouthLocalPoints = new ImmutableList.Builder<Point>()
+			.add(new Point(9, 24))
+			.add(new Point(13, 24))
+			.add(new Point(15, 24))
+			.build();
+	private final List<Point> westSpawnNorthLocalPoints = new ImmutableList.Builder<Point>()
+			.add(new Point(9, 25))
+			.add(new Point(13, 25))
+			.add(new Point(15, 25))
+			.build();
 
 	@Override
 	public Dimension render(Graphics2D graphics)
@@ -84,6 +119,56 @@ public class NylocasOverlay extends RoomOverlay
 
 		if (nylocas.isNyloActive())
 		{
+			if (config.nyloWavesHelper())
+			{
+				String[] nylocasWave = NylocasWave.wavesHelper.get(nylocas.getNyloWave() + 1);
+				if (nylocasWave != null)
+				{
+					String eastSpawn = nylocasWave[0];
+					String southSpawn = nylocasWave[1];
+					String westSpawn = nylocasWave[2];
+					String[] eastSpawnSplit = eastSpawn.split("\\|");
+					String[] southSpawnSplit = southSpawn.split("\\|");
+					String[] westSpawnSplit = westSpawn.split("\\|");
+
+					// more than one nylo spawning
+					if (eastSpawnSplit.length > 1)
+					{
+						renderNyloHelperOnWalkup(graphics, eastSpawnSplit[0], eastSpawnNorthLocalPoints, "east");
+						renderNyloHelperOnWalkup(graphics, eastSpawnSplit[1], eastSpawnSouthLocalPoints, "east");
+					}
+					// only one nylo spawning
+					else
+					{
+						renderNyloHelperOnWalkup(graphics, eastSpawn, eastSpawnNorthLocalPoints, "east");
+					}
+
+					// more than one nylo spawning
+					if (southSpawnSplit.length > 1)
+					{
+						renderNyloHelperOnWalkup(graphics, southSpawnSplit[0], southSpawnEastLocalPoints, "south");
+						renderNyloHelperOnWalkup(graphics, southSpawnSplit[1], southSpawnWestLocalPoints, "south");
+					}
+					// only one nylo spawning
+					else
+					{
+						renderNyloHelperOnWalkup(graphics, southSpawn, southSpawnEastLocalPoints, "south");
+					}
+
+					// more than one nylo spawning
+					if (westSpawnSplit.length > 1)
+					{
+						renderNyloHelperOnWalkup(graphics, westSpawnSplit[0], westSpawnSouthLocalPoints, "west");
+						renderNyloHelperOnWalkup(graphics, westSpawnSplit[1], westSpawnNorthLocalPoints, "west");
+					}
+					// only one nylo spawning
+					else
+					{
+						renderNyloHelperOnWalkup(graphics, westSpawn, westSpawnSouthLocalPoints, "west");
+					}
+				}
+			}
+
 			if (config.nyloPillars())
 			{
 				Map<NPC, Integer> pillars = nylocas.getNylocasPillars();
@@ -204,6 +289,90 @@ public class NylocasOverlay extends RoomOverlay
 			}
 		}
 		return null;
+	}
+
+	private void renderNyloHelperOnWalkup(Graphics2D graphics, String nyloHelperString, List<Point> pointArray, String direction)
+	{
+		if (pointArray.isEmpty())
+		{
+			return;
+		}
+		String[] nyloSpawnSplitCsv = nyloHelperString.split("-");
+		// does change colors on walkup
+		if (nyloSpawnSplitCsv.length > 1)
+		{
+			for (int i = 0; i < nyloSpawnSplitCsv.length; i++)
+			{
+				drawPoly(graphics, nyloSpawnSplitCsv[i], direction, LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), pointArray.get(i).getX(), pointArray.get(i).getY(), client.getLocalPlayer().getWorldLocation().getPlane())));
+			}
+		}
+		// does not change colors on walkup
+		else
+		{
+			if (!nyloHelperString.isBlank())
+
+			{
+				drawPoly(graphics, nyloHelperString, direction, LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), pointArray.get(0).getX(), pointArray.get(0).getY(), client.getLocalPlayer().getWorldLocation().getPlane())));
+			}
+		}
+	}
+
+	private void drawPoly(Graphics2D graphics, String nyloType, String direction, LocalPoint localPoint)
+	{
+		Polygon poly = null;
+		if (nyloType.equals("mage") || nyloType.equals("melee") || nyloType.equals("range"))
+		{
+			poly = Perspective.getCanvasTilePoly(client, localPoint);
+		}
+		else
+		{
+			LocalPoint localPointBig = null;
+			switch (direction)
+			{
+				case "east":
+					localPointBig = new LocalPoint(localPoint.getX() - 64, localPoint.getY() - 64);
+					break;
+				case "west":
+					localPointBig = new LocalPoint(localPoint.getX() + 64, localPoint.getY() + 64);
+					break;
+				case "south":
+					localPointBig = new LocalPoint(localPoint.getX() - 64, localPoint.getY() + 64);
+					break;
+			}
+			if (localPointBig != null) 
+			{
+				poly = Perspective.getCanvasTileAreaPoly(client, localPointBig, 2);
+			}
+		}
+		if (poly != null)
+		{
+			renderPolyWithFillAlpha(graphics, getColor(nyloType), poly, 2, 60);
+			renderTextLocation(graphics, String.valueOf(nylocas.getNyloWave() + 1), Color.YELLOW, centerPoint(poly.getBounds()));
+		}
+	}
+
+	private Point centerPoint(Rectangle rect)
+	{
+		int x = (int) (rect.getX() + rect.getWidth() / 2);
+		int y = (int) (rect.getY() + rect.getHeight() / 2);
+		return new Point(x, y);
+	}
+
+	private Color getColor(String nyloType)
+	{
+		if (nyloType.equalsIgnoreCase("melee"))
+		{
+			return Color.BLACK;
+		}
+		else if (nyloType.equalsIgnoreCase("range"))
+		{
+			return Color.GREEN;
+		}
+		else if (nyloType.equalsIgnoreCase("mage"))
+		{
+			return Color.CYAN;
+		}
+		return Color.BLACK;
 	}
 
 	public void determineLayer()

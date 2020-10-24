@@ -96,6 +96,18 @@ public abstract class RoomOverlay extends Overlay
 		}
 	}
 
+	protected void renderPolyWithFillAlpha(Graphics2D graphics, Color color, Polygon polygon, int width, int alpha)
+	{
+		if (polygon != null)
+		{
+			graphics.setColor(color);
+			graphics.setStroke(new BasicStroke(width));
+			graphics.draw(polygon);
+			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
+			graphics.fill(polygon);
+		}
+	}
+
 	public static Polygon getCanvasTileAreaPoly(@Nonnull Client client, @Nonnull LocalPoint localLocation, int size, int borderOffset)
 	{
 		return getCanvasTileAreaPoly(client, localLocation, size, borderOffset, true);

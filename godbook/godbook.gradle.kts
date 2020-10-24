@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.11"
+version = "0.0.1"
 
-project.extra["PluginName"] = "Effect Timers"
-project.extra["PluginDescription"] = "Effect timer overlay on players"
+project.extra["PluginName"] = "Godbook"
+project.extra["PluginDescription"] = "Tracks the ticks since someone preached from their godbook"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -37,21 +37,11 @@ dependencies {
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    compileOnly(project(":multiindicators"))
-
-    compileOnly(Libraries.apacheCommonsText)
     compileOnly(Libraries.guice)
+    compileOnly(Libraries.gson)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
-
-    testImplementation("com.openosrs:runelite-api:$rlVersion")
-    testImplementation("com.openosrs:runelite-client:$rlVersion")
-
-    testImplementation(Libraries.pf4j)
-    testImplementation(Libraries.guiceTestlib)
-    testImplementation(Libraries.junit)
-    testImplementation(Libraries.mockitoCore)
-    testImplementation(Libraries.mockitoInline)
+    compileOnly(Libraries.rxjava)
 }
 
 tasks {
@@ -61,7 +51,6 @@ tasks {
                     "Plugin-Version" to project.version,
                     "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
                     "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Dependencies" to "multilines-plugin",
                     "Plugin-Description" to project.extra["PluginDescription"],
                     "Plugin-License" to project.extra["PluginLicense"]
             ))

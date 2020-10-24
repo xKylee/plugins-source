@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,36 +22,79 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.theatre;
 
-version = "0.0.25"
+import lombok.Getter;
 
-project.extra["PluginName"] = "Theatre Of Blood"
-project.extra["PluginDescription"] = "All-in-one plugin for Theatre of Blood"
+/**
+ * Represents the four main cardinal points.
+ */
+public enum Direction
+{
+	NORTH("N"),
+	EAST("E"),
+	SOUTH("S"),
+	WEST("W"),
+	NORTHEAST("NE"),
+	NORTHWEST("NW"),
+	SOUTHEAST("SE"),
+	SOUTHWEST("SW");
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+	@Getter
+	private final String dirName;
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+	public static Direction getNearestDirection(int angle)
+	{
+		int round = angle >>> 9;
+		int up = angle & 256;
+		if (up != 0)
+		{
+			++round;
+		}
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
-    compileOnly(Libraries.apacheCommonsText)
-}
+		switch (round & 3)
+		{
+			case 0:
+				return SOUTH;
+			case 1:
+				return WEST;
+			case 2:
+				return NORTH;
+			case 3:
+				return EAST;
+			default:
+				throw new IllegalStateException();
+		}
+	}
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	public static Direction getPreciseDirection(int angle)
+	{
+		int ordinalDirection = (int)Math.round((double)angle / 256.0D) % 8;
+		switch (ordinalDirection)
+		{
+			case 0:
+				return SOUTH;
+			case 1:
+				return SOUTHWEST;
+			case 2:
+				return WEST;
+			case 3:
+				return NORTHWEST;
+			case 4:
+				return NORTH;
+			case 5:
+				return NORTHEAST;
+			case 6:
+				return EAST;
+			case 7:
+				return SOUTHEAST;
+			default:
+				throw new IllegalStateException();
+		}
+	}
+
+	private Direction(String dirName)
+	{
+		this.dirName = dirName;
+	}
 }
