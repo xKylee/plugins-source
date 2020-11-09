@@ -109,6 +109,8 @@ public class PlayerScouter extends Plugin
 		blacklist.clear();
 
 		this.webhook = HttpUrl.parse(config.webhook());
+		
+		client.setComparingAppearance(true);
 	}
 
 	@Subscribe
@@ -126,6 +128,7 @@ public class PlayerScouter extends Plugin
 	protected void shutDown()
 	{
 		blacklist.clear();
+		client.setComparingAppearance(false);
 	}
 
 	@Subscribe
