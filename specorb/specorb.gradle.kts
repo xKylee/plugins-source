@@ -31,7 +31,7 @@ plugins {
 }
 
 
-version = "0.0.1"
+version = "0.0.2"
 
 project.extra["PluginName"] = "Spec Orb"
 project.extra["PluginDescription"] = "Make the special attack orb work everywhere with all weapons"
