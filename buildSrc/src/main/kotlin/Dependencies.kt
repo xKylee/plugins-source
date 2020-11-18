@@ -24,23 +24,23 @@
  */
 
 object ProjectVersions {
-    const val rlVersion = "3.5.3"
+    const val rlVersion = "3.5.4"
     const val apiVersion = "0.0.1"
     const val kotlinVersion = "1.3.72"
 }
 
 object Libraries {
     private object Versions {
-        const val annotations = "19.0.0"
-        const val apacheCommonsText = "1.8"
+        const val annotations = "20.1.0"
+        const val apacheCommonsText = "1.9"
         const val gson = "2.8.6"
-        const val guice = "4.2.2"
-        const val junit = "4.13"
-        const val lombok = "1.18.12"
-        const val mockito = "3.2.4"
-        const val okhttp3 = "4.4.0"
-        const val pf4j = "3.2.0"
-        const val rxjava = "3.0.0"
+        const val guice = "4.2.3"
+        const val junit = "4.13.1"
+        const val lombok = "1.18.16"
+        const val mockito = "3.6.0"
+        const val okhttp3 = "4.9.0"
+        const val pf4j = "3.5.0"
+        const val rxjava = "3.0.7"
         const val slf4j = "1.7.30"
     }
 
