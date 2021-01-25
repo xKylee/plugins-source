@@ -498,6 +498,93 @@ public interface TheatreConfig extends Config
 
 	@ConfigItem(
 		position = 15,
+		keyName = "nylocasBigSplitsHelper",
+		name = "Nylocas Big Splits",
+		description = "Tells you when bigs will spawn little nylos",
+		section = "nylocasSection"
+	)
+	default boolean bigSplits()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 16,
+		keyName = "nylocasBigSplitsHighlightColor",
+		name = "Highlight Color",
+		description = "Color of the NPC highlight",
+		section = "nylocasSection",
+		hidden = true,
+		unhide = "nylocasBigSplitsHelper"
+	)
+	@Alpha
+	default Color getBigSplitsHighlightColor()
+	{
+		return Color.YELLOW;
+	}
+
+	@ConfigItem(
+		position = 17,
+		keyName = "nylocasBigSplitsTileColor2",
+		name = "Highlight Color Tick 2",
+		description = "Color of the NPC highlight on tick 1",
+		section = "nylocasSection",
+		hidden = true,
+		unhide = "nylocasBigSplitsHelper"
+	)
+	@Alpha
+	default Color getBigSplitsTileColor2()
+	{
+		return Color.ORANGE;
+	}
+
+	@ConfigItem(
+		position = 18,
+		keyName = "nylocasBigSplitsTileColor1",
+		name = "Highlight Color Tick 1",
+		description = "Color of the NPC highlight on tick 0",
+		section = "nylocasSection",
+		hidden = true,
+		unhide = "nylocasBigSplitsHelper"
+	)
+	@Alpha
+	default Color getBigSplitsTileColor1()
+	{
+		return Color.RED;
+	}
+
+	@ConfigItem(
+		position = 19,
+		keyName = "nylocasBigSplitsTextColor2",
+		name = "Text Color Tick 2",
+		description = "Color of the baby tick counter on tick 2",
+		section = "nylocasSection",
+		hidden = true,
+		unhide = "nylocasBigSplitsHelper"
+	)
+	@Alpha
+	default Color getBigSplitsTextColor2()
+	{
+		return Color.ORANGE;
+	}
+
+	@ConfigItem(
+		position = 20,
+		keyName = "nylocasBigSplitsTextColor1",
+		name = "Text Color Tick 1",
+		description = "Color of the baby tick counter on tick 1",
+		section = "nylocasSection",
+		hidden = true,
+		unhide = "nylocasBigSplitsHelper"
+	)
+	@Alpha
+	default Color getBigSplitsTextColor1()
+	{
+		return Color.RED;
+	}
+
+	@ConfigItem(
+		position = 21,
 		keyName = "nyloBossAttackTickCount",
 		name = "Nylocas Boss Attack Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST).",
@@ -509,7 +596,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 22,
 		keyName = "nyloBossSwitchTickCount",
 		name = "Nylocas Boss Switch Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE).",
@@ -521,7 +608,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 17,
+		position = 23,
 		keyName = "nyloBossTotalTickCount",
 		name = "Nylocas Boss Total Tick Counter",
 		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST).",
