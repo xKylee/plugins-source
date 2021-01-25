@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
- * Copyright (c) 2020, caps lock13#0001
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
