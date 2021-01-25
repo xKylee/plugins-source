@@ -27,6 +27,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayUtil;
 
 public class NylocasOverlay extends RoomOverlay
 {
@@ -287,6 +288,52 @@ public class NylocasOverlay extends RoomOverlay
 					}
 				}
 			}
+
+			if (config.bigSplits())
+			{
+				nylocas.getSplitsMap().forEach((lp, ticks) ->
+				{
+					Polygon poly = Perspective.getCanvasTileAreaPoly(this.client, lp, 2);
+					if (poly != null)
+					{
+						if (ticks == 1)
+						{
+							OverlayUtil.renderPolygon(graphics, poly, config.getBigSplitsTileColor1());
+						}
+
+						if (ticks == 2)
+						{
+							OverlayUtil.renderPolygon(graphics, poly, config.getBigSplitsTileColor2());
+						}
+
+						if (ticks >= 3)
+						{
+							OverlayUtil.renderPolygon(graphics, poly, config.getBigSplitsHighlightColor());
+						}
+					}
+
+					Point textLocation = Perspective.getCanvasTextLocation(this.client, graphics, lp, "#", 0);
+					if (textLocation != null)
+					{
+						if (ticks == 1)
+						{
+							OverlayUtil.renderTextLocation(graphics, textLocation, Integer.toString(ticks), config.getBigSplitsTextColor1());
+						}
+
+						if (ticks == 2)
+						{
+							OverlayUtil.renderTextLocation(graphics, textLocation, Integer.toString(ticks), config.getBigSplitsTextColor2());
+						}
+
+						if (ticks >= 3)
+						{
+							OverlayUtil.renderTextLocation(graphics, textLocation, Integer.toString(ticks), Color.WHITE);
+						}
+					}
+
+				});
+			}
+
 		}
 		return null;
 	}
