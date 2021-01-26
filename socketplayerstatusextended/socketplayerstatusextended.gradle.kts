@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.27"
+version = "0.0.1"
 
-project.extra["PluginName"] = "Theatre Of Blood"
-project.extra["PluginDescription"] = "All-in-one plugin for Theatre of Blood"
+project.extra["PluginName"] = "Socket Player Status Extended"
+project.extra["PluginDescription"] = "Socket extension for displaying player status to members in your party."
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -37,11 +37,11 @@ dependencies {
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
+    compileOnly(project(":socket"))
+
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
-    compileOnly(Libraries.apacheCommonsText)
 }
 
 tasks {
@@ -51,6 +51,7 @@ tasks {
                     "Plugin-Version" to project.version,
                     "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
                     "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Dependencies" to nameToId("socket"),
                     "Plugin-Description" to project.extra["PluginDescription"],
                     "Plugin-License" to project.extra["PluginLicense"]
             ))

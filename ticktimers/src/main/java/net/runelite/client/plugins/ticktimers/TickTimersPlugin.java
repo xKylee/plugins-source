@@ -60,7 +60,7 @@ public class TickTimersPlugin extends Plugin
 {
 	private static final int GENERAL_REGION = 11347;
 	private static final int ARMA_REGION = 11346;
-	private static final int SARA_REGION = 11601;
+	private static final int SARA_REGION = 11602;
 	private static final int ZAMMY_REGION = 11603;
 
 	@Inject

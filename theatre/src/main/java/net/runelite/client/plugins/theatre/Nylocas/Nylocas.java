@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -136,6 +137,10 @@ public class Nylocas extends Room
 
 	private HashMap<NyloNPC, NPC> currentWave = new HashMap<>();
 
+	@Getter
+	private final Map<LocalPoint, Integer> splitsMap = new HashMap();
+	private final Set<NPC> bigNylos = new HashSet();
+
 	private int varbit6447 = -1;
 	private boolean nextInstance = true;
 
@@ -232,6 +237,8 @@ public class Nylocas extends Room
 		nyloBossAlive = false;
 		nyloWaveStart = null;
 		weaponStyle = null;
+		splitsMap.clear();
+		bigNylos.clear();
 	}
 
 	private void resetNylo()
@@ -245,6 +252,8 @@ public class Nylocas extends Room
 		currentWave.clear();
 		totalStalledWaves = 0;
 		weaponStyle = null;
+		splitsMap.clear();
+		bigNylos.clear();
 	}
 
 	private void setNyloWave(int wave)
@@ -361,6 +370,16 @@ public class Nylocas extends Room
 				nyloBossAlive = true;
 				isInstanceTimerRunning = false;
 				nyloBossNPC = npc;
+				break;
+		}
+
+		int id = npc.getId();
+		switch (id)
+		{
+			case 8345:
+			case 8346:
+			case 8347:
+				bigNylos.add(npc);
 				break;
 		}
 	}
@@ -491,6 +510,20 @@ public class Nylocas extends Room
 					}
 			}
 		}
+		if (!bigNylos.isEmpty() && event.getActor() instanceof NPC)
+		{
+			NPC npc = (NPC)event.getActor();
+			if (bigNylos.contains(npc))
+			{
+				int anim = npc.getAnimation();
+				if (anim == 8005 || anim == 7991 || anim == 7998)
+				{
+					splitsMap.putIfAbsent(npc.getLocalLocation(), 6);
+					bigNylos.remove(npc);
+				}
+
+			}
+		}
 	}
 
 	@Subscribe
@@ -611,6 +644,12 @@ public class Nylocas extends Room
 			}
 
 			ticksSinceLastWave = Math.max(0, ticksSinceLastWave - 1);
+
+			if (!splitsMap.isEmpty())
+			{
+				splitsMap.values().removeIf((value) -> value <= 1);
+				splitsMap.replaceAll((key, value) -> value - 1);
+			}
 		}
 
 

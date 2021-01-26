@@ -93,7 +93,7 @@ public class NylocasWave
 			.put(15, new String[]{"mage|range", "MAGE", "range|melee"})
 			.put(16, new String[]{"mage-melee-range", "melee-mage-range", "range-mage-range"})
 			.put(17, new String[]{"MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE"})
-			.put(18, new String[]{"RANGE-MAGE-RANGE", "RANGE-MAGE-RANGE", "MAGE-MELEE-MAGE"})
+			.put(18, new String[]{"RANGE-MAGE-RANGE", "RANGE-MAGE-RANGE", "RANGE-MELEE-RANGE"})
 			.put(19, new String[]{"MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE", "MAGE-MELEE-MAGE"})
 			.put(20, new String[]{"MELEE-RANGE-MELEE", "MAGE-RANGE-MELEE", "MELEE-RANGE-MELEE"})
 			.put(21, new String[]{"range-melee-range|range-melee-range", "melee-mage-melee|melee-range-melee", "mage-melee-range|mage-range-mage"})
