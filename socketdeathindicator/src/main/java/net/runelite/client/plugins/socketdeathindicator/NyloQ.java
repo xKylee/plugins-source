@@ -14,12 +14,12 @@ public class NyloQ
 
 	public NyloQ(NPC npc, int queuedDamage, int hp)
 	{
-		npc = npc;
-		queuedDamage = queuedDamage;
-		hp = hp;
-		maxHP = hp;
-		hiddenTicks = 0;
-		hidden = false;
-		phase = 0;
+		this.npc = npc;
+		this.queuedDamage = queuedDamage;
+		this.hp = hp;
+		this.maxHP = hp;
+		this.hiddenTicks = 0;
+		this.hidden = false;
+		this.phase = 0;
 	}
 }
