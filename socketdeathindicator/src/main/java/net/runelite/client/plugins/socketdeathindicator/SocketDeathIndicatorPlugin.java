@@ -104,11 +104,20 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		return configManager.getConfig(SocketDeathIndicatorsConfig.class);
 	}
 
+	@Override
 	protected void startUp()
 	{
 		deadNylos = new ArrayList<>();
 		nylos = new ArrayList<>();
 		overlayManager.add(overlay);
+	}
+
+	@Override
+	protected void shutDown()
+	{
+		deadNylos = null;
+		nylos = null;
+		overlayManager.remove(overlay);
 	}
 
 	@Subscribe

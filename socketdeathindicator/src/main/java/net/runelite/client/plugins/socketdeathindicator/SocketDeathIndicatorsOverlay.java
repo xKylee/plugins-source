@@ -58,8 +58,12 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 					break;
 			}
 
-			Shape objectClickbox = plugin.getMaidenNPC().npc.getConvexHull();
-			OverlayUtil.renderPolygon(graphics, objectClickbox, maidenColor);
+			if (plugin.getMaidenNPC() != null && plugin.getMaidenNPC().npc != null && plugin.getMaidenNPC().npc.getConvexHull() != null)
+			{
+				Shape objectClickbox = plugin.getMaidenNPC().npc.getConvexHull();
+				OverlayUtil.renderPolygon(graphics, objectClickbox, maidenColor);
+			}
+
 		}
 
 		return null;
