@@ -397,7 +397,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		{
 			if (newHiddenNpcIndicesList.contains(npc.getIndex()))
 			{
-				newHiddenNpcIndicesList.remove(npc.getIndex());
+				newHiddenNpcIndicesList.remove((Integer) npc.getIndex());
 			}
 		}
 		client.setHiddenNpcIndices(newHiddenNpcIndicesList);
