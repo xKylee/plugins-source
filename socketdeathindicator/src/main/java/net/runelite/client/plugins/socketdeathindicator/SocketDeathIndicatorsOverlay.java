@@ -32,12 +32,6 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 
 	public Dimension render(Graphics2D graphics)
 	{
-		if (config.showOutline())
-		{
-			plugin.getDeadNylos().stream()
-					.map(Actor::getConvexHull)
-					.forEach(objectClickbox -> OverlayUtil.renderPolygon(graphics, objectClickbox, Color.RED));
-		}
 
 		if (plugin.getMaidenNPC() != null && config.maidenMarkers())
 		{
