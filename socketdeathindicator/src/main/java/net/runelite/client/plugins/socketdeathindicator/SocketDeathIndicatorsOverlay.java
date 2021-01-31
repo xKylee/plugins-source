@@ -1,6 +1,5 @@
 package net.runelite.client.plugins.socketdeathindicator;
 
-import net.runelite.api.Actor;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -32,12 +31,6 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 
 	public Dimension render(Graphics2D graphics)
 	{
-		if (config.showOutline())
-		{
-			plugin.getDeadNylos().stream()
-					.map(Actor::getConvexHull)
-					.forEach(objectClickbox -> OverlayUtil.renderPolygon(graphics, objectClickbox, Color.RED));
-		}
 
 		if (plugin.getMaidenNPC() != null && config.maidenMarkers())
 		{

@@ -21,17 +21,6 @@ public interface SocketDeathIndicatorsConfig extends Config
 
 	@ConfigItem(
 			position = 1,
-			keyName = "showOutline",
-			name = "Show outline",
-			description = "Shows outline when killed"
-	)
-	default boolean showOutline()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-			position = 2,
 			keyName = "hideNylo",
 			name = "Hide Nylo",
 			description = "Hides nylo when killed"
@@ -42,18 +31,7 @@ public interface SocketDeathIndicatorsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 3,
-			keyName = "hideNyloMenuEntries",
-			name = "Hide Nylo Menu Entries",
-			description = "Hides attack option on Nylos when they die"
-	)
-	default boolean hideNyloMenuEntries()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-			position = 4,
+			position = 2,
 			keyName = "maidenMarkers",
 			name = "Maiden Markers",
 			description = "Maiden Outline"
