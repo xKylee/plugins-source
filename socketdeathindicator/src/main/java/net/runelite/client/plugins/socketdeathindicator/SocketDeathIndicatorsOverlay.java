@@ -1,6 +1,5 @@
 package net.runelite.client.plugins.socketdeathindicator;
 
-import net.runelite.api.Actor;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
