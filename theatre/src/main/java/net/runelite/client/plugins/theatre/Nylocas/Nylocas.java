@@ -147,6 +147,8 @@ public class Nylocas extends Room
 	@Getter
 	private int nyloWave = 0;
 
+	@Getter
+	private int ticksUntilNextWave = 0;
 	private int ticksSinceLastWave = 0;
 	private int totalStalledWaves = 0;
 
@@ -269,6 +271,7 @@ public class Nylocas extends Room
 		if (wave != 0)
 		{
 			ticksSinceLastWave = NylocasWave.waves.get(wave).getWaveDelay();
+			ticksUntilNextWave = NylocasWave.waves.get(wave).getWaveDelay();
 		}
 
 		if (wave >= 20)
@@ -631,9 +634,9 @@ public class Nylocas extends Room
 				}
 			}
 
-			if (config.nyloStallMessage() && (instanceTimer + 1) % 4 == 1 && nyloWave < NylocasWave.MAX_WAVE && ticksSinceLastWave < 2)
+			if ((instanceTimer + 1) % 4 == 1 && nyloWave < NylocasWave.MAX_WAVE && ticksSinceLastWave < 2)
 			{
-				if (nylocasAliveCounterOverlay.getNyloAlive() >= nylocasAliveCounterOverlay.getMaxNyloAlive())
+				if (config.nyloStallMessage() && nylocasAliveCounterOverlay.getNyloAlive() >= nylocasAliveCounterOverlay.getMaxNyloAlive())
 				{
 					totalStalledWaves++;
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Stalled Wave: <col=EF1020>" +
@@ -641,9 +644,11 @@ public class Nylocas extends Room
 						" <col=00>- Nylos Alive: <col=EF1020>" + nylocasAliveCounterOverlay.getNyloAlive() + "/" + nylocasAliveCounterOverlay.getMaxNyloAlive() +
 						" <col=00>- Total Stalled Waves: <col=EF1020>" + totalStalledWaves, "");
 				}
+				ticksUntilNextWave = 4;
 			}
 
 			ticksSinceLastWave = Math.max(0, ticksSinceLastWave - 1);
+			ticksUntilNextWave = Math.max(0, ticksUntilNextWave - 1);
 
 			if (!splitsMap.isEmpty())
 			{

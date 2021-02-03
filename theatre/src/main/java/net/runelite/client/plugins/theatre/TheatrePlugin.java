@@ -170,6 +170,7 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
+		bloat.onGameStateChanged(gameStateChanged);
 		nylocas.onGameStateChanged(gameStateChanged);
 		xarpus.onGameStateChanged(gameStateChanged);
 	}
@@ -178,6 +179,7 @@ public class TheatrePlugin extends Plugin
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
 		nylocas.onMenuEntryAdded(entry);
+		verzik.onMenuEntryAdded(entry);
 	}
 
 	@Subscribe

@@ -170,6 +170,43 @@ public class NylocasOverlay extends RoomOverlay
 				}
 			}
 
+			if (config.nyloTicksUntilWaves() && !nylocas.isNyloBossAlive())
+			{
+				LocalPoint eastPoint = LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), 43, 25, client.getLocalPlayer().getWorldLocation().getPlane()));
+				LocalPoint southPoint = LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), 25, 6, client.getLocalPlayer().getWorldLocation().getPlane()));
+				LocalPoint westPoint = LocalPoint.fromWorld(client, WorldPoint.fromRegion(Objects.requireNonNull(client.getLocalPlayer()).getWorldLocation().getRegionID(), 5, 24, client.getLocalPlayer().getWorldLocation().getPlane()));
+
+				Polygon southPoly = null;
+				Polygon eastPoly = null;
+				Polygon westPoly = null;
+
+				if (southPoint != null)
+				{
+					southPoly = Perspective.getCanvasTileAreaPoly(client, new LocalPoint(southPoint.getX() - 64, southPoint.getY() + 64), 2);
+				}
+				if (eastPoint != null)
+				{
+					eastPoly = Perspective.getCanvasTileAreaPoly(client, new LocalPoint(eastPoint.getX() - 64, eastPoint.getY() - 64), 2);
+				}
+				if (westPoint != null)
+				{
+					westPoly = Perspective.getCanvasTileAreaPoly(client, new LocalPoint(westPoint.getX() + 64, westPoint.getY() + 64), 2);
+				}
+
+				if (eastPoly != null)
+				{
+					renderTextLocation(graphics, String.valueOf(nylocas.getTicksUntilNextWave()), Color.CYAN, centerPoint(eastPoly.getBounds()));
+				}
+				if (southPoly != null)
+				{
+					renderTextLocation(graphics, String.valueOf(nylocas.getTicksUntilNextWave()), Color.CYAN, centerPoint(southPoly.getBounds()));
+				}
+				if (westPoly != null)
+				{
+					renderTextLocation(graphics, String.valueOf(nylocas.getTicksUntilNextWave()), Color.CYAN, centerPoint(westPoly.getBounds()));
+				}
+			}
+
 			if (config.nyloPillars())
 			{
 				Map<NPC, Integer> pillars = nylocas.getNylocasPillars();

@@ -313,6 +313,30 @@ public interface TheatreConfig extends Config
 		return 2;
 	}
 
+	@ConfigItem(
+			name = "Hide Bloat Tank",
+			keyName = "hideBloatTank",
+			description = "Hides the entire Bloat tank in the center of the room",
+			position = 9,
+			section = "bloatSection"
+	)
+	default boolean hideBloatTank()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			name = "Hide Ceiling Chains",
+			keyName = "hideCeilingChains",
+			description = "Hides the chains hanging from the ceiling in the Bloat room",
+			position = 10,
+			section = "bloatSection"
+	)
+	default boolean hideCeilingChains()
+	{
+		return false;
+	}
+
 	//Nylocas Section
 	@ConfigItem(
 		position = 0,
@@ -473,7 +497,19 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 13,
+			position = 13,
+			keyName = "nylocasTicksUntilWave",
+			name = "Nylocas Ticks Until Wave",
+			description = "Prints how many ticks until the next wave could spawn",
+			section = "nylocasSection"
+	)
+	default boolean nyloTicksUntilWaves()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 14,
 		keyName = "nyloInstanceTimer",
 		name = "Nylocas Instance Timer",
 		description = "Displays an instance timer when the next set will potentially spawn - ENTER ON ZERO.",
@@ -485,7 +521,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 14,
+		position = 15,
 		keyName = "nyloStallMessage",
 		name = "Nylocas Stall Wave Messages",
 		description = "Sends a chat message when you have stalled the next wave of Nylocas to spawn due to being capped.",
@@ -497,7 +533,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 15,
+		position = 16,
 		keyName = "nylocasBigSplitsHelper",
 		name = "Nylocas Big Splits",
 		description = "Tells you when bigs will spawn little nylos",
@@ -509,7 +545,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 17,
 		keyName = "nylocasBigSplitsHighlightColor",
 		name = "Highlight Color",
 		description = "Color of the NPC highlight",
@@ -524,7 +560,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 17,
+		position = 18,
 		keyName = "nylocasBigSplitsTileColor2",
 		name = "Highlight Color Tick 2",
 		description = "Color of the NPC highlight on tick 1",
@@ -539,7 +575,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 18,
+		position = 19,
 		keyName = "nylocasBigSplitsTileColor1",
 		name = "Highlight Color Tick 1",
 		description = "Color of the NPC highlight on tick 0",
@@ -554,7 +590,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 19,
+		position = 20,
 		keyName = "nylocasBigSplitsTextColor2",
 		name = "Text Color Tick 2",
 		description = "Color of the baby tick counter on tick 2",
@@ -569,7 +605,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 20,
+		position = 21,
 		keyName = "nylocasBigSplitsTextColor1",
 		name = "Text Color Tick 1",
 		description = "Color of the baby tick counter on tick 1",
@@ -584,7 +620,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 21,
+		position = 22,
 		keyName = "nyloBossAttackTickCount",
 		name = "Nylocas Boss Attack Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will attack next (LEFT-MOST).",
@@ -596,7 +632,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 22,
+		position = 23,
 		keyName = "nyloBossSwitchTickCount",
 		name = "Nylocas Boss Switch Tick Counter",
 		description = "Displays the ticks left until the Nylocas Boss will switch next (MIDDLE).",
@@ -608,7 +644,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 23,
+		position = 24,
 		keyName = "nyloBossTotalTickCount",
 		name = "Nylocas Boss Total Tick Counter",
 		description = "Displays the total ticks since the Nylocas Boss has spawned (RIGHT-MOST).",
@@ -819,18 +855,6 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
-		keyName = "verzikDisplayTank",
-		name = "Verzik Display Tank",
-		description = "Highlights the tile of the player tanking to help clarify.",
-		section = "verzikSection"
-	)
-	default boolean verzikDisplayTank()
-	{
-		return true;
-	}
-
-	@ConfigItem(
 		position = 4,
 		keyName = "VerzikRedHP",
 		name = "Verzik Reds Health Overlay",
@@ -903,7 +927,43 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 10,
+			position = 10,
+			keyName = "lightningAttackHelper",
+			name = "Lightning Attack Helper",
+			description = "Displays the number of attacks before a lightning ball.",
+			section = "verzikSection"
+	)
+	default boolean lightningAttackHelper()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 11,
+			keyName = "lightningAttackTick",
+			name = "Lightning Attack Tick",
+			description = "Displays the number of ticks before a lightning ball hits you.",
+			section = "verzikSection"
+	)
+	default boolean lightningAttackTick()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 12,
+			keyName = "verzikAttackPurpleNyloMES",
+			name = "Remove Purple Nylo MES",
+			description = "Removes the ability to attack the Purple nylo if you cannot poison it",
+			section = "verzikSection"
+	)
+	default boolean purpleCrabAttackMES()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 13,
 		keyName = "verzikNyloExplodeAOE",
 		name = "Verzik Nylo Explosion Area",
 		description = "Highlights the area of explosion for the Nylocas (Personal or Indirect Warnings MUST be enabled).",
@@ -915,7 +975,19 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 11,
+			position = 14,
+			keyName = "verzikDisplayTank",
+			name = "Verzik Display Tank",
+			description = "Highlights the tile of the player tanking to help clarify.",
+			section = "verzikSection"
+	)
+	default boolean verzikDisplayTank()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 15,
 		keyName = "verzikYellows",
 		name = "Verzik Yellows Overlay",
 		description = "Highlights the yellow pools and displays the amount of ticks until you can move away or tick eat.",
@@ -927,7 +999,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 12,
+		position = 16,
 		keyName = "verzikGreenBall",
 		name = "Verzik Green Ball Tank",
 		description = "Displays who the green ball is targeting.",
@@ -940,7 +1012,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 13,
+		position = 17,
 		keyName = "verzikGreenBallColor",
 		name = "Verzik Green Ball Highlight Color",
 		description = "Select a color for the Verzik's Green Ball Tile Overlay to be.",
@@ -952,7 +1024,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 14,
+		position = 18,
 		keyName = "verzikGreenBallMarker",
 		name = "Verzik Green Ball Marker",
 		description = "Choose between a tile or 3-by-3 area marker.",
@@ -964,7 +1036,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 15,
+		position = 19,
 		keyName = "verzikGreenBallTick",
 		name = "Verzik Green Ball Tick",
 		description = "Displays the number of ticks until the green ball nukes you.",
@@ -976,32 +1048,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
-		keyName = "lightningAttackHelper",
-		name = "Lightning Attack Helper",
-		description = "Displays the number of attacks before a lightning ball.",
-		section = "verzikSection"
-	)
-	default boolean lightningAttackHelper()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 17,
-		keyName = "lightningAttackTick",
-		name = "Lightning Attack Tick",
-		description = "Displays the number of ticks before a lightning ball hits you.",
-		section = "verzikSection"
-	)
-	default boolean lightningAttackTick()
-	{
-		return false;
-	}
-
-
-	@ConfigItem(
-		position = 18,
+		position = 20,
 		keyName = "verzikTornado",
 		name = "Verzik Personal Tornado Highlight",
 		description = "Displays the tornado that is targeting you.",
@@ -1013,7 +1060,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 19,
+		position = 21,
 		keyName = "verzikPersonalTornadoOnly",
 		name = "Verzik ONLY Highlight Personal",
 		description = "Displays the tornado that is targeting you ONLY after it solves which one is targeting you.",
@@ -1026,7 +1073,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 20,
+		position = 22,
 		keyName = "verzikTornadoColor",
 		name = "Verzik Tornado Highlight Color",
 		description = "Select a color for the Verzik Tornadoes Overlay to be.",
