@@ -40,6 +40,7 @@ import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class Bloat extends Room
 {
@@ -131,8 +132,7 @@ public class Bloat extends Room
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)
 	{
-		if (e.getGameState() == GameState.LOGGED_IN &&
-				WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation()).getRegionID() == BLOAT_REGION)
+		if (e.getGameState() == GameState.LOGGED_IN && isInBloatRegion())
 		{
 			if (config.hideBloatTank())
 			{
@@ -335,6 +335,11 @@ public class Bloat extends Room
 				break;
 		}
 		return col;
+	}
+
+	private boolean isInBloatRegion()
+	{
+		return ArrayUtils.contains(client.getMapRegions(), BLOAT_REGION);
 	}
 
 }
