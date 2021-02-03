@@ -129,7 +129,8 @@ public class Bloat extends Room
 	}
 
 	@Subscribe
-	public void onGameStateChanged(GameStateChanged e) {
+	public void onGameStateChanged(GameStateChanged e)
+	{
 		if (e.getGameState() == GameState.LOGGED_IN &&
 				WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation()).getRegionID() == BLOAT_REGION)
 		{
@@ -151,9 +152,9 @@ public class Bloat extends Room
 		Scene scene = client.getScene();
 		Tile[][] tiles = scene.getTiles()[plane];
 
-		for(int sceneTilesX = 0; sceneTilesX < 104; sceneTilesX++)
+		for (int sceneTilesX = 0; sceneTilesX < 104; sceneTilesX++)
 		{
-			for(int sceneTilesY = 0; sceneTilesY < 104; sceneTilesY++)
+			for (int sceneTilesY = 0; sceneTilesY < 104; sceneTilesY++)
 			{
 				Tile tile = tiles[sceneTilesX][sceneTilesY];
 				if (tile != null)
