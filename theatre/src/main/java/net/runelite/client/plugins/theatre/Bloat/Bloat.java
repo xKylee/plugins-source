@@ -152,6 +152,7 @@ public class Bloat extends Room
 		Scene scene = client.getScene();
 		Tile[][] tiles = scene.getTiles()[plane];
 
+		/* created by nicole#1111 */
 		for (int sceneTilesX = 0; sceneTilesX < 104; sceneTilesX++)
 		{
 			for (int sceneTilesY = 0; sceneTilesY < 104; sceneTilesY++)
