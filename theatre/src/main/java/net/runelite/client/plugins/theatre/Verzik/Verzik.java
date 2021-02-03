@@ -266,11 +266,11 @@ public class Verzik extends Room
 
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded entry) {
-		if (this.config.purpleCrabAttackMES() && this.verzikNPC != null && this.verzikNPC.getId() == 8372)
+		if (config.purpleCrabAttackMES() && verzikNPC != null && verzikNPC.getId() == 8372)
 		{
 			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
 			{
-				Player player = this.client.getLocalPlayer();
+				Player player = client.getLocalPlayer();
 				PlayerAppearance playerComp = player != null ? player.getPlayerAppearance() : null;
 				if (playerComp == null || WEAPON_SET.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
 				{
