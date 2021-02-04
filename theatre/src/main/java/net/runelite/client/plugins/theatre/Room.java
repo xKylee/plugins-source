@@ -6,7 +6,9 @@
 
 package net.runelite.client.plugins.theatre;
 
+import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.apache.commons.lang3.ArrayUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -18,6 +20,9 @@ public abstract class Room
 
 	@Inject
 	protected OverlayManager overlayManager;
+
+	@Inject
+	private Client client;
 
 	@Inject
 	protected Room(TheatrePlugin plugin, TheatreConfig config)
@@ -36,6 +41,11 @@ public abstract class Room
 
 	public void unload()
 	{
+	}
+
+	public boolean inRoomRegion(Integer roomRegionId)
+	{
+		return ArrayUtils.contains(client.getMapRegions(), roomRegionId);
 	}
 }
 

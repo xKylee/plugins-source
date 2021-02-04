@@ -73,6 +73,14 @@ public class TheatrePlugin extends Plugin
 	@Inject
 	private Verzik verzik;
 
+	public static final Integer MAIDEN_REGION = 12869;
+	public static final Integer BLOAT_REGION = 13125;
+	public static final Integer NYLOCAS_REGION = 13122;
+	public static final Integer SOTETSEG_REGION_OVERWORLD = 13123;
+	public static final Integer SOTETSEG_REGION_UNDERWORLD = 13379;
+	public static final Integer XARPUS_REGION = 12612;
+	public static final Integer VERZIK_REGION = 12611;
+
 	private Room[] rooms = null;
 
 	@Override

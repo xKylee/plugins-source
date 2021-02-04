@@ -26,6 +26,7 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
@@ -75,7 +76,7 @@ public class NylocasOverlay extends RoomOverlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (nylocas.isInstanceTimerRunning() && nylocas.isInNyloRegion() && config.nyloInstanceTimer())
+		if (nylocas.isInstanceTimerRunning() && nylocas.inRoomRegion(TheatrePlugin.NYLOCAS_REGION) && config.nyloInstanceTimer())
 		{
 			Player player = client.getLocalPlayer();
 			if (player != null)

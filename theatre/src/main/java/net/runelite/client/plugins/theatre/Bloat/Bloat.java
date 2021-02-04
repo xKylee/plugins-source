@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Polygon;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import com.google.common.collect.ImmutableSet;
@@ -40,7 +41,6 @@ import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class Bloat extends Room
 {
@@ -76,8 +76,6 @@ public class Bloat extends Room
 	public static final Set<Integer> tankObjectIDs = ImmutableSet.of(32957, 32955, 32959, 32960, 32964, 33084, 0);
 	public static final Set<Integer> topOfTankObjectIDs = ImmutableSet.of(32958, 32962, 32964, 32965, 33062);
 	public static final Set<Integer> ceilingChainsObjectIDs = ImmutableSet.of(32949, 32950, 32951, 32952, 32953, 32954, 32970);
-
-	private static final int BLOAT_REGION = 13125;
 
 	@Override
 	public void load()
@@ -132,7 +130,7 @@ public class Bloat extends Room
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)
 	{
-		if (e.getGameState() == GameState.LOGGED_IN && isInBloatRegion())
+		if (e.getGameState() == GameState.LOGGED_IN && inRoomRegion(TheatrePlugin.BLOAT_REGION))
 		{
 			if (config.hideBloatTank())
 			{
@@ -162,17 +160,11 @@ public class Bloat extends Room
 				{
 					GameObject[] gameObjects = tile.getGameObjects();
 
-					for (GameObject gameObject : gameObjects)
-					{
-						if (gameObject != null)
-						{
-
-							if (Arrays.stream(gameObjectIDs).anyMatch(id -> id == gameObject.getId()))
-							{
-								scene.removeGameObject(gameObject);
-							}
-						}
-					}
+					Arrays.stream(gameObjects)
+							.filter(Objects::nonNull)
+							.filter(gameObject -> Arrays.stream(gameObjectIDs)
+							.anyMatch(id -> id == gameObject.getId()))
+							.forEach(scene::removeGameObject);
 				}
 			}
 		}
@@ -336,11 +328,6 @@ public class Bloat extends Room
 				break;
 		}
 		return col;
-	}
-
-	private boolean isInBloatRegion()
-	{
-		return ArrayUtils.contains(client.getMapRegions(), BLOAT_REGION);
 	}
 
 }
