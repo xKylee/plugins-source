@@ -145,12 +145,13 @@ public class Verzik extends Room
 	private static final int P3_YELLOW_ATTACK_COUNT = 15;
 	private static final int P3_GREEN_ATTACK_COUNT = 20;
 
-	public static final Set<Integer> WEAPON_SET = ImmutableSet.of(ItemID.TOXIC_BLOWPIPE, ItemID.ABYSSAL_TENTACLE, ItemID.TRIDENT_OF_THE_SWAMP_E, ItemID.TRIDENT_OF_THE_SWAMP);
+	public static Set<String> WEAPON_SET;
 	public static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
 	@Override
 	public void load()
 	{
+		WEAPON_SET = ImmutableSet.of(config.weaponSet());
 		overlayManager.add(verzikOverlay);
 	}
 
@@ -169,6 +170,10 @@ public class Verzik extends Room
 			verzikOverlay.determineLayer();
 			overlayManager.remove(verzikOverlay);
 			overlayManager.add(verzikOverlay);
+		}
+		if (change.getKey().equals("weaponSet"))
+		{
+			WEAPON_SET = ImmutableSet.of(config.weaponSet());
 		}
 	}
 
@@ -269,11 +274,25 @@ public class Verzik extends Room
 	{
 		if (config.purpleCrabAttackMES() && verzikNPC != null && verzikNPC.getId() == 8372)
 		{
+			List<Integer> weaponIds = new ArrayList<>();
+
+			for (String item : WEAPON_SET)
+			{
+				try
+				{
+					weaponIds.add(Integer.parseInt(item));
+				}
+				catch (NumberFormatException ignored)
+				{
+					ignored.printStackTrace();
+				}
+			}
+
 			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
 			{
 				Player player = client.getLocalPlayer();
 				PlayerAppearance playerComp = player != null ? player.getPlayerAppearance() : null;
-				if (playerComp == null || WEAPON_SET.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
+				if (playerComp == null || weaponIds.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
 				{
 					return;
 				}

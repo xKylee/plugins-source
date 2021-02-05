@@ -963,6 +963,18 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
+			position = 13,
+			keyName = "weaponSet",
+			name = "Poison Weapons",
+			description = "If a weapon is added to this set, it will NOT deprio attack on Nylocas Athanatos.",
+			section = "verzikSection"
+	)
+	default String weaponSet()
+	{
+		return "12926, 12006, 22292, 12899";
+	}
+
+	@ConfigItem(
 		position = 13,
 		keyName = "verzikNyloExplodeAOE",
 		name = "Verzik Nylo Explosion Area",
