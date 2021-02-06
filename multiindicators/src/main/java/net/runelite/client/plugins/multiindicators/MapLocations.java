@@ -3548,10 +3548,10 @@ public class MapLocations
 
 		// Farming guild bank high tier
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			1250, 3759,
 			1250, 3758,
 			1248, 3758,
-			1248, 3739,
-			1250, 3759);
+			1248, 3759);
 
 		// Farming guild bank low tier
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
