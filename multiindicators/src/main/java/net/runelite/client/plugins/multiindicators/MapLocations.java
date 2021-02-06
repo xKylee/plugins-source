@@ -1366,17 +1366,6 @@ public class MapLocations
 			1536, 9920,
 			1472, 9920);
 
-		// Wildy revenant caves
-		addPolygonTo(MULTICOMBAT,
-			3136, 10062,
-			3136, 10240,
-			3236, 10240,
-			3236, 10229,
-			3264, 10229,
-			3264, 10048,
-			3208, 10048,
-			3208, 10062);
-
 		// King black dragon (Kbd)
 		addPolygonTo(MULTICOMBAT,
 			2240, 4672,
