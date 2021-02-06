@@ -1021,13 +1021,6 @@ public class MapLocations
 			1835, 3581,
 			1834, 3581);
 
-		// Eastern hosidius area also has a 1x1 multi area
-		addPolygonOnPlane(MULTICOMBAT, 0,
-			1849, 3563,
-			1849, 3564,
-			1850, 3564,
-			1850, 3563);
-
 		// West of shayzien house
 		addPolygonOnPlane(MULTICOMBAT, 0,
 			1408, 3584,
