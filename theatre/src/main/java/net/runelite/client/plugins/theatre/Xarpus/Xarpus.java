@@ -7,7 +7,6 @@
 package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +39,6 @@ import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ImageUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class Xarpus extends Room
 {
@@ -95,7 +93,6 @@ public class Xarpus extends Room
 
 	private static BufferedImage EXHUMED_COUNT_ICON;
 	private static final int GROUNDOBJECT_ID_EXHUMED = 32743;
-	private static final int XARPUS_REGION = 12612;
 
 	@Override
 	public void init()
@@ -216,7 +213,7 @@ public class Xarpus extends Room
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (!xarpusStarted && isInXarpusRegion() && client.getVarbitValue(client.getVarps(), 6447) == 2 && (client.getVar(Varbits.MULTICOMBAT_AREA) == 1))
+		if (!xarpusStarted && inRoomRegion(TheatrePlugin.XARPUS_REGION) && client.getVarbitValue(client.getVarps(), 6447) == 2 && (client.getVar(Varbits.MULTICOMBAT_AREA) == 1))
 		{
 			xarpusStarted = true;
 			isInstanceTimerRunning = false;
@@ -311,14 +308,8 @@ public class Xarpus extends Room
 		}
 	}
 
-	boolean isInXarpusRegion()
-	{
-		return ArrayUtils.contains(client.getMapRegions(), XARPUS_REGION);
-	}
-
 	boolean isInSotetsegRegion()
 	{
-		return client.getMapRegions() != null && client.getMapRegions().length > 0 && Arrays.stream(client.getMapRegions()).anyMatch((s) ->
-				s == 13123 || s == 13379);
+		return inRoomRegion(TheatrePlugin.SOTETSEG_REGION_OVERWORLD) || inRoomRegion(TheatrePlugin.SOTETSEG_REGION_UNDERWORLD);
 	}
 }
