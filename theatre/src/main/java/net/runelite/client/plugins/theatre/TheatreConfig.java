@@ -314,11 +314,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			name = "Hide Bloat Tank",
-			keyName = "hideBloatTank",
-			description = "Hides the entire Bloat tank in the center of the room",
-			position = 9,
-			section = "bloatSection"
+		name = "Hide Bloat Tank",
+		keyName = "hideBloatTank",
+		description = "Hides the entire Bloat tank in the center of the room",
+		position = 9,
+		section = "bloatSection"
 	)
 	default boolean hideBloatTank()
 	{
@@ -326,11 +326,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			name = "Hide Ceiling Chains",
-			keyName = "hideCeilingChains",
-			description = "Hides the chains hanging from the ceiling in the Bloat room",
-			position = 10,
-			section = "bloatSection"
+		name = "Hide Ceiling Chains",
+		keyName = "hideCeilingChains",
+		description = "Hides the chains hanging from the ceiling in the Bloat room",
+		position = 10,
+		section = "bloatSection"
 	)
 	default boolean hideCeilingChains()
 	{
@@ -497,11 +497,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 13,
-			keyName = "nylocasTicksUntilWave",
-			name = "Nylocas Ticks Until Wave",
-			description = "Prints how many ticks until the next wave could spawn",
-			section = "nylocasSection"
+		position = 13,
+		keyName = "nylocasTicksUntilWave",
+		name = "Nylocas Ticks Until Wave",
+		description = "Prints how many ticks until the next wave could spawn",
+		section = "nylocasSection"
 	)
 	default boolean nyloTicksUntilWaves()
 	{
@@ -927,11 +927,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 10,
-			keyName = "lightningAttackHelper",
-			name = "Lightning Attack Helper",
-			description = "Displays the number of attacks before a lightning ball.",
-			section = "verzikSection"
+		position = 10,
+		keyName = "lightningAttackHelper",
+		name = "Lightning Attack Helper",
+		description = "Displays the number of attacks before a lightning ball.",
+		section = "verzikSection"
 	)
 	default boolean lightningAttackHelper()
 	{
@@ -939,11 +939,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 11,
-			keyName = "lightningAttackTick",
-			name = "Lightning Attack Tick",
-			description = "Displays the number of ticks before a lightning ball hits you.",
-			section = "verzikSection"
+		position = 11,
+		keyName = "lightningAttackTick",
+		name = "Lightning Attack Tick",
+		description = "Displays the number of ticks before a lightning ball hits you.",
+		section = "verzikSection"
 	)
 	default boolean lightningAttackTick()
 	{
@@ -951,11 +951,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 12,
-			keyName = "verzikAttackPurpleNyloMES",
-			name = "Remove Purple Nylo MES",
-			description = "Removes the ability to attack the Purple nylo if you cannot poison it",
-			section = "verzikSection"
+		position = 12,
+		keyName = "verzikAttackPurpleNyloMES",
+		name = "Remove Purple Nylo MES",
+		description = "Removes the ability to attack the Purple nylo if you cannot poison it",
+		section = "verzikSection"
 	)
 	default boolean purpleCrabAttackMES()
 	{
@@ -963,11 +963,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 13,
-			keyName = "weaponSet",
-			name = "Poison Weapons",
-			description = "If a weapon is added to this set, it will NOT deprio attack on Nylocas Athanatos.",
-			section = "verzikSection"
+		position = 13,
+		keyName = "weaponSet",
+		name = "Poison Weapons",
+		description = "If a weapon is added to this set, it will NOT deprio attack on Nylocas Athanatos.",
+		section = "verzikSection"
 	)
 	default String weaponSet()
 	{
@@ -987,11 +987,11 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 14,
-			keyName = "verzikDisplayTank",
-			name = "Verzik Display Tank",
-			description = "Highlights the tile of the player tanking to help clarify.",
-			section = "verzikSection"
+		position = 14,
+		keyName = "verzikDisplayTank",
+		name = "Verzik Display Tank",
+		description = "Highlights the tile of the player tanking to help clarify.",
+		section = "verzikSection"
 	)
 	default boolean verzikDisplayTank()
 	{
