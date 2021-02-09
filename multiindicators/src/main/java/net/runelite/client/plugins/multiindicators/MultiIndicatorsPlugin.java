@@ -321,7 +321,7 @@ public class MultiIndicatorsPlugin extends Plugin
 			GeneralPath wildernessTeleportLinesPath = null;
 			if (config.showWildernessTeleportLines())
 			{
-				wildernessTeleportLinesPath = new GeneralPath(maploc.getWildernessTeleportLines(sceneRect, i));
+				wildernessTeleportLinesPath = new GeneralPath(MapLocations.getWildernessTeleportLines(sceneRect, i));
 			}
 			if (wildernessTeleportLinesPath != null)
 			{
