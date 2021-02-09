@@ -8,23 +8,32 @@ package net.runelite.client.plugins.theatre.Bloat;
 
 import java.awt.Color;
 import java.awt.Polygon;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Set;
 import javax.inject.Inject;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.primitives.Ints;
 import lombok.Getter;
 import net.runelite.api.Client;
+import net.runelite.api.GameObject;
+import net.runelite.api.GameState;
+import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCDefinition;
 import net.runelite.api.NpcID;
-import net.runelite.api.GraphicsObject;
-import net.runelite.api.GameState;
+import net.runelite.api.Scene;
+import net.runelite.api.Tile;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.NpcSpawned;
-import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.GraphicsObjectCreated;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicsObjectCreated;
+import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -63,6 +72,10 @@ public class Bloat extends Room
 	private int bloatState = 0;
 
 	private boolean bloatStarted;
+
+	public static final Set<Integer> tankObjectIDs = ImmutableSet.of(32957, 32955, 32959, 32960, 32964, 33084, 0);
+	public static final Set<Integer> topOfTankObjectIDs = ImmutableSet.of(32958, 32962, 32964, 32965, 33062);
+	public static final Set<Integer> ceilingChainsObjectIDs = ImmutableSet.of(32949, 32950, 32951, 32952, 32953, 32954, 32970);
 
 	@Override
 	public void load()
@@ -112,6 +125,50 @@ public class Bloat extends Room
 			overlayManager.remove(bloatOverlay);
 			overlayManager.add(bloatOverlay);
 		}
+	}
+
+	@Subscribe
+	public void onGameStateChanged(GameStateChanged e)
+	{
+		if (e.getGameState() == GameState.LOGGED_IN && inRoomRegion(TheatrePlugin.BLOAT_REGION))
+		{
+			if (config.hideBloatTank())
+			{
+				removeGameObjectsFromScene(client.getPlane(), Ints.toArray(tankObjectIDs));
+				removeGameObjectsFromScene(1, Ints.toArray(topOfTankObjectIDs));
+			}
+			if (config.hideCeilingChains())
+			{
+				removeGameObjectsFromScene(1, Ints.toArray(ceilingChainsObjectIDs));
+			}
+		}
+
+	}
+
+	public void removeGameObjectsFromScene(int plane, int... gameObjectIDs)
+	{
+		Scene scene = client.getScene();
+		Tile[][] tiles = scene.getTiles()[plane];
+
+		/* created by nicole#1111 */
+		for (int sceneTilesX = 0; sceneTilesX < 104; sceneTilesX++)
+		{
+			for (int sceneTilesY = 0; sceneTilesY < 104; sceneTilesY++)
+			{
+				Tile tile = tiles[sceneTilesX][sceneTilesY];
+				if (tile != null)
+				{
+					GameObject[] gameObjects = tile.getGameObjects();
+
+					Arrays.stream(gameObjects)
+							.filter(Objects::nonNull)
+							.filter(gameObject -> Arrays.stream(gameObjectIDs)
+							.anyMatch(id -> id == gameObject.getId()))
+							.forEach(scene::removeGameObject);
+				}
+			}
+		}
+
 	}
 
 	@Subscribe

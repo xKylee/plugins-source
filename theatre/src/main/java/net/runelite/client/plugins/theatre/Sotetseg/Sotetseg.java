@@ -83,8 +83,6 @@ public class Sotetseg extends Room
 	static final int SOTETSEG_BIG_AOE_ORB = 1604;
 
 	private static final int GROUNDOBJECT_ID_REDMAZE = 33035;
-	private static final int OVERWORLD_REGION_ID = 13123;
-	private static final int UNDERWORLD_REGION_ID = 13379;
 	private int overWorldRegionID = -1;
 
 	@Override
@@ -185,7 +183,7 @@ public class Sotetseg extends Room
 					greenTiles.clear();
 				}
 
-				if (isInOverWorld())
+				if (inRoomRegion(TheatrePlugin.SOTETSEG_REGION_OVERWORLD))
 				{
 					wasInUnderWorld = false;
 					if (client.getLocalPlayer() != null && client.getLocalPlayer().getWorldLocation() != null)
@@ -234,11 +232,11 @@ public class Sotetseg extends Room
 				Tile t = event.getTile();
 				WorldPoint p = WorldPoint.fromLocal(client, t.getLocalLocation());
 				Point point = new Point(p.getRegionX(), p.getRegionY());
-				if (isInOverWorld())
+				if (inRoomRegion(TheatrePlugin.SOTETSEG_REGION_OVERWORLD))
 				{
 					redTiles.add(new Point(point.getX() - swMazeSquareOverWorld.getX(), point.getY() - swMazeSquareOverWorld.getY()));
 				}
-				if (isInUnderWorld())
+				if (inRoomRegion(TheatrePlugin.SOTETSEG_REGION_UNDERWORLD))
 				{
 					redTiles.add(new Point(point.getX() - swMazeSquareUnderWorld.getX(), point.getY() - swMazeSquareUnderWorld.getY()));
 					wasInUnderWorld = true;
@@ -260,13 +258,4 @@ public class Sotetseg extends Room
 			mazePoint.getY() + Sotetseg.getSwMazeSquareOverWorld().getY(), 0);
 	}
 
-	private boolean isInOverWorld()
-	{
-		return client.getMapRegions().length > 0 && client.getMapRegions()[0] == OVERWORLD_REGION_ID;
-	}
-
-	private boolean isInUnderWorld()
-	{
-		return client.getMapRegions().length > 0 && client.getMapRegions()[0] == UNDERWORLD_REGION_ID;
-	}
 }

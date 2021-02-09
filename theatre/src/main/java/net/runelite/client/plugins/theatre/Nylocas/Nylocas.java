@@ -147,12 +147,12 @@ public class Nylocas extends Room
 	@Getter
 	private int nyloWave = 0;
 
+	@Getter
+	private int ticksUntilNextWave = 0;
 	private int ticksSinceLastWave = 0;
 	private int totalStalledWaves = 0;
 
 	private static final int NPCID_NYLOCAS_PILLAR = 8358;
-	private static final int NYLO_MAP_REGION = 13122;
-	private static final int BLOAT_MAP_REGION = 13125;
 
 	private boolean skipTickCheck = false;
 
@@ -269,6 +269,7 @@ public class Nylocas extends Room
 		if (wave != 0)
 		{
 			ticksSinceLastWave = NylocasWave.waves.get(wave).getWaveDelay();
+			ticksUntilNextWave = NylocasWave.waves.get(wave).getWaveDelay();
 		}
 
 		if (wave >= 20)
@@ -550,7 +551,7 @@ public class Nylocas extends Room
 		int[] varps = client.getVarps();
 		int newVarbit6447 = client.getVarbitValue(varps, 6447);
 
-		if (isInNyloRegion() && newVarbit6447 != 0 && newVarbit6447 != varbit6447)
+		if (inRoomRegion(TheatrePlugin.NYLOCAS_REGION) && newVarbit6447 != 0 && newVarbit6447 != varbit6447)
 		{
 			nyloWaveStart = Instant.now();
 
@@ -571,7 +572,7 @@ public class Nylocas extends Room
 			return;
 		}
 
-		if (isInNyloRegion())
+		if (inRoomRegion(TheatrePlugin.NYLOCAS_REGION))
 		{
 			startupNyloOverlay();
 		}
@@ -592,7 +593,7 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (isInNyloRegion() && nyloActive)
+		if (inRoomRegion(TheatrePlugin.NYLOCAS_REGION) && nyloActive)
 		{
 			if (skipTickCheck)
 			{
@@ -631,9 +632,9 @@ public class Nylocas extends Room
 				}
 			}
 
-			if (config.nyloStallMessage() && (instanceTimer + 1) % 4 == 1 && nyloWave < NylocasWave.MAX_WAVE && ticksSinceLastWave < 2)
+			if ((instanceTimer + 1) % 4 == 1 && nyloWave < NylocasWave.MAX_WAVE && ticksSinceLastWave < 2)
 			{
-				if (nylocasAliveCounterOverlay.getNyloAlive() >= nylocasAliveCounterOverlay.getMaxNyloAlive())
+				if (config.nyloStallMessage() && nylocasAliveCounterOverlay.getNyloAlive() >= nylocasAliveCounterOverlay.getMaxNyloAlive())
 				{
 					totalStalledWaves++;
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Stalled Wave: <col=EF1020>" +
@@ -641,9 +642,11 @@ public class Nylocas extends Room
 						" <col=00>- Nylos Alive: <col=EF1020>" + nylocasAliveCounterOverlay.getNyloAlive() + "/" + nylocasAliveCounterOverlay.getMaxNyloAlive() +
 						" <col=00>- Total Stalled Waves: <col=EF1020>" + totalStalledWaves, "");
 				}
+				ticksUntilNextWave = 4;
 			}
 
 			ticksSinceLastWave = Math.max(0, ticksSinceLastWave - 1);
+			ticksUntilNextWave = Math.max(0, ticksUntilNextWave - 1);
 
 			if (!splitsMap.isEmpty())
 			{
@@ -680,7 +683,7 @@ public class Nylocas extends Room
 					Point base = new Point(lp1.getSceneX(), lp1.getSceneY());
 					Point point = new Point(lp.getSceneX() - base.getX(), lp.getSceneY() - base.getY());
 
-					if (isInBloatRegion() && point.getX() == -1 && (point.getY() == -1 || point.getY() == -2 || point.getY() == -3) && nextInstance)
+					if (inRoomRegion(TheatrePlugin.BLOAT_REGION) && point.getX() == -1 && (point.getY() == -1 || point.getY() == -2 || point.getY() == -3) && nextInstance)
 					{
 						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Nylo instance timer started.", "");
 						instanceTimer = 3;
@@ -776,13 +779,4 @@ public class Nylocas extends Room
 		client.setMenuEntries(Arrays.stream(menu.getMenuEntries()).filter(s -> !s.getOption().equals("Examine")).toArray(MenuEntry[]::new));
 	}
 
-	boolean isInNyloRegion()
-	{
-		return client.isInInstancedRegion() && client.getMapRegions().length > 0 && client.getMapRegions()[0] == NYLO_MAP_REGION;
-	}
-
-	private boolean isInBloatRegion()
-	{
-		return client.isInInstancedRegion() && client.getMapRegions().length > 0 && client.getMapRegions()[0] == BLOAT_MAP_REGION;
-	}
 }

@@ -45,7 +45,6 @@ import net.runelite.api.NPC;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.HitsplatApplied;
-import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ScriptPreFired;
@@ -98,6 +97,8 @@ public class SocketDeathIndicatorPlugin extends Plugin
 	@Getter
 	private NyloQ maidenNPC;
 
+	private ArrayList<Integer> hiddenIndices;
+
 	@Provides
 	SocketDeathIndicatorsConfig getConfig(ConfigManager configManager)
 	{
@@ -109,6 +110,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 	{
 		deadNylos = new ArrayList<>();
 		nylos = new ArrayList<>();
+		hiddenIndices = new ArrayList<>();
 		overlayManager.add(overlay);
 	}
 
@@ -117,6 +119,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 	{
 		deadNylos = null;
 		nylos = null;
+		hiddenIndices = null;
 		overlayManager.remove(overlay);
 	}
 
@@ -372,19 +375,6 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	public void onMenuEntryAdded(MenuEntryAdded entry)
-	{
-		if (config.hideNyloMenuEntries())
-		{
-			getDeadNylos()
-					.stream()
-					.filter(deadNylo -> entry.getIdentifier() == deadNylo.getIndex())
-					.forEach(deadNylo -> client.setMenuOptionCount(client.getMenuOptionCount() - 1));
-		}
-
-	}
-
 	private void setHiddenNpc(NPC npc, boolean hidden)
 	{
 
@@ -392,14 +382,16 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		if (hidden)
 		{
 			newHiddenNpcIndicesList.add(npc.getIndex());
+			hiddenIndices.add(npc.getIndex());
 		}
 		else
 		{
 			if (newHiddenNpcIndicesList.contains(npc.getIndex()))
 			{
-				newHiddenNpcIndicesList.remove(npc.getIndex());
+				newHiddenNpcIndicesList.remove((Integer) npc.getIndex());
 			}
 		}
+		log.info(newHiddenNpcIndicesList.toString());
 		client.setHiddenNpcIndices(newHiddenNpcIndicesList);
 
 	}
@@ -581,6 +573,13 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		else
 		{
 			inNylo = false;
+			if (!hiddenIndices.isEmpty())
+			{
+				List<Integer> newHiddenNpcIndicesList = client.getHiddenNpcIndices();
+				newHiddenNpcIndicesList.removeAll(hiddenIndices);
+				client.setHiddenNpcIndices(newHiddenNpcIndicesList);
+				hiddenIndices.clear();
+			}
 		}
 	}
 

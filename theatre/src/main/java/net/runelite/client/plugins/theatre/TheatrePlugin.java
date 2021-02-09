@@ -2,6 +2,7 @@
  * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
  * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
  * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
+ * Extra contributors: terrabl#0001, nicole#1111
  */
 
 package net.runelite.client.plugins.theatre;
@@ -71,6 +72,14 @@ public class TheatrePlugin extends Plugin
 
 	@Inject
 	private Verzik verzik;
+
+	public static final Integer MAIDEN_REGION = 12869;
+	public static final Integer BLOAT_REGION = 13125;
+	public static final Integer NYLOCAS_REGION = 13122;
+	public static final Integer SOTETSEG_REGION_OVERWORLD = 13123;
+	public static final Integer SOTETSEG_REGION_UNDERWORLD = 13379;
+	public static final Integer XARPUS_REGION = 12612;
+	public static final Integer VERZIK_REGION = 12611;
 
 	private Room[] rooms = null;
 
@@ -170,6 +179,7 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
+		bloat.onGameStateChanged(gameStateChanged);
 		nylocas.onGameStateChanged(gameStateChanged);
 		xarpus.onGameStateChanged(gameStateChanged);
 	}
@@ -178,6 +188,7 @@ public class TheatrePlugin extends Plugin
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
 		nylocas.onMenuEntryAdded(entry);
+		verzik.onMenuEntryAdded(entry);
 	}
 
 	@Subscribe

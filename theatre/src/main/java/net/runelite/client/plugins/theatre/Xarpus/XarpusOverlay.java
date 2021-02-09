@@ -26,6 +26,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.Direction;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
+import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.OverlayLayer;
 
 public class XarpusOverlay extends RoomOverlay
@@ -51,7 +52,7 @@ public class XarpusOverlay extends RoomOverlay
 
 	public Dimension render(Graphics2D graphics)
 	{
-		if (xarpus.isInstanceTimerRunning() && !xarpus.isExhumedSpawned() && xarpus.isInXarpusRegion() && config.xarpusInstanceTimer())
+		if (xarpus.isInstanceTimerRunning() && !xarpus.isExhumedSpawned() && xarpus.inRoomRegion(TheatrePlugin.XARPUS_REGION) && config.xarpusInstanceTimer())
 		{
 			Player player = client.getLocalPlayer();
 

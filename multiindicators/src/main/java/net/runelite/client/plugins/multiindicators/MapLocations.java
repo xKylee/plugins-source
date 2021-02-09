@@ -900,9 +900,7 @@ public class MapLocations
 			1807, 3486,
 			1813, 3486,
 			1813, 3471,
-			1833, 3471,
-			1833, 3470,
-			1856, 3470,
+			1856, 3471,
 			1856, 3449,
 			1792, 3449,
 			1792, 3424,
@@ -966,6 +964,8 @@ public class MapLocations
 			1842, 3545,
 			1842, 3546,
 			1844, 3546,
+			1843, 3546,
+			1843, 3547,
 			1844, 3547,
 			1845, 3547,
 			1845, 3548,
@@ -980,6 +980,26 @@ public class MapLocations
 			1845, 3567,
 			1845, 3568,
 			1844, 3568,
+			1846, 3548,
+			1846, 3549,
+			1848, 3549,
+			1848, 3550,
+			1849, 3550,
+			1849, 3551,
+			1850, 3551,
+			1850, 3559,
+			1849, 3559,
+			1849, 3560,
+			1849, 3561,
+			1848, 3561,
+			1848, 3563,
+			1847, 3563,
+			1847, 3564,
+			1846, 3564,
+			1846, 3565,
+			1845, 3565,
+			1845, 3566,
+			1844, 3566,
 			1844, 3569,
 			1843, 3569,
 			1843, 3571,
@@ -1000,13 +1020,6 @@ public class MapLocations
 			1835, 3579,
 			1835, 3581,
 			1834, 3581);
-
-		// Eastern hosidius area also has a 1x1 multi area
-		addPolygonOnPlane(MULTICOMBAT, 0,
-			1849, 3563,
-			1849, 3564,
-			1850, 3564,
-			1850, 3563);
 
 		// West of shayzien house
 		addPolygonOnPlane(MULTICOMBAT, 0,
@@ -1353,17 +1366,6 @@ public class MapLocations
 			1536, 9920,
 			1472, 9920);
 
-		// Wildy revenant caves
-		addPolygonTo(MULTICOMBAT,
-			3136, 10062,
-			3136, 10240,
-			3236, 10240,
-			3236, 10229,
-			3264, 10229,
-			3264, 10048,
-			3208, 10048,
-			3208, 10062);
-
 		// King black dragon (Kbd)
 		addPolygonTo(MULTICOMBAT,
 			2240, 4672,
@@ -1458,6 +1460,53 @@ public class MapLocations
 			1745, 3505,
 			1741, 3505,
 			1740, 3504);
+
+		// Isle of Souls northern rare trees (Teak & Mahogany)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			2176, 3008,
+			2176, 2987,
+			2177, 2987,
+			2177, 2986,
+			2178, 2986,
+			2178, 2985,
+			2179, 2985,
+			2179, 2982,
+			2179, 2981,
+			2180, 2981,
+			2180, 2980,
+			2181, 2980,
+			2181, 2979,
+			2183, 2979,
+			2183, 2978,
+			2184, 2978,
+			2185, 2978,
+			2185, 2977,
+			2186, 2977,
+			2186, 2976,
+			2187, 2976,
+			2187, 2975,
+			2192, 2975,
+			2192, 2971,
+			2198, 2971,
+			2199, 2971,
+			2199, 2972,
+			2200, 2972,
+			2200, 2973,
+			2201, 2973,
+			2201, 2974,
+			2205, 2974,
+			2205, 2978,
+			2206, 2978,
+			2206, 2979,
+			2207, 2979,
+			2207, 2980,
+			2207, 2981,
+			2208, 2981,
+			2208, 2984,
+			2209, 2984,
+			2209, 2992,
+			2224, 2992,
+			2224, 3008);
 	}
 
 	private static void defineDeadmanSafeZones()
@@ -3509,10 +3558,10 @@ public class MapLocations
 
 		// Farming guild bank high tier
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			1250, 3759,
 			1250, 3758,
 			1248, 3758,
-			1248, 3739,
-			1250, 3759);
+			1248, 3759);
 
 		// Farming guild bank low tier
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
@@ -3537,6 +3586,13 @@ public class MapLocations
 			1750, 3602,
 			1751, 3601,
 			1753, 3601);
+
+		// Soul Wars Bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+				2202, 2864,
+				2202, 2855,
+				2219, 2855,
+				2219, 2864);
 	}
 
 	private static void defineWilderness()

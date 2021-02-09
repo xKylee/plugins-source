@@ -13,20 +13,28 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.inject.Inject;
+import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicsObject;
+import net.runelite.api.ItemID;
+import net.runelite.api.MenuOpcode;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
+import net.runelite.api.Player;
+import net.runelite.api.PlayerAppearance;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
+import net.runelite.api.kit.KitType;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
@@ -137,10 +145,13 @@ public class Verzik extends Room
 	private static final int P3_YELLOW_ATTACK_COUNT = 15;
 	private static final int P3_GREEN_ATTACK_COUNT = 20;
 
+	public static Set<String> WEAPON_SET;
+	public static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
 	@Override
 	public void load()
 	{
+		WEAPON_SET = ImmutableSet.of(config.weaponSet());
 		overlayManager.add(verzikOverlay);
 	}
 
@@ -159,6 +170,10 @@ public class Verzik extends Room
 			verzikOverlay.determineLayer();
 			overlayManager.remove(verzikOverlay);
 			overlayManager.add(verzikOverlay);
+		}
+		if (change.getKey().equals("weaponSet"))
+		{
+			WEAPON_SET = ImmutableSet.of(config.weaponSet());
 		}
 	}
 
@@ -251,6 +266,39 @@ public class Verzik extends Room
 			case NpcID.VERZIK_VITUR_8375:
 				verzikCleanup();
 				break;
+		}
+	}
+
+	@Subscribe
+	public void onMenuEntryAdded(MenuEntryAdded entry)
+	{
+		if (config.purpleCrabAttackMES() && verzikNPC != null && verzikNPC.getId() == 8372)
+		{
+			List<Integer> weaponIds = new ArrayList<>();
+
+			for (String item : WEAPON_SET)
+			{
+				try
+				{
+					weaponIds.add(Integer.parseInt(item));
+				}
+				catch (NumberFormatException ignored)
+				{
+					ignored.printStackTrace();
+				}
+			}
+
+			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
+			{
+				Player player = client.getLocalPlayer();
+				PlayerAppearance playerComp = player != null ? player.getPlayerAppearance() : null;
+				if (playerComp == null || weaponIds.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
+				{
+					return;
+				}
+
+				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+			}
 		}
 	}
 
