@@ -93,6 +93,9 @@ public class MultiIndicatorsPlugin extends Plugin
 	private GeneralPath[] wildernessLevelLinesPathToDisplay;
 
 	@Getter(AccessLevel.PACKAGE)
+	private GeneralPath[] wildernessTeleportLinesPathToDisplay;
+
+	@Getter(AccessLevel.PACKAGE)
 	private boolean inPvp;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -137,6 +140,7 @@ public class MultiIndicatorsPlugin extends Plugin
 		multicombatPathToDisplay = new GeneralPath[Constants.MAX_Z];
 		pvpPathToDisplay = new GeneralPath[Constants.MAX_Z];
 		wildernessLevelLinesPathToDisplay = new GeneralPath[Constants.MAX_Z];
+		wildernessTeleportLinesPathToDisplay = new GeneralPath[Constants.MAX_Z];
 	}
 
 	private void uninitializePaths()
@@ -144,6 +148,7 @@ public class MultiIndicatorsPlugin extends Plugin
 		multicombatPathToDisplay = null;
 		pvpPathToDisplay = null;
 		wildernessLevelLinesPathToDisplay = null;
+		wildernessTeleportLinesPathToDisplay = null;
 	}
 
 	// sometimes the lines get offset (seems to happen when there is a delay
@@ -308,6 +313,29 @@ public class MultiIndicatorsPlugin extends Plugin
 			pvpPathToDisplay[i] = safeZonePath;
 		}
 
+		// Generate wilderness Teleport lines
+		for (int i = 0; i < wildernessTeleportLinesPathToDisplay.length; i++)
+		{
+			currentPlane = i;
+
+			GeneralPath wildernessTeleportLinesPath = null;
+			if (config.showWildernessTeleportLines())
+			{
+				wildernessTeleportLinesPath = new GeneralPath(maploc.getWildernessTeleportLines(sceneRect, i));
+			}
+			if (wildernessTeleportLinesPath != null)
+			{
+				wildernessTeleportLinesPath = Geometry.clipPath(wildernessTeleportLinesPath, sceneRect);
+				wildernessTeleportLinesPath = Geometry.splitIntoSegments(wildernessTeleportLinesPath, 1);
+				if (useCollisionLogic())
+				{
+					wildernessTeleportLinesPath = Geometry.filterPath(wildernessTeleportLinesPath, this::collisionFilter);
+				}
+				wildernessTeleportLinesPath = Geometry.transformPath(wildernessTeleportLinesPath, this::transformWorldToLocal);
+			}
+			wildernessTeleportLinesPathToDisplay[i] = wildernessTeleportLinesPath;
+		}
+
 		// Generate wilderness level lines
 		for (int i = 0; i < wildernessLevelLinesPathToDisplay.length; i++)
 		{
@@ -350,7 +378,8 @@ public class MultiIndicatorsPlugin extends Plugin
 			event.getKey().equals("multicombatZoneVisibility") ||
 			event.getKey().equals("deadmanSafeZones") ||
 			event.getKey().equals("pvpSafeZones") ||
-			event.getKey().equals("wildernessLevelLines"))
+			event.getKey().equals("wildernessLevelLines") ||
+			event.getKey().equals("wildernessTeleportLines"))
 		{
 			findLinesInScene();
 		}
