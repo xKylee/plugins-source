@@ -141,7 +141,7 @@ public interface MultiIndicatorsConfig extends Config
 	)
 	default Color wildernessTeleportLinesColor()
 	{
-		return new Color(90,190,255);
+		return new Color(90, 190, 255);
 	}
 
 	@ConfigItem(
