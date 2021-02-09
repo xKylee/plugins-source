@@ -28,6 +28,18 @@ version = "0.0.6"
 project.extra["PluginName"] = "NPC Status Timer"
 project.extra["PluginDescription"] = "Adds a timer on NPC's for their attacks and flinching"
 
+dependencies {
+    annotationProcessor(Libraries.lombok)
+    annotationProcessor(Libraries.pf4j)
+
+    compileOnly("com.openosrs:runelite-api:$rlVersion")
+    compileOnly("com.openosrs:runelite-client:$rlVersion")
+
+    compileOnly(Libraries.guice)
+    compileOnly(Libraries.lombok)
+    compileOnly(Libraries.pf4j)
+}
+
 tasks {
     jar {
         manifest {
