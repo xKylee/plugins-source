@@ -119,6 +119,7 @@ public class MultiIndicatorsOverlay extends Overlay
 		GeneralPath multicombatPath = plugin.getMulticombatPathToDisplay()[client.getPlane()];
 		GeneralPath pvpPath = plugin.getPvpPathToDisplay()[client.getPlane()];
 		GeneralPath wildernessLevelLinesPath = plugin.getWildernessLevelLinesPathToDisplay()[client.getPlane()];
+		GeneralPath wildernessTeleportLinesPath = plugin.getWildernessTeleportLinesPathToDisplay()[client.getPlane()];
 
 		if (config.multicombatZoneVisibility() != ZoneVisibility.HIDE && multicombatPath != null)
 		{
@@ -131,6 +132,10 @@ public class MultiIndicatorsOverlay extends Overlay
 		if (config.showWildernessLevelLines() && wildernessLevelLinesPath != null)
 		{
 			renderPath(graphics, wildernessLevelLinesPath, getTransparentColorVersion(config.wildernessLevelLinesColor()));
+		}
+		if (config.showWildernessTeleportLines() && wildernessTeleportLinesPath != null)
+		{
+			renderPath(graphics, wildernessTeleportLinesPath, getTransparentColorVersion(config.wildernessTeleportLinesColor()));
 		}
 
 		return null;

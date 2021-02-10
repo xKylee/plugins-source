@@ -45,6 +45,8 @@ public class MapLocations
 	@SuppressWarnings("unchecked")
 	private static final List<Shape>[] WILDERNESS_LEVEL_LINES = new List[Constants.MAX_Z];
 	@SuppressWarnings("unchecked")
+	private static final List<Shape>[] WILDERNESS_TELEPORT_LINES = new List[Constants.MAX_Z];
+	@SuppressWarnings("unchecked")
 	private static final List<Shape>[] DEADMAN_SAFE_ZONES = new List[Constants.MAX_Z];
 	@SuppressWarnings("unchecked")
 	private static final List<Shape>[] PVP_WORLD_SAFE_ZONES = new List[Constants.MAX_Z];
@@ -106,6 +108,16 @@ public class MapLocations
 		return getArea(WILDERNESS_LEVEL_LINES[plane], view);
 	}
 
+	public static Area getWildernessTeleportLines(int plane)
+	{
+		return getArea(WILDERNESS_TELEPORT_LINES[plane]);
+	}
+
+	public static Area getWildernessTeleportLines(Rectangle view, int plane)
+	{
+		return getArea(WILDERNESS_TELEPORT_LINES[plane], view);
+	}
+
 	public static Area getDeadmanSafeZones(int plane)
 	{
 		return getArea(DEADMAN_SAFE_ZONES[plane]);
@@ -137,6 +149,7 @@ public class MapLocations
 		initializeWithEmptyLists(NOT_MULTICOMBAT);
 		initializeWithEmptyLists(ROUGH_WILDERNESS);
 		initializeWithEmptyLists(WILDERNESS_LEVEL_LINES);
+		initializeWithEmptyLists(WILDERNESS_TELEPORT_LINES);
 		initializeWithEmptyLists(DEADMAN_SAFE_ZONES);
 		initializeWithEmptyLists(PVP_WORLD_SAFE_ZONES);
 
@@ -145,6 +158,7 @@ public class MapLocations
 		definePvpSafeZones();
 		defineWilderness();
 		defineWildernessLevelLines();
+		defineWildernessTeleportLines();
 	}
 
 	private static void defineMulticombatAreas()
@@ -3635,6 +3649,23 @@ public class MapLocations
 			}
 			accumulatedY += levelTiles;
 		}
+	}
+
+	private static void defineWildernessTeleportLines()
+	{
+		// Surface Wilderness
+		addPolygonTo(WILDERNESS_TELEPORT_LINES,
+			2944, 3680,
+			3392, 3680,
+			3392, 3760,
+			2944, 3760);
+
+		// Instanced Wilderness (Dungeons, Caves etc)
+		addPolygonTo(WILDERNESS_TELEPORT_LINES,
+			2932, 10080,
+			3454, 10080,
+			3454, 10160,
+			2932, 10160);
 	}
 
 
