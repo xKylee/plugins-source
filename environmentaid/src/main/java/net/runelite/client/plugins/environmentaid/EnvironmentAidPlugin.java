@@ -213,22 +213,22 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		Widget event = widgetHiddenChanged.getWidget();
 
-		if (config.zamorakEffect() && event.getId() == client.getWidget(406, 2).getId() && isInZamorakRegion())
+		if (config.zamorakEffect() && isInZamorakRegion() && client.getWidget(406, 2) != null && event.getId() == client.getWidget(406, 2).getId())
 		{
 			hideWidget(event, true);
 		}
 
-		if (config.snowEffect() && event.getId() == client.getWidget(167, 0).getId() && isInSnowRegions())
+		if (config.snowEffect() && isInSnowRegions() && client.getWidget(167, 0) != null && event.getId() == client.getWidget(167, 0).getId())
 		{
 			hideWidget(event, true);
 		}
 
-		if (config.waterEffect() && isInWaterRegion() && event.getId() == client.getWidget(169, 0).getId())
+		if (config.waterEffect() && isInWaterRegion() && client.getWidget(169, 0) != null && event.getId() == client.getWidget(169, 0).getId())
 		{
 			hideWidget(event, true);
 		}
 
-		if (config.waterEffect() && isInWaterRegion() &&  event.getId() == client.getWidget(170, 0).getId())
+		if (config.waterEffect() && isInWaterRegion() && client.getWidget(170, 0) != null && event.getId() == client.getWidget(170, 0).getId())
 		{
 			hideWidget(event, true);
 		}
