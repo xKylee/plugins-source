@@ -41,7 +41,6 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GroundObject;
@@ -81,7 +80,6 @@ import org.pf4j.Extension;
 	type = PluginType.PVM
 )
 @PluginDependency(SocketPlugin.class)
-@Slf4j
 public class SotetsegPlugin extends Plugin
 {
 
@@ -497,7 +495,6 @@ public class SotetsegPlugin extends Plugin
 			{
 				if (!widget.getText().isEmpty() && widget.getText().contains("Sotetseg chooses you"))
 				{
-					log.info("You have been chosen");
 					chosen = true;
 					if (flashFlag)
 					{
