@@ -42,7 +42,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import org.pf4j.Extension;
 
 @Extension
@@ -50,8 +49,7 @@ import org.pf4j.Extension;
 	name = "Entity Hider Extended",
 	enabledByDefault = false,
 	description = "Hide players, NPCs, and/or projectiles",
-	tags = {"npcs", "players", "projectiles"},
-	type = PluginType.UTILITY
+	tags = {"npcs", "players", "projectiles"}
 )
 public class EntityHiderExtendedPlugin extends Plugin
 {
@@ -73,6 +71,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 		client.setIsHidingEntities(true);
 		client.setDeadNPCsHidden(config.hideDeadNPCs());
 		Text.fromCSV(config.hideNPCsOnDeath()).forEach(client::addHiddenNpcDeath);
+		client.setHideSpecificPlayers(Text.fromCSV(config.hideSpecificPlayers()));
 	}
 
 	@Subscribe
@@ -84,6 +83,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 		}
 			client.setIsHidingEntities(true);
 			client.setDeadNPCsHidden(config.hideDeadNPCs());
+			client.setHideSpecificPlayers(Text.fromCSV(config.hideSpecificPlayers()));
 
 			final Set<Integer> blacklist = new HashSet<>();
 

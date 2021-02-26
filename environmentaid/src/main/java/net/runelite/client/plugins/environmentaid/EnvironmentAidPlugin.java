@@ -50,10 +50,8 @@ import net.runelite.api.events.WidgetHiddenChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -62,8 +60,7 @@ import org.pf4j.Extension;
 	name = "Environment Aid",
 	enabledByDefault = false,
 	description = "Display or Remove Environment Aids.",
-	tags = {"Barrows", "Area", "Effects", "environment", "aid"},
-	type = PluginType.UTILITY
+	tags = {"Barrows", "Area", "Effects", "environment", "aid"}
 )
 public class EnvironmentAidPlugin extends Plugin
 {
@@ -300,22 +297,6 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		GameObject gameObject = event.getGameObject();
 		ladders.remove(gameObject);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("areaeffects"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			environmentAidBarrowsOverlay.determineLayer();
-			overlayManager.remove(environmentAidBarrowsOverlay);
-			overlayManager.add(environmentAidBarrowsOverlay);
-		}
 	}
 
 	@Subscribe

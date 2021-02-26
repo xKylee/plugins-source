@@ -28,20 +28,9 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("areaeffects")
+@ConfigGroup("environmentAid")
 public interface EnvironmentAidConfig extends Config
 {
-	@ConfigItem(
-		name = "Enable mirror mode",
-		description = "Toggle mirror mode compatibility.",
-		position = 0,
-		keyName = "mirrorMode"
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
 	@ConfigItem(
 		keyName = "showBarrowsMinimap",
 		name = "Show Barrows Minimap",

@@ -28,29 +28,14 @@ package net.runelite.client.plugins.entityhiderextended;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
-import net.runelite.client.config.Title;
 
 @ConfigGroup("entityhiderextended")
 public interface EntityHiderExtendedConfig extends Config
-{
-	@ConfigTitleSection(
-		keyName = "npcsTitle",
-		name = "NPCs",
-		description = "",
-		position = 0
-	)
-	default Title npcsTitle()
-	{
-		return new Title();
-	}
-
-	@ConfigItem(
-		position = 15,
+{	@ConfigItem(
+		position = 0,
 		keyName = "hideDeadNPCs",
 		name = "Hide Dead NPCs",
-		description = "Configures whether or not NPCs that just died are hidden",
-		titleSection = "npcsTitle"
+		description = "Configures whether or not NPCs that just died are hidden"
 	)
 	default boolean hideDeadNPCs()
 	{
@@ -58,11 +43,10 @@ public interface EntityHiderExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 16,
+		position = 1,
 		keyName = "hideNPCsOnDeath",
 		name = "Hide NPCs On Death",
-		description = "Configures which NPCs to hide when they die",
-		titleSection = "npcsTitle"
+		description = "Configures which NPCs to hide when they die"
 	)
 	default String hideNPCsOnDeath()
 	{
@@ -70,15 +54,25 @@ public interface EntityHiderExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 17,
+		position = 2,
 		keyName = "blacklistDeadNpcs",
 		name = "Hide on Death Blacklist",
 		description = "Configures which NPCs NOT to hide when they die",
-		titleSection = "npcsTitle",
 		hidden = true,
 		unhide = "hideDeadNPCs"
 	)
 	default String blacklistDeadNpcs()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "hideSpecificPlayers",
+		name = "Hide Specific Players",
+		description = "Hides players you never wish to see."
+	)
+	default String hideSpecificPlayers()
 	{
 		return "";
 	}

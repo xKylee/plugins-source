@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.3"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Entity Hider Extended"
 project.extra["PluginDescription"] = "Hide players, NPCs, and/or projectiles"
