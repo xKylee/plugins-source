@@ -27,6 +27,7 @@
 
 package net.runelite.client.plugins.grotesqueguardians.overlay;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,11 +40,10 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.plugins.grotesqueguardians.GrotesqueGuardiansConfig;
 import net.runelite.client.plugins.grotesqueguardians.GrotesqueGuardiansPlugin;
 import net.runelite.client.plugins.grotesqueguardians.entity.Dawn;
@@ -77,7 +77,7 @@ public class SceneOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class SceneOverlay extends Overlay
 
 	private void renderTileOutline(final Graphics2D graphics2D, final NPC npc)
 	{
-		final NPCDefinition npcDefinition = npc.getDefinition();
+		final NPCComposition npcDefinition = npc.getComposition();
 
 		if (npcDefinition == null)
 		{
@@ -251,10 +251,5 @@ public class SceneOverlay extends Overlay
 
 		graphics2D.setColor(originalColor);
 		graphics2D.setStroke(originalStroke);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 }

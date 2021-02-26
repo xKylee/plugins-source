@@ -27,16 +27,23 @@
 
 package net.runelite.client.plugins.grotesqueguardians.overlay;
 
+import com.google.common.base.Strings;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Stroke;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.Point;
 import net.runelite.api.Prayer;
+import net.runelite.api.VarClientInt;
+import net.runelite.api.vars.InterfaceTab;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.plugins.grotesqueguardians.GrotesqueGuardiansConfig;
 import net.runelite.client.plugins.grotesqueguardians.GrotesqueGuardiansPlugin;
@@ -45,7 +52,7 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
+import static net.runelite.client.ui.overlay.OverlayUtil.renderPolygon;
 
 public class PrayerOverlay extends Overlay
 {
@@ -69,7 +76,7 @@ public class PrayerOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -113,7 +120,7 @@ public class PrayerOverlay extends Overlay
 
 	private void renderPrayerWidget(final Graphics2D graphics2D, final Prayer prayer, final Color color, final int ticksUntilNextAttack)
 	{
-		final Rectangle rectangle = OverlayUtil.renderPrayerOverlay(graphics2D, client, prayer, color);
+		final Rectangle rectangle = renderPrayerOverlay(graphics2D, client, prayer, color);
 
 		if (rectangle == null)
 		{
@@ -134,7 +141,7 @@ public class PrayerOverlay extends Overlay
 
 		final Point canvasPoint = new Point(prayerWidgetPoint.getX() - 3, prayerWidgetPoint.getY() + 6);
 
-		OverlayUtil.renderTextLocation(graphics2D, text, fontSize, fontStyle, fontColor, canvasPoint, true, 0);
+		renderTextLocation(graphics2D, text, fontSize, fontStyle, fontColor, canvasPoint, true, 0);
 	}
 
 	private void renderDescendingBoxes(final Graphics2D graphics2D, final Prayer prayer, final int tick)
@@ -158,7 +165,7 @@ public class PrayerOverlay extends Overlay
 		final Rectangle boxRectangle = new Rectangle(BOX_WIDTH, BOX_HEIGHT);
 		boxRectangle.translate(baseX, baseY);
 
-		OverlayUtil.renderFilledPolygon(graphics2D, boxRectangle, color);
+		renderFilledPolygon(graphics2D, boxRectangle, color);
 	}
 
 	private static Color getColorFromPrayer(final Prayer prayer)
@@ -181,8 +188,72 @@ public class PrayerOverlay extends Overlay
 		return color;
 	}
 
-	public void determineLayer()
+
+	public static Rectangle renderPrayerOverlay(Graphics2D graphics, Client client, Prayer prayer, Color color)
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
+		Widget widget = client.getWidget(prayer.getWidgetInfo());
+
+		if (widget == null || client.getVar(VarClientInt.INVENTORY_TAB) != InterfaceTab.PRAYER.getId())
+		{
+			return null;
+		}
+
+		Rectangle bounds = widget.getBounds();
+		renderPolygon(graphics, rectangleToPolygon(bounds), color);
+		return bounds;
+	}
+
+	private static Polygon rectangleToPolygon(Rectangle rect)
+	{
+		int[] xpoints = {rect.x, rect.x + rect.width, rect.x + rect.width, rect.x};
+		int[] ypoints = {rect.y, rect.y, rect.y + rect.height, rect.y + rect.height};
+
+		return new Polygon(xpoints, ypoints, 4);
+	}
+
+	public static void renderFilledPolygon(Graphics2D graphics, Shape poly, Color color)
+	{
+		graphics.setColor(color);
+		final Stroke originalStroke = graphics.getStroke();
+		graphics.setStroke(new BasicStroke(2));
+		graphics.draw(poly);
+		graphics.fill(poly);
+		graphics.setStroke(originalStroke);
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint, boolean shadows, int yOffset)
+	{
+		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+		if (canvasPoint != null)
+		{
+			final Point canvasCenterPoint = new Point(
+				canvasPoint.getX(),
+				canvasPoint.getY() + yOffset);
+			final Point canvasCenterPoint_shadow = new Point(
+				canvasPoint.getX() + 1,
+				canvasPoint.getY() + 1 + yOffset);
+			if (shadows)
+			{
+				renderTextLocation(graphics, canvasCenterPoint_shadow, txtString, Color.BLACK);
+			}
+			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
+		}
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, Point txtLoc, String text, Color color)
+	{
+		if (Strings.isNullOrEmpty(text))
+		{
+			return;
+		}
+
+		int x = txtLoc.getX();
+		int y = txtLoc.getY();
+
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(text, x + 1, y + 1);
+
+		graphics.setColor(color);
+		graphics.drawString(text, x, y);
 	}
 }

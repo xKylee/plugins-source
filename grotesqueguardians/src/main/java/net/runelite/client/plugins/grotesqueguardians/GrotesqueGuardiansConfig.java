@@ -50,10 +50,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		position = 0,
 		keyName = "tickCounterSection"
 	)
-	default boolean tickCounterSection()
-	{
-		return false;
-	}
+	String tickCounterSection = "Tick counters";
 
 	@ConfigSection(
 		name = "Outlines",
@@ -61,10 +58,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		position = 1,
 		keyName = "outlineSection"
 	)
-	default boolean outlineSection()
-	{
-		return false;
-	}
+	String outlineSection = "Outlines";
 
 	@ConfigSection(
 		name = "Other",
@@ -72,10 +66,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		position = 2,
 		keyName = "otherSection"
 	)
-	default boolean otherSection()
-	{
-		return false;
-	}
+	String otherSection = "Other";
 
 	// Tick counters
 
@@ -84,7 +75,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Enable prayer widget tick counter overlay.",
 		position = 0,
 		keyName = "prayerTickCounter",
-		section = "tickCounterSection"
+		section = tickCounterSection
 	)
 	default boolean prayerTickCounter()
 	{
@@ -96,7 +87,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Enable Guitar Hero mode for prayers.",
 		position = 1,
 		keyName = "guitarHeroMode",
-		section = "tickCounterSection"
+		section = tickCounterSection
 	)
 	default boolean guitarHeroMode()
 	{
@@ -108,7 +99,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Show tick counter on Dusk.",
 		position = 2,
 		keyName = "duskTickCounter",
-		section = "tickCounterSection"
+		section = tickCounterSection
 	)
 	default boolean duskTickCounter()
 	{
@@ -124,7 +115,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Adjust the font size of the Dusk tick counter.",
 		position = 3,
 		keyName = "duskFontSize",
-		section = "tickCounterSection",
+		section = tickCounterSection,
 		hidden = true,
 		unhide = "duskTickCounter"
 	)
@@ -139,7 +130,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Bold/Italics/Plain",
 		position = 4,
 		keyName = "duskFontStyle",
-		section = "tickCounterSection",
+		section = tickCounterSection,
 		hidden = true,
 		unhide = "duskTickCounter",
 		enumClass = FontStyle.class
@@ -155,7 +146,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Color of the Dusk ticker counter font.",
 		position = 5,
 		keyName = "duskFontColor",
-		section = "tickCounterSection",
+		section = tickCounterSection,
 		hidden = true,
 		unhide = "duskTickCounter"
 	)
@@ -171,7 +162,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Outline gargoyle tiles.",
 		position = 0,
 		keyName = "outlineGargoyleTile",
-		section = "outlineSection"
+		section = outlineSection
 	)
 	default boolean outlineGargoyleTile()
 	{
@@ -187,7 +178,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the width of the tile outline.",
 		position = 1,
 		keyName = "tileOutlineWidth",
-		section = "outlineSection",
+		section = outlineSection,
 		hidden = true,
 		unhide = "outlineGargoyleTile"
 	)
@@ -203,7 +194,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the color of the tile outline.",
 		position = 2,
 		keyName = "tileOutlineColor",
-		section = "outlineSection",
+		section = outlineSection,
 		hidden = true,
 		unhide = "outlineGargoyleTile"
 	)
@@ -217,7 +208,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Outline gargoyle npcs when invulnerable.",
 		position = 3,
 		keyName = "gargoyleInvulnOutline",
-		section = "outlineSection"
+		section = outlineSection
 	)
 	default boolean gargoyleInvulnOutline()
 	{
@@ -233,7 +224,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the width of the outline.",
 		position = 4,
 		keyName = "gargoyleInvulnOutlineWidth",
-		section = "outlineSection",
+		section = outlineSection,
 		hidden = true,
 		unhide = "gargoyleInvulnOutline"
 	)
@@ -249,7 +240,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the color of the outline.",
 		position = 5,
 		keyName = "gargoyleInvulnOutlineColor",
-		section = "outlineSection",
+		section = outlineSection,
 		hidden = true,
 		unhide = "gargoyleInvulnOutline"
 	)
@@ -263,7 +254,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Outline the damage tiles during Phase 3.",
 		position = 6,
 		keyName = "outlineGraphicsObjects",
-		section = "outlineSection"
+		section = outlineSection
 	)
 	default boolean outlineGraphicsObjects()
 	{
@@ -279,7 +270,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the width of the graphics objects outline.",
 		position = 7,
 		keyName = "graphicsObjectsOutlineWidth",
-		section = "outlineSection",
+		section = outlineSection,
 		hidden = true,
 		unhide = "outlineGraphicsObjects"
 	)
@@ -295,7 +286,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the color of the graphics objects outline.",
 		position = 8,
 		keyName = "graphicsObjectsOutlineColor",
-		section = "outlineSection",
+		section = outlineSection,
 		hidden = true,
 		unhide = "outlineGraphicsObjects"
 	)
@@ -311,7 +302,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Flash the screen if danger tile spawns under you.",
 		position = 9,
 		keyName = "flashOnDanger",
-		section = "otherSection"
+		section = otherSection
 	)
 	default boolean flashOnDanger()
 	{
@@ -324,7 +315,7 @@ public interface GrotesqueGuardiansConfig extends Config
 		description = "Change the color of the flash.",
 		position = 10,
 		keyName = "flashColor",
-		section = "otherSection",
+		section = otherSection,
 		hidden = true,
 		unhide = "flashOnDanger"
 	)
@@ -333,18 +324,6 @@ public interface GrotesqueGuardiansConfig extends Config
 		return new Color(255, 0, 0, 70);
 	}
 
-	// Mirror mode
-
-	@ConfigItem(
-		name = "Mirror Mode",
-		keyName = "mirrorMode",
-		description = "Enable mirror mode overlay rendering.",
-		position = 99
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
 
 	// Constants
 

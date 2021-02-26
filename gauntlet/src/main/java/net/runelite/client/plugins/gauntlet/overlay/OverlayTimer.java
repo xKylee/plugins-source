@@ -26,6 +26,10 @@
 
 package net.runelite.client.plugins.gauntlet.overlay;
 
+import com.openosrs.client.ui.overlay.components.table.TableAlignment;
+import com.openosrs.client.ui.overlay.components.table.TableComponent;
+import com.openosrs.client.ui.overlay.components.table.TableElement;
+import com.openosrs.client.ui.overlay.components.table.TableRow;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -45,10 +49,6 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
-import net.runelite.client.ui.overlay.components.table.TableAlignment;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
-import net.runelite.client.ui.overlay.components.table.TableElement;
-import net.runelite.client.ui.overlay.components.table.TableRow;
 
 @Singleton
 public class OverlayTimer extends Overlay
@@ -129,7 +129,7 @@ public class OverlayTimer extends Overlay
 
 	public void determineLayer()
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	public void reset()
