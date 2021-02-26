@@ -57,7 +57,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
@@ -72,9 +71,7 @@ import org.pf4j.Extension;
 		name = "Socket Death Indicators",
 		description = "Removes Nylos that have been killed",
 		tags = {"Socket, death, kill", "nylo"},
-		type = PluginType.UTILITY,
 		enabledByDefault = false
-
 )
 @PluginDependency(SocketPlugin.class)
 public class SocketDeathIndicatorPlugin extends Plugin
@@ -246,7 +243,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		data.put(message);
 		JSONObject send = new JSONObject();
 		send.put("sDeath", data);
-		eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(send));
+		eventBus.post(new SocketBroadcastPacket(send));
 	}
 
 	@Subscribe
@@ -419,7 +416,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 			Widget text = children[0];
 			String cleansedXpDrop = cleanseXpDrop(text.getText());
 			int damage = -1;
-			int weaponUsed = Objects.requireNonNull(Objects.requireNonNull(client.getLocalPlayer()).getPlayerAppearance()).getEquipmentId(KitType.WEAPON);
+			int weaponUsed = Objects.requireNonNull(Objects.requireNonNull(client.getLocalPlayer()).getPlayerComposition()).getEquipmentId(KitType.WEAPON);
 			if (client.getLocalPlayer().getAnimation() != 1979)
 			{
 				// magic sprite

@@ -64,20 +64,9 @@ public class SotetsegOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
-	private void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		else
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
-	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)

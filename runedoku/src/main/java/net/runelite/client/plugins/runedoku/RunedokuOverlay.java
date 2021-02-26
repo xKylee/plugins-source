@@ -57,7 +57,7 @@ class RunedokuOverlay extends Overlay
 		this.client = client;
 		this.util = util;
 		setPosition(OverlayPosition.DETACHED);
-		determineLayer();
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		setPriority(OverlayPriority.MED);
 	}
 
@@ -142,18 +142,6 @@ class RunedokuOverlay extends Overlay
 			{
 				OverlayUtil.renderPolygon(graphics, RunedokuUtil.rectangleToPolygon(squareToHighlight.getBounds()), RED);
 			}
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		}
 	}
 }

@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.3"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Socket Special Attack Counter"
 project.extra["PluginDescription"] = "Track DWH, Arclight, Darklight, and BGS special attacks used on NPCs using server sockets."
@@ -38,7 +38,6 @@ dependencies {
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
     compileOnly(project(":socket"))
-    compileOnly("com.openosrs.externals:specialcounter:0.0.+")
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)

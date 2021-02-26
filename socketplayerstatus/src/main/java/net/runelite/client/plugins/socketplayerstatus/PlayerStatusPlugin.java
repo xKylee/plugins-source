@@ -51,8 +51,8 @@ import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
@@ -63,7 +63,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
@@ -94,8 +93,7 @@ import org.pf4j.Extension;
 	description = "Socket extension for displaying player status to members in your party.",
 	tags = {"socket", "server", "discord", "connection", "broadcast", "player", "status", "venge",
 		"vengeance"},
-	enabledByDefault = true,
-	type = PluginType.UTILITY
+	enabledByDefault = false
 )
 @Slf4j
 @PluginDependency(SocketPlugin.class)
@@ -224,13 +222,13 @@ public class PlayerStatusPlugin extends Plugin
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
 		if (config.showStamina()
-			&& event.getOption().contains("Drink")
-			&& (event.getIdentifier() == ItemID.STAMINA_MIX1
-			|| event.getIdentifier() == ItemID.STAMINA_MIX2
-			|| event.getIdentifier() == ItemID.EGNIOL_POTION_1
-			|| event.getIdentifier() == ItemID.EGNIOL_POTION_2
-			|| event.getIdentifier() == ItemID.EGNIOL_POTION_3
-			|| event.getIdentifier() == ItemID.EGNIOL_POTION_4))
+			&& event.getMenuOption().contains("Drink")
+			&& (event.getId() == ItemID.STAMINA_MIX1
+			|| event.getId() == ItemID.STAMINA_MIX2
+			|| event.getId() == ItemID.EGNIOL_POTION_1
+			|| event.getId() == ItemID.EGNIOL_POTION_2
+			|| event.getId() == ItemID.EGNIOL_POTION_3
+			|| event.getId() == ItemID.EGNIOL_POTION_4))
 		{
 			// Needs menu option hook because mixes use a common drink message, distinct from their standard potion messages
 			createGameTimer(STAMINA);
@@ -284,7 +282,7 @@ public class PlayerStatusPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onSpotAnimationChanged(SpotAnimationChanged event)
+	private void onGraphicChanged(GraphicChanged event)
 	{
 		Actor actor = event.getActor();
 		Player player = client.getLocalPlayer();
@@ -294,7 +292,7 @@ public class PlayerStatusPlugin extends Plugin
 			return;
 		}
 
-		if (config.showImbuedHeart() && actor.getSpotAnimation() == IMBUED_HEART.getGraphicId())
+		if (config.showImbuedHeart() && actor.getGraphic() == IMBUED_HEART.getGraphicId())
 		{
 			createGameTimer(IMBUED_HEART);
 		}
@@ -415,7 +413,7 @@ public class PlayerStatusPlugin extends Plugin
 				JSONObject packet = new JSONObject();
 				packet.put("name", name);
 				packet.put("player-stats", status.toJSON());
-				eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+				eventBus.post(new SocketBroadcastPacket(packet));
 			}
 
 			lastRefresh = 0;
@@ -464,7 +462,7 @@ public class PlayerStatusPlugin extends Plugin
 			packet.put("player-status-game-add", client.getLocalPlayer().getName());
 			packet.put("effect-name", timer.name());
 
-			eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			eventBus.post(new SocketBroadcastPacket(packet));
 		}
 	}
 
@@ -513,7 +511,7 @@ public class PlayerStatusPlugin extends Plugin
 			packet.put("player-status-game-remove", client.getLocalPlayer().getName());
 			packet.put("effect-name", timer.name());
 
-			eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			eventBus.post(new SocketBroadcastPacket(packet));
 		}
 	}
 
@@ -561,7 +559,7 @@ public class PlayerStatusPlugin extends Plugin
 			packet.put("player-status-indicator-add", client.getLocalPlayer().getName());
 			packet.put("effect-name", gameIndicator.name());
 
-			eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			eventBus.post(new SocketBroadcastPacket(packet));
 		}
 	}
 
@@ -605,7 +603,7 @@ public class PlayerStatusPlugin extends Plugin
 			packet.put("player-status-indicator-remove", client.getLocalPlayer().getName());
 			packet.put("effect-name", indicator.name());
 
-			eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(packet));
+			eventBus.post(new SocketBroadcastPacket(packet));
 		}
 	}
 

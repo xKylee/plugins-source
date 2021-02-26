@@ -73,7 +73,7 @@ public class PlayerStatusOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	private boolean ignoreMarker(AbstractMarker marker)
@@ -244,17 +244,5 @@ public class PlayerStatusOverlay extends Overlay
 		}
 
 		return null;
-	}
-
-	private void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		else
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }

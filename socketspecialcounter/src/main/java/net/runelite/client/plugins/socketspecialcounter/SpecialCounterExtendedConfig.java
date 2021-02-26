@@ -32,18 +32,6 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("Socket Special Attack Counter")
 public interface SpecialCounterExtendedConfig extends Config
 {
-
-	@ConfigItem(
-		position = 0,
-		keyName = "mirrorMode",
-		name = "Mirror Mode Compatibility?",
-		description = "Should we show the overlay on Mirror Mode?"
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
 	@ConfigItem(
 		position = 1,
 		keyName = "showHitOverlay",

@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.5"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Reorder Prayers"
 project.extra["PluginDescription"] = "Reorder the prayers displayed on the Prayer panel"
@@ -37,25 +37,10 @@ dependencies {
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    compileOnly("com.openosrs.externals:xptracker:0.0.+")
-
     compileOnly(Libraries.annotations)
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
-
-    testImplementation("com.openosrs:runelite-api:$rlVersion")
-    testImplementation("com.openosrs:runelite-client:$rlVersion")
-
-    testImplementation("com.openosrs.externals:xptracker:0.0.+")
-
-    testImplementation(Libraries.annotations)
-    testImplementation(Libraries.pf4j)
-    testImplementation(Libraries.guiceTestlib)
-    testImplementation(Libraries.junit)
-    testImplementation(Libraries.mockitoCore)
-    testImplementation(Libraries.mockitoInline)
-    testImplementation(Libraries.slf4jApi)
 }
 
 tasks {

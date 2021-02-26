@@ -52,15 +52,13 @@ import net.runelite.client.menus.MenuManager;
 import net.runelite.client.menus.WidgetMenuOption;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
 	name = "Reorder Prayers",
 	enabledByDefault = false,
-	description = "Reorder the prayers displayed on the Prayer panel",
-	type = PluginType.UTILITY
+	description = "Reorder the prayers displayed on the Prayer panel"
 )
 public class ReorderPrayersPlugin extends Plugin
 {
