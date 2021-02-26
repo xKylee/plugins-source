@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.8"
+version = "4.0.0"
 
 project.extra["PluginName"] = "PvP Tools"
 project.extra["PluginDescription"] = "Enable the PvP Tools panel"
@@ -36,8 +36,6 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
-
-    compileOnly("com.openosrs.externals:clanchat:0.0.+")
 
     compileOnly(Libraries.apacheCommonsText)
     compileOnly(Libraries.guice)
