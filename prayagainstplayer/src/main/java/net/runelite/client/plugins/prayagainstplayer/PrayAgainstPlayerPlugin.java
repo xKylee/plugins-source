@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import net.runelite.api.AnimationID;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
@@ -47,12 +46,10 @@ import net.runelite.api.events.PlayerDespawned;
 import net.runelite.api.events.PlayerSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.FriendChatManager;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import org.pf4j.Extension;
@@ -62,7 +59,6 @@ import org.pf4j.Extension;
 	name = "Pray Against Player",
 	description = "Use plugin in PvP situations for best results!!",
 	tags = {"highlight", "pvp", "overlay", "players"},
-	type = PluginType.PVP,
 	enabledByDefault = false
 )
 
@@ -107,6 +103,11 @@ public class PrayAgainstPlayerPlugin extends Plugin
 	@Inject
 	private FriendChatManager friendChatManager;
 
+	public static final int BLOCK_DEFENDER = 4177;
+	public static final int BLOCK_NO_SHIELD = 420;
+	public static final int BLOCK_SHIELD = 1156;
+	public static final int BLOCK_SWORD = 388;
+	public static final int BLOCK_UNARMED = 424;
 
 	@Provides
 	PrayAgainstPlayerConfig provideConfig(ConfigManager configManager)
@@ -309,11 +310,11 @@ public class PrayAgainstPlayerPlugin extends Plugin
 	{
 		switch (anim)
 		{
-			case AnimationID.BLOCK_DEFENDER:
-			case AnimationID.BLOCK_NO_SHIELD:
-			case AnimationID.BLOCK_SHIELD:
-			case AnimationID.BLOCK_SWORD:
-			case AnimationID.BLOCK_UNARMED:
+			case BLOCK_DEFENDER:
+			case BLOCK_NO_SHIELD:
+			case BLOCK_SHIELD:
+			case BLOCK_SWORD:
+			case BLOCK_UNARMED:
 				return true;
 			default:
 				return false;
@@ -384,24 +385,5 @@ public class PrayAgainstPlayerPlugin extends Plugin
 				return ProtectionIcons[2];
 		}
 		return null;
-	}
-
-	@Subscribe
-	private void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("prayagainstplayer"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayPrayerTab.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.remove(overlayPrayerTab);
-			overlayManager.add(overlay);
-			overlayManager.add(overlayPrayerTab);
-		}
 	}
 }

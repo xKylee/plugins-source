@@ -57,7 +57,7 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 		this.config = config;
 		this.client = client;
 		setPosition(OverlayPosition.DETACHED);
-		determineLayer();
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		setPriority(OverlayPriority.MED);
 	}
 
@@ -120,17 +120,5 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 		int[] ypoints = {rect.y, rect.y, rect.y + rect.height, rect.y + rect.height};
 
 		return new Polygon(xpoints, ypoints, 4);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
-		}
 	}
 }
