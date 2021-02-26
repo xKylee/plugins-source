@@ -55,7 +55,7 @@ import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
-import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.util.Text;
@@ -64,7 +64,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -73,8 +72,7 @@ import org.pf4j.Extension;
 	name = "Castle Wars Extended",
 	description = "Overpowered Castle Wars Plugin",
 	tags = {"castlewars", "minigame", "barricade", "npc"},
-	enabledByDefault = false,
-	type = PluginType.MINIGAME
+	enabledByDefault = false
 )
 @Slf4j
 public class CastleWarsExtendedPlugin extends Plugin
@@ -136,22 +134,6 @@ public class CastleWarsExtendedPlugin extends Plugin
 		if (!event.getGroup().equals("castlewarsextended"))
 		{
 			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			SceneOverlay.determineLayer();
-			MinimapOverlay.determineLayer();
-			TindTimerOverlay.determineLayer();
-			GameTimeOverlay.determineLayer();
-			overlayManager.remove(SceneOverlay);
-			overlayManager.remove(MinimapOverlay);
-			overlayManager.remove(TindTimerOverlay);
-			overlayManager.remove(GameTimeOverlay);
-			overlayManager.add(SceneOverlay);
-			overlayManager.add(MinimapOverlay);
-			overlayManager.add(TindTimerOverlay);
-			overlayManager.add(GameTimeOverlay);
 		}
 
 		if (!config.rocksHighlight())
@@ -425,9 +407,9 @@ public class CastleWarsExtendedPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onNpcChanged(NpcDefinitionChanged npcDefinitionChanged)
+	public void onNpcChanged(NpcChanged npcChanged)
 	{
-		NPC npc = npcDefinitionChanged.getNpc();
+		NPC npc = npcChanged.getNpc();
 
 		final WorldPoint npcLocation = npc.getWorldLocation();
 		switch (npc.getId())

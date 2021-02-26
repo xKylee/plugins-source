@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.ObjectID;
 import net.runelite.client.ui.overlay.Overlay;
@@ -53,7 +53,7 @@ public class SceneOverlay extends Overlay
 		this.config = config;
 		this.plugin = plugin;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class SceneOverlay extends Overlay
 
 	private void renderNpcSceneOverlay(Graphics2D graphics, NPC actor, Color color)
 	{
-		NPCDefinition npcDefinition = actor.getTransformedDefinition();
-		if (npcDefinition == null || !npcDefinition.isFollower())
+		NPCComposition npcComposition = actor.getTransformedComposition();
+		if (npcComposition == null || !npcComposition.isFollower())
 		{
 			return;
 		}
@@ -124,18 +124,6 @@ public class SceneOverlay extends Overlay
 			graphics.draw(polygon);
 			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
 			graphics.fill(polygon);
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
 		}
 	}
 }
