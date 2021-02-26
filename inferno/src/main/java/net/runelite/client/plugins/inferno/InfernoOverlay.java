@@ -1,10 +1,15 @@
 package net.runelite.client.plugins.inferno;
 
+import com.google.common.base.Strings;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +48,7 @@ public class InfernoOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(OverlayPriority.HIGHEST);
 	}
 
@@ -239,7 +244,7 @@ public class InfernoOverlay extends Overlay
 					continue;
 				}
 
-				OverlayUtil.renderAreaTilePolygon(graphics, tilePoly, colorFill);
+				renderAreaTilePolygon(graphics, tilePoly, colorFill);
 
 				final int[][] edge1 = new int[][]{{tilePoly.xpoints[0], tilePoly.ypoints[0]}, {tilePoly.xpoints[1], tilePoly.ypoints[1]}};
 				edgeSizeSquared += Math.pow(tilePoly.xpoints[0] - tilePoly.xpoints[1], 2) + Math.pow(tilePoly.ypoints[0] - tilePoly.ypoints[1], 2);
@@ -289,11 +294,11 @@ public class InfernoOverlay extends Overlay
 
 				if (!duplicate)
 				{
-					OverlayUtil.renderFullLine(graphics, baseEdge, colorEdge1);
+					renderFullLine(graphics, baseEdge, colorEdge1);
 
 					if (colorEdge2 != null)
 					{
-						OverlayUtil.renderDashedLine(graphics, baseEdge, colorEdge2);
+						renderDashedLine(graphics, baseEdge, colorEdge2);
 					}
 				}
 			}
@@ -365,7 +370,7 @@ public class InfernoOverlay extends Overlay
 			? infernoNPC.getNextAttack().getCriticalColor() : infernoNPC.getNextAttack().getNormalColor();
 		final Point canvasPoint = renderOnNPC.getCanvasTextLocation(
 			graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()), 0);
-		OverlayUtil.renderTextLocation(graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()),
+		renderTextLocation(graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()),
 			plugin.getTextSize(), plugin.getFontStyle().getFont(), color, canvasPoint, false, 0);
 	}
 
@@ -419,11 +424,11 @@ public class InfernoOverlay extends Overlay
 
 				if (currentAttack == bestAttack)
 				{
-					OverlayUtil.renderFilledPolygon(graphics, boxRectangle, color);
+					renderFilledPolygon(graphics, boxRectangle, color);
 				}
 				else if (config.indicateNonPriorityDescendingBoxes())
 				{
-					OverlayUtil.renderOutlinePolygon(graphics, boxRectangle, color);
+					renderOutlinePolygon(graphics, boxRectangle, color);
 				}
 			}
 		}
@@ -466,7 +471,7 @@ public class InfernoOverlay extends Overlay
 					prayerColor = Color.RED;
 				}
 
-				OverlayUtil.renderOutlinePolygon(graphics, prayerRectangle, prayerColor);
+				renderOutlinePolygon(graphics, prayerRectangle, prayerColor);
 			}
 		}
 	}
@@ -484,15 +489,82 @@ public class InfernoOverlay extends Overlay
 		return distanceSquared <= toleranceSquared;
 	}
 
-	public void determineLayer()
+	public static void renderAreaTilePolygon(Graphics2D graphics, Shape poly, Color color)
 	{
-		if (config.mirrorMode())
+		graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 10));
+		graphics.fill(poly);
+	}
+
+	public static void renderFullLine(Graphics2D graphics, int[][] line, Color color)
+	{
+		graphics.setColor(color);
+		final Stroke originalStroke = graphics.getStroke();
+		graphics.setStroke(new BasicStroke(2));
+		graphics.drawLine(line[0][0], line[0][1], line[1][0], line[1][1]);
+		graphics.setStroke(originalStroke);
+	}
+
+	public static void renderDashedLine(Graphics2D graphics, int[][] line, Color color)
+	{
+		graphics.setColor(color);
+		final Stroke originalStroke = graphics.getStroke();
+		graphics.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0));
+		graphics.drawLine(line[0][0], line[0][1], line[1][0], line[1][1]);
+		graphics.setStroke(originalStroke);
+	}
+
+	public static void renderOutlinePolygon(Graphics2D graphics, Shape poly, Color color)
+	{
+		graphics.setColor(color);
+		final Stroke originalStroke = graphics.getStroke();
+		graphics.setStroke(new BasicStroke(2));
+		graphics.draw(poly);
+		graphics.setStroke(originalStroke);
+	}
+
+	public static void renderFilledPolygon(Graphics2D graphics, Shape poly, Color color)
+	{
+		graphics.setColor(color);
+		final Stroke originalStroke = graphics.getStroke();
+		graphics.setStroke(new BasicStroke(2));
+		graphics.draw(poly);
+		graphics.fill(poly);
+		graphics.setStroke(originalStroke);
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, Point txtLoc, String text, Color color)
+	{
+		if (Strings.isNullOrEmpty(text))
 		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
+			return;
 		}
-		if (!config.mirrorMode())
+
+		int x = txtLoc.getX();
+		int y = txtLoc.getY();
+
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(text, x + 1, y + 1);
+
+		graphics.setColor(color);
+		graphics.drawString(text, x, y);
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint, boolean shadows, int yOffset)
+	{
+		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+		if (canvasPoint != null)
 		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
+			final Point canvasCenterPoint = new Point(
+				canvasPoint.getX(),
+				canvasPoint.getY() + yOffset);
+			final Point canvasCenterPoint_shadow = new Point(
+				canvasPoint.getX() + 1,
+				canvasPoint.getY() + 1 + yOffset);
+			if (shadows)
+			{
+				renderTextLocation(graphics, canvasCenterPoint_shadow, txtString, Color.BLACK);
+			}
+			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
 		}
 	}
 }

@@ -42,10 +42,8 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -54,8 +52,7 @@ import org.pf4j.Extension;
 	name = "Kalphite Queen",
 	enabledByDefault = false,
 	description = "Kalphite Queen plugin.",
-	tags = {"kalphite", "queen", "kq"},
-	type = PluginType.PVM
+	tags = {"kalphite", "queen", "kq"}
 )
 @Singleton
 public class KQPlugin extends Plugin
@@ -111,20 +108,6 @@ public class KQPlugin extends Plugin
 		lastVengCooldown = 0;
 
 		kalphiteQueen = null;
-	}
-
-	@Subscribe
-	private void onConfigChange(final ConfigChanged event)
-	{
-		if (!event.getGroup().equals("kalphitequeen"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			sceneOverlay.determineLayer();
-		}
 	}
 
 	@Subscribe

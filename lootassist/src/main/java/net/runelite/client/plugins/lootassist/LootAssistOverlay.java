@@ -23,15 +23,13 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 public class LootAssistOverlay extends Overlay
 {
 	private final Client client;
-	private final LootAssistConfig config;
 	private final DecimalFormat d = new DecimalFormat("##.#");
 
 	@Inject
-	public LootAssistOverlay(final Client client, final LootAssistConfig config)
+	public LootAssistOverlay(final Client client)
 	{
 		this.client = client;
-		this.config = config;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.MED);
 	}
@@ -101,17 +99,5 @@ public class LootAssistOverlay extends Overlay
 			}
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }

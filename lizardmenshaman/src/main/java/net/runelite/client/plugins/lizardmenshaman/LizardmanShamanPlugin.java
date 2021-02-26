@@ -27,11 +27,8 @@ package net.runelite.client.plugins.lizardmenshaman;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -40,8 +37,7 @@ import org.pf4j.Extension;
 	name = "Lizardman Shamans",
 	enabledByDefault = false,
 	description = "Display an overlay for spawn explosion tiles",
-	tags = {"lizardman", "shaman", "lizard"},
-	type = PluginType.PVM
+	tags = {"lizardman", "shaman", "lizard"}
 )
 public class LizardmanShamanPlugin extends Plugin
 {
@@ -50,6 +46,8 @@ public class LizardmanShamanPlugin extends Plugin
 
 	@Inject
 	private LizardmanShamanOverlay overlay;
+
+	public static final int LIZARDMAN_SHAMAN_SPAWN_EXPLOSION = 7159;
 
 	@Provides
 	LizardmanShamanConfig getConfig(ConfigManager configManager)
@@ -67,21 +65,5 @@ public class LizardmanShamanPlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(overlay);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("lizardmanshaman"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.add(overlay);
-		}
 	}
 }

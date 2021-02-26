@@ -50,10 +50,7 @@ public interface KQConfig extends Config
 		position = 0,
 		keyName = "tickCounterSection"
 	)
-	default boolean tickCounterSection()
-	{
-		return false;
-	}
+	String tickCounterSection = "Tick counters";
 
 	@ConfigSection(
 		name = "Tiles",
@@ -61,10 +58,7 @@ public interface KQConfig extends Config
 		position = 1,
 		keyName = "tileSection"
 	)
-	default boolean tileSection()
-	{
-		return false;
-	}
+	String tileSection = "Tiles";
 
 	@ConfigSection(
 		name = "Miscellaneous",
@@ -72,10 +66,7 @@ public interface KQConfig extends Config
 		position = 2,
 		keyName = "miscSection"
 	)
-	default boolean miscSection()
-	{
-		return false;
-	}
+	String miscSection = "Miscellaneous";
 
 	// Tick Counter Section
 
@@ -84,7 +75,7 @@ public interface KQConfig extends Config
 		description = "Show tick counter on KQ.",
 		position = 0,
 		keyName = "kqTickCounter",
-		section = "tickCounterSection"
+		section = tickCounterSection
 	)
 	default boolean kqTickCounter()
 	{
@@ -100,7 +91,7 @@ public interface KQConfig extends Config
 		description = "Adjust the font size of the KQ tick counter.",
 		position = 1,
 		keyName = "kqFontSize",
-		section = "tickCounterSection",
+		section = tickCounterSection,
 		hidden = true,
 		unhide = "kqTickCounter"
 	)
@@ -115,7 +106,7 @@ public interface KQConfig extends Config
 		description = "Bold/Italics/Plain",
 		position = 2,
 		keyName = "kqFontStyle",
-		section = "tickCounterSection",
+		section = tickCounterSection,
 		hidden = true,
 		unhide = "kqTickCounter",
 		enumClass = FontStyle.class
@@ -131,7 +122,7 @@ public interface KQConfig extends Config
 		description = "Color of the kq counter font.",
 		position = 3,
 		keyName = "kqFontColor",
-		section = "tickCounterSection",
+		section = tickCounterSection,
 		hidden = true,
 		unhide = "kqTickCounter"
 	)
@@ -147,7 +138,7 @@ public interface KQConfig extends Config
 		description = "Show tile outline for the KQ.",
 		position = 0,
 		keyName = "kqTileOutline",
-		section = "tileSection"
+		section = tileSection
 	)
 	default boolean kqTileOutline()
 	{
@@ -163,7 +154,7 @@ public interface KQConfig extends Config
 		description = "Change the width of the KQ's tile outline.",
 		position = 1,
 		keyName = "kqTileOutlineWidth",
-		section = "tileSection",
+		section = tileSection,
 		hidden = true,
 		unhide = "kqTileOutline"
 	)
@@ -179,7 +170,7 @@ public interface KQConfig extends Config
 		description = "Color to outline the tile of the KQ.",
 		position = 2,
 		keyName = "kqTileOutlineColor",
-		section = "tileSection",
+		section = tileSection,
 		hidden = true,
 		unhide = "kqTileOutline"
 	)
@@ -195,7 +186,7 @@ public interface KQConfig extends Config
 		description = "Flash notification when you can vengeance.",
 		position = 0,
 		keyName = "flashVeng",
-		section = "miscSection"
+		section = miscSection
 	)
 	default boolean flashVeng()
 	{
@@ -211,7 +202,7 @@ public interface KQConfig extends Config
 		description = "Change the duration of the flash.",
 		position = 1,
 		keyName = "flashVengDuration",
-		section = "miscSection",
+		section = miscSection,
 		hidden = true,
 		unhide = "flashVeng"
 	)
@@ -226,27 +217,13 @@ public interface KQConfig extends Config
 		description = "Color of the flash notification.",
 		position = 2,
 		keyName = "flashVengColor",
-		section = "miscSection",
+		section = miscSection,
 		hidden = true,
 		unhide = "flashVeng"
 	)
 	default Color flashVengColor()
 	{
 		return new Color(255, 255, 255, 70);
-	}
-
-	// other
-
-	@ConfigItem(
-		name = "Enable mirror mode",
-		description = "Toggle mirror mode compatibility.",
-		position = 99,
-		keyName = "mirrorMode",
-		section = "otherSection"
-	)
-	default boolean mirrorMode()
-	{
-		return false;
 	}
 
 	// Constants

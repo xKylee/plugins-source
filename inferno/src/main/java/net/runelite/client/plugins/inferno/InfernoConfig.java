@@ -41,28 +41,13 @@ import net.runelite.client.plugins.inferno.displaymodes.InfernoZukShieldDisplayM
 @ConfigGroup("inferno")
 public interface InfernoConfig extends Config
 {
-
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
 	@ConfigSection(
 		name = "Prayer",
 		description = "Configuration options forPprayer",
 		position = 0,
 		keyName = "PrayerSection"
 	)
-	default boolean prayerSection()
-	{
-		return false;
-	}
+	String PrayerSection = "Prayer";
 
 	@ConfigSection(
 		name = "Safespots",
@@ -70,10 +55,7 @@ public interface InfernoConfig extends Config
 		position = 1,
 		keyName = "SafespotsSection"
 	)
-	default boolean safespotsSection()
-	{
-		return false;
-	}
+	String SafespotsSection = "Safespots";
 
 	@ConfigSection(
 		name = "Waves",
@@ -81,21 +63,15 @@ public interface InfernoConfig extends Config
 		position = 2,
 		keyName = "WavesSection"
 	)
-	default boolean wavesSection()
-	{
-		return false;
-	}
+	String WavesSection = "Waves";
 
 	@ConfigSection(
-		name = "ExtraSection",
+		name = "Extra",
 		description = "Configuration options for Extras",
 		position = 3,
 		keyName = "ExtraSection"
 	)
-	default boolean extraSection()
-	{
-		return false;
-	}
+	String ExtraSection = "Extra";
 
 	@ConfigSection(
 		name = "Nibblers",
@@ -103,10 +79,7 @@ public interface InfernoConfig extends Config
 		position = 4,
 		keyName = "NibblersSection"
 	)
-	default boolean nibblersSection()
-	{
-		return false;
-	}
+	String NibblersSection = "Nibblers";
 
 	@ConfigSection(
 		name = "Bats",
@@ -114,10 +87,7 @@ public interface InfernoConfig extends Config
 		position = 5,
 		keyName = "BatsSection"
 	)
-	default boolean batsSection()
-	{
-		return false;
-	}
+	String BatsSection = "Bats";
 
 	@ConfigSection(
 		name = "Blobs",
@@ -125,10 +95,7 @@ public interface InfernoConfig extends Config
 		position = 6,
 		keyName = "BlobsSection"
 	)
-	default boolean blobsSection()
-	{
-		return false;
-	}
+	String BlobsSection = "Blobs";
 
 	@ConfigSection(
 		name = "Meleers",
@@ -136,10 +103,7 @@ public interface InfernoConfig extends Config
 		position = 7,
 		keyName = "MeleersSection"
 	)
-	default boolean meleersSection()
-	{
-		return false;
-	}
+	String MeleersSection = "Meleers";
 
 	@ConfigSection(
 		name = "Rangers",
@@ -147,10 +111,7 @@ public interface InfernoConfig extends Config
 		position = 8,
 		keyName = "RangersSection"
 	)
-	default boolean rangersSection()
-	{
-		return false;
-	}
+	String RangersSection = "Rangers";
 
 	@ConfigSection(
 		name = "Magers",
@@ -158,10 +119,7 @@ public interface InfernoConfig extends Config
 		position = 9,
 		keyName = "MagersSection"
 	)
-	default boolean magersSection()
-	{
-		return false;
-	}
+	String MagersSection = "Magers";
 
 	@ConfigSection(
 		name = "Jad",
@@ -169,10 +127,7 @@ public interface InfernoConfig extends Config
 		position = 10,
 		keyName = "JadSection"
 	)
-	default boolean jadSection()
-	{
-		return false;
-	}
+	String JadSection = "Jad";
 
 	@ConfigSection(
 		name = "Jad Healers",
@@ -180,10 +135,7 @@ public interface InfernoConfig extends Config
 		position = 11,
 		keyName = "JadHealersSection"
 	)
-	default boolean jadHealersSection()
-	{
-		return false;
-	}
+	String JadHealersSection = "Jad Healers";
 
 	@ConfigSection(
 		name = "Zuk",
@@ -191,10 +143,7 @@ public interface InfernoConfig extends Config
 		position = 12,
 		keyName = "ZukSection"
 	)
-	default boolean zukSection()
-	{
-		return false;
-	}
+	String ZukSection = "Zuk";
 
 	@ConfigSection(
 		name = "Zuk Healers",
@@ -202,10 +151,7 @@ public interface InfernoConfig extends Config
 		position = 13,
 		keyName = "ZukHealersSection"
 	)
-	default boolean zukHealersSection()
-	{
-		return false;
-	}
+	String ZukHealersSection = "Zuk Healers";
 
 
 	@ConfigItem(
@@ -213,7 +159,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerDisplayMode",
 		name = "Prayer Display Mode",
 		description = "Display prayer indicator in the prayer tab or in the bottom right corner of the screen",
-		section = "PrayerSection"
+		section = PrayerSection
 	)
 	default InfernoPrayerDisplayMode prayerDisplayMode()
 	{
@@ -225,7 +171,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateWhenPrayingCorrectly",
 		name = "Indicate When Praying Correctly",
 		description = "Indicate the correct prayer, even if you are already praying that prayer",
-		section = "PrayerSection"
+		section = PrayerSection
 	)
 	default boolean indicateWhenPrayingCorrectly()
 	{
@@ -237,7 +183,7 @@ public interface InfernoConfig extends Config
 		keyName = "descendingBoxes",
 		name = "Descending Boxes",
 		description = "Draws timing boxes above the prayer icons, as if you were playing Piano Tiles",
-		section = "PrayerSection"
+		section = PrayerSection
 	)
 	default boolean descendingBoxes()
 	{
@@ -249,7 +195,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNonPriorityDescendingBoxes",
 		name = "Indicate Non-Priority Boxes",
 		description = "Render descending boxes for prayers that are not the priority prayer for that tick",
-		section = "PrayerSection"
+		section = PrayerSection
 	)
 	default boolean indicateNonPriorityDescendingBoxes()
 	{
@@ -261,7 +207,7 @@ public interface InfernoConfig extends Config
 		keyName = "alwaysShowPrayerHelper",
 		name = "Always Show Prayer Helper",
 		description = "Render prayer helper at all time, even when other inventory tabs are open.",
-		section = "PrayerSection"
+		section = PrayerSection
 	)
 	default boolean alwaysShowPrayerHelper()
 	{
@@ -273,7 +219,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotDisplayMode",
 		name = "Tile Safespots",
 		description = "Indicate safespots on the ground: safespot (white), pray melee (red), pray range (green), pray magic (blue) and combinations of those",
-		section = "SafespotsSection"
+		section = SafespotsSection
 	)
 	default InfernoSafespotDisplayMode safespotDisplayMode()
 	{
@@ -285,7 +231,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsCheckSize",
 		name = "Tile Safespots Check Size",
 		description = "The size of the area around the player that should be checked for safespots (SIZE x SIZE area)",
-		section = "SafespotsSection"
+		section = SafespotsSection
 	)
 	default int safespotsCheckSize()
 	{
@@ -297,7 +243,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNonSafespotted",
 		name = "Non-safespotted NPC's Overlay",
 		description = "Red overlay for NPC's that can attack you",
-		section = "SafespotsSection"
+		section = SafespotsSection
 	)
 	default boolean indicateNonSafespotted()
 	{
@@ -309,7 +255,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateTemporarySafespotted",
 		name = "Temporary safespotted NPC's Overlay",
 		description = "Orange overlay for NPC's that have to move to attack you",
-		section = "SafespotsSection"
+		section = SafespotsSection
 	)
 	default boolean indicateTemporarySafespotted()
 	{
@@ -321,7 +267,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateSafespotted",
 		name = "Safespotted NPC's Overlay",
 		description = "Green overlay for NPC's that are safespotted (can't attack you)",
-		section = "SafespotsSection"
+		section = SafespotsSection
 	)
 	default boolean indicateSafespotted()
 	{
@@ -333,7 +279,7 @@ public interface InfernoConfig extends Config
 		keyName = "waveDisplay",
 		name = "Wave Display",
 		description = "Shows monsters that will spawn on the selected wave(s).",
-		section = "WavesSection"
+		section = WavesSection
 	)
 	default InfernoWaveDisplayMode waveDisplay()
 	{
@@ -345,7 +291,7 @@ public interface InfernoConfig extends Config
 		keyName = "npcNaming",
 		name = "NPC Naming",
 		description = "Simple (ex: Bat) or Complex (ex: Jal-MejRah) NPC naming",
-		section = "WavesSection"
+		section = WavesSection
 	)
 	default InfernoNamingDisplayMode npcNaming()
 	{
@@ -357,7 +303,7 @@ public interface InfernoConfig extends Config
 		keyName = "npcLevels",
 		name = "NPC Levels",
 		description = "Show the combat level of the NPC next to their name",
-		section = "WavesSection"
+		section = WavesSection
 	)
 	default boolean npcLevels()
 	{
@@ -369,7 +315,7 @@ public interface InfernoConfig extends Config
 		keyName = "getWaveOverlayHeaderColor",
 		name = "Wave Header",
 		description = "Color for Wave Header",
-		section = "WavesSection"
+		section = WavesSection
 	)
 	default Color getWaveOverlayHeaderColor()
 	{
@@ -381,7 +327,7 @@ public interface InfernoConfig extends Config
 		keyName = "getWaveTextColor",
 		name = "Wave Text Color",
 		description = "Color for Wave Texts",
-		section = "WavesSection"
+		section = WavesSection
 	)
 	default Color getWaveTextColor()
 	{
@@ -393,7 +339,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateObstacles",
 		name = "Obstacles",
 		description = "Indicate obstacles that NPC's cannot pass through",
-		section = "ExtraSection"
+		section = ExtraSection
 	)
 	default boolean indicateObstacles()
 	{
@@ -405,7 +351,7 @@ public interface InfernoConfig extends Config
 		keyName = "spawnTimerInfobox",
 		name = "Spawn Timer Infobox",
 		description = "Display an Infobox that times spawn sets during Zuk fight.",
-		section = "ExtraSection"
+		section = ExtraSection
 	)
 	default boolean spawnTimerInfobox()
 	{
@@ -417,7 +363,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNibblers",
 		name = "Indicate Nibblers",
 		description = "Indicate's nibblers that are alive",
-		section = "NibblersSection"
+		section = NibblersSection
 	)
 	default boolean indicateNibblers()
 	{
@@ -429,7 +375,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalNibDeath",
 		name = "Hide On Death",
 		description = "Hide Nibblers on death animation",
-		section = "NibblersSection"
+		section = NibblersSection
 	)
 	default boolean hideNibblerDeath()
 	{
@@ -442,7 +388,7 @@ public interface InfernoConfig extends Config
 		name = "Indicate Central Nibbler",
 		description = "Indicate the most central nibbler. If multiple nibblers will freeze the same amount of other nibblers, " +
 			"the nibbler closest to the player's location is chosen.",
-		section = "NibblersSection"
+		section = NibblersSection
 	)
 	default boolean indicateCentralNibbler()
 	{
@@ -454,7 +400,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerBat",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "BatsSection"
+		section = BatsSection
 	)
 	default boolean prayerBat()
 	{
@@ -466,7 +412,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcBat",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "BatsSection"
+		section = BatsSection
 	)
 	default boolean ticksOnNpcBat()
 	{
@@ -478,7 +424,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsBat",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "BatsSection"
+		section = BatsSection
 	)
 	default boolean safespotsBat()
 	{
@@ -490,7 +436,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNpcPositionBat",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for and pathfinding.",
-		section = "BatsSection"
+		section = BatsSection
 	)
 	default boolean indicateNpcPositionBat()
 	{
@@ -502,7 +448,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalMejRahDeath",
 		name = "Hide On Death",
 		description = "Hide Jal-MejRah on death animation",
-		section = "BatsSection"
+		section = BatsSection
 	)
 	default boolean hideBatDeath()
 	{
@@ -514,7 +460,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerBlob",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean prayerBlob()
 	{
@@ -526,7 +472,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateBlobDetectionTick",
 		name = "Indicate Blob Dection Tick",
 		description = "Show a prayer indicator (default: magic) for the tick on which the blob will detect prayer",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean indicateBlobDetectionTick()
 	{
@@ -538,7 +484,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcBlob",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean ticksOnNpcBlob()
 	{
@@ -550,7 +496,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsBlob",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean safespotsBlob()
 	{
@@ -562,7 +508,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNpcPositionBlob",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean indicateNpcPositionBlob()
 	{
@@ -574,7 +520,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalAkDeath",
 		name = "Hide Blob On Death",
 		description = "Hide Jal-Ak on death animation",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean hideBlobDeath()
 	{
@@ -587,7 +533,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalAkRekXilDeath",
 		name = "Hide Small Range Blob On Death",
 		description = "Hide Jal-AkRek-Xil on death animation",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean hideBlobSmallRangedDeath()
 	{
@@ -599,7 +545,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalAkRekMejDeath",
 		name = "Hide Small Magic Blob On Death",
 		description = "Hide Jal-AkRek-Mej on death animation",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean hideBlobSmallMagicDeath()
 	{
@@ -611,7 +557,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalAkRekKetDeath",
 		name = "Hide Small Melee Blob On Death",
 		description = "Hide Jal-AkRek-Ket on death animation",
-		section = "BlobsSection"
+		section = BlobsSection
 	)
 	default boolean hideBlobSmallMeleeDeath()
 	{
@@ -623,7 +569,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerMeleer",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "MeleersSection"
+		section = MeleersSection
 	)
 	default boolean prayerMeleer()
 	{
@@ -635,7 +581,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcMeleer",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "MeleersSection"
+		section = MeleersSection
 	)
 	default boolean ticksOnNpcMeleer()
 	{
@@ -647,7 +593,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsMeleer",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "MeleersSection"
+		section = MeleersSection
 	)
 	default boolean safespotsMeleer()
 	{
@@ -659,7 +605,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNpcPositionMeleer",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
-		section = "MeleersSection"
+		section = MeleersSection
 	)
 	default boolean indicateNpcPositionMeleer()
 	{
@@ -671,7 +617,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalImKotDeath",
 		name = "Hide On Death",
 		description = "Hide Jal-ImKot on death animation",
-		section = "MeleersSection"
+		section = MeleersSection
 	)
 	default boolean hideMeleerDeath()
 	{
@@ -684,7 +630,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerRanger",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "RangersSection"
+		section = RangersSection
 	)
 	default boolean prayerRanger()
 	{
@@ -696,7 +642,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcRanger",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "RangersSection"
+		section = RangersSection
 	)
 	default boolean ticksOnNpcRanger()
 	{
@@ -708,7 +654,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsRanger",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "RangersSection"
+		section = RangersSection
 	)
 	default boolean safespotsRanger()
 	{
@@ -720,7 +666,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNpcPositionRanger",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
-		section = "RangersSection"
+		section = RangersSection
 	)
 	default boolean indicateNpcPositionRanger()
 	{
@@ -732,7 +678,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalXilDeath",
 		name = "Hide On Death",
 		description = "Hide Jal-Xil on death animation",
-		section = "RangersSection"
+		section = RangersSection
 	)
 	default boolean hideRangerDeath()
 	{
@@ -744,7 +690,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerMage",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "MagersSection"
+		section = MagersSection
 	)
 	default boolean prayerMage()
 	{
@@ -756,7 +702,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcMage",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "MagersSection"
+		section = MagersSection
 	)
 	default boolean ticksOnNpcMage()
 	{
@@ -768,7 +714,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsMage",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "MagersSection"
+		section = MagersSection
 	)
 	default boolean safespotsMage()
 	{
@@ -780,7 +726,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateNpcPositionMage",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
-		section = "MagersSection"
+		section = MagersSection
 	)
 	default boolean indicateNpcPositionMage()
 	{
@@ -792,7 +738,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalZekDeath",
 		name = "Hide On Death",
 		description = "Hide Jal-Zek on death animation",
-		section = "MagersSection"
+		section = MagersSection
 	)
 	default boolean hideMagerDeath()
 	{
@@ -804,7 +750,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerHealersJad",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "JadHealersSection"
+		section = JadHealersSection
 	)
 	default boolean prayerHealerJad()
 	{
@@ -816,7 +762,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcHealersJad",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "JadHealersSection"
+		section = JadHealersSection
 	)
 	default boolean ticksOnNpcHealerJad()
 	{
@@ -828,7 +774,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsHealersJad",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "JadHealersSection"
+		section = JadHealersSection
 	)
 	default boolean safespotsHealerJad()
 	{
@@ -840,7 +786,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateActiveHealersJad",
 		name = "Indicate Active Healers",
 		description = "Indicate healers that are still healing Jad",
-		section = "JadHealersSection"
+		section = JadHealersSection
 	)
 	default boolean indicateActiveHealerJad()
 	{
@@ -852,7 +798,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideYtHurKotDeath",
 		name = "Hide On Death",
 		description = "Hide Yt-HurKot on death animation",
-		section = "JadHealersSection"
+		section = JadHealersSection
 	)
 	default boolean hideHealerJadDeath()
 	{
@@ -864,7 +810,7 @@ public interface InfernoConfig extends Config
 		keyName = "prayerJad",
 		name = "Prayer Helper",
 		description = "Indicate the correct prayer when this NPC attacks",
-		section = "JadSection"
+		section = JadSection
 	)
 	default boolean prayerJad()
 	{
@@ -876,7 +822,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcJad",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "JadSection"
+		section = JadSection
 	)
 	default boolean ticksOnNpcJad()
 	{
@@ -888,7 +834,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsJad",
 		name = "Safespots (Melee Range Only)",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "JadSection"
+		section = JadSection
 	)
 	default boolean safespotsJad()
 	{
@@ -900,7 +846,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalTokJadDeath",
 		name = "Hide On Death",
 		description = "Hide JalTok-Jad on death animation",
-		section = "JadSection"
+		section = JadSection
 	)
 	default boolean hideJadDeath()
 	{
@@ -912,7 +858,7 @@ public interface InfernoConfig extends Config
 		keyName = "indicateActiveHealersZuk",
 		name = "Indicate Active Healers (UNTESTED)",
 		description = "Indicate healers that are still healing Zuk",
-		section = "ZukHealersSection"
+		section = ZukHealersSection
 	)
 	default boolean indicateActiveHealerZuk()
 	{
@@ -924,7 +870,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideJalMejJakDeath",
 		name = "Hide On Death",
 		description = "Hide Jal-MejJak on death animation",
-		section = "ZukHealersSection"
+		section = ZukHealersSection
 	)
 	default boolean hideHealerZukDeath()
 	{
@@ -936,7 +882,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcZuk",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
-		section = "ZukSection"
+		section = ZukSection
 	)
 	default boolean ticksOnNpcZuk()
 	{
@@ -948,7 +894,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsZukShieldBeforeHealers",
 		name = "Safespots (Before Healers)",
 		description = "Indicate the zuk shield safespots. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect. Shield must go back and forth at least 1 time before the predict option will work.",
-		section = "ZukSection"
+		section = ZukSection
 	)
 	default InfernoZukShieldDisplayMode safespotsZukShieldBeforeHealers()
 	{
@@ -960,7 +906,7 @@ public interface InfernoConfig extends Config
 		keyName = "safespotsZukShieldAfterHealers",
 		name = "Safespots (After Healers)",
 		description = "Indicate the zuk shield safespots. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
-		section = "ZukSection"
+		section = ZukSection
 	)
 	default InfernoZukShieldDisplayMode safespotsZukShieldAfterHealers()
 	{
@@ -972,7 +918,7 @@ public interface InfernoConfig extends Config
 		keyName = "hideTzKalZukDeath",
 		name = "Hide On Death",
 		description = "Hide TzKal-Zuk on death animation",
-		section = "ZukSection"
+		section = ZukSection
 	)
 	default boolean hideZukDeath()
 	{
@@ -984,7 +930,7 @@ public interface InfernoConfig extends Config
 		keyName = "ticksOnNpcZukShield",
 		name = "Ticks on Zuk Shield",
 		description = "Draws the amount of ticks before Zuk attacks on the floating shield",
-		section = "ZukSection"
+		section = ZukSection
 	)
 	default boolean ticksOnNpcZukShield()
 	{

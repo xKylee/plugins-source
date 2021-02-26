@@ -36,7 +36,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
@@ -46,6 +45,7 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.lizardmenshaman.LizardmanShamanConfig.SpawnOverlayConfig;
+import static net.runelite.client.plugins.lizardmenshaman.LizardmanShamanPlugin.LIZARDMAN_SHAMAN_SPAWN_EXPLOSION;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -65,7 +65,7 @@ class LizardmanShamanOverlay extends Overlay
 		this.client = client;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ class LizardmanShamanOverlay extends Overlay
 					return;
 				}
 
-				if (actor.getAnimation() == AnimationID.LIZARDMAN_SHAMAN_SPAWN_EXPLOSION)
+				if (actor.getAnimation() == LIZARDMAN_SHAMAN_SPAWN_EXPLOSION)
 				{
 					renderPolygon(graphics, polygon, 1, config.explosionBorderColor(), config.explosionFillColor());
 				}
@@ -167,17 +167,5 @@ class LizardmanShamanOverlay extends Overlay
 		}
 
 		return CANYON_REGION_IDS.contains(worldPoint.getRegionID());
-	}
-
-	void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }

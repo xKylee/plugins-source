@@ -53,7 +53,6 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.NPCManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoPrayerDisplayMode;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoSafespotDisplayMode;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoWaveDisplayMode;
@@ -68,8 +67,7 @@ import org.pf4j.Extension;
 	name = "Inferno",
 	enabledByDefault = false,
 	description = "Inferno helper",
-	tags = {"combat", "overlay", "pve", "pvm"},
-	type = PluginType.PVM
+	tags = {"combat", "overlay", "pve", "pvm"}
 )
 @Slf4j
 public class InfernoPlugin extends Plugin
@@ -165,6 +163,21 @@ public class InfernoPlugin extends Plugin
 
 	private InfernoSpawnTimerInfobox spawnTimerInfoBox;
 
+	public static final int JAL_NIB = 7574;
+	public static final int JAL_MEJRAH = 7578;
+	public static final int JAL_MEJRAH_STAND = 7577;
+	public static final int JAL_AK_RANGE_ATTACK = 7581;
+	public static final int JAL_AK_MELEE_ATTACK = 7582;
+	public static final int JAL_AK_MAGIC_ATTACK = 7583;
+	public static final int JAL_IMKOT = 7597;
+	public static final int JAL_XIL_MELEE_ATTACK = 7604;
+	public static final int JAL_XIL_RANGE_ATTACK = 7605;
+	public static final int JAL_ZEK_MAGE_ATTACK = 7610;
+	public static final int JAL_ZEK_MELEE_ATTACK = 7612;
+	public static final int JALTOK_JAD_MAGE_ATTACK = 7592;
+	public static final int JALTOK_JAD_RANGE_ATTACK = 7593;
+	public static final int TZKAL_ZUK = 7566;
+
 	@Provides
 	InfernoConfig provideConfig(ConfigManager configManager)
 	{
@@ -233,28 +246,6 @@ public class InfernoPlugin extends Plugin
 			if (isInInferno() && config.waveDisplay() != InfernoWaveDisplayMode.NONE)
 			{
 				overlayManager.add(waveOverlay);
-			}
-		}
-		if (event.getKey().equals("mirrorMode"))
-		{
-			if (isInInferno())
-			{
-				infernoOverlay.determineLayer();
-				jadOverlay.determineLayer();
-				prayerOverlay.determineLayer();
-				overlayManager.remove(infernoOverlay);
-				overlayManager.remove(jadOverlay);
-				overlayManager.remove(prayerOverlay);
-				overlayManager.add(infernoOverlay);
-				overlayManager.add(jadOverlay);
-				overlayManager.add(prayerOverlay);
-
-				if (config.waveDisplay() != InfernoWaveDisplayMode.NONE)
-				{
-					waveOverlay.determineLayer();
-					overlayManager.remove(waveOverlay);
-					overlayManager.add(waveOverlay);
-				}
 			}
 		}
 	}
