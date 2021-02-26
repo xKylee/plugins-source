@@ -32,7 +32,7 @@ import lombok.Setter;
 import net.runelite.api.Actor;
 import net.runelite.api.HeadIcon;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.coords.WorldArea;
 
 class DemonicGorilla
@@ -131,7 +131,7 @@ class DemonicGorilla
 
 	HeadIcon getOverheadIcon()
 	{
-		NPCDefinition composition = this.npc.getDefinition();
+		NPCComposition composition = this.npc.getComposition();
 		if (composition != null)
 		{
 			return composition.getOverheadIcon();
