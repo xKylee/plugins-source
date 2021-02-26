@@ -21,7 +21,7 @@ import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
@@ -31,7 +31,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.theatre.Bloat.Bloat;
 import net.runelite.client.plugins.theatre.Maiden.Maiden;
 import net.runelite.client.plugins.theatre.Nylocas.Nylocas;
@@ -46,8 +45,7 @@ import org.pf4j.Extension;
 	name = "Theatre of Blood",
 	description = "All-in-one plugin for Theatre of Blood",
 	tags = {"ToB", "Theatre", "raids", "bloat", "verzik", "nylo", "xarpus", "sotetseg", "maiden"},
-	enabledByDefault = false,
-	type = PluginType.PVM
+	enabledByDefault = false
 )
 
 @Slf4j
@@ -146,9 +144,9 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onNpcDefinitionChanged(NpcDefinitionChanged npcDefinitionChanged)
+	public void onNpcChanged(NpcChanged npcChanged)
 	{
-		nylocas.onNpcDefinitionChanged(npcDefinitionChanged);
+		nylocas.onNpcChanged(npcChanged);
 	}
 
 	@Subscribe
@@ -212,11 +210,7 @@ public class TheatrePlugin extends Plugin
 		}
 
 		nylocas.onConfigChanged(change);
-		bloat.onConfigChanged(change);
-		maiden.onConfigChanged(change);
-		sotetseg.onConfigChanged(change);
 		verzik.onConfigChanged(change);
-		xarpus.onConfigChanged(change);
 	}
 
 	@Subscribe

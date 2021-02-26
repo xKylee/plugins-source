@@ -35,7 +35,7 @@ public class SorceressGardenOverlay extends OverlayPanel
 		this.config = config;
 		this.client = client;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPriority(OverlayPriority.HIGH);
 	}
 
@@ -56,11 +56,6 @@ public class SorceressGardenOverlay extends OverlayPanel
 		renderSummerOneClick(graphics);
 
 		return super.render(graphics);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 
 	private void renderTile(final Graphics2D graphics, final LocalPoint dest, final Color color)

@@ -30,7 +30,7 @@ import java.awt.Point;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
-import net.runelite.api.Sprite;
+import net.runelite.api.SpritePixels;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -62,7 +62,7 @@ public class SpellbookDragOverlay extends Overlay
 
 		final net.runelite.api.Point mouseCanvasPosition = client.getMouseCanvasPosition();
 		final net.runelite.api.Point draggingLocation = plugin.getDraggingLocation();
-		final Sprite sprite = plugin.getDraggingWidget().getSprite();
+		final SpritePixels sprite = plugin.getDraggingWidget().getSprite();
 		final Point drawPos = new Point(mouseCanvasPosition.getX() - draggingLocation.getX(), mouseCanvasPosition.getY() - draggingLocation.getY());
 
 		if (sprite != null)

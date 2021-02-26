@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.5"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Spec Bar"
 project.extra["PluginDescription"] = "Adds a spec bar to every weapon"

@@ -31,7 +31,6 @@ import java.awt.Polygon;
 import javax.inject.Inject;
 import net.runelite.api.GroundObject;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
@@ -48,7 +47,6 @@ public class TempleTrekkingBogOverlay extends Overlay
 		super(plugin);
 		this.config = config;
 		this.plugin = plugin;
-		determineLayer();
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.LOW);
 	}
@@ -65,13 +63,5 @@ public class TempleTrekkingBogOverlay extends Overlay
 			}
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
 	}
 }

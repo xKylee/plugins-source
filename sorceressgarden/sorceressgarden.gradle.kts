@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.3"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Sorceress' Garden"
 project.extra["PluginDescription"] = "Provides various utilities for the Sorceress' Garden minigame"
@@ -36,8 +36,6 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
-
-    compileOnly("com.openosrs.externals:xptracker:0.0.+")
 
     compileOnly(Libraries.annotations)
     compileOnly(Libraries.guice)

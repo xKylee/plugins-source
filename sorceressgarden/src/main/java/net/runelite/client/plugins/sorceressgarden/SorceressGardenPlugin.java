@@ -7,12 +7,10 @@ import net.runelite.api.ItemID;
 import net.runelite.api.Skill;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.game.XpDropEvent;
+import net.runelite.client.events.XpDropEvent;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
@@ -23,8 +21,7 @@ import org.pf4j.Extension;
 	name = "Sorceress Garden",
 	enabledByDefault = false,
 	description = "Provides various utilities for the Sorceress's Garden minigame",
-	tags = {"sorceress", "garden", "sqirk", "sq'irk", "thieving", "farming"},
-	type = PluginType.MINIGAME
+	tags = {"sorceress", "garden", "sqirk", "sq'irk", "thieving", "farming"}
 )
 
 @PluginDependency(XpTrackerPlugin.class)
@@ -72,24 +69,6 @@ public class SorceressGardenPlugin extends Plugin
 		overlayManager.remove(sorceressSqirkOverlay);
 	}
 
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("SorceressGarden"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			sorceressGardenOverlay.determineLayer();
-			sorceressGardenOverlay.determineLayer();
-			overlayManager.remove(sorceressGardenOverlay);
-			overlayManager.remove(sorceressSqirkOverlay);
-			overlayManager.add(sorceressSqirkOverlay);
-			overlayManager.add(sorceressGardenOverlay);
-		}
-	}
 
 	@Subscribe
 	private void onXpDropEvent(XpDropEvent event)

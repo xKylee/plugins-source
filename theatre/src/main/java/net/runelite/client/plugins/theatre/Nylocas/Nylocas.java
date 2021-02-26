@@ -6,6 +6,8 @@
 
 package net.runelite.client.plugins.theatre.Nylocas;
 
+import com.openosrs.client.util.WeaponMap;
+import com.openosrs.client.util.WeaponStyle;
 import java.awt.Color;
 import java.time.Instant;
 import java.util.Arrays;
@@ -23,7 +25,7 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.MenuOpcode;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Player;
@@ -38,7 +40,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
@@ -54,8 +56,6 @@ import net.runelite.client.plugins.theatre.TheatreInputListener;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 import net.runelite.client.util.ColorUtil;
-import net.runelite.client.util.WeaponMap;
-import net.runelite.client.util.WeaponStyle;
 import org.apache.commons.lang3.ObjectUtils;
 
 public class Nylocas extends Room
@@ -306,16 +306,6 @@ public class Nylocas extends Room
 		{
 			nylocasAliveCounterOverlay.setHidden(!config.nyloAlivePanel());
 		}
-
-		if (change.getKey().equals("mirrorMode"))
-		{
-			nylocasAliveCounterOverlay.determineLayer();
-			nylocasOverlay.determineLayer();
-			overlayManager.remove(nylocasAliveCounterOverlay);
-			overlayManager.remove(nylocasOverlay);
-			overlayManager.add(nylocasOverlay);
-			overlayManager.add(nylocasAliveCounterOverlay);
-		}
 	}
 
 	@Subscribe
@@ -528,9 +518,9 @@ public class Nylocas extends Room
 	}
 
 	@Subscribe
-	public void onNpcDefinitionChanged(NpcDefinitionChanged npcDefinitionChanged)
+	public void onNpcChanged(NpcChanged npcChanged)
 	{
-		int npcId = npcDefinitionChanged.getNpc().getId();
+		int npcId = npcChanged.getNpc().getId();
 
 		switch (npcId)
 		{
@@ -601,12 +591,12 @@ public class Nylocas extends Room
 			}
 			else
 			{
-				if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerAppearance() == null)
+				if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerComposition() == null)
 				{
 					return;
 				}
 
-				int equippedWeapon = ObjectUtils.defaultIfNull(client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.WEAPON), -1);
+				int equippedWeapon = ObjectUtils.defaultIfNull(client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.WEAPON), -1);
 				weaponStyle = WeaponMap.StyleMap.get(equippedWeapon);
 			}
 
@@ -698,9 +688,9 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked option)
 	{
-		if (option.getMenuOpcode() == MenuOpcode.ITEM_SECOND_OPTION)
+		if (option.getMenuAction() == MenuAction.ITEM_SECOND_OPTION)
 		{
-			WeaponStyle newStyle = WeaponMap.StyleMap.get(option.getIdentifier());
+			WeaponStyle newStyle = WeaponMap.StyleMap.get(option.getId());
 			if (newStyle != null)
 			{
 				skipTickCheck = true;
@@ -719,7 +709,7 @@ public class Nylocas extends Room
 
 		String target = entry.getTarget();
 
-		if (config.removeNyloEntries() && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION && weaponStyle != null)
+		if (config.removeNyloEntries() && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION && weaponStyle != null)
 		{
 			switch (weaponStyle)
 			{
