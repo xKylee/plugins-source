@@ -40,27 +40,25 @@ import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.ItemDefinition;
+import net.runelite.api.ItemComposition;
 import net.runelite.api.ItemID;
 import net.runelite.api.Player;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.PlayerDespawned;
 import net.runelite.api.events.PlayerMenuOptionClicked;
 import net.runelite.api.events.PlayerSpawned;
-import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import static net.runelite.client.plugins.dynamicmaxhit.Utils.getTrueHp;
 import static net.runelite.client.plugins.dynamicmaxhit.Utils.predictOffensivePrayer;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -76,8 +74,7 @@ import org.pf4j.Extension;
 	name = "Dynamic Max Hit",
 	enabledByDefault = false,
 	description = "Dynamic Max Hit Calculations",
-	tags = {"broken", "op", "shit"},
-	type = PluginType.PVP
+	tags = {"broken", "op", "shit"}
 )
 @Slf4j
 public class DynamicMaxHit extends Plugin
@@ -198,7 +195,7 @@ public class DynamicMaxHit extends Plugin
 	}
 
 	@Subscribe
-	private void onSpotAnimationChanged(SpotAnimationChanged event)
+	private void onGraphicsChanged(GraphicChanged event)
 	{
 		final Actor actor = event.getActor();
 
@@ -207,7 +204,7 @@ public class DynamicMaxHit extends Plugin
 			return;
 		}
 
-		if (actor.getSpotAnimation() == 111)
+		if (actor.getGraphic() == 111)
 		{
 			final Victim victim = victims.getOrDefault(actor.getName(), null);
 
@@ -399,7 +396,7 @@ public class DynamicMaxHit extends Plugin
 
 	private void updatePlayerGear(Victim player)
 	{
-		if (player.getPlayer().getPlayerAppearance() == null)
+		if (player.getPlayer().getPlayerComposition() == null)
 		{
 			return;
 		}
@@ -413,7 +410,7 @@ public class DynamicMaxHit extends Plugin
 				continue;
 			}
 
-			final int id = player.getPlayer().getPlayerAppearance().getEquipmentId(kitType);
+			final int id = player.getPlayer().getPlayerComposition().getEquipmentId(kitType);
 
 			if (id == -1)
 			{
@@ -526,7 +523,7 @@ public class DynamicMaxHit extends Plugin
 
 		for (int id : player.getGear())
 		{
-			ItemDefinition def = itemManager.getItemDefinition(id);
+			ItemComposition def = itemManager.getItemComposition(id);
 			if (def.getName().toLowerCase().contains("staff"))
 			{
 				player.setAttackStyle(AttackStyle.MAGE);
@@ -857,21 +854,5 @@ public class DynamicMaxHit extends Plugin
 		maxHit = Math.floor(maxHit);
 
 		player.setMaxHit(maxHit);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("dynamicMaxHit"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			attackerOverlay.determineLayer();
-			overlayManager.remove(attackerOverlay);
-			overlayManager.add(attackerOverlay);
-		}
 	}
 }
