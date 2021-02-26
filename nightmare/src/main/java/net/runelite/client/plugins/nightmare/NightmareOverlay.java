@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nightmare;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,7 +25,6 @@ import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.geometry.Geometry;
-import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -35,32 +35,12 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 @Slf4j
 class NightmareOverlay extends Overlay
 {
-	private static final int NIGHTMARE_REGION_ID = 15256;
-	// Nightmare's NPC IDs
-	private static final int NIGHTMARE_PHASE1 = 9425;
-	private static final int NIGHTMARE_PHASE2 = 9426;
-	private static final int NIGHTMARE_PHASE3 = 9427;
-	private static final int NIGHTMARE_PILLAR1 = 9428;
-	private static final int NIGHTMARE_PILLAR2 = 9429;
-	private static final int NIGHTMARE_PHASE10Z = 9432;
-	// Non-Nightmare Objects
-	private static final int NIGHTMARE_WALKER_1 = 9446;
-	private static final int NIGHTMARE_WALKER_2 = 9447;
-	private static final int NIGHTMARE_WALKER_3 = 9448;
-	private static final int NIGHTMARE_WALKER_4 = 9449;
-	private static final int NIGHTMARE_WALKER_5 = 9450;
-	private static final int NIGHTMARE_WALKER_6 = 9451;
-	private static final int NIGHTMARE_PARASITE = 9452;
-	private static final int NIGHTMARE_HUSK = 9454;
-	private static final int NIGHTMARE_SHADOW = 1767;   // graphics object
-	private static final int NIGHTMARE_MUSHROOM = 37739;
-	private static final int NM_PRE_REGION = 15256;
 	private final Client client;
 	private final NightmarePlugin plugin;
 	private final NightmareConfig config;
 	private final ModelOutlineRenderer outliner;
 	private int timeout;
-
+	private static final int NIGHTMARE_SHADOW = 1767;
 
 	@Inject
 	private NightmareOverlay(final Client client, final NightmarePlugin plugin, final NightmareConfig config, ModelOutlineRenderer outliner)
@@ -70,7 +50,7 @@ class NightmareOverlay extends Overlay
 		this.config = config;
 		this.outliner = outliner;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -383,18 +363,6 @@ class NightmareOverlay extends Overlay
 		{
 			Polygon playerPolygon = entry.getKey();
 			OverlayUtil.renderPolygon(graphics, playerPolygon, config.huskBorderCol());
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
 		}
 	}
 }
