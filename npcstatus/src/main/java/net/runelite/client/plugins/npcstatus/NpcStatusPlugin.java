@@ -25,6 +25,7 @@
 package net.runelite.client.plugins.npcstatus;
 
 import com.google.inject.Provides;
+import com.openosrs.client.game.NPCManager;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,16 +40,14 @@ import net.runelite.api.NPC;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
-import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.game.NPCManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -57,8 +56,7 @@ import org.pf4j.Extension;
 	name = "NPC Status Timer",
 	enabledByDefault = false,
 	description = "Adds a timer on NPC's for their attacks and flinching.",
-	tags = {"flinch", "npc"},
-	type = PluginType.PVM
+	tags = {"flinch", "npc"}
 )
 public class NpcStatusPlugin extends Plugin
 {
@@ -107,7 +105,7 @@ public class NpcStatusPlugin extends Plugin
 		final NPC npc = npcSpawned.getNpc();
 		final String npcName = npc.getName();
 
-		if (npcName == null || !Arrays.asList(npc.getDefinition().getActions()).contains("Attack"))
+		if (npcName == null || !Arrays.asList(npc.getComposition().getActions()).contains("Attack"))
 		{
 			return;
 		}
@@ -171,9 +169,9 @@ public class NpcStatusPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onSpotAnimationChanged(SpotAnimationChanged event)
+	private void onGraphicChanged(GraphicChanged event)
 	{
-		if ((event.getActor().getSpotAnimation() == GraphicID.SPLASH) && event.getActor() instanceof NPC)
+		if ((event.getActor().getGraphic() == GraphicID.SPLASH) && event.getActor() instanceof NPC)
 		{
 			for (MemorizedNPC mn : memorizedNPCs)
 			{
