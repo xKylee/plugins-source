@@ -43,7 +43,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import static net.runelite.client.plugins.playerattacktimer.AttackTimerMap.ATTACK_TIMER_MAP;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
@@ -54,8 +53,7 @@ import org.pf4j.Extension;
 	name = "Player Attack Timer",
 	enabledByDefault = false,
 	description = "Display the tick delay for your current weapon.<br>Helps with lazy prayer flicking and flinching.",
-	tags = {"player", "attack", "tick", "timer", "delay"},
-	type = PluginType.UTILITY
+	tags = {"player", "attack", "tick", "timer", "delay"}
 )
 public class PlayerAttackTimerPlugin extends Plugin
 {
@@ -115,12 +113,6 @@ public class PlayerAttackTimerPlugin extends Plugin
 		{
 			case "customAnimations":
 				parseCustomAnimationConfig(config.customAnimations());
-				break;
-			case "mirrorMode":
-				playerOverlay.determineLayer();
-
-				overlayManager.remove(playerOverlay);
-				overlayManager.add(playerOverlay);
 				break;
 			default:
 				break;

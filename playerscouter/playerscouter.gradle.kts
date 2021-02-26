@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.11"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Player Scouter"
 project.extra["PluginDescription"] = "Scout players and output them to your discord channel!"
