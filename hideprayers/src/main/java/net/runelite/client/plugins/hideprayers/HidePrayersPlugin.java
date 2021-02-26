@@ -49,7 +49,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.hideprayers.util.PrayerTabStates;
 import org.pf4j.Extension;
 
@@ -57,8 +56,7 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Show/Hide Prayers",
 	enabledByDefault = false,
-	description = "Hides specific Prayers.",
-	type = PluginType.UTILITY
+	description = "Hides specific Prayers."
 )
 public class HidePrayersPlugin extends Plugin
 {

@@ -47,10 +47,8 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -59,8 +57,7 @@ import org.pf4j.Extension;
 	name = "Hallowed Sepulchre",
 	enabledByDefault = false,
 	description = "A plugin for the Hallowed Sepulchre agility minigame.",
-	tags = {"sepulchre", "hallowed", "darkmeyer", "agility", "course", "minigame"},
-	type = PluginType.MINIGAME
+	tags = {"sepulchre", "hallowed", "darkmeyer", "agility", "course", "minigame"}
 )
 public class HallowedSepulchrePlugin extends Plugin
 {
@@ -173,26 +170,6 @@ public class HallowedSepulchrePlugin extends Plugin
 		playerInSepulchre = false;
 		overlayManager.remove(hallowedSepulchreOverlay);
 		clearSepulchreGameObjects();
-	}
-
-	@Subscribe
-	private void onConfigChanged(final ConfigChanged event)
-	{
-		if (!event.getGroup().equals("hallowedsepulchre"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			hallowedSepulchreOverlay.determineLayer();
-
-			if (overlayManager.anyMatch(o -> o instanceof HallowedSepulchreOverlay))
-			{
-				overlayManager.remove(hallowedSepulchreOverlay);
-				overlayManager.add(hallowedSepulchreOverlay);
-			}
-		}
 	}
 
 	@Subscribe
