@@ -47,10 +47,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "",
 		position = 0
 	)
-	default boolean general()
-	{
-		return false;
-	}
+	String general = "General";
 
 	@ConfigSection(
 		keyName = "specialAttacks",
@@ -58,10 +55,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "",
 		position = 1
 	)
-	default boolean specialAttacks()
-	{
-		return false;
-	}
+	String specialAttacks = "Special Attacks";
 
 	@ConfigSection(
 		keyName = "misc",
@@ -69,10 +63,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "",
 		position = 2
 	)
-	default boolean misc()
-	{
-		return false;
-	}
+	String misc = "Misc";
 
 	// General
 
@@ -81,7 +72,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Hydra immunity outline",
 		description = "Overlay the hydra with a colored outline while it has immunity/not weakened.",
 		position = 0,
-		section = "general"
+		section = general
 	)
 	default boolean hydraImmunityOutline()
 	{
@@ -93,7 +84,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Fountain occupancy outline",
 		description = "Overlay fountains with a colored outline indicating if the hydra is standing on it.",
 		position = 1,
-		section = "general"
+		section = general
 	)
 	default boolean fountainOutline()
 	{
@@ -106,7 +97,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Hide prayer overlay during special attacks."
 			+ "<br>This can help indicate when to save prayer points.",
 		position = 2,
-		section = "general"
+		section = general
 	)
 	default boolean hidePrayerOnSpecial()
 	{
@@ -118,7 +109,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Show HP until phase change",
 		description = "Overlay hydra with hp remaining until next phase change.",
 		position = 3,
-		section = "general"
+		section = general
 	)
 	default boolean showHpUntilPhaseChange()
 	{
@@ -130,7 +121,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Font style can be bold, plain, or italicized.",
 		position = 4,
 		keyName = "fontStyle",
-		section = "general",
+		section = general,
 		enumClass = FontStyle.class,
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
@@ -145,7 +136,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Toggle font shadow.",
 		position = 5,
 		keyName = "fontShadow",
-		section = "general",
+		section = general,
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -163,7 +154,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Adjust font size.",
 		position = 6,
 		keyName = "fontSize",
-		section = "general",
+		section = general,
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -179,7 +170,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Adjust font color.",
 		position = 7,
 		keyName = "fontColor",
-		section = "general",
+		section = general,
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -197,7 +188,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Adjust the Z coordinate offset.",
 		position = 8,
 		keyName = "fontZOffset",
-		section = "general",
+		section = general,
 		hidden = true,
 		unhide = "showHpUntilPhaseChange"
 	)
@@ -214,7 +205,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Lightning outline",
 		description = "Overlay lightning tiles with a colored outline.",
 		position = 0,
-		section = "specialAttacks"
+		section = specialAttacks
 	)
 	default boolean lightningOutline()
 	{
@@ -230,7 +221,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Change the stroke width of the lightning tile outline.",
 		position = 1,
 		keyName = "lightningStroke",
-		section = "specialAttacks",
+		section = specialAttacks,
 		hidden = true,
 		unhide = "lightningOutline"
 	)
@@ -246,7 +237,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Change the tile outline color of lightning.",
 		position = 2,
 		keyName = "lightningOutlineColor",
-		section = "specialAttacks",
+		section = specialAttacks,
 		hidden = true,
 		unhide = "lightningOutline"
 	)
@@ -261,7 +252,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Change the tile fill color of lightning.",
 		position = 3,
 		keyName = "lightningFillColor",
-		section = "specialAttacks",
+		section = specialAttacks,
 		hidden = true,
 		unhide = "lightningOutline"
 	)
@@ -275,7 +266,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Poison outline",
 		description = "Overlay poison tiles with a colored outline.",
 		position = 4,
-		section = "specialAttacks"
+		section = specialAttacks
 	)
 	default boolean poisonOutline()
 	{
@@ -291,7 +282,7 @@ public interface AlchemicalHydraConfig extends Config
 		description = "Change the stroke width of the poison tile outline.",
 		position = 5,
 		keyName = "poisonStroke",
-		section = "specialAttacks",
+		section = specialAttacks,
 		hidden = true,
 		unhide = "poisonOutline"
 	)
@@ -307,7 +298,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Outline color",
 		description = "Outline color of poison area tiles.",
 		position = 6,
-		section = "specialAttacks",
+		section = specialAttacks,
 		hidden = true,
 		unhide = "poisonOutline"
 	)
@@ -322,7 +313,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Outline fill color",
 		description = "Fill color of poison area tiles.",
 		position = 7,
-		section = "specialAttacks",
+		section = specialAttacks,
 		hidden = true,
 		unhide = "poisonOutline"
 	)
@@ -339,7 +330,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Safe color",
 		description = "Color indicating there are at least two hydra attacks pending.",
 		position = 0,
-		section = "misc"
+		section = misc
 	)
 	default Color safeColor()
 	{
@@ -352,7 +343,7 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Warning color",
 		description = "Color indicating there is one hydra attack pending.",
 		position = 1,
-		section = "misc"
+		section = misc
 	)
 	default Color warningColor()
 	{
@@ -365,24 +356,11 @@ public interface AlchemicalHydraConfig extends Config
 		name = "Danger color",
 		description = "Color indiciating the hydra will change attacks.",
 		position = 2,
-		section = "misc"
+		section = misc
 	)
 	default Color dangerColor()
 	{
 		return new Color(150, 0, 0, 150);
-	}
-
-	// Mirror mode
-
-	@ConfigItem(
-		name = "Mirror mode compatibility",
-		keyName = "mirrorMode",
-		description = "Render overlays while mirror mode enabled.",
-		position = 99
-	)
-	default boolean mirrorMode()
-	{
-		return false;
 	}
 
 	// Constants

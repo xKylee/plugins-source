@@ -28,6 +28,7 @@ package net.runelite.client.plugins.alchemicalhydra.overlay;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -37,8 +38,11 @@ import net.runelite.api.Client;
 import net.runelite.api.IndexDataBase;
 import net.runelite.api.NPC;
 import net.runelite.api.Prayer;
-import net.runelite.api.Sprite;
 import net.runelite.api.SpriteID;
+import net.runelite.api.SpritePixels;
+import net.runelite.api.VarClientInt;
+import net.runelite.api.vars.InterfaceTab;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraConfig;
 import net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin;
@@ -48,7 +52,7 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
+import static net.runelite.client.ui.overlay.OverlayUtil.renderPolygon;
 import static net.runelite.client.ui.overlay.components.ComponentConstants.STANDARD_BACKGROUND_COLOR;
 import net.runelite.client.ui.overlay.components.ComponentOrientation;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
@@ -107,7 +111,7 @@ public class AttackOverlay extends Overlay
 
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -149,11 +153,6 @@ public class AttackOverlay extends Overlay
 	public void setStunTicks()
 	{
 		stunTicks = STUN_TICK_DURATION;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 
 	private void clearPanelComponent()
@@ -253,20 +252,20 @@ public class AttackOverlay extends Overlay
 
 	private BufferedImage createStunImage()
 	{
-		final Sprite root = getSprite(SpriteID.BIG_ASS_GREY_ENTANGLE);
-		final Sprite mark = getSprite(SpriteID.TRADE_EXCLAMATION_MARK_ITEM_REMOVAL_WARNING);
+		final SpritePixels root = getSprite(SpriteID.BIG_ASS_GREY_ENTANGLE);
+		final SpritePixels mark = getSprite(SpriteID.TRADE_EXCLAMATION_MARK_ITEM_REMOVAL_WARNING);
 
 		if (mark == null || root == null)
 		{
 			return null;
 		}
 
-		final Sprite sprite = ImageUtil.mergeSprites(client, ImageUtil.resizeSprite(client, root, IMAGE_SIZE, IMAGE_SIZE), mark);
+		final SpritePixels sprite = ImageUtil.mergeSprites(client, ImageUtil.resizeSprite(client, root, IMAGE_SIZE, IMAGE_SIZE), mark);
 
 		return sprite.toBufferedImage();
 	}
 
-	private Sprite getSprite(final int spriteId)
+	private SpritePixels getSprite(final int spriteId)
 	{
 		final IndexDataBase spriteDatabase = client.getIndexSprites();
 
@@ -275,7 +274,7 @@ public class AttackOverlay extends Overlay
 			return null;
 		}
 
-		final Sprite[] sprites = client.getSprites(spriteDatabase, spriteId, 0);
+		final SpritePixels[] sprites = client.getSprites(spriteDatabase, spriteId, 0);
 
 		if (sprites == null)
 		{

@@ -48,10 +48,8 @@ import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.alchemicalhydra.entity.Hydra;
 import net.runelite.client.plugins.alchemicalhydra.entity.Hydra.AttackStyle;
 import net.runelite.client.plugins.alchemicalhydra.entity.HydraPhase;
@@ -67,8 +65,7 @@ import org.pf4j.Extension;
 	name = "Alchemical Hydra",
 	enabledByDefault = false,
 	description = "A plugin for the Alchemical Hydra boss.",
-	tags = {"alchemical", "hydra"},
-	type = PluginType.PVM
+	tags = {"alchemical", "hydra"}
 )
 public class AlchemicalHydraPlugin extends Plugin
 {
@@ -100,6 +97,17 @@ public class AlchemicalHydraPlugin extends Plugin
 	@Getter
 	private Hydra hydra;
 
+	public static final int HYDRA_1_1 = 8237;
+	public static final int HYDRA_1_2 = 8238;
+	public static final int HYDRA_LIGHTNING = 8241;
+	public static final int HYDRA_2_1 = 8244;
+	public static final int HYDRA_2_2 = 8245;
+	public static final int HYDRA_FIRE = 8248;
+	public static final int HYDRA_3_1 = 8251;
+	public static final int HYDRA_3_2 = 8252;
+	public static final int HYDRA_4_1 = 8257;
+	public static final int HYDRA_4_2 = 8258;
+
 	@Getter
 	private final Map<LocalPoint, Projectile> poisonProjectiles = new HashMap<>();
 
@@ -130,12 +138,6 @@ public class AlchemicalHydraPlugin extends Plugin
 		{
 			onNpcSpawned(new NpcSpawned(npc));
 		}
-
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
-		eventBus.subscribe(ProjectileMoved.class, this, this::onProjectileMoved);
-		eventBus.subscribe(ChatMessage.class, this, this::onChatMessage);
 	}
 
 	@Override
@@ -150,21 +152,6 @@ public class AlchemicalHydraPlugin extends Plugin
 		hydra = null;
 		poisonProjectiles.clear();
 		lastAttackTick = -1;
-	}
-
-	@Subscribe
-	private void onConfigChanged(final ConfigChanged event)
-	{
-		if (event.getGroup().equals("alchemicalhydra") && event.getKey().equals("mirrorMode"))
-		{
-			updateOverlayLayers();
-
-			if (atHydra)
-			{
-				removeOverlays();
-				addOverlays();
-			}
-		}
 	}
 
 	@Subscribe
@@ -201,11 +188,13 @@ public class AlchemicalHydraPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
 		attackOverlay.decrementStunTicks();
 	}
 
+	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -216,6 +205,7 @@ public class AlchemicalHydraPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
 		final Actor actor = event.getActor();
@@ -267,6 +257,7 @@ public class AlchemicalHydraPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onProjectileMoved(final ProjectileMoved event)
 	{
 		final Projectile projectile = event.getProjectile();
@@ -329,13 +320,6 @@ public class AlchemicalHydraPlugin extends Plugin
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(attackOverlay);
 		overlayManager.remove(prayerOverlay);
-	}
-
-	private void updateOverlayLayers()
-	{
-		attackOverlay.determineLayer();
-		sceneOverlay.determineLayer();
-		prayerOverlay.determineLayer();
 	}
 
 	private boolean isInHydraRegion()

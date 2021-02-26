@@ -29,11 +29,20 @@ import java.awt.image.BufferedImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.SpriteID;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.game.SpriteManager;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_1_1;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_1_2;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_2_1;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_2_2;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_3_1;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_3_2;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_4_1;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_4_2;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_FIRE;
+import static net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin.HYDRA_LIGHTNING;
 import net.runelite.client.plugins.alchemicalhydra.overlay.AttackOverlay;
 import net.runelite.client.util.ImageUtil;
 
@@ -41,13 +50,13 @@ import net.runelite.client.util.ImageUtil;
 @RequiredArgsConstructor
 public enum HydraPhase
 {
-	POISON(3, AnimationID.HYDRA_1_1, AnimationID.HYDRA_1_2, ProjectileID.HYDRA_POISON, 0,
+	POISON(3, HYDRA_1_1, HYDRA_1_2, ProjectileID.HYDRA_POISON, 0,
 		825, SpriteID.BIG_ASS_GUTHIX_SPELL, new WorldPoint(1371, 10263, 0), Color.GREEN, Color.RED),
-	LIGHTNING(3, AnimationID.HYDRA_2_1, AnimationID.HYDRA_2_2, 0, AnimationID.HYDRA_LIGHTNING,
+	LIGHTNING(3, HYDRA_2_1, HYDRA_2_2, 0, HYDRA_LIGHTNING,
 		550, SpriteID.BIG_SPEC_TRANSFER, new WorldPoint(1371, 10272, 0), Color.CYAN, Color.GREEN),
-	FLAME(3, AnimationID.HYDRA_3_1, AnimationID.HYDRA_3_2, 0, AnimationID.HYDRA_FIRE,
+	FLAME(3, HYDRA_3_1, HYDRA_3_2, 0, HYDRA_FIRE,
 		275, SpriteID.BIG_SUPERHEAT, new WorldPoint(1362, 10272, 0), Color.RED, Color.CYAN),
-	ENRAGED(1, AnimationID.HYDRA_4_1, AnimationID.HYDRA_4_2, ProjectileID.HYDRA_POISON, 0,
+	ENRAGED(1, HYDRA_4_1, HYDRA_4_2, ProjectileID.HYDRA_POISON, 0,
 		0, SpriteID.BIG_ASS_GUTHIX_SPELL, null, null, null);
 
 	private final int attacksPerSwitch;

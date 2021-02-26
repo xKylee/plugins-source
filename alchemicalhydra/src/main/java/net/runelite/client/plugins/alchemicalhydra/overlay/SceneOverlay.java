@@ -25,6 +25,7 @@
  */
 package net.runelite.client.plugins.alchemicalhydra.overlay;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,7 +49,6 @@ import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraConfig;
 import net.runelite.client.plugins.alchemicalhydra.AlchemicalHydraPlugin;
 import net.runelite.client.plugins.alchemicalhydra.entity.Hydra;
@@ -57,7 +57,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class SceneOverlay extends Overlay
@@ -90,7 +89,7 @@ public class SceneOverlay extends Overlay
 
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -110,11 +109,6 @@ public class SceneOverlay extends Overlay
 		renderFountainOutline(graphics2D);
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 
 	private void renderPoisonProjectileAreaTiles(final Graphics2D graphics2D)

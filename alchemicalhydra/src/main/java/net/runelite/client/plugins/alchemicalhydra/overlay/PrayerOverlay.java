@@ -40,7 +40,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 public class PrayerOverlay extends Overlay
 {
@@ -60,7 +59,7 @@ public class PrayerOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -85,8 +84,4 @@ public class PrayerOverlay extends Overlay
 		OverlayUtil.renderPrayerOverlay(graphics2D, client, prayer, prayer == Prayer.PROTECT_FROM_MAGIC ? Color.CYAN : Color.GREEN);
 	}
 
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
-	}
 }
