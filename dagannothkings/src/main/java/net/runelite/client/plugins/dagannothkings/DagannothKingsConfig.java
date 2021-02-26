@@ -36,7 +36,7 @@ import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 
 @ConfigGroup("dagannothkings")
-public interface DKConfig extends Config
+public interface DagannothKingsConfig extends Config
 {
 	// Sections
 
@@ -46,10 +46,7 @@ public interface DKConfig extends Config
 		name = "Settings",
 		description = ""
 	)
-	default boolean settings()
-	{
-		return false;
-	}
+	String settings = "Settings";
 
 	@ConfigSection(
 		keyName = "font",
@@ -57,10 +54,7 @@ public interface DKConfig extends Config
 		name = "Font",
 		description = ""
 	)
-	default boolean font()
-	{
-		return false;
-	}
+	String font = "Font";
 
 	// Settings
 
@@ -69,7 +63,7 @@ public interface DKConfig extends Config
 		keyName = "showPrayerInfoboxOverlay",
 		name = "Prayer infobox overlay",
 		description = "Infobox overlay with prayer to activate.",
-		section = "settings"
+		section = settings
 	)
 	default boolean showPrayerInfoboxOverlay()
 	{
@@ -81,7 +75,7 @@ public interface DKConfig extends Config
 		keyName = "showPrayerWidgetOverlay",
 		name = "Prayer widget overlay",
 		description = "Overlay prayer widget with tick timer.",
-		section = "settings"
+		section = settings
 	)
 	default boolean showPrayerWidgetOverlay()
 	{
@@ -93,7 +87,7 @@ public interface DKConfig extends Config
 		keyName = "showGuitarHeroOverlay",
 		name = "Guitar hero overlay",
 		description = "Render \"Guitar Hero\" style prayer overlay.",
-		section = "settings"
+		section = settings
 	)
 	default boolean showGuitarHeroOverlay()
 	{
@@ -105,7 +99,7 @@ public interface DKConfig extends Config
 		keyName = "showNpcTickCounter",
 		name = "Show NPC tick counter",
 		description = "Show tick counters on NPCs.",
-		section = "settings"
+		section = settings
 	)
 	default boolean showNpcTickCounter()
 	{
@@ -117,7 +111,7 @@ public interface DKConfig extends Config
 		keyName = "ignoringNonAttacking",
 		name = "Ignore non-attacking NPCs",
 		description = "Ignore NPCs that are not attacking you.",
-		section = "settings"
+		section = settings
 	)
 	default boolean ignoringNonAttacking()
 	{
@@ -129,7 +123,7 @@ public interface DKConfig extends Config
 		keyName = "showNpcTileOutline",
 		name = "Show NPC tile outlines",
 		description = "Show tile outlines for NPCs.",
-		section = "settings"
+		section = settings
 	)
 	default boolean showNpcTileOutline()
 	{
@@ -143,7 +137,7 @@ public interface DKConfig extends Config
 		keyName = "fontStyle",
 		name = "Font style",
 		description = "Plain | Bold | Italics",
-		section = "font"
+		section = font
 	)
 	default FontStyle fontStyle()
 	{
@@ -159,7 +153,7 @@ public interface DKConfig extends Config
 		keyName = "fontSize",
 		name = "Font size",
 		description = "Font size for timers.",
-		section = "font"
+		section = font
 	)
 	default int fontSize()
 	{
@@ -171,22 +165,9 @@ public interface DKConfig extends Config
 		keyName = "fontShadow",
 		name = "Font shadow",
 		description = "Add shadow to font.",
-		section = "font"
+		section = font
 	)
 	default boolean fontShadow()
-	{
-		return false;
-	}
-
-	// Misc
-
-	@ConfigItem(
-		position = 99,
-		keyName = "mirrorMode",
-		name = "Enable mirror mode overlay",
-		description = "Show overlay when mirror mode enabled."
-	)
-	default boolean mirrorMode()
 	{
 		return false;
 	}

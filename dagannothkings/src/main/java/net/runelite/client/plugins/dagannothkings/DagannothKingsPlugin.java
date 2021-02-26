@@ -44,10 +44,8 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.dagannothkings.entity.DagannothKing;
 import net.runelite.client.plugins.dagannothkings.overlay.InfoboxOverlay;
 import net.runelite.client.plugins.dagannothkings.overlay.PrayerOverlay;
@@ -61,12 +59,13 @@ import org.pf4j.Extension;
 	name = "Dagannoth Kings",
 	enabledByDefault = false,
 	description = "A plugin for the Dagannoth Kings.",
-	tags = {"dagannoth", "kings", "dks", "daggs"},
-	type = PluginType.PVM
+	tags = {"dagannoth", "kings", "dks", "daggs"}
 )
-public class DKPlugin extends Plugin
+public class DagannothKingsPlugin extends Plugin
 {
-	private static final String CONFIG_GROUP = "dagannothkings";
+	public static final int DAG_REX = 2853;
+	public static final int DAG_PRIME = 2854;
+	public static final int DAG_SUPREME = 2855;
 
 	private static final int WATERBITH_REGION = 11589;
 
@@ -97,9 +96,9 @@ public class DKPlugin extends Plugin
 	private long lastTickTime;
 
 	@Provides
-	DKConfig getConfig(final ConfigManager configManager)
+	DagannothKingsConfig getConfig(final ConfigManager configManager)
 	{
-		return configManager.getConfig(DKConfig.class);
+		return configManager.getConfig(DagannothKingsConfig.class);
 	}
 
 	@Override
@@ -123,10 +122,6 @@ public class DKPlugin extends Plugin
 		{
 			addNpc(npc);
 		}
-
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
 	}
 
 	@Override
@@ -139,26 +134,6 @@ public class DKPlugin extends Plugin
 		removeOverlays();
 
 		dagannothKings.clear();
-	}
-
-	@Subscribe
-	private void onConfigChanged(final ConfigChanged event)
-	{
-		if (!event.getGroup().equals(CONFIG_GROUP))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			updateOverlays();
-
-			if (atDks)
-			{
-				removeOverlays();
-				addOverlays();
-			}
-		}
 	}
 
 	@Subscribe
@@ -191,6 +166,7 @@ public class DKPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameTick(final GameTick Event)
 	{
 		lastTickTime = System.currentTimeMillis();
@@ -206,11 +182,13 @@ public class DKPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		addNpc(event.getNpc());
 	}
 
+	@Subscribe
 	private void onNpcDespawned(final NpcDespawned event)
 	{
 		removeNpc(event.getNpc());
@@ -256,13 +234,6 @@ public class DKPlugin extends Plugin
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(infoboxOverlay);
-	}
-
-	private void updateOverlays()
-	{
-		sceneOverlay.determineLayer();
-		prayerOverlay.determineLayer();
-		infoboxOverlay.determineLayer();
 	}
 
 	private boolean atDks()

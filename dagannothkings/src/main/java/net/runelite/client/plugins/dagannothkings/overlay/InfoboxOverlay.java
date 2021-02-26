@@ -39,8 +39,8 @@ import net.runelite.api.Client;
 import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
-import net.runelite.client.plugins.dagannothkings.DKConfig;
-import net.runelite.client.plugins.dagannothkings.DKPlugin;
+import net.runelite.client.plugins.dagannothkings.DagannothKingsConfig;
+import net.runelite.client.plugins.dagannothkings.DagannothKingsPlugin;
 import net.runelite.client.plugins.dagannothkings.entity.DagannothKing;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -73,13 +73,13 @@ public class InfoboxOverlay extends Overlay
 
 	private final Client client;
 
-	private final DKPlugin plugin;
-	private final DKConfig config;
+	private final DagannothKingsPlugin plugin;
+	private final DagannothKingsConfig config;
 
 	private final SpriteManager spriteManager;
 
 	@Inject
-	public InfoboxOverlay(final Client client, final DKPlugin plugin, final DKConfig config, final SpriteManager spriteManager)
+	public InfoboxOverlay(final Client client, final DagannothKingsPlugin plugin, final DagannothKingsConfig config, final SpriteManager spriteManager)
 	{
 		super(plugin);
 
@@ -90,7 +90,7 @@ public class InfoboxOverlay extends Overlay
 
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -108,11 +108,6 @@ public class InfoboxOverlay extends Overlay
 		updatePrayerComponent(dk.getAttackStyle().getPrayer());
 
 		return PANEL_COMPONENT.render(graphics2D);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	private void updatePrayerComponent(final Prayer prayer)

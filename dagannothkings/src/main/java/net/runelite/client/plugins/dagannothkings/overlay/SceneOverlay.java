@@ -39,32 +39,31 @@ import javax.inject.Singleton;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.client.plugins.dagannothkings.DKConfig;
-import net.runelite.client.plugins.dagannothkings.DKPlugin;
+import net.runelite.client.plugins.dagannothkings.DagannothKingsConfig;
+import net.runelite.client.plugins.dagannothkings.DagannothKingsPlugin;
 import net.runelite.client.plugins.dagannothkings.entity.DagannothKing;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class SceneOverlay extends Overlay
 {
 	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
-	private final DKPlugin plugin;
-	private final DKConfig config;
+	private final DagannothKingsPlugin plugin;
+	private final DagannothKingsConfig config;
 	private final Client client;
 
 	private Set<DagannothKing> dagannothKings;
 
 	@Inject
-	public SceneOverlay(final DKPlugin plugin, final DKConfig config, final Client client)
+	public SceneOverlay(final DagannothKingsPlugin plugin, final DagannothKingsConfig config, final Client client)
 	{
 		super(plugin);
 
@@ -91,11 +90,6 @@ public class SceneOverlay extends Overlay
 		renderNpcTile(graphics2D);
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 
 	private void renderNpcTickCount(final Graphics2D graphics2D)
@@ -155,11 +149,11 @@ public class SceneOverlay extends Overlay
 
 		int size = 1;
 
-		final NPCDefinition npcDefinition = npc.getDefinition();
+		final NPCComposition npcComposition = npc.getComposition();
 
-		if (npcDefinition != null)
+		if (npcComposition != null)
 		{
-			size = npcDefinition.getSize();
+			size = npcComposition.getSize();
 		}
 
 		final LocalPoint localPoint = npc.getLocalLocation();
