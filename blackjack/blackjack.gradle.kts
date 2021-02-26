@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.7"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Blackjack"
 project.extra["PluginDescription"] = "Allows for one-click blackjacking, both knocking out and pickpocketing"
