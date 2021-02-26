@@ -53,7 +53,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -62,8 +61,7 @@ import org.pf4j.Extension;
 	name = "Hydra Helper",
 	enabledByDefault = false,
 	description = "Overlays for normal Hydras.",
-	tags = {"hydra", "helper", "baby", "small", "normal", "regular"},
-	type = PluginType.PVM
+	tags = {"hydra", "helper", "baby", "small", "normal", "regular"}
 )
 public class HydraPlugin extends Plugin
 {
@@ -208,29 +206,6 @@ public class HydraPlugin extends Plugin
 			case CONFIG_ITEM_BOLD_ATTACK_COUNTER_OVERLAY:
 				hydraAttackCounterOverlay.setBoldAttackCounterOverlay(hydraConfig.isBoldAttackCounterOverlay());
 				break;
-			case CONFIG_ITEM_MIRROR_MODE_COMPATABILITY:
-				if (hydraConfig.isAttackCounterOverlay())
-				{
-					hydraAttackCounterOverlay.determineLayer();
-					overlayManager.remove(hydraAttackCounterOverlay);
-					overlayManager.add(hydraAttackCounterOverlay);
-
-				}
-				if (hydraConfig.isPrayerOverlay())
-				{
-					hydraPrayerOverlay.determineLayer();
-					hydraPrayerAttackCounterOverlay.determineLayer();
-					overlayManager.remove(hydraPrayerOverlay);
-					overlayManager.remove(hydraPrayerAttackCounterOverlay);
-					overlayManager.add(hydraPrayerOverlay);
-					overlayManager.add(hydraPrayerAttackCounterOverlay);
-				}
-				if (hydraConfig.isPoisonOverlay())
-				{
-					hydraPoisonOverlay.determineLayer();
-					overlayManager.remove(hydraPoisonOverlay);
-					overlayManager.add(hydraPoisonOverlay);
-				}
 			default:
 				break;
 		}

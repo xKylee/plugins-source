@@ -54,19 +54,16 @@ public class HydraPoisonOverlay extends Overlay
 
 	private final Client client;
 
-	private final HydraConfig config;
-
 	@Setter(AccessLevel.PACKAGE)
 	private Map<LocalPoint, Projectile> poisonProjectiles;
 
 	@Inject
-	public HydraPoisonOverlay(final Client client, final HydraConfig config)
+	public HydraPoisonOverlay(final Client client)
 	{
 		this.client = client;
-		this.config = config;
 		this.poisonProjectiles = new HashMap<>();
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -112,17 +109,5 @@ public class HydraPoisonOverlay extends Overlay
 		graphics.draw(poisonTiles);
 		graphics.setColor(poisonFill);
 		graphics.fill(poisonTiles);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.UNDER_WIDGETS);
-		}
 	}
 }
