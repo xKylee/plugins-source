@@ -1,17 +1,14 @@
 package net.runelite.client.plugins.whalewatchers
 
 import com.google.inject.Provides
+import com.openosrs.client.game.SoundManager
 import net.runelite.api.*
 import net.runelite.api.events.*
-import net.runelite.api.events.player.headicon.PlayerSkullChanged
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.ConfigChanged
-import net.runelite.client.game.Sound
-import net.runelite.client.game.SoundManager
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
-import net.runelite.client.plugins.PluginType
 import net.runelite.client.ui.overlay.OverlayManager
 import net.runelite.client.util.PvPUtil
 import org.pf4j.Extension
@@ -23,8 +20,7 @@ import kotlin.math.ceil
         name = "Whale Watchers",
         enabledByDefault = false,
         description = "A Plugin to save help whales in the wild",
-        tags = ["whale watchers", "whale", "protect item", "warning", "pklite", "pneck"],
-        type = PluginType.PVP
+        tags = ["whale watchers", "whale", "protect item", "warning", "pklite", "pneck"]
 )
 class WhaleWatchersPlugin : Plugin() {
     var protectItemOverlay = false
@@ -92,13 +88,6 @@ class WhaleWatchersPlugin : Plugin() {
     }
 
     @Subscribe
-    private fun onChatMessage(event: ChatMessage) {
-        if (config.pneckBreak() && event.type == ChatMessageType.GAMEMESSAGE && event.message == BROKEN_PNECK_MESSAGE) {
-            soundManager.playSound(Sound.BREAK)
-        }
-    }
-
-    @Subscribe
     private fun onItemContainerChanged(event: ItemContainerChanged) {
         if (!config.gloryWarning() && event.itemContainer !== client.getItemContainer(InventoryID.EQUIPMENT)) return
         displayGloryOverlay = client.getItemContainer(InventoryID.EQUIPMENT)!!
@@ -146,7 +135,7 @@ class WhaleWatchersPlugin : Plugin() {
 
     private fun shouldBeProtecting() =
             (WorldType.isPvpWorld(client.worldType) ||
-                    WorldType.isDeadmanWorld(client.worldType) || client.getVar(Varbits.IN_PVP_AREA) == 1) &&
+                    WorldType.isDeadmanWorld(client.worldType) || client.getVarbitValue(8121) == 1) &&
                     isSkulled() && canProtectItem() && !client.isPrayerActive(Prayer.PROTECT_ITEM)
 
     private fun canProtectItem() = client.getRealSkillLevel(Skill.PRAYER) > 25

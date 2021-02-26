@@ -27,29 +27,19 @@
  */
 package net.runelite.client.plugins.zulrah;
 
-import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
-import net.runelite.api.Prayer;
-import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
-import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.game.Sound;
-import net.runelite.client.game.SoundManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.zulrah.overlays.ZulrahCurrentPhaseOverlay;
 import net.runelite.client.plugins.zulrah.overlays.ZulrahNextPhaseOverlay;
 import net.runelite.client.plugins.zulrah.overlays.ZulrahOverlay;
@@ -68,8 +58,7 @@ import org.pf4j.Extension;
 	name = "Zulrah Helper",
 	enabledByDefault = false,
 	description = "Shows tiles on where to stand during the phases and what prayer to use.",
-	tags = {"zulrah", "boss", "helper"},
-	type = PluginType.PVM
+	tags = {"zulrah", "boss", "helper"}
 )
 @Slf4j
 public class ZulrahPlugin extends Plugin
@@ -89,13 +78,7 @@ public class ZulrahPlugin extends Plugin
 	private Client client;
 
 	@Inject
-	private ZulrahConfig config;
-
-	@Inject
 	private OverlayManager overlayManager;
-
-	@Inject
-	private SoundManager soundManager;
 
 	@Inject
 	private ZulrahCurrentPhaseOverlay currentPhaseOverlay;
@@ -110,12 +93,6 @@ public class ZulrahPlugin extends Plugin
 	private ZulrahOverlay zulrahOverlay;
 
 	private ZulrahInstance instance;
-
-	@Provides
-	ZulrahConfig getConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(ZulrahConfig.class);
-	}
 
 	@Override
 	protected void startUp()
@@ -208,45 +185,6 @@ public class ZulrahPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onAnimationChanged(AnimationChanged event)
-	{
-		if (instance == null)
-		{
-			return;
-		}
-
-		ZulrahPhase currentPhase = instance.getPhase();
-		ZulrahPhase nextPhase = instance.getNextPhase();
-
-		if (currentPhase == null || nextPhase == null)
-		{
-			return;
-		}
-
-		final Actor actor = event.getActor();
-
-		if (config.sounds() && zulrah != null && zulrah.equals(actor) && zulrah.getAnimation() == AnimationID.ZULRAH_PHASE)
-		{
-			Prayer prayer = nextPhase.getPrayer();
-
-			if (prayer == null)
-			{
-				return;
-			}
-
-			switch (prayer)
-			{
-				case PROTECT_FROM_MAGIC:
-					soundManager.playSound(Sound.PRAY_MAGIC);
-					break;
-				case PROTECT_FROM_MISSILES:
-					soundManager.playSound(Sound.PRAY_RANGED);
-					break;
-			}
-		}
-	}
-
-	@Subscribe
 	private void onNpcSpawned(NpcSpawned event)
 	{
 		NPC npc = event.getNpc();
@@ -271,30 +209,5 @@ public class ZulrahPlugin extends Plugin
 	public ZulrahInstance getInstance()
 	{
 		return instance;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("zulrah"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			currentPhaseOverlay.determineLayer();
-			nextPhaseOverlay.determineLayer();
-			zulrahPrayerOverlay.determineLayer();
-			zulrahOverlay.determineLayer();
-			overlayManager.remove(currentPhaseOverlay);
-			overlayManager.remove(nextPhaseOverlay);
-			overlayManager.remove(zulrahPrayerOverlay);
-			overlayManager.remove(zulrahOverlay);
-			overlayManager.add(currentPhaseOverlay);
-			overlayManager.add(nextPhaseOverlay);
-			overlayManager.add(zulrahPrayerOverlay);
-			overlayManager.add(zulrahOverlay);
-		}
 	}
 }

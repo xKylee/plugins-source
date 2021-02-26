@@ -47,7 +47,7 @@ public class WildernessLocationsOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(OverlayPriority.HIGH);
 		textComponent = new TextComponent();
 	}
@@ -61,17 +61,5 @@ public class WildernessLocationsOverlay extends Overlay
 			return textComponent.render(graphics);
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
-		}
 	}
 }

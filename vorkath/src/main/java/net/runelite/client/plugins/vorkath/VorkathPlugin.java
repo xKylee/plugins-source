@@ -57,10 +57,8 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
@@ -70,8 +68,7 @@ import org.pf4j.Extension;
 	name = "Vorkath Helper",
 	enabledByDefault = false,
 	description = "Count vorkath attacks, indicate next phase, wooxwalk timer, indicate path through acid",
-	tags = {"combat", "overlay", "pve", "pvm"},
-	type = PluginType.PVM
+	tags = {"combat", "overlay", "pve", "pvm"}
 )
 @Slf4j
 public class VorkathPlugin extends Plugin
@@ -114,6 +111,13 @@ public class VorkathPlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private Rectangle wooxWalkBar;
 	private int lastAcidSpotsSize = 0;
+
+	public static final int VORKATH_WAKE_UP = 7950;
+	public static final int VORKATH_DEATH = 7949;
+	public static final int VORKATH_SLASH_ATTACK = 7951;
+	public static final int VORKATH_ATTACK = 7952;
+	public static final int VORKATH_FIRE_BOMB_OR_SPAWN_ATTACK = 7960;
+	public static final int VORKATH_ACID_ATTACK = 7957;
 
 	@Provides
 	VorkathConfig provideConfig(ConfigManager configManager)
@@ -582,24 +586,5 @@ public class VorkathPlugin extends Plugin
 		Arrays.fill(wooxWalkPath, null);
 		wooxWalkTimer = -1;
 		zombifiedSpawn = null;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("vorkath"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			acidPathOverlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.remove(acidPathOverlay);
-			overlayManager.add(overlay);
-			overlayManager.add(acidPathOverlay);
-		}
 	}
 }
