@@ -32,66 +32,47 @@ import lombok.Getter;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.Title;
 import net.runelite.client.config.Units;
 
 @ConfigGroup("Cox")
-
 public interface CoxConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "muttadileTitle",
 		position = 1,
 		name = "Muttadile",
 		description = ""
 	)
-	default Title muttadileTitle()
-	{
-		return new Title();
-	}
+	String muttadileTitle = "Muttadile";
 
 	@ConfigItem(
 		position = 2,
 		keyName = "muttadile",
 		name = "Muttadile Marker",
 		description = "Places an overlay around muttadiles showing their melee range.",
-		titleSection = "muttadileTitle"
+		section = muttadileTitle
 	)
 	default boolean muttadile()
 	{
 		return true;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "tektonTitle",
 		position = 3,
 		name = "Tekton",
 		description = ""
 	)
-	default Title tektonTitle()
-	{
-		return new Title();
-	}
+	String tektonTitle = "Tekton";
 
 	@ConfigItem(
 		position = 4,
 		keyName = "tekton",
 		name = "Tekton Marker",
 		description = "Places an overlay around Tekton showing his melee range.",
-		titleSection = "tektonTitle"
+		section = tektonTitle
 	)
 	default boolean tekton()
 	{
@@ -103,30 +84,27 @@ public interface CoxConfig extends Config
 		keyName = "tektonTickCounter",
 		name = "Tekton Tick Counters",
 		description = "Counts down current phase timer, and attack ticks.",
-		titleSection = "tektonTitle"
+		section = tektonTitle
 	)
 	default boolean tektonTickCounter()
 	{
 		return true;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "guardiansTitle",
 		position = 5,
 		name = "Guardians",
 		description = ""
 	)
-	default Title guardiansTitle()
-	{
-		return new Title();
-	}
+	String guardiansTitle = "Guardians";
 
 	@ConfigItem(
 		position = 6,
 		keyName = "guardians",
 		name = "Guardians Overlay",
 		description = "Places an overlay near Guardians showing safespot.",
-		titleSection = "guardiansTitle"
+		section = guardiansTitle
 	)
 	default boolean guardians()
 	{
@@ -138,30 +116,27 @@ public interface CoxConfig extends Config
 		keyName = "guardinTickCounter",
 		name = "Guardians Tick Timing",
 		description = "Places an overlay on Guardians showing attack tick timers.",
-		titleSection = "guardiansTitle"
+		section = guardiansTitle
 	)
 	default boolean guardinTickCounter()
 	{
 		return true;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "vanguardsTitle",
 		position = 7,
 		name = "Vanguards",
 		description = ""
 	)
-	default Title vanguardsTitle()
-	{
-		return new Title();
-	}
+	String vanguardsTitle = "Vanguards";
 
 	@ConfigItem(
 		position = 8,
 		keyName = "vangHighlight",
 		name = "Highlight Vanguards",
 		description = "Color is based on their attack style.",
-		titleSection = "vanguardsTitle"
+		section = vanguardsTitle
 	)
 	default boolean vangHighlight()
 	{
@@ -173,30 +148,27 @@ public interface CoxConfig extends Config
 		keyName = "vangHealth",
 		name = "Show Vanguards Current HP",
 		description = "This will create an infobox with vanguards current hp.",
-		titleSection = "vanguardsTitle"
+		section = vanguardsTitle
 	)
 	default boolean vangHealth()
 	{
 		return true;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "olmTitle",
 		position = 10,
 		name = "Olm",
 		description = ""
 	)
-	default Title olmTitle()
-	{
-		return new Title();
-	}
+	String olmTitle = "Olm";
 
 	@ConfigItem(
 		position = 11,
 		keyName = "prayAgainstOlm",
 		name = "Olm Show Prayer",
 		description = "Shows what prayer to use during olm.",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	default boolean prayAgainstOlm()
 	{
@@ -212,7 +184,7 @@ public interface CoxConfig extends Config
 		keyName = "prayAgainstOlmSize",
 		name = "Olm Prayer Size",
 		description = "Change the Size of the Olm Infobox.",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	@Units(Units.PIXELS)
 	default int prayAgainstOlmSize()
@@ -225,7 +197,7 @@ public interface CoxConfig extends Config
 		keyName = "timers",
 		name = "Olm Show Burn/Acid Timers",
 		description = "Shows tick timers for burns/acids.",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	default boolean timers()
 	{
@@ -237,7 +209,7 @@ public interface CoxConfig extends Config
 		keyName = "tpOverlay",
 		name = "Olm Show Teleport Overlays",
 		description = "Shows Overlays for targeted teleports.",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	default boolean tpOverlay()
 	{
@@ -249,7 +221,7 @@ public interface CoxConfig extends Config
 		keyName = "olmTick",
 		name = "Olm Tick Counter",
 		description = "Show Tick Counter on Olm",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	default boolean olmTick()
 	{
@@ -261,7 +233,7 @@ public interface CoxConfig extends Config
 		keyName = "olmDebug",
 		name = "Olm Debug Info",
 		description = "Dev tool to show info about olm",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	default boolean olmDebug()
 	{
@@ -273,30 +245,27 @@ public interface CoxConfig extends Config
 		keyName = "olmPShowPhase",
 		name = "Olm Phase Type",
 		description = "Will highlight olm depending on which phase type is active. Red=Flame Green=Acid Purple=Crystal",
-		titleSection = "olmTitle"
+		section = olmTitle
 	)
 	default boolean olmPShowPhase()
 	{
 		return false;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "colors",
 		position = 17,
 		name = "Colors",
 		description = ""
 	)
-	default Title colors()
-	{
-		return new Title();
-	}
+	String colors = "Colors";
 
 	@ConfigItem(
 		position = 18,
 		keyName = "muttaColor",
 		name = "Muttadile Tile Color",
 		description = "Change hit area tile color for muttadiles",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "Muttadile"
 	)
@@ -310,7 +279,7 @@ public interface CoxConfig extends Config
 		keyName = "guardColor",
 		name = "Guardians Tile Color",
 		description = "Change safespot area tile color for Guardians",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "Guardians"
 	)
@@ -324,7 +293,7 @@ public interface CoxConfig extends Config
 		keyName = "tektonColor",
 		name = "Tekton Tile Color",
 		description = "Change hit area tile color for Tekton",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "Tekton"
 	)
@@ -338,7 +307,7 @@ public interface CoxConfig extends Config
 		keyName = "burnColor",
 		name = "Burn Victim Color",
 		description = "Changes tile color for burn victim.",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "timers"
 	)
@@ -352,7 +321,7 @@ public interface CoxConfig extends Config
 		keyName = "acidColor",
 		name = "Acid Victim Color",
 		description = "Changes tile color for acid victim.",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "timers"
 	)
@@ -366,7 +335,7 @@ public interface CoxConfig extends Config
 		keyName = "tpColor",
 		name = "Teleport Target Color",
 		description = "Changes tile color for teleport target.",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "tpOverlay"
 	)
@@ -380,7 +349,7 @@ public interface CoxConfig extends Config
 		keyName = "olmSpecialColor",
 		name = "Olm Special Color",
 		description = "Changes color of a special on Olm's tick counter",
-		titleSection = "colors",
+		section = colors,
 		hidden = true,
 		unhide = "olmTick"
 	)
@@ -389,23 +358,20 @@ public interface CoxConfig extends Config
 		return new Color(89, 255, 0);
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "text",
 		position = 25,
 		name = "Text",
 		description = ""
 	)
-	default Title text()
-	{
-		return new Title();
-	}
+	String text = "Text";
 
 	@ConfigItem(
 		position = 26,
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Bold/Italics/Plain",
-		titleSection = "text"
+		section = text
 	)
 	default FontStyle fontStyle()
 	{
@@ -421,7 +387,7 @@ public interface CoxConfig extends Config
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
-		titleSection = "text"
+		section = text
 	)
 	@Units(Units.POINTS)
 	default int textSize()
@@ -434,7 +400,7 @@ public interface CoxConfig extends Config
 		keyName = "shadows",
 		name = "Shadows",
 		description = "Adds Shadows to text.",
-		titleSection = "text"
+		section = text
 	)
 	default boolean shadows()
 	{

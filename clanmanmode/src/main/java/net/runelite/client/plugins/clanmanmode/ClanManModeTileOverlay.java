@@ -6,7 +6,6 @@ import java.awt.Polygon;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
@@ -22,7 +21,6 @@ public class ClanManModeTileOverlay extends Overlay
 	{
 		this.config = config;
 		this.ClanManModeService = ClanManModeService;
-		determineLayer();
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.MED);
 	}
@@ -46,17 +44,5 @@ public class ClanManModeTileOverlay extends Overlay
 		});
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }
