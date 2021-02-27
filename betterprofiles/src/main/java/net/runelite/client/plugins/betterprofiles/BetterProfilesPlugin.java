@@ -119,22 +119,25 @@ public class BetterProfilesPlugin extends Plugin
 	@Subscribe
 	private void onConfigChanged(ConfigChanged event)
 	{
-		if (event.getGroup().equals("profiles") && event.getKey().equals("rememberPassword"))
+		if (event.getGroup().equals("betterProfiles"))
 		{
-			panel = injector.getInstance(BetterProfilesPanel.class);
-			this.shutDown();
-			this.startUp();
-		}
-		if (event.getGroup().equals("profiles") && !event.getKey().equals("rememberPassword"))
-		{
-			panel = injector.getInstance(BetterProfilesPanel.class);
-			try
+			if (event.getKey().equals("rememberPassword"))
 			{
-				panel.redrawProfiles();
+				panel = injector.getInstance(BetterProfilesPanel.class);
+				this.shutDown();
+				this.startUp();
 			}
-			catch (GeneralSecurityException gse)
+			if (!event.getKey().equals("rememberPassword"))
 			{
-				log.error("Error redrawing profiles panel", gse);
+				panel = injector.getInstance(BetterProfilesPanel.class);
+				try
+				{
+					panel.redrawProfiles();
+				}
+				catch (GeneralSecurityException gse)
+				{
+					log.error("Error redrawing profiles panel", gse);
+				}
 			}
 		}
 	}
