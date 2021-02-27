@@ -66,7 +66,6 @@ import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
@@ -196,9 +195,6 @@ public class GauntletPlugin extends Plugin
 	private ClientThread clientThread;
 
 	@Inject
-	private EventBus eventBus;
-
-	@Inject
 	private GauntletConfig config;
 
 	@Inject
@@ -287,8 +283,6 @@ public class GauntletPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		eventBus.unregister(this);
-
 		overlays.forEach(o -> overlayManager.remove(o));
 
 		inGauntlet = false;
@@ -700,8 +694,6 @@ public class GauntletPlugin extends Plugin
 		overlayManager.add(overlayHunllef);
 		overlayManager.add(overlayPrayerWidget);
 		overlayManager.add(overlayPrayerBox);
-
-		eventBus.unregister(this);
 	}
 
 	private boolean isGauntletVarbitSet()

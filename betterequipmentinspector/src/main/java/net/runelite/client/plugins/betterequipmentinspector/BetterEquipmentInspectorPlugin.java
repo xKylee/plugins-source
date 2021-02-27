@@ -170,7 +170,7 @@ public class BetterEquipmentInspectorPlugin extends Plugin
 
 			if (itemId != -1)
 			{
-				ItemComposition itemComposition = client.getItemDefinition(itemId);
+				ItemComposition itemComposition = client.getItemComposition(itemId);
 				playerEquipment.put(kitType, itemComposition);
 			}
 		}

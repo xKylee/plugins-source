@@ -210,7 +210,7 @@ class PrayAgainstPlayerOverlay extends Overlay
 				if (config.drawUnknownWeapons())
 				{
 					int itemId = player.getPlayerComposition().getEquipmentId(KitType.WEAPON);
-					ItemComposition itemComposition = client.getItemDefinition(itemId);
+					ItemComposition itemComposition = client.getItemComposition(itemId);
 
 					final String str = itemComposition.getName().toUpperCase();
 					Point point = player.getCanvasTextLocation(graphics, str, offset);
