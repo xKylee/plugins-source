@@ -47,7 +47,7 @@ enum WeaponType
 	public static WeaponType checkWeaponOnPlayer(Client client, Player attacker)
 	{
 		int itemId = attacker.getPlayerComposition().getEquipmentId(KitType.WEAPON);
-		ItemComposition itemComposition = client.getItemDefinition(itemId);
+		ItemComposition itemComposition = client.getItemComposition(itemId);
 		String weaponNameGivenLowerCase = itemComposition.getName().toLowerCase();
 
 		if (itemId == -1)
