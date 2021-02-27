@@ -52,10 +52,8 @@ import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 import static net.runelite.client.plugins.aoewarnings.AoeWarningConfig.*;
@@ -65,8 +63,7 @@ import static net.runelite.client.plugins.aoewarnings.AoeWarningConfig.*;
 	name = "AoE Warnings",
 	enabledByDefault = false,
 	description = "Shows the final destination for AoE Attack projectiles",
-	tags = {"bosses", "combat", "pve", "overlay"},
-	type = PluginType.PVM
+	tags = {"bosses", "combat", "pve", "overlay"}
 )
 public class AoeWarningPlugin extends Plugin
 {
@@ -358,25 +355,6 @@ public class AoeWarningPlugin extends Plugin
 		}
 
 		return false;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("aoe"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			bombOverlay.determineLayer();
-			coreOverlay.determineLayer();
-			overlayManager.remove(bombOverlay);
-			overlayManager.remove(coreOverlay);
-			overlayManager.add(bombOverlay);
-			overlayManager.add(coreOverlay);
-		}
 	}
 
 	private void reset()
