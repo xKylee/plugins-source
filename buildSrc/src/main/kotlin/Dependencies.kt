@@ -25,7 +25,7 @@
 
 object ProjectVersions {
     const val rlVersion = "4.0.0"
-    const val apiVersion = "0.0.1"
+    const val apiVersion = "^1.0.0"
     const val kotlinVersion = "1.3.72"
 }
 
