@@ -196,9 +196,6 @@ public class GauntletPlugin extends Plugin
 	private ClientThread clientThread;
 
 	@Inject
-	private EventBus eventBus;
-
-	@Inject
 	private GauntletConfig config;
 
 	@Inject
@@ -287,8 +284,6 @@ public class GauntletPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		eventBus.unregister(this);
-
 		overlays.forEach(o -> overlayManager.remove(o));
 
 		inGauntlet = false;
@@ -700,8 +695,6 @@ public class GauntletPlugin extends Plugin
 		overlayManager.add(overlayHunllef);
 		overlayManager.add(overlayPrayerWidget);
 		overlayManager.add(overlayPrayerBox);
-
-		eventBus.unregister(this);
 	}
 
 	private boolean isGauntletVarbitSet()
