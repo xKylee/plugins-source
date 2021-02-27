@@ -573,7 +573,7 @@ public class GauntletPlugin extends Plugin
 	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
-		if (hunllef == null)
+		if (!isHunllefVarbitSet() || hunllef == null)
 		{
 			return;
 		}
