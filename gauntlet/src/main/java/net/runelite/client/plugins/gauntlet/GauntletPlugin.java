@@ -669,7 +669,10 @@ public class GauntletPlugin extends Plugin
 	{
 		for (final GameObject gameObject : new GameObjectQuery().result(client))
 		{
-			onGameObjectSpawned(new GameObjectSpawned());
+			GameObjectSpawned gameObjectSpawned = new GameObjectSpawned();
+			gameObjectSpawned.setTile(null);
+			gameObjectSpawned.setGameObject(gameObject);
+			onGameObjectSpawned(gameObjectSpawned);
 		}
 
 		for (final NPC npc : client.getNpcs())
