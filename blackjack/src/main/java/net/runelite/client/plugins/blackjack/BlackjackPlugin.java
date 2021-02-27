@@ -30,7 +30,9 @@ import java.util.List;
 import javax.inject.Inject;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.util.Text;
 import net.runelite.client.config.ConfigManager;
@@ -88,25 +90,54 @@ public class BlackjackPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
+		if (client.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+
 		state = State.KNOCKOUT;
-		addedSwaps.add(mesPlugin.swapContains(
-			"talk-to",
-			(s) -> {
-				s = Text.standardize(s, true);
-				return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
-			},
-			PICKPOCKET,
-			() -> state == State.PICKPOCKET && inPollnivneach
-		));
-		addedSwaps.add(mesPlugin.swapContains(
-			"talk-to",
-			(s) -> {
-				s = Text.standardize(s, true);
-				return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
-			},
-			KNOCK_OUT,
-			() -> state == State.KNOCKOUT && inPollnivneach
-		));
+		if (client.getVarpValue(1306) == 1)
+		{
+			addedSwaps.add(mesPlugin.swapContains(
+				"talk-to",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				PICKPOCKET,
+				() -> state == State.PICKPOCKET && inPollnivneach
+			));
+			addedSwaps.add(mesPlugin.swapContains(
+				"talk-to",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				KNOCK_OUT,
+				() -> state == State.KNOCKOUT && inPollnivneach
+			));
+		}
+		else
+		{
+			addedSwaps.add(mesPlugin.swapContains(
+				"Attack",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				PICKPOCKET,
+				() -> state == State.PICKPOCKET && inPollnivneach
+			));
+			addedSwaps.add(mesPlugin.swapContains(
+				"Attack",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				KNOCK_OUT,
+				() -> state == State.KNOCKOUT && inPollnivneach
+			));
+		}
 	}
 
 	@Override
@@ -114,7 +145,62 @@ public class BlackjackPlugin extends Plugin
 	{
 		state = null;
 		addedSwaps.forEach(swap -> mesPlugin.remove("talk-to", swap));
+		addedSwaps.forEach(swap -> mesPlugin.remove("Attack", swap));
 		addedSwaps.clear();
+	}
+
+	@Subscribe
+	private void onGameStateChanged(GameStateChanged event)
+	{
+		if (event.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+
+		state = State.KNOCKOUT;
+		if (client.getVarpValue(1306) == 1)
+		{
+			addedSwaps.add(mesPlugin.swapContains(
+				"talk-to",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				PICKPOCKET,
+				() -> state == State.PICKPOCKET && inPollnivneach
+			));
+			addedSwaps.add(mesPlugin.swapContains(
+				"talk-to",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				KNOCK_OUT,
+				() -> state == State.KNOCKOUT && inPollnivneach
+			));
+		}
+		else
+		{
+			addedSwaps.add(mesPlugin.swapContains(
+				"Attack",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				PICKPOCKET,
+				() -> state == State.PICKPOCKET && inPollnivneach
+			));
+			addedSwaps.add(mesPlugin.swapContains(
+				"Attack",
+				(s) -> {
+					s = Text.standardize(s, true);
+					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
+				},
+				KNOCK_OUT,
+				() -> state == State.KNOCKOUT && inPollnivneach
+			));
+		}
+
 	}
 
 	@Subscribe
