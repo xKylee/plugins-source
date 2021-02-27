@@ -47,7 +47,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Anti Drag",
+	name = "Better Anti Drag",
 	enabledByDefault = false,
 	description = "Prevent dragging an item for a specified delay",
 	tags = {"antidrag", "delay", "inventory", "items"}

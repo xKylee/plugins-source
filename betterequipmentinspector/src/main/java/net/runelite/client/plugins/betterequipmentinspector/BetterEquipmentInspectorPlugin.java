@@ -59,7 +59,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Equipment Inspector",
+	name = "Better Equipment Inspector",
 	enabledByDefault = false
 )
 public class BetterEquipmentInspectorPlugin extends Plugin
