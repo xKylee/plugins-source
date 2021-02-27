@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "4.0.0"
+version = "5.0.0"
 
 project.extra["PluginName"] = "Socket Special Attack Counter"
 project.extra["PluginDescription"] = "Track DWH, Arclight, Darklight, and BGS special attacks used on NPCs using server sockets."

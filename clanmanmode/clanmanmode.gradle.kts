@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "4.0.0"
+version = "5.0.0"
 
 project.extra["PluginName"] = "Clan Man Mode"
 project.extra["PluginDescription"] = "Assists in clan PVP scenarios"

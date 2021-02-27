@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.5"
+version = "1.0.0"
 
 project.extra["PluginName"] = "Show/Hide Prayers"
 project.extra["PluginDescription"] = "Hides specific Prayers"

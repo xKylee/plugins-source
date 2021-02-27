@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "4.0.0"
+version = "5.0.0"
 
 project.extra["PluginName"] = "Socket Player Status Extended"
 project.extra["PluginDescription"] = "Socket extension for displaying player status to members in your party."
