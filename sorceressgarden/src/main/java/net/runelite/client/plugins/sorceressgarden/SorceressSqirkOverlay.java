@@ -1,5 +1,7 @@
 package net.runelite.client.plugins.sorceressgarden;
 
+import com.openosrs.client.ui.overlay.components.table.TableAlignment;
+import com.openosrs.client.ui.overlay.components.table.TableComponent;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
@@ -10,8 +12,6 @@ import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
-import net.runelite.client.ui.overlay.components.table.TableAlignment;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
 
 public class SorceressSqirkOverlay extends OverlayPanel
 {
@@ -34,7 +34,7 @@ public class SorceressSqirkOverlay extends OverlayPanel
 		this.sorceressSession = sorceressSession;
 		this.xpTrackerService = xpTrackerService;
 		setPosition(OverlayPosition.TOP_LEFT);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -50,11 +50,6 @@ public class SorceressSqirkOverlay extends OverlayPanel
 		renderSqirksStats(graphics);
 
 		return super.render(graphics);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 
 	private void renderGardenStats(Graphics2D graphics)

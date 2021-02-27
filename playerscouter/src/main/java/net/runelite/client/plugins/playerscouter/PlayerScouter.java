@@ -24,6 +24,16 @@
 package net.runelite.client.plugins.playerscouter;
 
 import com.google.inject.Provides;
+import com.openosrs.client.game.PlayerContainer;
+import com.openosrs.client.game.PlayerManager;
+import com.openosrs.client.game.WorldLocation;
+import com.openosrs.http.api.discord.DiscordClient;
+import com.openosrs.http.api.discord.DiscordEmbed;
+import com.openosrs.http.api.discord.DiscordMessage;
+import com.openosrs.http.api.discord.embed.AuthorEmbed;
+import com.openosrs.http.api.discord.embed.FieldEmbed;
+import com.openosrs.http.api.discord.embed.FooterEmbed;
+import com.openosrs.http.api.discord.embed.ThumbnailEmbed;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,20 +57,9 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.FriendChatManager;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.game.PlayerContainer;
-import net.runelite.client.game.PlayerManager;
-import net.runelite.client.game.WorldLocation;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.util.QuantityFormatter;
-import net.runelite.http.api.discord.DiscordClient;
-import net.runelite.http.api.discord.DiscordEmbed;
-import net.runelite.http.api.discord.DiscordMessage;
-import net.runelite.http.api.discord.embed.AuthorEmbed;
-import net.runelite.http.api.discord.embed.FieldEmbed;
-import net.runelite.http.api.discord.embed.FooterEmbed;
-import net.runelite.http.api.discord.embed.ThumbnailEmbed;
 import net.runelite.http.api.item.ItemStats;
 import okhttp3.HttpUrl;
 import org.pf4j.Extension;
@@ -69,8 +68,7 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Player Scouter",
 	enabledByDefault = false,
-	description = "Scout players and output them to your discord channel!",
-	type = PluginType.PVP
+	description = "Scout players and output them to your discord channel!"
 )
 @Slf4j
 public class PlayerScouter extends Plugin
@@ -399,7 +397,7 @@ public class PlayerScouter extends Plugin
 				}
 
 				ItemStats item = itemManager.getItemStats(gear, false);
-				String name = itemManager.getItemDefinition(gear).getName();
+				String name = itemManager.getItemComposition(gear).getName();
 
 				if (item == null)
 				{

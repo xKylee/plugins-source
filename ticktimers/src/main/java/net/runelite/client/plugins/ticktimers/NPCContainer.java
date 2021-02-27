@@ -35,11 +35,33 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.Prayer;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.BALFRUG_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.BREE_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.GEERIN_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.GEERIN_FLINCH;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.GENERAL_AUTO1;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.GENERAL_AUTO2;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.GENERAL_AUTO3;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.GROWLER_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.KILISA_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.KREE_RANGED;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.KRIL_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.KRIL_SPEC;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.MINION_AUTO1;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.MINION_AUTO2;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.MINION_AUTO3;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.MINION_AUTO4;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.SKREE_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.STARLIGHT_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.ZAKL_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.ZAMMY_GENERIC_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.ZILYANA_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.ZILYANA_MELEE_AUTO;
+import static net.runelite.client.plugins.ticktimers.TickTimersPlugin.ZILYANA_SPEC;
 
 @Getter(AccessLevel.PACKAGE)
 class NPCContainer
@@ -69,7 +91,7 @@ class NPCContainer
 		this.attackStyle = AttackStyle.UNKNOWN;
 		this.attackSpeed = attackSpeed;
 		this.ticksUntilAttack = -1;
-		final NPCDefinition composition = npc.getTransformedDefinition();
+		final NPCComposition composition = npc.getTransformedComposition();
 
 		BossMonsters monster = BossMonsters.of(npc.getId());
 
@@ -112,25 +134,25 @@ class NPCContainer
 	@RequiredArgsConstructor
 	enum BossMonsters
 	{
-		SERGEANT_STRONGSTACK(NpcID.SERGEANT_STRONGSTACK, AttackStyle.MELEE, ImmutableSet.of(AnimationID.MINION_AUTO1, AnimationID.MINION_AUTO2, AnimationID.MINION_AUTO3)),
-		SERGEANT_STEELWILL(NpcID.SERGEANT_STEELWILL, AttackStyle.MAGE, ImmutableSet.of(AnimationID.MINION_AUTO1, AnimationID.MINION_AUTO2, AnimationID.MINION_AUTO3)),
-		SERGEANT_GRIMSPIKE(NpcID.SERGEANT_GRIMSPIKE, AttackStyle.RANGE, ImmutableSet.of(AnimationID.MINION_AUTO1, AnimationID.MINION_AUTO2, AnimationID.MINION_AUTO4)),
-		GENERAL_GRAARDOR(NpcID.GENERAL_GRAARDOR, AttackStyle.MELEE, ImmutableSet.of(AnimationID.GENERAL_AUTO1, AnimationID.GENERAL_AUTO2, AnimationID.GENERAL_AUTO3)),
+		SERGEANT_STRONGSTACK(NpcID.SERGEANT_STRONGSTACK, AttackStyle.MELEE, ImmutableSet.of(MINION_AUTO1, MINION_AUTO2, MINION_AUTO3)),
+		SERGEANT_STEELWILL(NpcID.SERGEANT_STEELWILL, AttackStyle.MAGE, ImmutableSet.of(MINION_AUTO1, MINION_AUTO2, MINION_AUTO3)),
+		SERGEANT_GRIMSPIKE(NpcID.SERGEANT_GRIMSPIKE, AttackStyle.RANGE, ImmutableSet.of(MINION_AUTO1, MINION_AUTO2, MINION_AUTO4)),
+		GENERAL_GRAARDOR(NpcID.GENERAL_GRAARDOR, AttackStyle.MELEE, ImmutableSet.of(GENERAL_AUTO1, GENERAL_AUTO2, GENERAL_AUTO3)),
 
-		TSTANON_KARLAK(NpcID.TSTANON_KARLAK, AttackStyle.MELEE, ImmutableSet.of(AnimationID.ZAMMY_GENERIC_AUTO)),
-		BALFRUG_KREEYATH(NpcID.BALFRUG_KREEYATH, AttackStyle.MAGE, ImmutableSet.of(AnimationID.ZAMMY_GENERIC_AUTO, AnimationID.BALFRUG_AUTO)),
-		ZAKLN_GRITCH(NpcID.ZAKLN_GRITCH, AttackStyle.RANGE, ImmutableSet.of(AnimationID.ZAMMY_GENERIC_AUTO, AnimationID.ZAKL_AUTO)),
-		KRIL_TSUTSAROTH(NpcID.KRIL_TSUTSAROTH, AttackStyle.UNKNOWN, ImmutableSet.of(AnimationID.KRIL_SPEC, AnimationID.KRIL_AUTO)),
+		TSTANON_KARLAK(NpcID.TSTANON_KARLAK, AttackStyle.MELEE, ImmutableSet.of(ZAMMY_GENERIC_AUTO)),
+		BALFRUG_KREEYATH(NpcID.BALFRUG_KREEYATH, AttackStyle.MAGE, ImmutableSet.of(ZAMMY_GENERIC_AUTO, BALFRUG_AUTO)),
+		ZAKLN_GRITCH(NpcID.ZAKLN_GRITCH, AttackStyle.RANGE, ImmutableSet.of(ZAMMY_GENERIC_AUTO, ZAKL_AUTO)),
+		KRIL_TSUTSAROTH(NpcID.KRIL_TSUTSAROTH, AttackStyle.UNKNOWN, ImmutableSet.of(KRIL_SPEC, KRIL_AUTO)),
 
-		STARLIGHT(NpcID.STARLIGHT, AttackStyle.MELEE, ImmutableSet.of(AnimationID.STARLIGHT_AUTO)),
-		GROWLER(NpcID.GROWLER, AttackStyle.MAGE, ImmutableSet.of(AnimationID.GROWLER_AUTO)),
-		BREE(NpcID.BREE, AttackStyle.RANGE, ImmutableSet.of(AnimationID.BREE_AUTO)),
-		COMMANDER_ZILYANA(NpcID.COMMANDER_ZILYANA, AttackStyle.UNKNOWN, ImmutableSet.of(AnimationID.ZILYANA_AUTO, AnimationID.ZILYANA_MELEE_AUTO, AnimationID.ZILYANA_SPEC)),
+		STARLIGHT(NpcID.STARLIGHT, AttackStyle.MELEE, ImmutableSet.of(STARLIGHT_AUTO)),
+		GROWLER(NpcID.GROWLER, AttackStyle.MAGE, ImmutableSet.of(GROWLER_AUTO)),
+		BREE(NpcID.BREE, AttackStyle.RANGE, ImmutableSet.of(BREE_AUTO)),
+		COMMANDER_ZILYANA(NpcID.COMMANDER_ZILYANA, AttackStyle.UNKNOWN, ImmutableSet.of(ZILYANA_AUTO, ZILYANA_MELEE_AUTO, ZILYANA_SPEC)),
 
-		FLIGHT_KILISA(NpcID.FLIGHT_KILISA, AttackStyle.MELEE, ImmutableSet.of(AnimationID.KILISA_AUTO)),
-		FLOCKLEADER_GEERIN(NpcID.FLOCKLEADER_GEERIN, AttackStyle.RANGE, ImmutableSet.of(AnimationID.GEERIN_AUTO, AnimationID.GEERIN_FLINCH)),
-		WINGMAN_SKREE(NpcID.WINGMAN_SKREE, AttackStyle.MAGE, ImmutableSet.of(AnimationID.SKREE_AUTO)),
-		KREEARRA(NpcID.KREEARRA, AttackStyle.RANGE, ImmutableSet.of(AnimationID.KREE_RANGED));
+		FLIGHT_KILISA(NpcID.FLIGHT_KILISA, AttackStyle.MELEE, ImmutableSet.of(KILISA_AUTO)),
+		FLOCKLEADER_GEERIN(NpcID.FLOCKLEADER_GEERIN, AttackStyle.RANGE, ImmutableSet.of(GEERIN_AUTO, GEERIN_FLINCH)),
+		WINGMAN_SKREE(NpcID.WINGMAN_SKREE, AttackStyle.MAGE, ImmutableSet.of(SKREE_AUTO)),
+		KREEARRA(NpcID.KREEARRA, AttackStyle.RANGE, ImmutableSet.of(KREE_RANGED));
 
 		private static final ImmutableMap<Integer, BossMonsters> idMap;
 

@@ -67,7 +67,7 @@ public class HydraAttackCounterOverlay extends Overlay
 		this.client = client;
 		this.hydras = new HashMap<>();
 		this.isBoldAttackCounterOverlay = false;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.MED);
 	}
@@ -169,18 +169,6 @@ public class HydraAttackCounterOverlay extends Overlay
 		if (textLocation != null)
 		{
 			OverlayUtil.renderTextLocation(graphics, textLocation, Integer.toString(attackCount), Color.WHITE);
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
 		}
 	}
 }

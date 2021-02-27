@@ -11,6 +11,9 @@
 
 package net.runelite.client.plugins.pvptools;
 
+import com.openosrs.client.ui.overlay.components.table.TableComponent;
+import com.openosrs.client.ui.overlay.components.table.TableElement;
+import com.openosrs.client.ui.overlay.components.table.TableRow;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -24,9 +27,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
-import net.runelite.client.ui.overlay.components.table.TableElement;
-import net.runelite.client.ui.overlay.components.table.TableRow;
 import org.apache.commons.lang3.ArrayUtils;
 
 @Singleton
@@ -44,7 +44,7 @@ public class PlayerCountOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(OverlayPriority.HIGHEST);
 		setPosition(OverlayPosition.TOP_LEFT);
 		setPreferredPosition(OverlayPosition.TOP_LEFT);
@@ -72,17 +72,5 @@ public class PlayerCountOverlay extends Overlay
 			return tableComponent.render(graphics);
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
-		}
 	}
 }

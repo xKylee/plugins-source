@@ -50,10 +50,8 @@ import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.grotesqueguardians.entity.Dawn;
 import net.runelite.client.plugins.grotesqueguardians.entity.Dusk;
 import net.runelite.client.plugins.grotesqueguardians.overlay.PrayerOverlay;
@@ -67,8 +65,7 @@ import org.pf4j.Extension;
 	name = "Grotesque Guardians",
 	enabledByDefault = false,
 	description = "A plugin for Grotesque Guardians boss.",
-	tags = {"grotesque", "guardians", "gargoyles"},
-	type = PluginType.PVM
+	tags = {"grotesque", "guardians", "gargoyles"}
 )
 public class GrotesqueGuardiansPlugin extends Plugin
 {
@@ -145,12 +142,6 @@ public class GrotesqueGuardiansPlugin extends Plugin
 
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(prayerOverlay);
-
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
-		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
-		eventBus.subscribe(GraphicsObjectCreated.class, this, this::onGraphicsObjectCreated);
 	}
 
 	@Override
@@ -204,26 +195,6 @@ public class GrotesqueGuardiansPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onConfigChanged(final ConfigChanged event)
-	{
-		if (!event.getGroup().equals(CONFIG_GROUP))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlayManager.remove(sceneOverlay);
-			overlayManager.remove(prayerOverlay);
-
-			sceneOverlay.determineLayer();
-			prayerOverlay.determineLayer();
-
-			overlayManager.add(sceneOverlay);
-			overlayManager.add(prayerOverlay);
-		}
-	}
-
 	private void onGameTick(final GameTick event)
 	{
 		lastTickTime = System.currentTimeMillis();
@@ -234,16 +205,19 @@ public class GrotesqueGuardiansPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		addNpc(event.getNpc());
 	}
 
+	@Subscribe
 	private void onNpcDespawned(final NpcDespawned event)
 	{
 		removeNpc(event.getNpc());
 	}
 
+	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
 		final Actor actor = event.getActor();
@@ -256,6 +230,7 @@ public class GrotesqueGuardiansPlugin extends Plugin
 		dusk.updateLastAnimation(actor.getAnimation());
 	}
 
+	@Subscribe
 	private void onGraphicsObjectCreated(final GraphicsObjectCreated event)
 	{
 		if (flashOnDanger)

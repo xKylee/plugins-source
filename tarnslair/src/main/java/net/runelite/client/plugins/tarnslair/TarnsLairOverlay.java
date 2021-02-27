@@ -46,16 +46,14 @@ public class TarnsLairOverlay extends Overlay
 
 	private final Client client;
 	private final TarnsLairPlugin plugin;
-	private final TarnsLairConfig config;
 
 	@Inject
-	public TarnsLairOverlay(final Client client, final TarnsLairPlugin plugin, final TarnsLairConfig config)
+	public TarnsLairOverlay(final Client client, final TarnsLairPlugin plugin)
 	{
 		this.client = client;
 		this.plugin = plugin;
-		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -108,17 +106,5 @@ public class TarnsLairOverlay extends Overlay
 		});
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }

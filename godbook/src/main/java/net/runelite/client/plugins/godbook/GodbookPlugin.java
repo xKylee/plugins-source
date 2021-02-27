@@ -11,7 +11,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 import javax.inject.Inject;
@@ -27,8 +26,7 @@ import java.util.stream.IntStream;
 		name = "Godbook",
 		enabledByDefault = false,
 		description = "Displays how long since someone preached.",
-		tags = {"preach", "godbook"},
-		type = PluginType.PVM
+		tags = {"preach", "godbook"}
 )
 public class GodbookPlugin extends Plugin
 {

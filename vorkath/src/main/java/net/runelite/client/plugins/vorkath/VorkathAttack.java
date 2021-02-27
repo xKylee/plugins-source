@@ -30,8 +30,11 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.runelite.api.AnimationID;
 import net.runelite.api.ProjectileID;
+import static net.runelite.client.plugins.vorkath.VorkathPlugin.VORKATH_ACID_ATTACK;
+import static net.runelite.client.plugins.vorkath.VorkathPlugin.VORKATH_ATTACK;
+import static net.runelite.client.plugins.vorkath.VorkathPlugin.VORKATH_FIRE_BOMB_OR_SPAWN_ATTACK;
+import static net.runelite.client.plugins.vorkath.VorkathPlugin.VORKATH_SLASH_ATTACK;
 
 @AllArgsConstructor
 @Getter(AccessLevel.PACKAGE)
@@ -40,47 +43,47 @@ public enum VorkathAttack
 	/**
 	 * Vorkath's melee attack (see VorkathPlugin#onAnimationChanged)
 	 */
-	SLASH_ATTACK(AnimationID.VORKATH_SLASH_ATTACK, -1),
+	SLASH_ATTACK(VORKATH_SLASH_ATTACK, -1),
 	/**
 	 * Vorkath's dragon breath attack
 	 */
-	FIRE_BREATH(AnimationID.VORKATH_ATTACK, ProjectileID.VORKATH_DRAGONBREATH),
+	FIRE_BREATH(VORKATH_ATTACK, ProjectileID.VORKATH_DRAGONBREATH),
 	/**
 	 * Vorkath's dragon breath attack causing the player's active prayers to be deactivated
 	 */
-	PRAYER_BREATH(AnimationID.VORKATH_ATTACK, ProjectileID.VORKATH_PRAYER_DISABLE),
+	PRAYER_BREATH(VORKATH_ATTACK, ProjectileID.VORKATH_PRAYER_DISABLE),
 	/**
 	 * Vorkath's dragon breath attack causing the player to become poisoned with venom
 	 */
-	VENOM_BREATH(AnimationID.VORKATH_ATTACK, ProjectileID.VORKATH_VENOM),
+	VENOM_BREATH(VORKATH_ATTACK, ProjectileID.VORKATH_VENOM),
 	/**
 	 * Vorkath's ranged attack
 	 */
-	SPIKE(AnimationID.VORKATH_ATTACK, ProjectileID.VORKATH_RANGED),
+	SPIKE(VORKATH_ATTACK, ProjectileID.VORKATH_RANGED),
 	/**
 	 * Vorkath's magic attack
 	 */
-	ICE(AnimationID.VORKATH_ATTACK, ProjectileID.VORKATH_MAGIC),
+	ICE(VORKATH_ATTACK, ProjectileID.VORKATH_MAGIC),
 	/**
 	 * Vorkath's aoe fire bomb attack (3x3 from where player was originally standing)
 	 */
-	FIRE_BOMB(AnimationID.VORKATH_FIRE_BOMB_OR_SPAWN_ATTACK, ProjectileID.VORKATH_BOMB_AOE),
+	FIRE_BOMB(VORKATH_FIRE_BOMB_OR_SPAWN_ATTACK, ProjectileID.VORKATH_BOMB_AOE),
 	/**
 	 * Vorkath's aoe acid attacking, spewing acid across the instance
 	 */
-	ACID(AnimationID.VORKATH_ACID_ATTACK, ProjectileID.VORKATH_POISON_POOL_AOE),
+	ACID(VORKATH_ACID_ATTACK, ProjectileID.VORKATH_POISON_POOL_AOE),
 	/**
 	 * Vorkath's fire ball attack that is fired during the acid phase, almost every tick for 25(?) attacks total
 	 */
-	FIRE_BALL(AnimationID.VORKATH_ACID_ATTACK, ProjectileID.VORKATH_TICK_FIRE_AOE),
+	FIRE_BALL(VORKATH_ACID_ATTACK, ProjectileID.VORKATH_TICK_FIRE_AOE),
 	/**
 	 * Vorkath's dragon breath attack causing the player to be frozen during Zombified Spawn phase
 	 */
-	FREEZE_BREATH(AnimationID.VORKATH_ATTACK, ProjectileID.VORKATH_ICE),
+	FREEZE_BREATH(VORKATH_ATTACK, ProjectileID.VORKATH_ICE),
 	/**
 	 * Vorkath's spawning of a Zombified Spawn
 	 */
-	ZOMBIFIED_SPAWN(AnimationID.VORKATH_FIRE_BOMB_OR_SPAWN_ATTACK, ProjectileID.VORKATH_SPAWN_AOE);
+	ZOMBIFIED_SPAWN(VORKATH_FIRE_BOMB_OR_SPAWN_ATTACK, ProjectileID.VORKATH_SPAWN_AOE);
 
 	private static final Map<Integer, VorkathAttack> VORKATH_ATTACKS;
 	private static final Map<Integer, VorkathAttack> VORKATH_BASIC_ATTACKS;

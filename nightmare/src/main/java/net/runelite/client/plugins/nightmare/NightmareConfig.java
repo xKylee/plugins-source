@@ -28,30 +28,27 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
 
 @ConfigGroup("nightmareOfAshihama")
 public interface NightmareConfig extends Config
 {
-	@ConfigTitleSection(
+	@ConfigSection(
 		name = "General",
 		description = "Configure general settings.",
 		position = 0,
 		keyName = "generalSection"
 	)
-	default boolean generalSection()
-	{
-		return true;
-	}
+	String generalSection = "General";
 
 	@ConfigItem(
 		keyName = "prayerHelper",
 		name = "Prayer helper",
 		description = "Displays the correct prayer to use at various points in the fight.",
 		position = 0,
-		titleSection = "generalSection",
+		section = generalSection,
 		enumClass = PrayerDisplay.class
 	)
 	default PrayerDisplay prayerHelper()
@@ -64,7 +61,7 @@ public interface NightmareConfig extends Config
 		name = "Show Ticks",
 		description = "Displays the number of ticks until next attack",
 		position = 1,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean ticksCounter()
 	{
@@ -76,7 +73,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Totems",
 		description = "Highlights Totems based on their status",
 		position = 2,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean highlightTotems()
 	{
@@ -92,7 +89,7 @@ public interface NightmareConfig extends Config
 		description = "Change the size of the totem outline.",
 		position = 3,
 		keyName = "totemOutlineSize",
-		section = "generalSection",
+		section = generalSection,
 		hidden = true,
 		unhide = "highlightTotems"
 	)
@@ -107,7 +104,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Shadows",
 		description = "Highlights the Shadow Attacks",
 		position = 4,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean highlightShadows()
 	{
@@ -119,7 +116,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Spores",
 		description = "Highlights spores that will make you yawn",
 		position = 5,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean highlightSpores()
 	{
@@ -132,7 +129,7 @@ public interface NightmareConfig extends Config
 		name = "Poison border colour",
 		description = "Colour the edges of the area highlighted by poison special will be",
 		position = 6,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 
 	default Color poisonBorderCol()
@@ -146,7 +143,7 @@ public interface NightmareConfig extends Config
 		name = "Poison colour",
 		description = "Colour the fill of the area highlighted by poison special will be",
 		position = 7,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default Color poisonCol()
 	{
@@ -158,7 +155,7 @@ public interface NightmareConfig extends Config
 		name = "Indicate Parasites",
 		description = "Displays a red tick timer on any impregnated players",
 		position = 8,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean showTicksUntilParasite()
 	{
@@ -170,7 +167,7 @@ public interface NightmareConfig extends Config
 			name = "Highlight Husk",
 			description = "Highlights the mage and range husk",
 			position = 9,
-			titleSection = "generalSection"
+			section = generalSection
 	)
 	default boolean huskHighlight()
 	{
@@ -182,7 +179,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Husk Target(s)",
 		description = "Highlights whoever the husks will spawn on",
 		position = 10,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean highlightHuskTarget()
 	{
@@ -195,7 +192,7 @@ public interface NightmareConfig extends Config
 		name = "Husk Target Border Color",
 		description = "Colour the edges of the area highlighted by poison special will be",
 		position = 11,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 
 	default Color huskBorderCol()
@@ -208,7 +205,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Nightmare's Hitbox On Charge",
 		description = "Highlights the hitbox of the Nightmare when she charges",
 		position = 12,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean highlightNightmareHitboxOnCharge()
 	{
@@ -220,7 +217,7 @@ public interface NightmareConfig extends Config
 		name = "Highlight Nightmare's Charge Range",
 		description = "Highlights the range the Nightmare will damage you with her charge attack",
 		position = 13,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean highlightNightmareChargeRange()
 	{
@@ -233,7 +230,7 @@ public interface NightmareConfig extends Config
 		name = "Nightmare Charge Border Color",
 		description = "Color the edges of the area highlighted by the nightmare's charge attack",
 		position = 14,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 
 	default Color nightmareChargeBorderCol()
@@ -247,7 +244,7 @@ public interface NightmareConfig extends Config
 		name = "Nightmare charge fill color",
 		description = "Color the fill of the area highlighted by the nightmare's charge attack",
 		position = 15,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default Color nightmareChargeCol()
 	{
@@ -259,21 +256,9 @@ public interface NightmareConfig extends Config
 		name = "Flash your screen when you get impregnated",
 		description = "Your Screen flashes when the nightmare infects you with her parasite",
 		position = 16,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean flash()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 17,
-		titleSection = "generalSection"
-	)
-	default boolean mirrorMode()
 	{
 		return false;
 	}

@@ -30,7 +30,6 @@ import net.runelite.api.events.ScriptCallbackEvent;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import org.pf4j.Extension;
 
 @Extension
@@ -38,8 +37,7 @@ import org.pf4j.Extension;
 	name = "Spec Bar",
 	enabledByDefault = false,
 	description = "Adds a spec bar to every weapon",
-	tags = {"spec bar", "special attack", "spec", "bar", "pklite"},
-	type = PluginType.PVP
+	tags = {"spec bar", "special attack", "spec", "bar", "pklite"}
 )
 public class SpecBarPlugin extends Plugin
 {

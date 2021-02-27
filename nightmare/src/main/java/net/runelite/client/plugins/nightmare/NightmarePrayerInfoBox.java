@@ -34,7 +34,7 @@ public class NightmarePrayerInfoBox extends Overlay
 		this.spriteManager = spriteManager;
 		this.config = config;
 
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 	}
@@ -71,17 +71,5 @@ public class NightmarePrayerInfoBox extends Overlay
 	private BufferedImage getPrayerImage(NightmareAttack attack)
 	{
 		return spriteManager.getSprite(attack.getPrayerSpriteId(), 0);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
-		}
 	}
 }

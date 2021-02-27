@@ -24,7 +24,6 @@
  */
 package net.runelite.client.plugins.vetion;
 
-import com.google.inject.Provides;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,14 +31,10 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -48,8 +43,7 @@ import org.pf4j.Extension;
 	name = "Vetion Helper",
 	enabledByDefault = false,
 	description = "Tracks Vet'ion's special attacks",
-	tags = {"bosses", "combat", "pve", "overlay"},
-	type = PluginType.PVM
+	tags = {"bosses", "combat", "pve", "overlay"}
 )
 public class VetionPlugin extends Plugin
 {
@@ -60,16 +54,10 @@ public class VetionPlugin extends Plugin
 	@Inject
 	private VetionOverlay overlay;
 
-	private VetionConfig config;
-
 	@Getter(AccessLevel.PACKAGE)
 	private Map<Actor, Instant> vetions;
 
-	@Provides
-	VetionConfig provideConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(VetionConfig.class);
-	}
+	public static final int VETION_EARTHQUAKE = 5507;
 
 	@Override
 	protected void startUp()
@@ -89,27 +77,11 @@ public class VetionPlugin extends Plugin
 	@Subscribe
 	private void onAnimationChanged(AnimationChanged event)
 	{
-		if (event.getActor().getAnimation() == AnimationID.VETION_EARTHQUAKE)
+		if (event.getActor().getAnimation() == VETION_EARTHQUAKE)
 		{
 			Actor vet = event.getActor();
 			vetions.remove(vet, Instant.now());
 			vetions.put(vet, Instant.now());
-		}
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("vetion"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.add(overlay);
 		}
 	}
 }

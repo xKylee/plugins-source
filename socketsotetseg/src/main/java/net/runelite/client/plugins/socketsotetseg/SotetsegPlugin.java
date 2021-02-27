@@ -61,7 +61,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
@@ -76,8 +75,7 @@ import org.pf4j.Extension;
 	name = "Socket Sotetseg",
 	description = "Extended plugin handler for Sotetseg in the Theatre of Blood.",
 	tags = {"socket", "server", "discord", "connection", "broadcast", "sotetseg", "theatre", "tob"},
-	enabledByDefault = false,
-	type = PluginType.PVM
+	enabledByDefault = false
 )
 @PluginDependency(SocketPlugin.class)
 public class SotetsegPlugin extends Plugin
@@ -306,7 +304,7 @@ public class SotetsegPlugin extends Plugin
 						JSONObject payload = new JSONObject();
 						payload.put("sotetseg-extended", data);
 
-						eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(payload));
+						eventBus.post(new SocketBroadcastPacket(payload));
 					}
 				}
 			}

@@ -3,15 +3,21 @@ package net.runelite.client.plugins.nightmare;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.Prayer;
+import net.runelite.api.VarClientInt;
+import net.runelite.api.vars.InterfaceTab;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
+import static net.runelite.client.ui.overlay.OverlayUtil.renderPolygon;
 
 @Singleton
 @Slf4j
@@ -28,7 +34,7 @@ class NightmarePrayerOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -53,20 +59,30 @@ class NightmarePrayerOverlay extends Overlay
 		}
 
 		Color color = client.isPrayerActive(attack.getPrayer()) ? Color.GREEN : Color.RED;
-		OverlayUtil.renderPrayerOverlay(graphics, client, attack.getPrayer(), color);
+		renderPrayerOverlay(graphics, client, attack.getPrayer(), color);
 
 		return null;
 	}
 
-	public void determineLayer()
+	public static Rectangle renderPrayerOverlay(Graphics2D graphics, Client client, Prayer prayer, Color color)
 	{
-		if (config.mirrorMode())
+		Widget widget = client.getWidget(prayer.getWidgetInfo());
+
+		if (widget == null || client.getVar(VarClientInt.INVENTORY_TAB) != InterfaceTab.PRAYER.getId())
 		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
+			return null;
 		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
-		}
+
+		Rectangle bounds = widget.getBounds();
+		renderPolygon(graphics, rectangleToPolygon(bounds), color);
+		return bounds;
+	}
+
+	private static Polygon rectangleToPolygon(Rectangle rect)
+	{
+		int[] xpoints = {rect.x, rect.x + rect.width, rect.x + rect.width, rect.x};
+		int[] ypoints = {rect.y, rect.y, rect.y + rect.height, rect.y + rect.height};
+
+		return new Polygon(xpoints, ypoints, 4);
 	}
 }

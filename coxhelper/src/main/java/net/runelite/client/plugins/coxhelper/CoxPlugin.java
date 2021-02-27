@@ -37,7 +37,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicID;
@@ -52,19 +51,17 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
-import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.api.util.Text;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
+import net.runelite.client.plugins.PluginDescriptor;;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -73,8 +70,7 @@ import org.pf4j.Extension;
 	name = "CoX Helper",
 	enabledByDefault = false,
 	description = "All-in-one plugin for Chambers of Xeric",
-	tags = {"CoX", "chamber", "xeric", "helper"},
-	type = PluginType.PVM
+	tags = {"CoX", "chamber", "xeric", "helper"}
 )
 @Slf4j
 @Getter(AccessLevel.PACKAGE)
@@ -113,6 +109,16 @@ public class CoxPlugin extends Plugin
 	private int vanguards;
 	private boolean tektonActive;
 	private int tektonAttackTicks;
+
+	public static final int TEKTON_ANVIL = 7475;
+	public static final int TEKTON_AUTO1 = 7482;
+	public static final int TEKTON_AUTO2 = 7483;
+	public static final int TEKTON_AUTO3 = 7484;
+	public static final int TEKTON_FAST_AUTO1 = 7478;
+	public static final int TEKTON_FAST_AUTO2 = 7488;
+	public static final int TEKTON_ENRAGE_AUTO1 = 7492;
+	public static final int TEKTON_ENRAGE_AUTO2 = 7493;
+	public static final int TEKTON_ENRAGE_AUTO3 = 7494;
 
 	@Provides
 	CoxConfig getConfig(ConfigManager configManager)
@@ -223,7 +229,7 @@ public class CoxPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onSpotAnimationChanged(SpotAnimationChanged event)
+	private void onGraphicChanged(GraphicChanged event)
 	{
 		if (!this.inRaid())
 		{
@@ -237,7 +243,7 @@ public class CoxPlugin extends Plugin
 
 		final Player player = (Player) event.getActor();
 
-		if (player.getSpotAnimation() == GraphicID.OLM_BURN)
+		if (player.getGraphic() == GraphicID.OLM_BURN)
 		{
 			this.olm.getVictims().add(new Victim(player, Victim.Type.BURN));
 		}
@@ -359,27 +365,27 @@ public class CoxPlugin extends Plugin
 					npcs.setAttackStyle(NPCContainer.Attackstyle.MELEE);
 					switch (npcs.getNpc().getAnimation())
 					{
-						case AnimationID.TEKTON_AUTO1:
-						case AnimationID.TEKTON_AUTO2:
-						case AnimationID.TEKTON_AUTO3:
-						case AnimationID.TEKTON_ENRAGE_AUTO1:
-						case AnimationID.TEKTON_ENRAGE_AUTO2:
-						case AnimationID.TEKTON_ENRAGE_AUTO3:
+						case TEKTON_AUTO1:
+						case TEKTON_AUTO2:
+						case TEKTON_AUTO3:
+						case TEKTON_ENRAGE_AUTO1:
+						case TEKTON_ENRAGE_AUTO2:
+						case TEKTON_ENRAGE_AUTO3:
 							this.tektonActive = true;
 							if (npcs.getTicksUntilAttack() < 1)
 							{
 								npcs.setTicksUntilAttack(4);
 							}
 							break;
-						case AnimationID.TEKTON_FAST_AUTO1:
-						case AnimationID.TEKTON_FAST_AUTO2:
+						case TEKTON_FAST_AUTO1:
+						case TEKTON_FAST_AUTO2:
 							this.tektonActive = true;
 							if (npcs.getTicksUntilAttack() < 1)
 							{
 								npcs.setTicksUntilAttack(3);
 							}
 							break;
-						case AnimationID.TEKTON_ANVIL:
+						case TEKTON_ANVIL:
 							this.tektonActive = false;
 							this.tektonAttackTicks = 47;
 							if (npcs.getTicksUntilAttack() < 1)
@@ -429,28 +435,6 @@ public class CoxPlugin extends Plugin
 	boolean inRaid()
 	{
 		return this.client.getVar(Varbits.IN_RAID) == 1;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("Cox"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			this.coxOverlay.determineLayer();
-			this.coxInfoBox.determineLayer();
-			this.coxDebugBox.determineLayer();
-			this.overlayManager.remove(this.coxOverlay);
-			this.overlayManager.remove(this.coxInfoBox);
-			this.overlayManager.remove(this.coxDebugBox);
-			this.overlayManager.add(this.coxOverlay);
-			this.overlayManager.add(this.coxInfoBox);
-			this.overlayManager.add(this.coxDebugBox);
-		}
 	}
 
 	@Subscribe

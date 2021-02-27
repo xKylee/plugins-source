@@ -25,6 +25,7 @@
 package net.runelite.client.plugins.effecttimers;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -39,7 +40,6 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 public class EffectTimersOverlay extends Overlay
 {
@@ -63,7 +63,7 @@ public class EffectTimersOverlay extends Overlay
 		super();
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class EffectTimersOverlay extends Overlay
 			textLocation = new Point(textLocation.getX() + xOffset, textLocation.getY() + image.getHeight() - yOffset);
 		}
 
-		OverlayUtil.renderTextLocation(g, text, config.textSize(), config.fontStyle().getFont(), timer.determineColor(), textLocation, false, 0);
+		renderTextLocation(g, text, config.textSize(), config.fontStyle().getFont(), timer.determineColor(), textLocation, false, 0);
 
 		return true;
 	}
@@ -216,15 +216,39 @@ public class EffectTimersOverlay extends Overlay
 		return String.format("%02d", seconds);
 	}
 
-	public void determineLayer()
+	public static void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint, boolean shadows, int yOffset)
 	{
-		if (config.mirrorMode())
+		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+		if (canvasPoint != null)
 		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
+			final Point canvasCenterPoint = new Point(
+				canvasPoint.getX(),
+				canvasPoint.getY() + yOffset);
+			final Point canvasCenterPoint_shadow = new Point(
+				canvasPoint.getX() + 1,
+				canvasPoint.getY() + 1 + yOffset);
+			if (shadows)
+			{
+				renderTextLocation(graphics, canvasCenterPoint_shadow, txtString, Color.BLACK);
+			}
+			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
 		}
-		if (!config.mirrorMode())
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, Point txtLoc, String text, Color color)
+	{
+		if (Strings.isNullOrEmpty(text))
 		{
-			setLayer(OverlayLayer.UNDER_WIDGETS);
+			return;
 		}
+
+		int x = txtLoc.getX();
+		int y = txtLoc.getY();
+
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(text, x + 1, y + 1);
+
+		graphics.setColor(color);
+		graphics.drawString(text, x, y);
 	}
 }

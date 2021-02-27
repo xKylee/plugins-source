@@ -33,17 +33,6 @@ import net.runelite.client.config.ConfigItem;
 public interface HydraConfig extends Config
 {
 	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		position = 1,
 		keyName = "attackCounterOverlay",
 		name = "Attack Counter Overlay",

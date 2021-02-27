@@ -21,11 +21,10 @@ import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.Scene;
 import net.runelite.api.Tile;
-import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
@@ -36,7 +35,6 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
@@ -113,17 +111,6 @@ public class Bloat extends Room
 			bloatActive = false;
 			bloatNPC = null;
 			bloatTickCount = -1;
-		}
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged change)
-	{
-		if (change.getKey().equals("mirrorMode"))
-		{
-			bloatOverlay.determineLayer();
-			overlayManager.remove(bloatOverlay);
-			overlayManager.add(bloatOverlay);
 		}
 	}
 
@@ -262,7 +249,7 @@ public class Bloat extends Room
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (client.getVar(Varbits.BLOAT_DOOR) == 1 && !bloatStarted)
+		if (client.getVarbitValue(6447) == 1 && !bloatStarted)
 		{
 			bloatTickCount = 0;
 			bloatStarted = true;
@@ -277,7 +264,7 @@ public class Bloat extends Room
 		}
 
 		int size = 1;
-		NPCDefinition composition = bloatNPC.getTransformedDefinition();
+		NPCComposition composition = bloatNPC.getTransformedComposition();
 		if (composition != null)
 		{
 			size = composition.getSize();

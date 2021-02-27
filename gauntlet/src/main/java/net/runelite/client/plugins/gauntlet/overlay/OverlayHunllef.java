@@ -27,6 +27,7 @@
 
 package net.runelite.client.plugins.gauntlet.overlay;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -41,14 +42,13 @@ import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.Model;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.model.Jarvis;
 import net.runelite.api.model.Vertex;
-import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletPlugin;
 import net.runelite.client.plugins.gauntlet.entity.Hunllef;
@@ -57,7 +57,6 @@ import net.runelite.client.plugins.gauntlet.entity.Tornado;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class OverlayHunllef extends Overlay
@@ -149,7 +148,7 @@ public class OverlayHunllef extends Overlay
 
 	public void determineLayer()
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	private void renderTornadoes(final Graphics2D graphics2D)
@@ -322,15 +321,15 @@ public class OverlayHunllef extends Overlay
 
 		final NPC npc = hunllef.getNpc();
 
-		final NPCDefinition npcDefinition = npc.getDefinition();
+		final NPCComposition npcComposition = npc.getComposition();
 
-		if (npcDefinition == null)
+		if (npcComposition == null)
 		{
 			return;
 		}
 
 		final Polygon polygon = Perspective.getCanvasTileAreaPoly(client, npc.getLocalLocation(),
-			npcDefinition.getSize());
+			npcComposition.getSize());
 
 		if (polygon == null)
 		{

@@ -25,7 +25,6 @@
 package net.runelite.client.plugins.demonicgorilla;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.inject.Provides;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,12 +57,9 @@ import net.runelite.api.events.PlayerDespawned;
 import net.runelite.api.events.PlayerSpawned;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.callback.ClientThread;
-import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -72,8 +68,7 @@ import org.pf4j.Extension;
 	name = "Demonic Gorillas",
 	enabledByDefault = false,
 	description = "Count demonic gorilla attacks and display their next possible attack styles",
-	tags = {"combat", "overlay", "pve", "pvm"},
-	type = PluginType.PVM
+	tags = {"combat", "overlay", "pve", "pvm"}
 )
 public class DemonicGorillaPlugin extends Plugin
 {
@@ -91,8 +86,6 @@ public class DemonicGorillaPlugin extends Plugin
 	@Inject
 	private ClientThread clientThread;
 
-	private DemonicGorillaConfig config;
-
 	@Getter(AccessLevel.PACKAGE)
 	private Map<NPC, DemonicGorilla> gorillas;
 
@@ -101,12 +94,6 @@ public class DemonicGorillaPlugin extends Plugin
 	private List<PendingGorillaAttack> pendingAttacks;
 
 	private Map<Player, MemorizedPlayer> memorizedPlayers;
-
-	@Provides
-	DemonicGorillaConfig getConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(DemonicGorillaConfig.class);
-	}
 
 	@Override
 	protected void startUp()
@@ -722,21 +709,5 @@ public class DemonicGorillaPlugin extends Plugin
 		checkPendingAttacks();
 		updatePlayers();
 		recentBoulders.clear();
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("demonicgorilla"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.add(overlay);
-		}
 	}
 }

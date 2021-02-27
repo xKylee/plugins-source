@@ -35,7 +35,7 @@ import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.GameState;
-import net.runelite.api.ObjectDefinition;
+import net.runelite.api.ObjectComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Tile;
 import net.runelite.api.WallObject;
@@ -51,7 +51,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -60,8 +59,7 @@ import org.pf4j.Extension;
 	name = "Multi-Lines",
 	enabledByDefault = false,
 	description = "Show borders of multicombat and PvP safezones",
-	tags = {"multicombat", "lines", "pvp", "deadman", "safezones", "bogla"},
-	type = PluginType.PVP
+	tags = {"multicombat", "lines", "pvp", "deadman", "safezones"}
 )
 public class MultiIndicatorsPlugin extends Plugin
 {
@@ -191,7 +189,7 @@ public class MultiIndicatorsPlugin extends Plugin
 			return false;
 		}
 
-		ObjectDefinition objectComposition = client.getObjectDefinition(wallObject.getId());
+		ObjectComposition objectComposition = client.getObjectDefinition(wallObject.getId());
 
 		if (objectComposition == null)
 		{
@@ -382,16 +380,6 @@ public class MultiIndicatorsPlugin extends Plugin
 			event.getKey().equals("wildernessTeleportLines"))
 		{
 			findLinesInScene();
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			minimapOverlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.remove(minimapOverlay);
-			overlayManager.add(overlay);
-			overlayManager.add(minimapOverlay);
 		}
 	}
 

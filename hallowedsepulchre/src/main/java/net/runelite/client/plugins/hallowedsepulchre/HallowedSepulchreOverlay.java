@@ -1,8 +1,11 @@
 package net.runelite.client.plugins.hallowedsepulchre;
 
+import com.google.common.base.Strings;
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -12,17 +15,15 @@ import net.runelite.api.Client;
 import net.runelite.api.DynamicObject;
 import net.runelite.api.GameObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 public class HallowedSepulchreOverlay extends Overlay
 {
@@ -45,7 +46,7 @@ public class HallowedSepulchreOverlay extends Overlay
 		this.config = config;
 		this.modelOutlineRenderer = modelOutlineRenderer;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -74,11 +75,6 @@ public class HallowedSepulchreOverlay extends Overlay
 		renderServerTile(graphics2D);
 
 		return null;
-	}
-
-	void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 
 	private void renderArrows(final Graphics2D graphics2D)
@@ -124,9 +120,9 @@ public class HallowedSepulchreOverlay extends Overlay
 	private void renderNpcHighlight(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor,
 									final NPC npc, final HallowedSepulchreConfig.HighlightMode highlightMode)
 	{
-		final NPCDefinition npcDefinition = npc.getTransformedDefinition();
+		final NPCComposition npcComposition = npc.getTransformedComposition();
 
-		if (npcDefinition == null)
+		if (npcComposition == null)
 		{
 			return;
 		}
@@ -142,7 +138,7 @@ public class HallowedSepulchreOverlay extends Overlay
 		{
 			int size = 1;
 
-			final NPCDefinition composition = npc.getTransformedDefinition();
+			final NPCComposition composition = npc.getTransformedComposition();
 
 			if (composition != null)
 			{
@@ -174,7 +170,7 @@ public class HallowedSepulchreOverlay extends Overlay
 				continue;
 			}
 
-			final DynamicObject dynamicObject = (DynamicObject) gameObject.getEntity();
+			final DynamicObject dynamicObject = (DynamicObject) gameObject.getModel();
 
 			if (dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_DEFAULT || dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_FINAL)
 			{
@@ -221,7 +217,7 @@ public class HallowedSepulchreOverlay extends Overlay
 
 			final Point canvasPoint = gameObject.getCanvasTextLocation(graphics2D, ticksLeftStr, 0);
 
-			OverlayUtil.renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(),
+			renderTextLocation(graphics2D, ticksLeftStr, config.wizardFontSize(),
 				config.fontStyle().getFont(), color, canvasPoint, config.wizardFontShadow(), 0);
 		}
 	}
@@ -280,5 +276,41 @@ public class HallowedSepulchreOverlay extends Overlay
 		graphics2D.setColor(fillColor);
 		graphics2D.fill(shape);
 		graphics2D.setStroke(originalStroke);
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint, boolean shadows, int yOffset)
+	{
+		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+		if (canvasPoint != null)
+		{
+			final Point canvasCenterPoint = new Point(
+				canvasPoint.getX(),
+				canvasPoint.getY() + yOffset);
+			final Point canvasCenterPoint_shadow = new Point(
+				canvasPoint.getX() + 1,
+				canvasPoint.getY() + 1 + yOffset);
+			if (shadows)
+			{
+				renderTextLocation(graphics, canvasCenterPoint_shadow, txtString, Color.BLACK);
+			}
+			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
+		}
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, Point txtLoc, String text, Color color)
+	{
+		if (Strings.isNullOrEmpty(text))
+		{
+			return;
+		}
+
+		int x = txtLoc.getX();
+		int y = txtLoc.getY();
+
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(text, x + 1, y + 1);
+
+		graphics.setColor(color);
+		graphics.drawString(text, x, y);
 	}
 }

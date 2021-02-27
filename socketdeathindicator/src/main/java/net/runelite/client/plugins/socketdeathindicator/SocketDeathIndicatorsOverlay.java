@@ -1,7 +1,6 @@
 package net.runelite.client.plugins.socketdeathindicator;
 
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
@@ -23,7 +22,6 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 		super(plugin);
 		this.plugin = plugin;
 		this.config = config;
-		determineLayer();
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
 
@@ -60,13 +58,5 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 		}
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
 	}
 }

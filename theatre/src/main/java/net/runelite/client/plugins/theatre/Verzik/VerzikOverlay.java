@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import net.runelite.api.Actor;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
@@ -50,7 +50,7 @@ public class VerzikOverlay extends RoomOverlay
 	{
 		super(config);
 		this.spriteManager = spriteManager;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class VerzikOverlay extends RoomOverlay
 			if (config.verzikTileOverlay())
 			{
 				int size = 1;
-				final NPCDefinition composition = verzik.getVerzikNPC().getTransformedDefinition();
+				final NPCComposition composition = verzik.getVerzikNPC().getTransformedComposition();
 				if (composition != null)
 				{
 					size = composition.getSize();
@@ -316,7 +316,7 @@ public class VerzikOverlay extends RoomOverlay
 								{
 									int size = 1;
 									int thick_size = 1;
-									final NPCDefinition composition = k.getTransformedDefinition();
+									final NPCComposition composition = k.getComposition();
 
 									if (composition != null)
 									{
@@ -352,10 +352,4 @@ public class VerzikOverlay extends RoomOverlay
 		int z = (int) p.getZ();
 		return Perspective.localToCanvas(client, new LocalPoint(x, y), 0, Perspective.getTileHeight(client, new LocalPoint(x, y), p.getFloor()) - z);
 	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
-	}
-
 }

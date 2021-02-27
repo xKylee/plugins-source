@@ -39,7 +39,7 @@ public class NylocasOverlay extends RoomOverlay
 	protected NylocasOverlay(TheatreConfig config)
 	{
 		super(config);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	private final List<Point> eastSpawnNorthLocalPoints = new ImmutableList.Builder<Point>()
@@ -239,6 +239,7 @@ public class NylocasOverlay extends RoomOverlay
 
 			for (NPC npc : npcMap.keySet())
 			{
+				int npcSize = npc.getComposition().getSize();
 				if (config.nyloAggressiveOverlay() && nylocas.getAggressiveNylocas().contains(npc) && !npc.isDead())
 				{
 					if (config.nyloAggressiveOverlayStyle() == TheatreConfig.AGGRESSIVENYLORENDERSTYLE.TILE)
@@ -246,7 +247,7 @@ public class NylocasOverlay extends RoomOverlay
 						LocalPoint lp = npc.getLocalLocation();
 						if (lp != null)
 						{
-							Polygon poly = getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -25);
+							Polygon poly = getCanvasTileAreaPoly(client, lp, npcSize, -25);
 							renderPoly(graphics, Color.RED, poly, 1);
 						}
 					}
@@ -298,7 +299,7 @@ public class NylocasOverlay extends RoomOverlay
 							LocalPoint lp = npc.getLocalLocation();
 							if (lp != null)
 							{
-								renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize(), -15), 1);
+								renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npcSize, -15), 1);
 							}
 						}
 					}
@@ -313,15 +314,15 @@ public class NylocasOverlay extends RoomOverlay
 					{
 						if (config.getHighlightMeleeNylo() && "Nylocas Ischyros".equals(name))
 						{
-							renderPoly(graphics, new Color(255, 188, 188), Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
+							renderPoly(graphics, new Color(255, 188, 188), Perspective.getCanvasTileAreaPoly(client, lp, npcSize), 1);
 						}
 						else if (config.getHighlightRangeNylo() && "Nylocas Toxobolos".equals(name))
 						{
-							renderPoly(graphics, Color.GREEN, Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
+							renderPoly(graphics, Color.GREEN, Perspective.getCanvasTileAreaPoly(client, lp, npcSize), 1);
 						}
 						else if (config.getHighlightMageNylo() && "Nylocas Hagios".equals(name))
 						{
-							renderPoly(graphics, Color.CYAN, Perspective.getCanvasTileAreaPoly(client, lp, npc.getDefinition().getSize()), 1);
+							renderPoly(graphics, Color.CYAN, Perspective.getCanvasTileAreaPoly(client, lp, npcSize), 1);
 						}
 					}
 				}
@@ -458,10 +459,5 @@ public class NylocasOverlay extends RoomOverlay
 			return Color.CYAN;
 		}
 		return Color.BLACK;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

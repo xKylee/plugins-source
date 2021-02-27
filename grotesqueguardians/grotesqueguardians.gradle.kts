@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.0.1"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Grotesque Guardians"
 project.extra["PluginDescription"] = "Show various helpful utitiles during the Grotesque Gaurdians (Gargoyles) fight"

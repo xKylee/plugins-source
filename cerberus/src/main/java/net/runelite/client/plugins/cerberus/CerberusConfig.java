@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.ui.overlay.components.ComponentOrientation;
 
@@ -42,49 +42,37 @@ public interface CerberusConfig extends Config
 {
 	// Sections
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		name = "General",
 		description = "",
 		position = 0,
-		keyName = "generalSection"
+		keyName = "General"
 	)
-	default boolean generalSection()
-	{
-		return false;
-	}
+	String generalSection = "Overlay";
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		name = "Current Attack",
 		description = "",
 		position = 1,
 		keyName = "currentAttackSection"
 	)
-	default boolean currentAttackSection()
-	{
-		return false;
-	}
+	String currentAttackSection = "Current Attack";
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		name = "Upcoming Attacks",
 		description = "",
 		position = 2,
 		keyName = "upcomingAttacksSection"
 	)
-	default boolean upcomingAttacksSection()
-	{
-		return false;
-	}
+	String upcomingAttacksSection = "Upcoming Attacks";
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		name = "Guitar Hero Mode",
 		description = "",
 		position = 3,
 		keyName = "guitarHeroSection"
 	)
-	default boolean guitarHeroSection()
-	{
-		return false;
-	}
+	String guitarHeroSection = "Guitar Hero Mode";
 
 	// General Section
 
@@ -93,7 +81,7 @@ public interface CerberusConfig extends Config
 		name = "Show ghost tiles",
 		description = "Overlay ghost tiles with respective colors and attack timers.",
 		position = 0,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean drawGhostTiles()
 	{
@@ -106,7 +94,7 @@ public interface CerberusConfig extends Config
 		description = "Calculate prayer for auto attacks based on your equipment defensive bonuses."
 			+ "<br>Default is Protect from Magic.",
 		position = 2,
-		titleSection = "generalSection"
+		section = generalSection
 	)
 	default boolean calculateAutoAttackPrayer()
 	{
@@ -120,7 +108,7 @@ public interface CerberusConfig extends Config
 		name = "Show current attack",
 		description = "Overlay the current attack in a separate infobox.",
 		position = 0,
-		titleSection = "currentAttackSection"
+		section = currentAttackSection
 	)
 	default boolean showCurrentAttack()
 	{
@@ -132,7 +120,7 @@ public interface CerberusConfig extends Config
 		name = "Show current attack timer",
 		description = "Display a timer on the current attack infobox.",
 		position = 1,
-		titleSection = "currentAttackSection",
+		section = currentAttackSection,
 		hidden = true,
 		unhide = "showCurrentAttack"
 	)
@@ -148,7 +136,7 @@ public interface CerberusConfig extends Config
 		name = "Show upcoming attacks",
 		description = "Overlay upcoming attacks in stacked info boxes.",
 		position = 0,
-		titleSection = "upcomingAttacksSection"
+		section = upcomingAttacksSection
 	)
 	default boolean showUpcomingAttacks()
 	{
@@ -164,7 +152,7 @@ public interface CerberusConfig extends Config
 		name = "# of attacks",
 		description = "Number of upcoming attacks to render.",
 		position = 1,
-		titleSection = "upcomingAttacksSection",
+		section = upcomingAttacksSection,
 		hidden = true,
 		unhide = "showUpcomingAttacks"
 	)
@@ -178,7 +166,7 @@ public interface CerberusConfig extends Config
 		name = "Reverse order",
 		description = "Reverse the order of the upcoming attacks.",
 		position = 2,
-		titleSection = "upcomingAttacksSection",
+		section = upcomingAttacksSection,
 		hidden = true,
 		unhide = "showUpcomingAttacks"
 	)
@@ -193,7 +181,7 @@ public interface CerberusConfig extends Config
 		description = "Display the attack pattern number on each upcoming attack." +
 			"<br>See http://pastebin.com/hWCvantS",
 		position = 3,
-		titleSection = "upcomingAttacksSection",
+		section = upcomingAttacksSection,
 		hidden = true,
 		unhide = "showUpcomingAttacks"
 	)
@@ -207,7 +195,7 @@ public interface CerberusConfig extends Config
 		name = "Upcoming attacks orientation",
 		description = "Display upcoming attacks vertically or horizontally.",
 		position = 4,
-		titleSection = "upcomingAttacksSection",
+		section = upcomingAttacksSection,
 		hidden = true,
 		unhide = "showUpcomingAttacks",
 		enumClass = InfoBoxOrientation.class
@@ -222,7 +210,7 @@ public interface CerberusConfig extends Config
 		name = "Info box size",
 		description = "Size of the upcoming attacks infoboxes.",
 		position = 5,
-		titleSection = "upcomingAttacksSection",
+		section = upcomingAttacksSection,
 		hidden = true,
 		unhide = "showUpcomingAttacks",
 		enumClass = InfoBoxComponentSize.class
@@ -239,7 +227,7 @@ public interface CerberusConfig extends Config
 		name = "Guitar Hero mode",
 		description = "Display descending boxes indicating the correct prayer for the current attack.",
 		position = 0,
-		titleSection = "guitarHeroSection"
+		section = guitarHeroSection
 	)
 	default boolean guitarHeroMode()
 	{
@@ -255,26 +243,13 @@ public interface CerberusConfig extends Config
 		name = "# of ticks",
 		description = "The number of ticks, before the upcoming current attack, to render.",
 		position = 1,
-		titleSection = "guitarHeroSection",
+		section = guitarHeroSection,
 		hidden = true,
 		unhide = "guitarHeroMode"
 	)
 	default int guitarHeroTicks()
 	{
 		return 4;
-	}
-
-	// Mirror mode
-
-	@ConfigItem(
-		name = "Enable mirror mode",
-		keyName = "mirrorMode",
-		description = "Enable mirror mode overlay rendering.",
-		position = 99
-	)
-	default boolean mirrorMode()
-	{
-		return false;
 	}
 
 	// Constants

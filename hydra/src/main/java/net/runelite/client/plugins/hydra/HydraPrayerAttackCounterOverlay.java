@@ -35,7 +35,6 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import net.runelite.api.NPC;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.LineComponent;
@@ -46,22 +45,18 @@ public class HydraPrayerAttackCounterOverlay extends Overlay
 {
 	private final HydraPlugin hydraPlugin;
 
-	private final HydraConfig config;
-
 	private final PanelComponent panelComponent;
 
 	@Setter(AccessLevel.PACKAGE)
 	private Map<Integer, Hydra> hydras;
 
 	@Inject
-	private HydraPrayerAttackCounterOverlay(final HydraPlugin hydraPlugin, final HydraConfig config)
+	private HydraPrayerAttackCounterOverlay(final HydraPlugin hydraPlugin)
 	{
 		this.hydraPlugin = hydraPlugin;
-		this.config = config;
 		this.panelComponent = new PanelComponent();
 		this.panelComponent.setPreferredSize(new Dimension(14, 0));
 		this.hydras = new HashMap<>();
-		determineLayer();
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
 		setPriority(OverlayPriority.MED);
 	}
@@ -89,13 +84,5 @@ public class HydraPrayerAttackCounterOverlay extends Overlay
 		panelComponent.getChildren().add(LineComponent.builder().right(attackCount).build());
 
 		return panelComponent.render(graphics);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
 	}
 }

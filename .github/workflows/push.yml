@@ -56,15 +56,15 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Assembling plugins
-        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble :specialcounter:assemble --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Building plugins
-        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build :specialcounter:build --stacktrace -x test -x checkstyleMain --console=plain
+        run: ./gradlew -x test -x checkstyleMain --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal :specialcounter:publishToMavenLocal --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
@@ -126,15 +126,15 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Assembling plugins
-        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble :specialcounter:assemble --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Building plugins
-        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build :specialcounter:build --stacktrace -x test -x checkstyleMain --console=plain
+        run: ./gradlew --stacktrace -x test -x checkstyleMain --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal :specialcounter:publishToMavenLocal --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
@@ -196,15 +196,15 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Assembling plugins
-        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble :specialcounter:assemble --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Building plugins
-        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build :specialcounter:build --stacktrace -x test -x checkstyleMain --console=plain
+        run: ./gradlew --stacktrace -x test -x checkstyleMain --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal :specialcounter:publishToMavenLocal --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
@@ -266,15 +266,15 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Assembling plugins
-        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble :specialcounter:assemble --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Building plugins
-        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build :specialcounter:build --stacktrace -x test -x checkstyleMain --console=plain
+        run: ./gradlew --stacktrace -x test -x checkstyleMain --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal :specialcounter:publishToMavenLocal --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable
@@ -351,15 +351,15 @@ jobs:
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Assembling plugins
-        run: ./gradlew :attackstyles:assemble :xptracker:assemble :clanchat:assemble :specialcounter:assemble --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Building plugins
-        run: ./gradlew :attackstyles:build :xptracker:build :clanchat:build :specialcounter:build --stacktrace -x test -x checkstyleMain --console=plain
+        run: ./gradlew --stacktrace -x test -x checkstyleMain --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Upload plugins artifacts to local maven
-        run: ./gradlew :attackstyles:publishToMavenLocal :xptracker:publishToMavenLocal :clanchat:publishToMavenLocal :specialcounter:publishToMavenLocal --console=plain
+        run: ./gradlew --console=plain
         working-directory: /home/runner/work/plugins-source/plugins
 
       - name: Make gradlew executable

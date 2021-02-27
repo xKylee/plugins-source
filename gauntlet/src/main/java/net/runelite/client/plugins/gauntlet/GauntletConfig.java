@@ -43,17 +43,13 @@ import net.runelite.client.config.Units;
 public interface GauntletConfig extends Config
 {
 	// Sections
-
 	@ConfigSection(
 		name = "Resources",
 		description = "Resources section.",
 		position = 0,
 		keyName = "resourcesSection"
 	)
-	default boolean resourcesSection()
-	{
-		return false;
-	}
+	String resourcesSection = "Resources";
 
 	@ConfigSection(
 		name = "Utilities",
@@ -61,10 +57,7 @@ public interface GauntletConfig extends Config
 		position = 1,
 		keyName = "utilitiesSection"
 	)
-	default boolean utilitiesSection()
-	{
-		return false;
-	}
+	String utilitiesSection = "Utilities";
 
 	@ConfigSection(
 		name = "Npcs",
@@ -72,10 +65,7 @@ public interface GauntletConfig extends Config
 		position = 2,
 		keyName = "npcSection"
 	)
-	default boolean npcSection()
-	{
-		return false;
-	}
+	String npcSection = "Npcs";
 
 	@ConfigSection(
 		name = "Hunllef",
@@ -83,10 +73,7 @@ public interface GauntletConfig extends Config
 		position = 3,
 		keyName = "hunllefSection"
 	)
-	default boolean hunllefSection()
-	{
-		return false;
-	}
+	String hunllefSection = "Hunllef";
 
 	@ConfigSection(
 		name = "Projectiles",
@@ -94,10 +81,7 @@ public interface GauntletConfig extends Config
 		position = 4,
 		keyName = "projectilesSection"
 	)
-	default boolean projectilesSection()
-	{
-		return false;
-	}
+	String projectilesSection = "Projectiles";
 
 	@ConfigSection(
 		name = "Tornadoes",
@@ -105,10 +89,7 @@ public interface GauntletConfig extends Config
 		position = 5,
 		keyName = "tornadoesSection"
 	)
-	default boolean tornadoesSection()
-	{
-		return false;
-	}
+	String tornadoesSection = "Tornadoes";
 
 	@ConfigSection(
 		name = "Player",
@@ -116,10 +97,7 @@ public interface GauntletConfig extends Config
 		position = 6,
 		keyName = "playerSection"
 	)
-	default boolean playerSection()
-	{
-		return false;
-	}
+	String playerSection = "Player";
 
 	@ConfigSection(
 		name = "Timer",
@@ -127,10 +105,7 @@ public interface GauntletConfig extends Config
 		position = 7,
 		keyName = "timerSection"
 	)
-	default boolean timerSection()
-	{
-		return false;
-	}
+	String timerSection = "Timer";
 
 	@ConfigSection(
 		name = "Other",
@@ -138,10 +113,7 @@ public interface GauntletConfig extends Config
 		position = 8,
 		keyName = "otherSection"
 	)
-	default boolean otherSection()
-	{
-		return false;
-	}
+	String otherSection = "Other";
 
 	// Resources Section
 
@@ -150,7 +122,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay resources with a respective icon and tile outline.",
 		position = 0,
 		keyName = "resourceOverlay",
-		section = "resourcesSection"
+		section = resourcesSection
 	)
 	default boolean resourceOverlay()
 	{
@@ -166,7 +138,7 @@ public interface GauntletConfig extends Config
 		description = "Change the size of the resource icons.",
 		position = 1,
 		keyName = "resourceIconSize",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceOverlay"
 	)
@@ -185,7 +157,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the resource tile outline.",
 		position = 2,
 		keyName = "resourceTileOutlineWidth",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceOverlay"
 	)
@@ -201,7 +173,7 @@ public interface GauntletConfig extends Config
 		description = "Change the tile outline color of resources.",
 		position = 3,
 		keyName = "resourceTileOutlineColor",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceOverlay"
 	)
@@ -216,7 +188,7 @@ public interface GauntletConfig extends Config
 		description = "Change the tile fill color of resources.",
 		position = 4,
 		keyName = "resourceTileFillColor",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceOverlay"
 	)
@@ -230,7 +202,7 @@ public interface GauntletConfig extends Config
 		description = "Outline resources with a colored outline.",
 		position = 5,
 		keyName = "resourceOutline",
-		section = "resourcesSection"
+		section = resourcesSection
 	)
 	default boolean resourceOutline()
 	{
@@ -246,7 +218,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the resource outline.",
 		position = 6,
 		keyName = "resourceOutlineWidth",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceOutline"
 	)
@@ -262,7 +234,7 @@ public interface GauntletConfig extends Config
 		description = "Change the outline color of resources.",
 		position = 7,
 		keyName = "resourceOutlineColor",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceOutline"
 	)
@@ -276,7 +248,7 @@ public interface GauntletConfig extends Config
 		description = "Track resources in counter infoboxes.",
 		position = 8,
 		keyName = "resourceTracker",
-		section = "resourcesSection",
+		section = resourcesSection,
 		enumClass = ResourceFilter.class
 	)
 	default ResourceFilter resourceTracker()
@@ -289,7 +261,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of ores to acquire.",
 		position = 9,
 		keyName = "resourceOre",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -304,7 +276,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of phren barks to acquire.",
 		position = 10,
 		keyName = "resourceBark",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -319,7 +291,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of linum tirinums to acquire.",
 		position = 11,
 		keyName = "resourceTirinum",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -334,7 +306,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of grym leaves to acquire.",
 		position = 12,
 		keyName = "resourceGrym",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -349,7 +321,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of weapon frames to acquire.",
 		position = 13,
 		keyName = "resourceFrame",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -364,7 +336,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of paddlefish to acquire.",
 		position = 14,
 		keyName = "resourcePaddlefish",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -379,7 +351,7 @@ public interface GauntletConfig extends Config
 		description = "The desired number of crystal shards to acquire.",
 		position = 15,
 		keyName = "resourceShard",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -394,7 +366,7 @@ public interface GauntletConfig extends Config
 		description = "Whether or not to acquire the crystalline or corrupted bowstring.",
 		position = 16,
 		keyName = "resourceBowstring",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -409,7 +381,7 @@ public interface GauntletConfig extends Config
 		description = "Whether or not to acquire the crystal or corrupted spike.",
 		position = 17,
 		keyName = "resourceSpike",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -424,7 +396,7 @@ public interface GauntletConfig extends Config
 		description = "Whether or not to acquire the crystal or corrupted orb.",
 		position = 18,
 		keyName = "resourceOrb",
-		section = "resourcesSection",
+		section = resourcesSection,
 		hidden = true,
 		unhide = "resourceTracker",
 		unhideValue = "CUSTOM"
@@ -441,7 +413,7 @@ public interface GauntletConfig extends Config
 		description = "Outline various utilities in the starting room.",
 		position = 0,
 		keyName = "utilitiesOutline",
-		section = "utilitiesSection"
+		section = utilitiesSection
 	)
 	default boolean utilitiesOutline()
 	{
@@ -457,7 +429,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the utilities outline.",
 		position = 1,
 		keyName = "utilitiesOutlineWidth",
-		section = "utilitiesSection",
+		section = utilitiesSection,
 		hidden = true,
 		unhide = "utilitiesOutline"
 	)
@@ -473,7 +445,7 @@ public interface GauntletConfig extends Config
 		description = "Change the color of the utilities outline.",
 		position = 2,
 		keyName = "utilitiesOutlineColor",
-		section = "utilitiesSection",
+		section = utilitiesSection,
 		hidden = true,
 		unhide = "utilitiesOutline"
 	)
@@ -489,7 +461,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay demi-bosses with a colored outline.",
 		position = 0,
 		keyName = "demibossOutline",
-		section = "npcSection"
+		section = npcSection
 	)
 	default boolean demibossOutline()
 	{
@@ -505,7 +477,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the demi-boss outline.",
 		position = 1,
 		keyName = "demibossOutlineWidth",
-		section = "npcSection",
+		section = npcSection,
 		hidden = true,
 		unhide = "demibossOutline"
 	)
@@ -520,7 +492,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay strong npcs with a colored outline.",
 		position = 2,
 		keyName = "strongNpcOutline",
-		section = "npcSection"
+		section = npcSection
 	)
 	default boolean strongNpcOutline()
 	{
@@ -536,7 +508,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the strong npcs outline.",
 		position = 3,
 		keyName = "strongNpcOutlineWidth",
-		section = "npcSection",
+		section = npcSection,
 		hidden = true,
 		unhide = "strongNpcOutline"
 	)
@@ -552,7 +524,7 @@ public interface GauntletConfig extends Config
 		description = "Change the outline color of strong npcs.",
 		position = 4,
 		keyName = "strongNpcOutlineColor",
-		section = "npcSection",
+		section = npcSection,
 		hidden = true,
 		unhide = "strongNpcOutline"
 	)
@@ -566,7 +538,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay weak npcs with a colored outline.",
 		position = 5,
 		keyName = "weakNpcOutline",
-		section = "npcSection"
+		section = npcSection
 	)
 	default boolean weakNpcOutline()
 	{
@@ -582,7 +554,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the weak npcs outline.",
 		position = 6,
 		keyName = "weakNpcOutlineWidth",
-		section = "npcSection",
+		section = npcSection,
 		hidden = true,
 		unhide = "weakNpcOutline"
 	)
@@ -598,7 +570,7 @@ public interface GauntletConfig extends Config
 		description = "Change the outline color of weak npcs.",
 		position = 7,
 		keyName = "weakNpcOutlineColor",
-		section = "npcSection",
+		section = npcSection,
 		hidden = true,
 		unhide = "weakNpcOutline"
 	)
@@ -614,7 +586,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay the Hunllef with an attack and prayer counter.",
 		position = 0,
 		keyName = "hunllefOverlayAttackCounter",
-		section = "hunllefSection"
+		section = hunllefSection
 	)
 	default boolean hunllefOverlayAttackCounter()
 	{
@@ -626,7 +598,7 @@ public interface GauntletConfig extends Config
 		description = "Change the font style of the attack and prayer counter.",
 		position = 1,
 		keyName = "hunllefAttackCounterFontStyle",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOverlayAttackCounter",
 		enumClass = FontStyle.class
@@ -645,7 +617,7 @@ public interface GauntletConfig extends Config
 		description = "Adjust the font size of the attack and prayer counter.",
 		position = 2,
 		keyName = "hunllefAttackCounterFontSize",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOverlayAttackCounter"
 	)
@@ -660,7 +632,7 @@ public interface GauntletConfig extends Config
 		description = "Outline the Hunllef when incorrectly praying against its current attack style.",
 		position = 3,
 		keyName = "hunllefOverlayWrongPrayerOutline",
-		section = "hunllefSection"
+		section = hunllefSection
 	)
 	default boolean hunllefOverlayWrongPrayerOutline()
 	{
@@ -676,7 +648,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the wrong prayer outline.",
 		position = 4,
 		keyName = "hunllefWrongPrayerOutlineWidth",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOverlayWrongPrayerOutline"
 	)
@@ -691,7 +663,7 @@ public interface GauntletConfig extends Config
 		description = "Outline the Hunllef's tile.",
 		position = 5,
 		keyName = "hunllefOutlineTile",
-		section = "hunllefSection"
+		section = hunllefSection
 	)
 	default boolean hunllefOutlineTile()
 	{
@@ -707,7 +679,7 @@ public interface GauntletConfig extends Config
 		description = "Change the width of the Hunllef's tile outline.",
 		position = 6,
 		keyName = "hunllefTileOutlineWidth",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOutlineTile"
 	)
@@ -723,7 +695,7 @@ public interface GauntletConfig extends Config
 		description = "Change the outline color of the Hunllef's tile.",
 		position = 7,
 		keyName = "hunllefOutlineColor",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOutlineTile"
 	)
@@ -738,7 +710,7 @@ public interface GauntletConfig extends Config
 		description = "Change the fill color of the Hunllef's tile.",
 		position = 8,
 		keyName = "hunllefFillColor",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOutlineTile"
 	)
@@ -752,7 +724,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay a current attack style icon on the Hunllef.",
 		position = 9,
 		keyName = "hunllefOverlayAttackStyleIcon",
-		section = "hunllefSection"
+		section = hunllefSection
 	)
 	default boolean hunllefOverlayAttackStyleIcon()
 	{
@@ -768,7 +740,7 @@ public interface GauntletConfig extends Config
 		description = "Change the size of the attack style icon.",
 		position = 10,
 		keyName = "hunllefAttackStyleIconSize",
-		section = "hunllefSection",
+		section = hunllefSection,
 		hidden = true,
 		unhide = "hunllefOverlayAttackStyleIcon"
 	)
@@ -783,7 +755,7 @@ public interface GauntletConfig extends Config
 		description = "Play an in-game sound when the Hunllef is about to use its prayer attack.",
 		position = 11,
 		keyName = "hunllefPrayerAudio",
-		section = "hunllefSection"
+		section = hunllefSection
 	)
 	default boolean hunllefPrayerAudio()
 	{
@@ -797,7 +769,7 @@ public interface GauntletConfig extends Config
 		description = "Outline projectiles with a blue (magic) or green (range) color.",
 		position = 0,
 		keyName = "outlineProjectile",
-		section = "projectilesSection"
+		section = projectilesSection
 	)
 	default boolean outlineProjectile()
 	{
@@ -809,7 +781,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay projectiles with their respective icon.",
 		position = 1,
 		keyName = "overlayProjectileIcon",
-		section = "projectilesSection"
+		section = projectilesSection
 	)
 	default boolean overlayProjectileIcon()
 	{
@@ -825,7 +797,7 @@ public interface GauntletConfig extends Config
 		description = "Change the size of the projectile icons.",
 		position = 2,
 		keyName = "projectileIconSize",
-		section = "projectilesSection",
+		section = projectilesSection,
 		hidden = true,
 		unhide = "overlayProjectileIcon"
 	)
@@ -842,7 +814,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay tornadoes with a tick counter.",
 		position = 0,
 		keyName = "tornadoTickCounter",
-		section = "tornadoesSection"
+		section = tornadoesSection
 	)
 	default boolean tornadoTickCounter()
 	{
@@ -854,7 +826,7 @@ public interface GauntletConfig extends Config
 		description = "Bold/Italics/Plain",
 		position = 1,
 		keyName = "tornadoFontStyle",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTickCounter",
 		enumClass = FontStyle.class
@@ -869,7 +841,7 @@ public interface GauntletConfig extends Config
 		description = "Toggle font shadow of the tornado tick counter.",
 		position = 2,
 		keyName = "tornadoFontShadow",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTickCounter"
 	)
@@ -887,7 +859,7 @@ public interface GauntletConfig extends Config
 		description = "Adjust the font size of the tornado tick counter.",
 		position = 3,
 		keyName = "tornadoFontSize",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTickCounter"
 	)
@@ -903,7 +875,7 @@ public interface GauntletConfig extends Config
 		description = "Color of the tornado tick counter font.",
 		position = 4,
 		keyName = "tornadoFontColor",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTickCounter"
 	)
@@ -917,7 +889,7 @@ public interface GauntletConfig extends Config
 		description = "Outline the tiles of tornadoes.",
 		position = 5,
 		keyName = "tornadoTileOutline",
-		section = "tornadoesSection"
+		section = tornadoesSection
 	)
 	default boolean tornadoTileOutline()
 	{
@@ -933,7 +905,7 @@ public interface GauntletConfig extends Config
 		description = "Change tile outline width of tornadoes.",
 		position = 6,
 		keyName = "tornadoTileOutlineWidth",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTileOutline"
 	)
@@ -949,7 +921,7 @@ public interface GauntletConfig extends Config
 		description = "Color to outline the tile of a tornado.",
 		position = 7,
 		keyName = "tornadoOutlineColor",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTileOutline"
 	)
@@ -964,7 +936,7 @@ public interface GauntletConfig extends Config
 		description = "Color to fill the tile of a tornado.",
 		position = 8,
 		keyName = "tornadoFillColor",
-		section = "tornadoesSection",
+		section = tornadoesSection,
 		hidden = true,
 		unhide = "tornadoTileOutline"
 	)
@@ -980,7 +952,7 @@ public interface GauntletConfig extends Config
 		description = "Overlay the correct prayer to use against the Hunllef's current attack style.",
 		position = 0,
 		keyName = "prayerOverlay",
-		section = "playerSection",
+		section = playerSection,
 		enumClass = PrayerHighlightMode.class
 	)
 	default PrayerHighlightMode prayerOverlay()
@@ -993,7 +965,7 @@ public interface GauntletConfig extends Config
 		description = "Flash the screen if you use the wrong attack style.",
 		position = 1,
 		keyName = "flashOnWrongAttack",
-		section = "playerSection"
+		section = playerSection
 	)
 	default boolean flashOnWrongAttack()
 	{
@@ -1009,7 +981,7 @@ public interface GauntletConfig extends Config
 		description = "Change the duration of the flash.",
 		position = 2,
 		keyName = "flashOnWrongAttackDuration",
-		section = "playerSection",
+		section = playerSection,
 		hidden = true,
 		unhide = "flashOnWrongAttack"
 	)
@@ -1024,7 +996,7 @@ public interface GauntletConfig extends Config
 		description = "Color of the flash notification.",
 		position = 3,
 		keyName = "flashOnWrongAttackColor",
-		section = "playerSection",
+		section = playerSection,
 		hidden = true,
 		unhide = "flashOnWrongAttack"
 	)
@@ -1038,7 +1010,7 @@ public interface GauntletConfig extends Config
 		description = "Flash the screen to weapon switch when using 5:1 method.",
 		position = 4,
 		keyName = "flashOn51Method",
-		section = "playerSection"
+		section = playerSection
 	)
 	default boolean flashOn51Method()
 	{
@@ -1054,7 +1026,7 @@ public interface GauntletConfig extends Config
 		description = "Change the duration of the flash.",
 		position = 5,
 		keyName = "flashOn51MethodDuration",
-		section = "playerSection",
+		section = playerSection,
 		hidden = true,
 		unhide = "flashOn51Method"
 	)
@@ -1069,7 +1041,7 @@ public interface GauntletConfig extends Config
 		description = "Color of the flash notification.",
 		position = 6,
 		keyName = "flashOn51MethodColor",
-		section = "playerSection",
+		section = playerSection,
 		hidden = true,
 		unhide = "flashOn51Method"
 	)
@@ -1085,7 +1057,7 @@ public interface GauntletConfig extends Config
 		keyName = "timerOverlay",
 		name = "Overlay timer",
 		description = "Display an overlay that tracks your gauntlet time.",
-		section = "timerSection"
+		section = timerSection
 	)
 	default boolean timerOverlay()
 	{
@@ -1097,7 +1069,7 @@ public interface GauntletConfig extends Config
 		keyName = "timerChatMessage",
 		name = "Chat timer",
 		description = "Display a chat message on death with your gauntlet time.",
-		section = "timerSection"
+		section = timerSection
 	)
 	default boolean timerChatMessage()
 	{
@@ -1111,7 +1083,7 @@ public interface GauntletConfig extends Config
 		description = "Set render distance of various overlays.",
 		position = 0,
 		keyName = "resourceRenderDistance",
-		section = "otherSection",
+		section = otherSection,
 		enumClass = RenderDistance.class
 	)
 	default RenderDistance resourceRenderDistance()
@@ -1124,21 +1096,9 @@ public interface GauntletConfig extends Config
 		description = "Kill the Hunllef.",
 		position = 1,
 		keyName = "discoMode",
-		section = "otherSection"
+		section = otherSection
 	)
 	default boolean discoMode()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		name = "Enable mirror mode",
-		description = "Toggle mirror mode compatibility.",
-		position = 2,
-		keyName = "mirrorMode",
-		section = "otherSection"
-	)
-	default boolean mirrorMode()
 	{
 		return false;
 	}

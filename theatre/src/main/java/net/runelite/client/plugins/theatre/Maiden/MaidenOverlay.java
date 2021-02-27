@@ -38,7 +38,7 @@ public class MaidenOverlay extends RoomOverlay
 	protected MaidenOverlay(TheatreConfig config)
 	{
 		super(config);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class MaidenOverlay extends RoomOverlay
 
 		if (config.maidenRedsDistance())
 		{
-			final int maidenX = maiden.getMaidenNPC().getWorldLocation().getX() + maiden.getMaidenNPC().getTransformedDefinition().getSize();
+			final int maidenX = maiden.getMaidenNPC().getWorldLocation().getX() + maiden.getMaidenNPC().getTransformedComposition().getSize();
 
 			int deltaX = Math.max(0, nyloNPC.getWorldLocation().getX() - maidenX);
 			string += deltaX;
@@ -190,10 +190,5 @@ public class MaidenOverlay extends RoomOverlay
 		double gMod = 235.0D * percentage / 100.0D;
 		double bMod = 125.0D * percentage / 100.0D;
 		return new Color((int) Math.min(255.0D, 255.0D - rMod), Math.min(255, (int)(20.0D + gMod)), Math.min(255, (int)(0.0D + bMod)));
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

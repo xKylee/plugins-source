@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.6"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Hydra Helper"
 project.extra["PluginDescription"] = "Overlays for small hydras"

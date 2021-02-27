@@ -28,41 +28,26 @@ import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.Title;
 
 @ConfigGroup("pileindicators")
 public interface PileIndicatorsConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "playerPilesTitle",
 		name = "Player Piles",
 		description = "",
 		position = 0
 	)
-	default Title playerPilesTitle()
-	{
-		return new Title();
-	}
+	String playerPilesTitle = "Player Piles";
 
 	@ConfigItem(
 		position = 1,
 		keyName = "enablePlayers",
 		name = "Enable Player Piling",
 		description = "Enable the option to highlight players when they pile.",
-		titleSection = "playerPilesTitle"
+		section = playerPilesTitle
 	)
 	default boolean enablePlayers()
 	{
@@ -74,7 +59,7 @@ public interface PileIndicatorsConfig extends Config
 		keyName = "wildyOnlyPlayer",
 		name = "Wilderness Only",
 		description = "Show player piling only when in the Wilderness.",
-		titleSection = "playerPilesTitle"
+		section = playerPilesTitle
 	)
 	default boolean wildyOnlyPlayer()
 	{
@@ -86,30 +71,27 @@ public interface PileIndicatorsConfig extends Config
 		keyName = "playerPileColor",
 		name = "Player Pile Color",
 		description = "Color used for player piles.",
-		titleSection = "playerPilesTitle"
+		section = playerPilesTitle
 	)
 	default Color playerPileColor()
 	{
 		return Color.RED;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "npcPilesTitle",
 		name = "NPC Piles",
 		description = "",
 		position = 4
 	)
-	default Title npcPilesTitle()
-	{
-		return new Title();
-	}
+	String npcPilesTitle = "NPC Piles";
 
 	@ConfigItem(
 		position = 5,
 		keyName = "enableNPCS",
 		name = "Enable NPC Piling",
 		description = "Enable the option to highlight NPCs when they pile.",
-		titleSection = "npcPilesTitle"
+		section = npcPilesTitle
 	)
 	default boolean enableNPCS()
 	{
@@ -121,46 +103,40 @@ public interface PileIndicatorsConfig extends Config
 		keyName = "npcPileColor",
 		name = "NPC Pile Color",
 		description = "Color used for NPC piles.",
-		titleSection = "npcPilesTitle"
+		section = npcPilesTitle
 	)
 	default Color npcPileColor()
 	{
 		return Color.BLUE;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "mixedPilesTitle",
 		name = "Mixed Piles",
 		description = "",
 		position = 7
 	)
-	default Title mixedPilesTitle()
-	{
-		return new Title();
-	}
+	String mixedPilesTitle = "Mixed Piles";
 
 	@ConfigItem(
 		position = 8,
 		keyName = "mixedPileColor",
 		name = "Mixed Pile Color",
 		description = "Color used for mixed piles.",
-		titleSection = "mixedPilesTitle"
+		section = mixedPilesTitle
 	)
 	default Color mixedPileColor()
 	{
 		return new Color(255, 0, 255);
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "pilesSizeTitle",
 		name = "Pile size",
 		description = "",
 		position = 9
 	)
-	default Title pilesSizeTitle()
-	{
-		return new Title();
-	}
+	String pilesSizeTitle = "Pile size";
 
 	@Range(
 		min = 2
@@ -170,30 +146,27 @@ public interface PileIndicatorsConfig extends Config
 		keyName = "minimumPileSize",
 		name = "Minimum Pile Size",
 		description = "Any pile under this size will not show up. (Minimum: 2)",
-		titleSection = "pilesSizeTitle"
+		section = pilesSizeTitle
 	)
 	default int minimumPileSize()
 	{
 		return 2;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "miscellaneousTitle",
 		name = "Miscellaneous",
 		description = "",
 		position = 11
 	)
-	default Title miscellaneousTitle()
-	{
-		return new Title();
-	}
+	String miscellaneousTitle = "Miscellaneous";
 
 	@ConfigItem(
 		position = 12,
 		keyName = "numberOnly",
 		name = "Display Number Only",
 		description = "Shorten \"PILE SIZE: 1\" to \"1\"",
-		titleSection = "miscellaneousTitle"
+		section = miscellaneousTitle
 	)
 	default boolean numberOnly()
 	{
@@ -205,7 +178,7 @@ public interface PileIndicatorsConfig extends Config
 		keyName = "drawPileTile",
 		name = "Draw Pile Tile",
 		description = "Draws the tile of the pile for best visibility.",
-		titleSection = "miscellaneousTitle"
+		section = miscellaneousTitle
 	)
 	default boolean drawPileTile()
 	{
@@ -217,7 +190,7 @@ public interface PileIndicatorsConfig extends Config
 		keyName = "drawPileHull",
 		name = "Draw Pile Convex Hull",
 		description = "Draws the hull of the pile for best visibility.",
-		titleSection = "miscellaneousTitle"
+		section = miscellaneousTitle
 	)
 	default boolean drawPileHull()
 	{

@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.12"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Effect Timers"
 project.extra["PluginDescription"] = "Effect timer overlay on players"
@@ -43,15 +43,6 @@ dependencies {
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
-
-    testImplementation("com.openosrs:runelite-api:$rlVersion")
-    testImplementation("com.openosrs:runelite-client:$rlVersion")
-
-    testImplementation(Libraries.pf4j)
-    testImplementation(Libraries.guiceTestlib)
-    testImplementation(Libraries.junit)
-    testImplementation(Libraries.mockitoCore)
-    testImplementation(Libraries.mockitoInline)
 }
 
 tasks {

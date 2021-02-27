@@ -42,7 +42,6 @@ import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Point;
 import net.runelite.api.VarClientInt;
-import net.runelite.api.Varbits;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ScriptCallbackEvent;
 import net.runelite.api.events.VarClientIntChanged;
@@ -62,9 +61,7 @@ import net.runelite.client.menus.MenuManager;
 import net.runelite.client.menus.WidgetMenuOption;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
-import static net.runelite.client.util.MiscUtils.clamp;
 import org.apache.commons.lang3.StringUtils;
 import org.pf4j.Extension;
 
@@ -73,8 +70,7 @@ import org.pf4j.Extension;
 	name = "Spellbook",
 	enabledByDefault = false,
 	description = "Modifications to the spellbook",
-	tags = {"resize", "spell", "mobile", "lowers", "pvp", "skill", "level"},
-	type = PluginType.UTILITY
+	tags = {"resize", "spell", "mobile", "lowers", "pvp", "skill", "level"}
 )
 @Slf4j
 public class SpellbookPlugin extends Plugin
@@ -183,7 +179,7 @@ public class SpellbookPlugin extends Plugin
 	{
 		if (event.getGameState() == GameState.LOGGED_IN)
 		{
-			mageTabOpen = client.getVar(VarClientInt.INTERFACE_TAB) == InterfaceTab.SPELLBOOK.getId();
+			mageTabOpen = client.getVar(VarClientInt.INVENTORY_TAB) == InterfaceTab.SPELLBOOK.getId();
 			refreshMagicTabOption();
 		}
 	}
@@ -191,12 +187,12 @@ public class SpellbookPlugin extends Plugin
 	@Subscribe
 	private void onVarCIntChanged(final VarClientIntChanged event)
 	{
-		if (event.getIndex() != VarClientInt.INTERFACE_TAB.getIndex())
+		if (event.getIndex() != VarClientInt.INVENTORY_TAB.getIndex())
 		{
 			return;
 		}
 
-		final boolean intfTab = client.getVar(VarClientInt.INTERFACE_TAB) == InterfaceTab.SPELLBOOK.getId();
+		final boolean intfTab = client.getVar(VarClientInt.INVENTORY_TAB) == InterfaceTab.SPELLBOOK.getId();
 		if (intfTab != mageTabOpen)
 		{
 			mageTabOpen = intfTab;
@@ -208,7 +204,7 @@ public class SpellbookPlugin extends Plugin
 			return;
 		}
 
-		final boolean shouldBeAbleToDrag = mageTabOpen && client.getVar(Varbits.FILTER_SPELLBOOK) == 0;
+		final boolean shouldBeAbleToDrag = mageTabOpen && client.getVarbitValue(6718) == 0;
 		if (shouldBeAbleToDrag)
 		{
 			return;
@@ -294,7 +290,7 @@ public class SpellbookPlugin extends Plugin
 	@Subscribe
 	private void onScriptCallbackEvent(final ScriptCallbackEvent event)
 	{
-		if (client.getVar(Varbits.FILTER_SPELLBOOK) != 0
+		if (client.getVarbitValue(6718) != 0
 			|| !config.enableMobile()
 			|| !event.getEventName().toLowerCase().contains("spell"))
 		{
@@ -310,7 +306,7 @@ public class SpellbookPlugin extends Plugin
 		switch (event.getEventName())
 		{
 			case "startSpellRedraw":
-				final Spellbook pook = Spellbook.getByID(client.getVar(Varbits.SPELLBOOK));
+				final Spellbook pook = Spellbook.getByID(client.getVarbitValue(6718));
 
 				if (pook != spellbook)
 				{
@@ -477,7 +473,7 @@ public class SpellbookPlugin extends Plugin
 			final Widget spellWidget = client.getWidget(SPELLBOOK);
 			if (spellWidget != null)
 			{
-				final Object[] args = spellWidget.getOnInvTransmit();
+				final Object[] args = spellWidget.getOnInvTransmitListener();
 				if (args != null)
 				{
 					client.runScript(args);
@@ -719,5 +715,15 @@ public class SpellbookPlugin extends Plugin
 		}
 
 		return false;
+	}
+
+	public static int clamp(int val, int min, int max)
+	{
+		return Math.max(min, Math.min(max, val));
+	}
+
+	public static float clamp(float val, float min, float max)
+	{
+		return Math.max(min, Math.min(max, val));
 	}
 }

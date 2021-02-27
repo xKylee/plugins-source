@@ -24,6 +24,7 @@
 
 package net.runelite.client.plugins.gauntlet.overlay;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -37,7 +38,6 @@ import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.client.graphics.ModelOutlineRenderer;
 import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletPlugin;
 import net.runelite.client.plugins.gauntlet.entity.Demiboss;
@@ -77,7 +77,7 @@ public class OverlayGauntlet extends Overlay
 	@Override
 	public void determineLayer()
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override

@@ -27,40 +27,26 @@ package net.runelite.client.plugins.vorkath;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
-import net.runelite.client.config.Title;
+import net.runelite.client.config.ConfigSection;
+
 
 @ConfigGroup("vorkath")
 public interface VorkathConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "acidTitle",
 		position = 1,
 		name = "Acid",
 		description = ""
 	)
-	default Title acidConfig()
-	{
-		return new Title();
-	}
+	String acidTitle = "Acid";
 
 	@ConfigItem(
 		keyName = "indicateAcidPools",
 		name = "Acid Pools",
 		description = "Indicate the acid pools",
 		position = 2,
-		titleSection = "acidTitle"
+		section = acidTitle
 	)
 	default boolean indicateAcidPools()
 	{
@@ -72,7 +58,7 @@ public interface VorkathConfig extends Config
 		name = "Acid Free Path",
 		description = "Indicate the most efficient acid free path",
 		position = 3,
-		titleSection = "acidTitle"
+		section = acidTitle
 	)
 	default boolean indicateAcidFreePath()
 	{
@@ -86,30 +72,27 @@ public interface VorkathConfig extends Config
 		position = 4,
 		hidden = true,
 		unhide = "indicateAcidFreePath",
-		titleSection = "acidTitle"
+		section = acidTitle
 	)
 	default int acidFreePathLength()
 	{
 		return 5;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "wooxTitle",
 		position = 5,
 		name = "Woox walk",
 		description = ""
 	)
-	default Title wooxTitle()
-	{
-		return new Title();
-	}
+	String wooxTitle = "Woox walk";
 
 	@ConfigItem(
 		keyName = "indicateWooxWalkPath",
 		name = "WooxWalk Path",
 		description = "Indicate the closest WooxWalk path",
 		position = 6,
-		titleSection = "wooxTitle"
+		section = wooxTitle
 	)
 	default boolean indicateWooxWalkPath()
 	{
@@ -121,7 +104,7 @@ public interface VorkathConfig extends Config
 		name = "WooxWalk Tick",
 		description = "Indicate on which tile to click during each game tick",
 		position = 7,
-		titleSection = "wooxTitle"
+		section = wooxTitle
 	)
 	default boolean indicateWooxWalkTick()
 	{

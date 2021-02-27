@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.1.11"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Gauntlet"
 project.extra["PluginDescription"] = "All-in-one plugin for the Gauntlet"

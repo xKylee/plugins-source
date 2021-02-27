@@ -25,7 +25,6 @@
 
 package net.runelite.client.plugins.socketplayerstatusextended;
 
-
 import java.util.Arrays;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
@@ -56,8 +54,7 @@ import org.pf4j.Extension;
 		name = "Socket Player Status Extended",
 		description = "Socket extension for displaying extended player status to members in your party.",
 		tags = {"socket"},
-		enabledByDefault = false,
-		type = PluginType.UTILITY
+		enabledByDefault = false
 )
 @Slf4j
 @PluginDependency(SocketPlugin.class)
@@ -124,7 +121,7 @@ public class SocketPlayerStatusExtendedPlugin extends Plugin
 		data.put(jsonmsg);
 		JSONObject send = new JSONObject();
 		send.put("playerstatusextendedalt", data);
-		eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(send));
+		eventBus.post(new SocketBroadcastPacket(send));
 	}
 
 	private void sendFlag(int lvl)
@@ -136,7 +133,7 @@ public class SocketPlayerStatusExtendedPlugin extends Plugin
 		data.put(jsonmsg);
 		JSONObject send = new JSONObject();
 		send.put("playerstatusextended", data);
-		eventBus.post(SocketBroadcastPacket.class, new SocketBroadcastPacket(send));
+		eventBus.post(new SocketBroadcastPacket(send));
 	}
 
 	@Subscribe
@@ -212,12 +209,12 @@ public class SocketPlayerStatusExtendedPlugin extends Plugin
 			int weapon;
 			Player actor = (Player) event.getActor();
 
-			if (actor.getPlayerAppearance() == null)
+			if (actor.getPlayerComposition() == null)
 			{
 				return;
 			}
 
-			weapon = actor.getPlayerAppearance().getEquipmentId(KitType.WEAPON);
+			weapon = actor.getPlayerComposition().getEquipmentId(KitType.WEAPON);
 
 			if (actor.equals(client.getLocalPlayer()))
 			{

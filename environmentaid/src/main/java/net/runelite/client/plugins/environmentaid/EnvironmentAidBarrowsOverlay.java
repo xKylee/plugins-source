@@ -33,8 +33,8 @@ import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
-import net.runelite.api.ObjectDefinition;
+import net.runelite.api.NPCComposition;
+import net.runelite.api.ObjectComposition;
 import net.runelite.api.Player;
 import net.runelite.api.WallObject;
 import net.runelite.api.coords.LocalPoint;
@@ -57,7 +57,7 @@ public class EnvironmentAidBarrowsOverlay extends Overlay
 		this.config = config;
 		this.plugin = plugin;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class EnvironmentAidBarrowsOverlay extends Overlay
 			final List<NPC> npcs = client.getNpcs();
 			for (NPC npc : npcs)
 			{
-				final NPCDefinition composition = npc.getDefinition();
+				final NPCComposition composition = npc.getComposition();
 
 				if (composition != null && !composition.isMinimapVisible())
 				{
@@ -149,8 +149,8 @@ public class EnvironmentAidBarrowsOverlay extends Overlay
 			return;
 		}
 
-		ObjectDefinition objectComp = client.getObjectDefinition(wall.getId());
-		ObjectDefinition impostor = objectComp.getImpostorIds() != null ? objectComp.getImpostor() : null;
+		ObjectComposition objectComp = client.getObjectDefinition(wall.getId());
+		ObjectComposition impostor = objectComp.getImpostorIds() != null ? objectComp.getImpostor() : null;
 
 		if (impostor != null && impostor.getActions()[0] != null)
 		{
@@ -185,17 +185,12 @@ public class EnvironmentAidBarrowsOverlay extends Overlay
 			return;
 		}
 
-		ObjectDefinition objectComp = client.getObjectDefinition(ladder.getId());
+		ObjectComposition objectComp = client.getObjectDefinition(ladder.getId());
 
 		if (objectComp.getImpostorIds() != null && objectComp.getImpostor() != null)
 		{
 			graphics.setColor(Color.orange);
 			graphics.fillRect(minimapLocation.getX(), minimapLocation.getY(), 6, 6);
 		}
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
 	}
 }

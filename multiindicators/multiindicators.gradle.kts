@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.13"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Multi Lines"
 project.extra["PluginDescription"] = "Show borders of multicombat and PvP safezones"

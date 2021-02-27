@@ -27,23 +27,19 @@ package net.runelite.client.plugins.npcstatus;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.Title;
 
 @ConfigGroup("npcstatus")
 public interface NpcStatusConfig extends Config
 {
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "rangeTitle",
 		position = 1,
 		name = "Attack range",
 		description = ""
 	)
-	default Title rangeTitle()
-	{
-		return new Title();
-	}
+	String rangeTitle = "Attack range";
 
 	@Range(
 		min = 1
@@ -53,30 +49,27 @@ public interface NpcStatusConfig extends Config
 		name = "NPC attack range",
 		description = "The attack range of the NPC.",
 		position = 2,
-		titleSection = "rangeTitle"
+		section = rangeTitle
 	)
 	default int getRange()
 	{
 		return 1;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "speedTitle",
 		position = 3,
 		name = "Attack speed",
 		description = ""
 	)
-	default Title speedTitle()
-	{
-		return new Title();
-	}
+	String speedTitle = "Attack speed";
 
 	@ConfigItem(
 		keyName = "CustomAttSpeedEnabled",
 		name = "Custom attack speed",
 		description = "Use this if the timer is wrong.",
 		position = 4,
-		titleSection = "speedTitle"
+		section = speedTitle
 	)
 	default boolean isCustomAttSpeed()
 	{
@@ -93,7 +86,7 @@ public interface NpcStatusConfig extends Config
 		position = 5,
 		hidden = true,
 		unhide = "CustomAttSpeedEnabled",
-		titleSection = "speedTitle"
+		section = speedTitle
 	)
 	default int getCustomAttSpeed()
 	{

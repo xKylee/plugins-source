@@ -33,10 +33,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Prayer;
+import static net.runelite.client.plugins.dagannothkings.DagannothKingsPlugin.DAG_PRIME;
+import static net.runelite.client.plugins.dagannothkings.DagannothKingsPlugin.DAG_REX;
+import static net.runelite.client.plugins.dagannothkings.DagannothKingsPlugin.DAG_SUPREME;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DagannothKing implements Comparable<DagannothKing>
@@ -106,9 +108,9 @@ public class DagannothKing implements Comparable<DagannothKing>
 	@RequiredArgsConstructor
 	public enum Boss
 	{
-		DAGANNOTH_PRIME(NpcID.DAGANNOTH_PRIME, AnimationID.DAG_PRIME, 4, AttackStyle.MAGE),
-		DAGANNOTH_REX(NpcID.DAGANNOTH_REX, AnimationID.DAG_REX, 4, AttackStyle.MELEE),
-		DAGANNOTH_SUPREME(NpcID.DAGANNOTH_SUPREME, AnimationID.DAG_SUPREME, 4, AttackStyle.RANGE);
+		DAGANNOTH_PRIME(NpcID.DAGANNOTH_PRIME, DAG_PRIME, 4, AttackStyle.MAGE),
+		DAGANNOTH_REX(NpcID.DAGANNOTH_REX, DAG_REX, 4, AttackStyle.MELEE),
+		DAGANNOTH_SUPREME(NpcID.DAGANNOTH_SUPREME, DAG_SUPREME, 4, AttackStyle.RANGE);
 
 		private final int npcId;
 		private final int animationId;

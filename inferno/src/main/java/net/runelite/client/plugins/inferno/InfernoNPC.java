@@ -32,13 +32,26 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.runelite.api.AnimationID;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Prayer;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JALTOK_JAD_MAGE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JALTOK_JAD_RANGE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_AK_MAGIC_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_AK_MELEE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_AK_RANGE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_IMKOT;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_MEJRAH;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_MEJRAH_STAND;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_NIB;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_XIL_MELEE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_XIL_RANGE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_ZEK_MAGE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.JAL_ZEK_MELEE_ATTACK;
+import static net.runelite.client.plugins.inferno.InfernoPlugin.TZKAL_ZUK;
 import org.apache.commons.lang3.ArrayUtils;
 
 class InfernoNPC
@@ -198,7 +211,7 @@ class InfernoNPC
 			switch (this.getType())
 			{
 				case ZUK:
-					if (this.getNpc().getAnimation() == AnimationID.TZKAL_ZUK)
+					if (this.getNpc().getAnimation() == TZKAL_ZUK)
 					{
 						if (finalPhase)
 						{
@@ -241,7 +254,7 @@ class InfernoNPC
 				case BAT:
 					// Range + LOS check for bat because it suffers from the defense animation bug, also dont activate on "stand" animation
 					if (this.canAttack(client, client.getLocalPlayer().getWorldLocation())
-						&& this.getNpc().getAnimation() != AnimationID.JAL_MEJRAH_STAND && this.getNpc().getAnimation() != -1)
+						&& this.getNpc().getAnimation() != JAL_MEJRAH_STAND && this.getNpc().getAnimation() != -1)
 					{
 						this.updateNextAttack(this.getType().getDefaultAttack(), this.getType().getTicksAfterAnimation());
 					}
@@ -251,9 +264,9 @@ class InfernoNPC
 				case MAGE:
 					// For the meleer, ranger and mage the attack animation is always prioritized so only check for those
 					// Normal attack animation, doesnt suffer from defense animation bug. Activate usual attack cycle
-					if (this.getNpc().getAnimation() == AnimationID.JAL_IMKOT
-						|| this.getNpc().getAnimation() == AnimationID.JAL_XIL_RANGE_ATTACK || this.getNpc().getAnimation() == AnimationID.JAL_XIL_MELEE_ATTACK
-						|| this.getNpc().getAnimation() == AnimationID.JAL_ZEK_MAGE_ATTACK || this.getNpc().getAnimation() == AnimationID.JAL_ZEK_MELEE_ATTACK)
+					if (this.getNpc().getAnimation() == JAL_IMKOT
+						|| this.getNpc().getAnimation() == JAL_XIL_RANGE_ATTACK || this.getNpc().getAnimation() == JAL_XIL_MELEE_ATTACK
+						|| this.getNpc().getAnimation() == JAL_ZEK_MAGE_ATTACK || this.getNpc().getAnimation() == JAL_ZEK_MELEE_ATTACK)
 					{
 						this.updateNextAttack(this.getType().getDefaultAttack(), this.getType().getTicksAfterAnimation());
 					}
@@ -308,28 +321,28 @@ class InfernoNPC
 			Color.ORANGE,
 			Color.RED,
 			new int[]{
-				AnimationID.JAL_NIB,
-				AnimationID.JAL_AK_MELEE_ATTACK,
-				AnimationID.JAL_IMKOT,
-				AnimationID.JAL_XIL_MELEE_ATTACK,
-				AnimationID.JAL_ZEK_MELEE_ATTACK, //TODO: Yt-HurKot attack animation
+				JAL_NIB,
+				JAL_AK_MELEE_ATTACK,
+				JAL_IMKOT,
+				JAL_XIL_MELEE_ATTACK,
+				JAL_ZEK_MELEE_ATTACK, //TODO: Yt-HurKot attack animation
 			}),
 		RANGED(Prayer.PROTECT_FROM_MISSILES,
 			Color.GREEN,
 			new Color(0, 128, 0),
 			new int[]{
-				AnimationID.JAL_MEJRAH,
-				AnimationID.JAL_AK_RANGE_ATTACK,
-				AnimationID.JAL_XIL_RANGE_ATTACK,
-				AnimationID.JALTOK_JAD_RANGE_ATTACK,
+				JAL_MEJRAH,
+				JAL_AK_RANGE_ATTACK,
+				JAL_XIL_RANGE_ATTACK,
+				JALTOK_JAD_RANGE_ATTACK,
 			}),
 		MAGIC(Prayer.PROTECT_FROM_MAGIC,
 			Color.CYAN,
 			Color.BLUE,
 			new int[]{
-				AnimationID.JAL_AK_MAGIC_ATTACK,
-				AnimationID.JAL_ZEK_MAGE_ATTACK,
-				AnimationID.JALTOK_JAD_MAGE_ATTACK
+				JAL_AK_MAGIC_ATTACK,
+				JAL_ZEK_MAGE_ATTACK,
+				JALTOK_JAD_MAGE_ATTACK
 			}),
 		UNKNOWN(null, Color.WHITE, Color.GRAY, new int[]{});
 

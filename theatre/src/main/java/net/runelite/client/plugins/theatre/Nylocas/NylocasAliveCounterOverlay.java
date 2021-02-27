@@ -57,7 +57,7 @@ public class NylocasAliveCounterOverlay extends Overlay
 
 		setPosition(OverlayPosition.TOP_LEFT);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		refreshPanel();
 	}
 
@@ -125,10 +125,5 @@ public class NylocasAliveCounterOverlay extends Overlay
 		Duration duration = Duration.between(nyloWaveStart, Instant.now());
 		LocalTime localTime = LocalTime.ofSecondOfDay(duration.getSeconds());
 		return localTime.format(DateTimeFormatter.ofPattern("mm:ss"));
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

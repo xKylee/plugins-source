@@ -11,6 +11,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.util.Text;
 
 @Singleton
 public class ClanManModeMinimapOverlay extends Overlay
@@ -23,7 +24,7 @@ public class ClanManModeMinimapOverlay extends Overlay
 	{
 		this.config = config;
 		this.ClanManModeService = ClanManModeService;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
 	}
@@ -37,7 +38,12 @@ public class ClanManModeMinimapOverlay extends Overlay
 
 	private void renderPlayerOverlay(Graphics2D graphics, Player actor, Color color)
 	{
-		final String name = actor.getName().replace('\u00A0', ' ');
+		if (actor == null)
+		{
+			return;
+		}
+
+		final String name = Text.standardize(actor.getName());
 
 		if (config.drawMinimapNames())
 		{
@@ -47,18 +53,6 @@ public class ClanManModeMinimapOverlay extends Overlay
 			{
 				OverlayUtil.renderTextLocation(graphics, minimapLocation, name, color);
 			}
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
 		}
 	}
 }

@@ -22,11 +22,11 @@ import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.ItemID;
-import net.runelite.api.MenuOpcode;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Player;
-import net.runelite.api.PlayerAppearance;
+import net.runelite.api.PlayerComposition;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
@@ -112,7 +112,7 @@ public class Verzik extends Room
 	private final List<Projectile> verzikRangedAttacks = new ArrayList();
 
 	private final Predicate<Projectile> isValidVerzikAttack = (p) ->
-			p.getRemainingCycles() > 0 && (p.getId() == VERZIK_RANGE_BALL || p.getId() == VERZIK_LIGHTNING_BALL);
+		p.getRemainingCycles() > 0 && (p.getId() == VERZIK_RANGE_BALL || p.getId() == VERZIK_LIGHTNING_BALL);
 
 	@Getter
 	private int verzikTicksUntilAttack = -1;
@@ -165,12 +165,6 @@ public class Verzik extends Room
 	@Subscribe
 	public void onConfigChanged(ConfigChanged change)
 	{
-		if (change.getKey().equals("mirrorMode"))
-		{
-			verzikOverlay.determineLayer();
-			overlayManager.remove(verzikOverlay);
-			overlayManager.add(verzikOverlay);
-		}
 		if (change.getKey().equals("weaponSet"))
 		{
 			WEAPON_SET = ImmutableSet.of(config.weaponSet());
@@ -288,10 +282,10 @@ public class Verzik extends Room
 				}
 			}
 
-			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION)
+			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION)
 			{
 				Player player = client.getLocalPlayer();
-				PlayerAppearance playerComp = player != null ? player.getPlayerAppearance() : null;
+				PlayerComposition playerComp = player != null ? player.getPlayerComposition() : null;
 				if (playerComp == null || weaponIds.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
 				{
 					return;
@@ -353,7 +347,7 @@ public class Verzik extends Room
 
 					while (iterator.hasNext())
 					{
-						Projectile projectile = (Projectile)iterator.next();
+						Projectile projectile = (Projectile) iterator.next();
 						if (projectile.getRemainingCycles() < 1)
 						{
 							iterator.remove();

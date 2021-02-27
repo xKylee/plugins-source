@@ -39,7 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
@@ -70,7 +70,7 @@ class KQSceneOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -137,7 +137,7 @@ class KQSceneOverlay extends Overlay
 
 		int size = 1;
 
-		final NPCDefinition npcDefinition = npc.getTransformedDefinition();
+		final NPCComposition npcDefinition = npc.getTransformedComposition();
 
 		if (npcDefinition != null)
 		{
@@ -192,10 +192,5 @@ class KQSceneOverlay extends Overlay
 
 		graphics2D.setColor(originalColor);
 		graphics2D.setStroke(originalStroke);
-	}
-
-	void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
 	}
 }

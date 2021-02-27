@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
-import net.runelite.api.Varbits;
 import net.runelite.api.util.Text;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.game.ItemManager;
@@ -179,15 +178,11 @@ public class ResourceManager
 			final ResourceCounter counter = new ResourceCounter(plugin, resource,
 				itemManager.getImage(resource.getItemId()), itemCount);
 
-			eventBus.subscribe(ResourceEvent.class, counter, counter::onResourceEvent);
-
 			infoBoxManager.addInfoBox(counter);
 		}
 		else
 		{
 			final boolean decrement = config.resourceTracker() == ResourceFilter.CUSTOM;
-
-			eventBus.post(ResourceEvent.class, new ResourceEvent(resource, decrement ? itemCount * -1 : itemCount));
 		}
 	}
 
@@ -267,8 +262,8 @@ public class ResourceManager
 
 	private boolean isLootVarbitSet()
 	{
-		return client.getVar(Varbits.LOOT_DROP_NOTIFICATIONS) == 1 &&
-			client.getVar(Varbits.UNTRADEABLE_LOOT_NOTIFICATIONS) == 1;
+		return client.getVarbitValue(5399) == 1 &&
+			client.getVarbitValue(5402) == 1;
 	}
 
 	private Region getRegion()

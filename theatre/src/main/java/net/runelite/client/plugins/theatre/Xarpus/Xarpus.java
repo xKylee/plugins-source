@@ -32,7 +32,6 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
@@ -114,17 +113,6 @@ public class Xarpus extends Room
 		infoBoxManager.removeInfoBox(exhumedCounter);
 
 		exhumedCounter = null;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged change)
-	{
-		if (change.getKey().equals("mirrorMode"))
-		{
-			xarpusOverlay.determineLayer();
-			overlayManager.remove(xarpusOverlay);
-			overlayManager.add(xarpusOverlay);
-		}
 	}
 
 	@Subscribe

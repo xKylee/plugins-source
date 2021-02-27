@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.15"
+version = "4.0.0"
 
 project.extra["PluginName"] = "Cerberus"
 project.extra["PluginDescription"] = "Show Cerberus' attacks and what to pray against the summoned souls"

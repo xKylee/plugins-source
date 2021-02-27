@@ -36,7 +36,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.util.ColorUtil;
 import org.pf4j.Extension;
 
@@ -45,8 +44,7 @@ import org.pf4j.Extension;
 	name = "Stronghold",
 	enabledByDefault = false,
 	description = "Highlights the correct answer to Stronghold of Security questions",
-	tags = {"stronghold", "security", "overlay", "answer", "highlight"},
-	type = PluginType.UTILITY
+	tags = {"stronghold", "security", "overlay", "answer", "highlight"}
 )
 public class StrongholdPlugin extends Plugin
 {

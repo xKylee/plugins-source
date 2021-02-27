@@ -36,11 +36,8 @@ import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.Varbits;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -49,8 +46,7 @@ import org.pf4j.Extension;
 	name = "Pile Indicators",
 	enabledByDefault = false,
 	description = "Highlight and count how many npcs/players are stacked on each other.",
-	tags = {"overlay", "pile", "stack", "pvp", "pvm", "pve"},
-	type = PluginType.UTILITY
+	tags = {"overlay", "pile", "stack", "pvp", "pvm", "pve"}
 )
 @Slf4j
 public class PileIndicatorsPlugin extends Plugin
@@ -175,21 +171,5 @@ public class PileIndicatorsPlugin extends Plugin
 			}
 		}
 		return pileType;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("pileindicators"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.add(overlay);
-		}
 	}
 }

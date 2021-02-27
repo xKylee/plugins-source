@@ -33,7 +33,7 @@ import java.util.ConcurrentModificationException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
-import net.runelite.api.ItemDefinition;
+import net.runelite.api.ItemComposition;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.kit.KitType;
@@ -58,7 +58,7 @@ class PrayAgainstPlayerOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
 	}
@@ -209,8 +209,8 @@ class PrayAgainstPlayerOverlay extends Overlay
 			{
 				if (config.drawUnknownWeapons())
 				{
-					int itemId = player.getPlayerAppearance().getEquipmentId(KitType.WEAPON);
-					ItemDefinition itemComposition = client.getItemDefinition(itemId);
+					int itemId = player.getPlayerComposition().getEquipmentId(KitType.WEAPON);
+					ItemComposition itemComposition = client.getItemDefinition(itemId);
 
 					final String str = itemComposition.getName().toUpperCase();
 					Point point = player.getCanvasTextLocation(graphics, str, offset);
@@ -220,18 +220,6 @@ class PrayAgainstPlayerOverlay extends Overlay
 		}
 		catch (Exception ignored)
 		{
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
 		}
 	}
 }

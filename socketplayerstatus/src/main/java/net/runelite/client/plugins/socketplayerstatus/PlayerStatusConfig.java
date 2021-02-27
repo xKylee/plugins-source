@@ -33,17 +33,6 @@ import net.runelite.client.config.ConfigItem;
 public interface PlayerStatusConfig extends Config
 {
 	@ConfigItem(
-		position = 0,
-		keyName = "mirrorMode",
-		name = "Mirror Mode Compatibility?",
-		description = "Should we show the overlay on Mirror Mode?"
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		position = 1,
 		keyName = "getFontSize",
 		name = "Indicator Font Size",

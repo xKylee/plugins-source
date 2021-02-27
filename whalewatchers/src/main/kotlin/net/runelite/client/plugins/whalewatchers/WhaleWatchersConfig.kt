@@ -45,14 +45,4 @@ interface WhaleWatchersConfig : Config {
     fun gloryWarning(): Boolean {
         return true
     }
-
-    @ConfigItem(
-            position = 5,
-            keyName = "pneckBreak",
-            name = "Phoenix Necklace Break Sound",
-            description = "play a sound notification when your phoenix necklace breaks"
-    )
-    fun pneckBreak(): Boolean {
-        return false
-    }
 }

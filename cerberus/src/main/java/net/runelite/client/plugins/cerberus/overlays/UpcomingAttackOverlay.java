@@ -72,7 +72,7 @@ public final class UpcomingAttackOverlay extends Overlay
 
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.BOTTOM_RIGHT);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -192,10 +192,5 @@ public final class UpcomingAttackOverlay extends Overlay
 
 		graphics2D.setColor(COLOR_NEXT_ATTACK_BORDER);
 		graphics2D.draw(rectangle);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
 	}
 }

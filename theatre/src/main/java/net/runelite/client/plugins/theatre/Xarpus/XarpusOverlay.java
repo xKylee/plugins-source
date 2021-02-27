@@ -38,7 +38,7 @@ public class XarpusOverlay extends RoomOverlay
 	protected XarpusOverlay(TheatreConfig config)
 	{
 		super(config);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	private static final Function<WorldPoint, Point[]> getNEBoxPoints = (p) -> new Point[]{new Point(p.getX(), p.getY()), new Point(p.getX(), p.getY() + 8), new Point(p.getX() + 8, p.getY() + 8), new Point(p.getX() + 8, p.getY())};
@@ -175,10 +175,5 @@ public class XarpusOverlay extends RoomOverlay
 			default:
 				return null;
 		}
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

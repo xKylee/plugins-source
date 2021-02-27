@@ -24,18 +24,17 @@
  */
 package net.runelite.client.plugins.coxhelper;
 
+import com.openosrs.client.ui.overlay.components.table.TableAlignment;
+import com.openosrs.client.ui.overlay.components.table.TableComponent;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.PanelComponent;
-import net.runelite.client.ui.overlay.components.table.TableAlignment;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
 
 @Singleton
 public class CoxDebugBox extends Overlay
@@ -54,7 +53,6 @@ public class CoxDebugBox extends Overlay
 		this.config = config;
 		this.olm = olm;
 		this.setPosition(OverlayPosition.BOTTOM_LEFT);
-		this.determineLayer();
 		this.setPriority(OverlayPriority.HIGH);
 		this.panelComponent.setPreferredSize(new Dimension(270, 0));
 	}
@@ -85,14 +83,5 @@ public class CoxDebugBox extends Overlay
 		this.panelComponent.getChildren().add(tableComponent);
 
 		return this.panelComponent.render(graphics);
-	}
-
-
-	public void determineLayer()
-	{
-		if (this.config.mirrorMode())
-		{
-			this.setLayer(OverlayLayer.AFTER_MIRROR);
-		}
 	}
 }

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
-import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -36,7 +35,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import org.pf4j.Extension;
 
 @Extension
@@ -44,8 +42,7 @@ import org.pf4j.Extension;
 	name = "Hide Under",
 	enabledByDefault = false,
 	description = "Hide local player when under targeted players",
-	tags = {"hide", "local", "player", "under"},
-	type = PluginType.PVP
+	tags = {"hide", "local", "player", "under"}
 )
 public class HideUnderPlugin extends Plugin
 {
@@ -93,7 +90,7 @@ public class HideUnderPlugin extends Plugin
 			{
 				continue;
 			}
-			if (client.getVar(Varbits.LMS_IN_GAME) == 1)
+			if (client.getVarbitValue(5314) == 1)
 			{
 				final WorldPoint playerWp = WorldPoint.fromLocalInstance(client, player.getLocalLocation());
 				if (localPlayerWp != null && localPlayerWp.distanceTo(playerWp) == 0)

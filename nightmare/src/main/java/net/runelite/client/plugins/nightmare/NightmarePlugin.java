@@ -28,14 +28,12 @@ import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -44,8 +42,7 @@ import org.pf4j.Extension;
 	name = "Nightmare of Ashihama",
 	enabledByDefault = false,
 	description = "Show what prayer to use and which tiles to avoid",
-	tags = {"bosses", "combat", "nm", "overlay", "nightmare", "pve", "pvm", "ashihama"},
-	type = PluginType.PVM
+	tags = {"bosses", "combat", "nm", "overlay", "nightmare", "pve", "pvm", "ashihama"}
 )
 
 @Slf4j
@@ -55,16 +52,9 @@ public class NightmarePlugin extends Plugin
 	// Nightmare's attack animations
 	private static final int NIGHTMARE_HUSK_SPAWN = 8565;
 	private static final int NIGHTMARE_CHARGE_1 = 8597;
-	private static final int NIGHTMARE_SHADOW_SPAWN = 8598;
 	private static final int NIGHTMARE_CURSE = 8599;
-	private static final int NIGHTMARE_QUADRANTS = 8601;
-	private static final int NIGHTMARE_SLEEP_DAMAGE = 8604;
-	private static final int NIGHTMARE_PARASITE_TOSS = 8605;
 	private static final int NIGHTMARE_PARASITE_TOSS2 = 8606;
-	private static final int NIGHTMARE_CHARGE_TELEPORT = 8607;
 	private static final int NIGHTMARE_CHARGE_2 = 8609;
-	private static final int NIGHTMARE_SPAWN = 8611;
-	private static final int NIGHTMARE_DEATH = 8612;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
 	private static final int NIGHTMARE_MAGIC_ATTACK = 8595;
@@ -292,7 +282,7 @@ public class NightmarePlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onNpcDefinitionChanged(NpcDefinitionChanged event)
+	public void onNpcChanged(NpcChanged event)
 	{
 		final NPC npc = event.getNpc();
 
@@ -409,27 +399,5 @@ public class NightmarePlugin extends Plugin
 	private boolean isNightmareNpc(int id)
 	{
 		return id >= 9425 && id <= 9433;
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("nightmareOfAshihama"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			prayerOverlay.determineLayer();
-			prayerInfoBox.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.remove(prayerOverlay);
-			overlayManager.remove(prayerInfoBox);
-			overlayManager.add(overlay);
-			overlayManager.add(prayerOverlay);
-			overlayManager.add(prayerInfoBox);
-		}
 	}
 }

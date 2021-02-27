@@ -26,7 +26,7 @@ public class BloatOverlay extends RoomOverlay
 	protected BloatOverlay(TheatreConfig config)
 	{
 		super(config);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	public Dimension render(Graphics2D graphics)
@@ -57,10 +57,5 @@ public class BloatOverlay extends RoomOverlay
 			}
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

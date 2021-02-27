@@ -13,6 +13,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.util.Text;
 
 @Singleton
 public class ClanManModeOverlay extends Overlay
@@ -26,7 +27,7 @@ public class ClanManModeOverlay extends Overlay
 		this.config = config;
 		this.ClanManModeService = ClanManModeService;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		setPriority(OverlayPriority.MED);
 	}
 
@@ -39,12 +40,12 @@ public class ClanManModeOverlay extends Overlay
 
 	private void renderPlayerOverlay(Graphics2D graphics, Player actor, Color color)
 	{
-		if (!config.drawOverheadPlayerNames())
+		if (!config.drawOverheadPlayerNames() || actor == null)
 		{
 			return;
 		}
 
-		String name = actor.getName().replace('\u00A0', ' ');
+		final String name = Text.standardize(actor.getName());
 		int offset = actor.getLogicalHeight() + 40;
 		Point textLocation = actor.getCanvasTextLocation(graphics, name, offset);
 
@@ -55,14 +56,6 @@ public class ClanManModeOverlay extends Overlay
 				graphics.setFont(FontManager.getRunescapeBoldFont());
 			}
 			OverlayUtil.renderTextLocation(graphics, textLocation, name, color);
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }

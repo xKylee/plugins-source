@@ -10,7 +10,6 @@ import lombok.Setter;
 import static net.runelite.client.plugins.inferno.InfernoWaveMappings.addWaveComponent;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoWaveDisplayMode;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.PanelComponent;
@@ -37,7 +36,6 @@ public class InfernoWaveOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.panelComponent = new PanelComponent();
-		determineLayer();
 		setPosition(OverlayPosition.TOP_RIGHT);
 		setPriority(OverlayPriority.HIGH);
 		panelComponent.setPreferredSize(new Dimension(160, 0));
@@ -74,13 +72,5 @@ public class InfernoWaveOverlay extends Overlay
 		}
 
 		return panelComponent.render(graphics);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
 	}
 }

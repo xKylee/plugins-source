@@ -43,7 +43,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class TimersOverlay extends Overlay
@@ -65,7 +64,7 @@ public class TimersOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGHEST);
-		determineLayer();
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 	}
 
 	@Override
@@ -217,17 +216,5 @@ public class TimersOverlay extends Overlay
 		int x = (int) (rect.getX() + rect.getWidth() / 2);
 		int y = (int) (rect.getY() + rect.getHeight() / 2);
 		return new Point(x, y);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
-		}
 	}
 }

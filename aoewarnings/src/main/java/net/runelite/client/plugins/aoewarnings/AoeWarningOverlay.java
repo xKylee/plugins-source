@@ -43,11 +43,10 @@ import net.runelite.api.Point;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldPoint;
+import static net.runelite.client.plugins.aoewarnings.ColorUtil.setAlphaComponent;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
-import static net.runelite.client.util.ColorUtil.setAlphaComponent;
 
 @Singleton
 public class AoeWarningOverlay extends Overlay
@@ -66,7 +65,7 @@ public class AoeWarningOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -182,17 +181,5 @@ public class AoeWarningOverlay extends Overlay
 		int x = (int) (rect.getX() + rect.getWidth() / 2);
 		int y = (int) (rect.getY() + rect.getHeight() / 2);
 		return new Point(x, y);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.UNDER_WIDGETS);
-		}
 	}
 }
