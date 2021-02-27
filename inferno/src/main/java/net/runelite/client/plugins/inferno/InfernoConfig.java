@@ -372,18 +372,6 @@ public interface InfernoConfig extends Config
 
 	@ConfigItem(
 		position = 1,
-		keyName = "hideJalNibDeath",
-		name = "Hide On Death",
-		description = "Hide Nibblers on death animation",
-		section = NibblersSection
-	)
-	default boolean hideNibblerDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 2,
 		keyName = "indicateCentralNibbler",
 		name = "Indicate Central Nibbler",
 		description = "Indicate the most central nibbler. If multiple nibblers will freeze the same amount of other nibblers, " +
@@ -439,18 +427,6 @@ public interface InfernoConfig extends Config
 		section = BatsSection
 	)
 	default boolean indicateNpcPositionBat()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 4,
-		keyName = "hideJalMejRahDeath",
-		name = "Hide On Death",
-		description = "Hide Jal-MejRah on death animation",
-		section = BatsSection
-	)
-	default boolean hideBatDeath()
 	{
 		return false;
 	}
@@ -516,55 +492,6 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
-		keyName = "hideJalAkDeath",
-		name = "Hide Blob On Death",
-		description = "Hide Jal-Ak on death animation",
-		section = BlobsSection
-	)
-	default boolean hideBlobDeath()
-	{
-		return false;
-	}
-
-
-	@ConfigItem(
-		position = 6,
-		keyName = "hideJalAkRekXilDeath",
-		name = "Hide Small Range Blob On Death",
-		description = "Hide Jal-AkRek-Xil on death animation",
-		section = BlobsSection
-	)
-	default boolean hideBlobSmallRangedDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 7,
-		keyName = "hideJalAkRekMejDeath",
-		name = "Hide Small Magic Blob On Death",
-		description = "Hide Jal-AkRek-Mej on death animation",
-		section = BlobsSection
-	)
-	default boolean hideBlobSmallMagicDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 8,
-		keyName = "hideJalAkRekKetDeath",
-		name = "Hide Small Melee Blob On Death",
-		description = "Hide Jal-AkRek-Ket on death animation",
-		section = BlobsSection
-	)
-	default boolean hideBlobSmallMeleeDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		position = 0,
 		keyName = "prayerMeleer",
 		name = "Prayer Helper",
@@ -613,19 +540,6 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
-		keyName = "hideJalImKotDeath",
-		name = "Hide On Death",
-		description = "Hide Jal-ImKot on death animation",
-		section = MeleersSection
-	)
-	default boolean hideMeleerDeath()
-	{
-		return false;
-	}
-
-
-	@ConfigItem(
 		position = 0,
 		keyName = "prayerRanger",
 		name = "Prayer Helper",
@@ -669,18 +583,6 @@ public interface InfernoConfig extends Config
 		section = RangersSection
 	)
 	default boolean indicateNpcPositionRanger()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 4,
-		keyName = "hideJalXilDeath",
-		name = "Hide On Death",
-		description = "Hide Jal-Xil on death animation",
-		section = RangersSection
-	)
-	default boolean hideRangerDeath()
 	{
 		return false;
 	}
@@ -734,18 +636,6 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
-		keyName = "hideJalZekDeath",
-		name = "Hide On Death",
-		description = "Hide Jal-Zek on death animation",
-		section = MagersSection
-	)
-	default boolean hideMagerDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		position = 0,
 		keyName = "prayerHealersJad",
 		name = "Prayer Helper",
@@ -794,18 +684,6 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
-		keyName = "hideYtHurKotDeath",
-		name = "Hide On Death",
-		description = "Hide Yt-HurKot on death animation",
-		section = JadHealersSection
-	)
-	default boolean hideHealerJadDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		position = 0,
 		keyName = "prayerJad",
 		name = "Prayer Helper",
@@ -842,18 +720,6 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
-		keyName = "hideJalTokJadDeath",
-		name = "Hide On Death",
-		description = "Hide JalTok-Jad on death animation",
-		section = JadSection
-	)
-	default boolean hideJadDeath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		position = 0,
 		keyName = "indicateActiveHealersZuk",
 		name = "Indicate Active Healers (UNTESTED)",
@@ -863,18 +729,6 @@ public interface InfernoConfig extends Config
 	default boolean indicateActiveHealerZuk()
 	{
 		return true;
-	}
-
-	@ConfigItem(
-		position = 1,
-		keyName = "hideJalMejJakDeath",
-		name = "Hide On Death",
-		description = "Hide Jal-MejJak on death animation",
-		section = ZukHealersSection
-	)
-	default boolean hideHealerZukDeath()
-	{
-		return false;
 	}
 
 	@ConfigItem(

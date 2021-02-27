@@ -202,7 +202,6 @@ public class InfernoPlugin extends Plugin
 
 			overlayManager.add(jadOverlay);
 			overlayManager.add(prayerOverlay);
-			hideNpcDeaths();
 		}
 	}
 
@@ -217,8 +216,6 @@ public class InfernoPlugin extends Plugin
 		infoBoxManager.removeInfoBox(spawnTimerInfoBox);
 
 		currentWaveNumber = -1;
-
-		showNpcDeaths();
 	}
 
 	@Subscribe
@@ -228,9 +225,6 @@ public class InfernoPlugin extends Plugin
 		{
 			return;
 		}
-
-		hideNpcDeaths();
-		showNpcDeaths();
 
 		if (event.getKey().endsWith("color"))
 		{
@@ -1124,120 +1118,6 @@ public class InfernoPlugin extends Plugin
 				return config.indicateNpcPositionMage();
 			default:
 				return false;
-		}
-	}
-
-	private void hideNpcDeaths()
-	{
-
-		if (config.hideNibblerDeath())
-		{
-			client.addHiddenNpcDeath("Jal-Nib");
-		}
-		if (config.hideBatDeath())
-		{
-			client.addHiddenNpcDeath("Jal-MejRah");
-		}
-		if (config.hideBlobDeath())
-		{
-			client.addHiddenNpcDeath("Jal-Ak");
-		}
-		if (config.hideBlobSmallMeleeDeath())
-		{
-			client.addHiddenNpcDeath("Jal-AkRek-Ket");
-		}
-		if (config.hideBlobSmallMagicDeath())
-		{
-			client.addHiddenNpcDeath("Jal-AkRek-Mej");
-		}
-		if (config.hideBlobSmallRangedDeath())
-		{
-			client.addHiddenNpcDeath("Jal-AkRek-Xil");
-		}
-		if (config.hideMeleerDeath())
-		{
-			client.addHiddenNpcDeath("Jal-ImKot");
-		}
-		if (config.hideRangerDeath())
-		{
-			client.addHiddenNpcDeath("Jal-Xil");
-		}
-		if (config.hideMagerDeath())
-		{
-			client.addHiddenNpcDeath("Jal-Zek");
-		}
-		if (config.hideHealerJadDeath() && isInInferno())
-		{
-			client.addHiddenNpcDeath("Yt-HurKot");
-		}
-		if (config.hideJadDeath())
-		{
-			client.addHiddenNpcDeath("JalTok-Jad");
-		}
-		if (config.hideHealerZukDeath())
-		{
-			client.addHiddenNpcDeath("Jal-MejJak");
-		}
-		if (config.hideZukDeath())
-		{
-			client.addHiddenNpcDeath("TzKal-Zuk");
-		}
-	}
-
-	private void showNpcDeaths()
-	{
-
-		if (!config.hideNibblerDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-Nib");
-		}
-		if (!config.hideBatDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-MejRah");
-		}
-		if (!config.hideBlobDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-Ak");
-		}
-		if (!config.hideBlobSmallMeleeDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-AkRek-Ket");
-		}
-		if (!config.hideBlobSmallMagicDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-AkRek-Mej");
-		}
-		if (!config.hideBlobSmallRangedDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-AkRek-Xil");
-		}
-		if (!config.hideMeleerDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-ImKot");
-		}
-		if (!config.hideRangerDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-Xil");
-		}
-		if (!config.hideMagerDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-Zek");
-		}
-		if (!config.hideHealerJadDeath())
-		{
-			client.removeHiddenNpcDeath("Yt-HurKot");
-		}
-		if (!config.hideJadDeath())
-		{
-			client.removeHiddenNpcDeath("JalTok-Jad");
-		}
-		if (!config.hideHealerZukDeath())
-		{
-			client.removeHiddenNpcDeath("Jal-MejJak");
-		}
-		if (!config.hideZukDeath())
-		{
-			client.removeHiddenNpcDeath("TzKal-Zuk");
 		}
 	}
 }
