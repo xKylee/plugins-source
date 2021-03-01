@@ -25,6 +25,7 @@
 package net.runelite.client.plugins.inferno;
 
 import com.google.inject.Provides;
+import com.openosrs.client.game.NPCManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.game.NPCManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoPrayerDisplayMode;
