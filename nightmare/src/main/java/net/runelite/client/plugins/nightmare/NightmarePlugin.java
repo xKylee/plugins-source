@@ -216,11 +216,6 @@ public class NightmarePlugin extends Plugin
 	@Subscribe
 	public void onAnimationChanged(AnimationChanged event)
 	{
-		if (!inFight || nm == null)
-		{
-			return;
-		}
-
 		Actor actor = event.getActor();
 		if (!(actor instanceof NPC))
 		{
@@ -229,8 +224,23 @@ public class NightmarePlugin extends Plugin
 
 		NPC npc = (NPC) actor;
 		int id = npc.getId();
+		
+		//this will trigger once when the fight begins
+		if (id == 9432)
+		{
+			//reset everything
+			reset();
+			nm = npc;
+			inFight = true;
+		}
+		
+		if (!inFight || nm == null)
+		{
+			return;
+		}
+		
 		int animationId = npc.getAnimation();
-
+		
 		if (animationId == NIGHTMARE_MAGIC_ATTACK)
 		{
 			ticksUntilNextAttack = 7;
@@ -289,15 +299,6 @@ public class NightmarePlugin extends Plugin
 		if (npc == null)
 		{
 			return;
-		}
-
-		//this will trigger once when the fight begins
-		if (npc.getId() == 9432)
-		{
-			//reset everything
-			reset();
-			nm = npc;
-			inFight = true;
 		}
 
 		//if ID changes to 9431 (3rd phase) and is cursed, remove the curse
