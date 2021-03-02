@@ -96,8 +96,6 @@ public class BlackjackPlugin extends Plugin
 		}
 
 		state = State.KNOCKOUT;
-		if (client.getVarpValue(1306) == 1)
-		{
 			addedSwaps.add(mesPlugin.swapContains(
 				"talk-to",
 				(s) -> {
@@ -116,9 +114,6 @@ public class BlackjackPlugin extends Plugin
 				KNOCK_OUT,
 				() -> state == State.KNOCKOUT && inPollnivneach
 			));
-		}
-		else
-		{
 			addedSwaps.add(mesPlugin.swapContains(
 				"Attack",
 				(s) -> {
@@ -137,7 +132,6 @@ public class BlackjackPlugin extends Plugin
 				KNOCK_OUT,
 				() -> state == State.KNOCKOUT && inPollnivneach
 			));
-		}
 	}
 
 	@Override
@@ -158,8 +152,6 @@ public class BlackjackPlugin extends Plugin
 		}
 
 		state = State.KNOCKOUT;
-		if (client.getVarpValue(1306) == 1)
-		{
 			addedSwaps.add(mesPlugin.swapContains(
 				"talk-to",
 				(s) -> {
@@ -178,9 +170,6 @@ public class BlackjackPlugin extends Plugin
 				KNOCK_OUT,
 				() -> state == State.KNOCKOUT && inPollnivneach
 			));
-		}
-		else
-		{
 			addedSwaps.add(mesPlugin.swapContains(
 				"Attack",
 				(s) -> {
@@ -199,8 +188,6 @@ public class BlackjackPlugin extends Plugin
 				KNOCK_OUT,
 				() -> state == State.KNOCKOUT && inPollnivneach
 			));
-		}
-
 	}
 
 	@Subscribe
