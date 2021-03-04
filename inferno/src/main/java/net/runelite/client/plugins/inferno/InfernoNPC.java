@@ -382,10 +382,10 @@ class InfernoNPC
 		MELEE(new int[]{NpcID.JALIMKOT}, Attack.MELEE, 4, 1, 3),
 		RANGER(new int[]{NpcID.JALXIL, NpcID.JALXIL_7702}, Attack.RANGED, 4, 98, 2),
 		MAGE(new int[]{NpcID.JALZEK, NpcID.JALZEK_7703}, Attack.MAGIC, 4, 98, 1),
-		JAD(new int[]{NpcID.JALTOKJAD, NpcID.JALTOKJAD_7704}, Attack.UNKNOWN, 3, 99, 0),
+		JAD(new int[]{NpcID.JALTOKJAD, NpcID.JALTOKJAD_7704, 10623}, Attack.UNKNOWN, 3, 99, 0),
 		HEALER_JAD(new int[]{NpcID.YTHURKOT, NpcID.YTHURKOT_7701, NpcID.YTHURKOT_7705}, Attack.MELEE, 4, 1, 6),
 		ZUK(new int[]{NpcID.TZKALZUK}, Attack.UNKNOWN, 10, 99, 99),
-		HEALER_ZUK(new int[]{NpcID.JALMEJJAK}, Attack.UNKNOWN, -1, 99, 100);
+		HEALER_ZUK(new int[]{NpcID.JALMEJJAK, 10624}, Attack.UNKNOWN, -1, 99, 100);
 
 		private final int[] npcIds;
 		private final Attack defaultAttack;
