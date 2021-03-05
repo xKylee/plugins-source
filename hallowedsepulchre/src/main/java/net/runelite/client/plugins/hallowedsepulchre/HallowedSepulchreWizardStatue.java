@@ -31,7 +31,7 @@ class HallowedSepulchreWizardStatue
 		}
 		else
 		{
-			final DynamicObject dynamicObject = (DynamicObject) gameObject.getModel();
+			final DynamicObject dynamicObject = (DynamicObject) gameObject.getRenderable();
 
 			if (dynamicObject.getAnimationID() == animationId)
 			{
