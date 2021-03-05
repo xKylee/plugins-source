@@ -70,7 +70,7 @@ open class BootstrapTask : DefaultTask() {
                             "id" to nameToId(it.project.extra.get("PluginName") as String),
                             "description" to it.project.extra.get("PluginDescription"),
                             "provider" to "xKylee",
-                            "projectUrl" to "https://discord.gg/ARcwsJr",
+                            "projectUrl" to "https://discord.gg/WUP22Dj7GT",
                             "releases" to releases.toTypedArray()
                     ).jsonObject()
 

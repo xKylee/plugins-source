@@ -35,7 +35,7 @@ import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.GameState;
-import net.runelite.api.ObjectDefinition;
+import net.runelite.api.ObjectComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.Tile;
 import net.runelite.api.WallObject;
@@ -51,7 +51,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -60,8 +59,7 @@ import org.pf4j.Extension;
 	name = "Multi-Lines",
 	enabledByDefault = false,
 	description = "Show borders of multicombat and PvP safezones",
-	tags = {"multicombat", "lines", "pvp", "deadman", "safezones", "bogla"},
-	type = PluginType.PVP
+	tags = {"multicombat", "lines", "pvp", "deadman", "safezones"}
 )
 public class MultiIndicatorsPlugin extends Plugin
 {
@@ -91,6 +89,9 @@ public class MultiIndicatorsPlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private GeneralPath[] wildernessLevelLinesPathToDisplay;
+
+	@Getter(AccessLevel.PACKAGE)
+	private GeneralPath[] wildernessTeleportLinesPathToDisplay;
 
 	@Getter(AccessLevel.PACKAGE)
 	private boolean inPvp;
@@ -137,6 +138,7 @@ public class MultiIndicatorsPlugin extends Plugin
 		multicombatPathToDisplay = new GeneralPath[Constants.MAX_Z];
 		pvpPathToDisplay = new GeneralPath[Constants.MAX_Z];
 		wildernessLevelLinesPathToDisplay = new GeneralPath[Constants.MAX_Z];
+		wildernessTeleportLinesPathToDisplay = new GeneralPath[Constants.MAX_Z];
 	}
 
 	private void uninitializePaths()
@@ -144,6 +146,7 @@ public class MultiIndicatorsPlugin extends Plugin
 		multicombatPathToDisplay = null;
 		pvpPathToDisplay = null;
 		wildernessLevelLinesPathToDisplay = null;
+		wildernessTeleportLinesPathToDisplay = null;
 	}
 
 	// sometimes the lines get offset (seems to happen when there is a delay
@@ -186,7 +189,7 @@ public class MultiIndicatorsPlugin extends Plugin
 			return false;
 		}
 
-		ObjectDefinition objectComposition = client.getObjectDefinition(wallObject.getId());
+		ObjectComposition objectComposition = client.getObjectDefinition(wallObject.getId());
 
 		if (objectComposition == null)
 		{
@@ -308,6 +311,29 @@ public class MultiIndicatorsPlugin extends Plugin
 			pvpPathToDisplay[i] = safeZonePath;
 		}
 
+		// Generate wilderness Teleport lines
+		for (int i = 0; i < wildernessTeleportLinesPathToDisplay.length; i++)
+		{
+			currentPlane = i;
+
+			GeneralPath wildernessTeleportLinesPath = null;
+			if (config.showWildernessTeleportLines())
+			{
+				wildernessTeleportLinesPath = new GeneralPath(MapLocations.getWildernessTeleportLines(sceneRect, i));
+			}
+			if (wildernessTeleportLinesPath != null)
+			{
+				wildernessTeleportLinesPath = Geometry.clipPath(wildernessTeleportLinesPath, sceneRect);
+				wildernessTeleportLinesPath = Geometry.splitIntoSegments(wildernessTeleportLinesPath, 1);
+				if (useCollisionLogic())
+				{
+					wildernessTeleportLinesPath = Geometry.filterPath(wildernessTeleportLinesPath, this::collisionFilter);
+				}
+				wildernessTeleportLinesPath = Geometry.transformPath(wildernessTeleportLinesPath, this::transformWorldToLocal);
+			}
+			wildernessTeleportLinesPathToDisplay[i] = wildernessTeleportLinesPath;
+		}
+
 		// Generate wilderness level lines
 		for (int i = 0; i < wildernessLevelLinesPathToDisplay.length; i++)
 		{
@@ -350,19 +376,10 @@ public class MultiIndicatorsPlugin extends Plugin
 			event.getKey().equals("multicombatZoneVisibility") ||
 			event.getKey().equals("deadmanSafeZones") ||
 			event.getKey().equals("pvpSafeZones") ||
-			event.getKey().equals("wildernessLevelLines"))
+			event.getKey().equals("wildernessLevelLines") ||
+			event.getKey().equals("wildernessTeleportLines"))
 		{
 			findLinesInScene();
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			minimapOverlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.remove(minimapOverlay);
-			overlayManager.add(overlay);
-			overlayManager.add(minimapOverlay);
 		}
 	}
 

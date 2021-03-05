@@ -40,10 +40,8 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.util.Text;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -52,7 +50,6 @@ import org.pf4j.Extension;
 	name = "Drop Party",
 	description = "Marks where a user ran, for drop partys",
 	tags = {"Drop", "Party", "marker", "player"},
-	type = PluginType.MISCELLANEOUS,
 	enabledByDefault = false
 )
 
@@ -63,7 +60,7 @@ public class DropPartyPlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private List<WorldPoint> playerPath = new ArrayList<>();
 	@Getter(AccessLevel.PACKAGE)
-	private int MAXPATHSIZE = 100;
+	private final int MAXPATHSIZE = 100;
 	private Player runningPlayer;
 
 	@Inject
@@ -157,21 +154,5 @@ public class DropPartyPlugin extends Plugin
 	private void reset()
 	{
 		playerPath.clear();
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("dropparty"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			coreOverlay.determineLayer();
-			overlayManager.remove(coreOverlay);
-			overlayManager.add(coreOverlay);
-		}
 	}
 }

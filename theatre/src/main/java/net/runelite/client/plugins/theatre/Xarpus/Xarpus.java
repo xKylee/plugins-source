@@ -32,14 +32,12 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ImageUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class Xarpus extends Room
 {
@@ -76,6 +74,9 @@ public class Xarpus extends Room
 	private boolean nextInstance = true;
 
 	@Getter
+	private boolean exhumedSpawned = false;
+
+	@Getter
 	private final Map<GroundObject, Integer> xarpusExhumeds = new HashMap<>();
 
 	@Getter
@@ -84,11 +85,13 @@ public class Xarpus extends Room
 	@Getter
 	private int xarpusTicksUntilAttack;
 
+	@Getter
+	private boolean postScreech = false;
+
 	private boolean xarpusStare;
 
 	private static BufferedImage EXHUMED_COUNT_ICON;
 	private static final int GROUNDOBJECT_ID_EXHUMED = 32743;
-	private static final int XARPUS_REGION = 12612;
 
 	@Override
 	public void init()
@@ -113,17 +116,6 @@ public class Xarpus extends Room
 	}
 
 	@Subscribe
-	public void onConfigChanged(ConfigChanged change)
-	{
-		if (change.getKey().equals("mirrorMode"))
-		{
-			xarpusOverlay.determineLayer();
-			overlayManager.remove(xarpusOverlay);
-			overlayManager.add(xarpusOverlay);
-		}
-	}
-
-	@Subscribe
 	public void onNpcSpawned(NpcSpawned npcSpawned)
 	{
 		NPC npc = npcSpawned.getNpc();
@@ -137,6 +129,8 @@ public class Xarpus extends Room
 				xarpusNPC = npc;
 				xarpusStare = false;
 				xarpusTicksUntilAttack = 9;
+				exhumedSpawned = false;
+				postScreech = false;
 				break;
 		}
 	}
@@ -159,6 +153,8 @@ public class Xarpus extends Room
 				infoBoxManager.removeInfoBox(exhumedCounter);
 				exhumedCounter = null;
 				isInstanceTimerRunning = false;
+				exhumedSpawned = false;
+				postScreech = false;
 				break;
 		}
 	}
@@ -171,6 +167,7 @@ public class Xarpus extends Room
 			GroundObject o = event.getGroundObject();
 			if (o.getId() == 32743)
 			{
+				exhumedSpawned = true;
 				if (exhumedCounter == null)
 				{
 
@@ -204,7 +201,7 @@ public class Xarpus extends Room
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (!xarpusStarted && isInXarpusRegion() && client.getVarbitValue(client.getVarps(), 6447) == 2 && (client.getVar(Varbits.MULTICOMBAT_AREA) == 1))
+		if (!xarpusStarted && inRoomRegion(TheatrePlugin.XARPUS_REGION) && client.getVarbitValue(client.getVarps(), 6447) == 2 && (client.getVar(Varbits.MULTICOMBAT_AREA) == 1))
 		{
 			xarpusStarted = true;
 			isInstanceTimerRunning = false;
@@ -237,6 +234,10 @@ public class Xarpus extends Room
 				xarpusTicksUntilAttack--;
 				if (xarpusTicksUntilAttack <= 0)
 				{
+					if (!postScreech)
+					{
+						postScreech = true;
+					}
 					xarpusTicksUntilAttack = 8;
 				}
 			}
@@ -248,6 +249,7 @@ public class Xarpus extends Room
 					xarpusTicksUntilAttack = 4;
 				}
 			}
+
 		}
 
 		if (isInstanceTimerRunning)
@@ -273,7 +275,7 @@ public class Xarpus extends Room
 				{
 					Point point = new Point(lpChest.getSceneX() - lpPlayer.getSceneX(), lpChest.getSceneY() - lpPlayer.getSceneY());
 
-					if (isInXarpusRegion() && point.getY() == 1 && (point.getX() == 1 || point.getX() == 2 || point.getX() == 3) && nextInstance)
+					if (isInSotetsegRegion() && point.getY() == 1 && (point.getX() == 1 || point.getX() == 2 || point.getX() == 3) && nextInstance)
 					{
 						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Xarpus instance timer started", "");
 						instanceTimer = 2;
@@ -294,8 +296,8 @@ public class Xarpus extends Room
 		}
 	}
 
-	boolean isInXarpusRegion()
+	boolean isInSotetsegRegion()
 	{
-		return ArrayUtils.contains(client.getMapRegions(), XARPUS_REGION);
+		return inRoomRegion(TheatrePlugin.SOTETSEG_REGION_OVERWORLD) || inRoomRegion(TheatrePlugin.SOTETSEG_REGION_UNDERWORLD);
 	}
 }

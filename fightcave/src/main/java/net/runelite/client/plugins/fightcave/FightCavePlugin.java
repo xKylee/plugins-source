@@ -26,6 +26,7 @@
 package net.runelite.client.plugins.fightcave;
 
 import com.google.inject.Provides;
+import com.openosrs.client.game.NPCManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -37,7 +38,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.AnimationID;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -50,11 +50,8 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.game.NPCManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
@@ -64,8 +61,7 @@ import org.pf4j.Extension;
 	name = "Fight Cave",
 	enabledByDefault = false,
 	description = "Displays current and upcoming wave monsters in the Fight Caves and what to pray at TzTok-Jad",
-	tags = {"bosses", "combat", "minigame", "overlay", "pve", "pvm", "jad", "fire", "cape", "wave"},
-	type = PluginType.PVM
+	tags = {"bosses", "combat", "minigame", "overlay", "pve", "pvm", "jad", "fire", "cape", "wave"}
 )
 public class FightCavePlugin extends Plugin
 {
@@ -143,6 +139,16 @@ public class FightCavePlugin extends Plugin
 	private List<Integer> rangedTicks = new ArrayList<>();
 	@Getter(AccessLevel.PACKAGE)
 	private List<Integer> meleeTicks = new ArrayList<>();
+
+	public static final int TZTOK_JAD_RANGE_ATTACK = 2652;
+	public static final int TZTOK_JAD_MELEE_ATTACK = 2655;
+	public static final int TZTOK_JAD_MAGIC_ATTACK = 2656;
+	public static final int TOK_XIL_RANGE_ATTACK = 2633;
+	public static final int TOK_XIL_MELEE_ATTACK = 2628;
+	public static final int KET_ZEK_MELEE_ATTACK = 2644;
+	public static final int KET_ZEK_MAGE_ATTACK = 2647;
+	public static final int MEJ_KOT_MELEE_ATTACK = 2637;
+	public static final int MEJ_KOT_HEAL_ATTACK = 2639;
 
 	static String formatMonsterQuantity(final WaveMonster monster, final int quantity)
 	{
@@ -296,13 +302,13 @@ public class FightCavePlugin extends Plugin
 
 					switch (anims)
 					{
-						case AnimationID.TZTOK_JAD_RANGE_ATTACK:
+						case TZTOK_JAD_RANGE_ATTACK:
 							npc.setAttackStyle(FightCaveContainer.AttackStyle.RANGE);
 							break;
-						case AnimationID.TZTOK_JAD_MAGIC_ATTACK:
+						case TZTOK_JAD_MAGIC_ATTACK:
 							npc.setAttackStyle(FightCaveContainer.AttackStyle.MAGE);
 							break;
-						case AnimationID.TZTOK_JAD_MELEE_ATTACK:
+						case TZTOK_JAD_MELEE_ATTACK:
 							npc.setAttackStyle(FightCaveContainer.AttackStyle.MELEE);
 							break;
 					}
@@ -345,25 +351,5 @@ public class FightCavePlugin extends Plugin
 	private boolean regionCheck()
 	{
 		return ArrayUtils.contains(client.getMapRegions(), FIGHT_CAVE_REGION);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("fightcave"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			waveOverlay.determineLayer();
-			fightCaveOverlay.determineLayer();
-			overlayManager.remove(waveOverlay);
-			overlayManager.remove(fightCaveOverlay);
-			overlayManager.add(waveOverlay);
-			overlayManager.add(fightCaveOverlay);
-
-		}
 	}
 }

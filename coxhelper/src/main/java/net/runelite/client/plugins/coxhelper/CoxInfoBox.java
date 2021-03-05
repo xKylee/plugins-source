@@ -24,6 +24,8 @@
  */
 package net.runelite.client.plugins.coxhelper;
 
+import com.openosrs.client.ui.overlay.components.table.TableAlignment;
+import com.openosrs.client.ui.overlay.components.table.TableComponent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -37,15 +39,12 @@ import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ComponentConstants;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
-import net.runelite.client.ui.overlay.components.table.TableAlignment;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.ImageUtil;
 
@@ -70,7 +69,6 @@ public class CoxInfoBox extends Overlay
 		this.olm = olm;
 		this.spriteManager = spriteManager;
 		this.setPosition(OverlayPosition.BOTTOM_RIGHT);
-		this.determineLayer();
 		this.setPriority(OverlayPriority.HIGH);
 	}
 
@@ -162,14 +160,6 @@ public class CoxInfoBox extends Overlay
 				return this.spriteManager.getSprite(SpriteID.PRAYER_PROTECT_FROM_MISSILES, 0);
 			default:
 				return this.spriteManager.getSprite(SpriteID.BARBARIAN_ASSAULT_EAR_ICON, 0);
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (this.config.mirrorMode())
-		{
-			this.setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }

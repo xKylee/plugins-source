@@ -29,7 +29,7 @@ public class SotetsegOverlay extends RoomOverlay
 	protected SotetsegOverlay(TheatreConfig config)
 	{
 		super(config);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -102,10 +102,5 @@ public class SotetsegOverlay extends RoomOverlay
 			}
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

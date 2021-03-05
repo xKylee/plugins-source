@@ -24,6 +24,8 @@
  */
 package net.runelite.client.plugins.fightcave;
 
+import com.openosrs.client.ui.overlay.components.table.TableAlignment;
+import com.openosrs.client.ui.overlay.components.table.TableComponent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -34,12 +36,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
-import net.runelite.client.ui.overlay.components.table.TableAlignment;
-import net.runelite.client.ui.overlay.components.table.TableComponent;
 
 class WaveOverlay extends Overlay
 {
@@ -55,7 +54,6 @@ class WaveOverlay extends Overlay
 		this.config = config;
 		this.plugin = plugin;
 		setPosition(OverlayPosition.TOP_RIGHT);
-		determineLayer();
 	}
 
 	private static Collection<String> buildWaveLines(final Map<WaveMonster, Integer> wave)
@@ -128,14 +126,6 @@ class WaveOverlay extends Overlay
 		if (!tableComponent.isEmpty())
 		{
 			panelComponent.getChildren().add(tableComponent);
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
 		}
 	}
 }

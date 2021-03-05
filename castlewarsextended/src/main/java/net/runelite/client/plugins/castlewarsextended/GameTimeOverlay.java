@@ -47,7 +47,7 @@ public class GameTimeOverlay extends Overlay
 	{
 		this.config = config;
 		this.client = client;
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.DYNAMIC);
 	}
@@ -83,17 +83,5 @@ public class GameTimeOverlay extends Overlay
 			}
 		}
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
-		}
 	}
 }

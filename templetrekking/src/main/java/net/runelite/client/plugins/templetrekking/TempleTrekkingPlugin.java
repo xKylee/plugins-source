@@ -32,15 +32,12 @@ import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GroundObject;
 import net.runelite.api.ObjectID;
-import net.runelite.api.Varbits;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -49,8 +46,7 @@ import org.pf4j.Extension;
 	name = "Temple Trekking",
 	enabledByDefault = false,
 	description = "Helpers for the Temple Trek minigame",
-	tags = {"minigame", "overlay", "temple trek"},
-	type = PluginType.MINIGAME
+	tags = {"minigame", "overlay", "temple trek"}
 )
 public class TempleTrekkingPlugin extends Plugin
 {
@@ -71,6 +67,12 @@ public class TempleTrekkingPlugin extends Plugin
 
 	@Getter
 	private boolean inTrek = false;
+
+	private final int TREK_POINTS = 1955;
+	private final int TREK_STARTED = 1956;
+	private final int TREK_EVENT = 1958;
+	private final int TREK_STATUS = 6719;
+	private final int BLOAT_ENTERED_ROOM = 6447;
 
 	@Provides
 	TempleTrekkingConfig getConfig(ConfigManager configManager)
@@ -107,15 +109,15 @@ public class TempleTrekkingPlugin extends Plugin
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (!bogList.isEmpty() && client.getVar(Varbits.TREK_EVENT) == 0)
+		if (!bogList.isEmpty() && client.getVarbitValue(TREK_EVENT) == 0)
 		{
 			bogList.clear();
 		}
-		if (!inTrek && client.getVar(Varbits.TREK_STARTED) == 1)
+		if (!inTrek && client.getVarbitValue(TREK_STARTED) == 1)
 		{
 			inTrek = true;
 		}
-		else if (inTrek && client.getVar(Varbits.TREK_STATUS) == 0 && client.getVar(Varbits.TREK_POINTS) == 0)
+		else if (inTrek && client.getVarbitValue(TREK_STATUS) == 0 && client.getVarbitValue(TREK_POINTS) == 0)
 		{
 			inTrek = false;
 		}
@@ -123,31 +125,12 @@ public class TempleTrekkingPlugin extends Plugin
 
 	protected int getRewardPoints()
 	{
-		return client.getVar(Varbits.TREK_POINTS);
+		return client.getVarbitValue(TREK_POINTS);
 	}
 
 	protected double getRewardPercentage()
 	{
 		double percentage = 0.000126945 * getRewardPoints() - 0.0357188951;
 		return Math.max(percentage, 0);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("templetrekking"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			bogOverlay.determineLayer();
-			overlayManager.remove(bogOverlay);
-			overlayManager.remove(overlay);
-			overlayManager.add(bogOverlay);
-			overlayManager.add(overlay);
-		}
 	}
 }

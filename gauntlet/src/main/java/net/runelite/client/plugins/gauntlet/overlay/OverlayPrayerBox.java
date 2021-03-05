@@ -130,7 +130,7 @@ public class OverlayPrayerBox extends Overlay
 
 	public void determineLayer()
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.UNDER_WIDGETS);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	private BufferedImage getPrayerSprite(final Prayer prayer)

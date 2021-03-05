@@ -44,7 +44,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.socket.hash.AES256;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
@@ -59,8 +58,7 @@ import org.pf4j.Extension;
 	name = "Socket",
 	description = "Socket connection for broadcasting messages across clients.",
 	tags = {"socket", "server", "discord", "connection", "broadcast"},
-	enabledByDefault = false,
-	type = PluginType.UTILITY
+	enabledByDefault = false
 )
 public class SocketPlugin extends Plugin
 {

@@ -8,9 +8,12 @@ package net.runelite.client.plugins.theatre.Maiden;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 import javax.inject.Inject;
+import com.google.common.collect.ArrayListMultimap;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.Point;
@@ -35,7 +38,7 @@ public class MaidenOverlay extends RoomOverlay
 	protected MaidenOverlay(TheatreConfig config)
 	{
 		super(config);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -77,45 +80,7 @@ public class MaidenOverlay extends RoomOverlay
 
 			if (maiden.isMaidenActive() && (config.maidenRedsHealth() || config.maidenRedsDistance()))
 			{
-				maiden.getMaidenReds().forEach((k, v) ->
-				{
-					String string = "";
-					Color color = Color.WHITE;
-					if (config.maidenRedsHealth())
-					{
-						int v_health = v.getValue();
-						int v_healthRation = v.getKey();
-						if (k.getName() != null && k.getHealthScale() > 0)
-						{
-							v_health = k.getHealthScale();
-							v_healthRation = Math.min(v_healthRation, k.getHealthRatio());
-						}
-						float percentage = ((float) v_healthRation / (float) v_health) * 100f;
-						color = percentageToColor(percentage);
-						string = (String.valueOf(DECIMAL_FORMAT.format(percentage)));
-					}
-
-					if (config.maidenRedsHealth() && config.maidenRedsDistance())
-					{
-						string += " - ";
-					}
-
-					if (config.maidenRedsDistance())
-					{
-						final int maidenX = maiden.getMaidenNPC().getWorldLocation().getX() + maiden.getMaidenNPC().getTransformedDefinition().getSize();
-
-						int deltaX = Math.max(0, k.getWorldLocation().getX() - maidenX);
-						string += deltaX;
-					}
-
-					Point textLocation = k.getCanvasTextLocation(graphics, string, 80);
-
-					if (textLocation != null)
-					{
-						renderTextLocation(graphics, string, color, textLocation);
-					}
-
-				});
+				displayNyloHpOverlayGrouped(graphics);
 
 				NPC[] reds = maiden.getMaidenReds().keySet().toArray(new NPC[0]);
 				for (NPC npc : reds)
@@ -134,6 +99,90 @@ public class MaidenOverlay extends RoomOverlay
 		return null;
 	}
 
+	private void displayNyloHpOverlayGrouped(Graphics2D graphics)
+	{
+		ArrayListMultimap<Point, NPC> nyloGrouped = ArrayListMultimap.create();
+		maiden.getMaidenReds().forEach((nylo, hp) -> {
+			Point point = new Point(nylo.getWorldLocation().getX(), nylo.getWorldLocation().getY());
+			if (!nylo.isDead())
+			{
+				nyloGrouped.put(point, nylo);
+				if (nylo.getName() != null && nylo.getHealthScale() > 0 && nylo.getHealthRatio() < 100 && maiden.getMaidenReds().containsKey(nylo))
+				{
+					maiden.getMaidenReds().put(nylo, new MutablePair(nylo.getHealthRatio(), nylo.getHealthScale()));
+				}
+			}
+
+		});
+
+		FontMetrics fontMetrics = graphics.getFontMetrics();
+
+		for (Point point : nyloGrouped.keys())
+		{
+			int zOffset = 0;
+
+			for (Iterator<NPC> iterator = nyloGrouped.get(point).iterator(); iterator.hasNext(); zOffset += fontMetrics.getHeight())
+			{
+				NPC nyloNPC = iterator.next();
+				drawNyloHpOverlay(graphics, nyloNPC, zOffset);
+			}
+		}
+
+	}
+
+	private void drawNyloHpOverlay(Graphics2D graphics, NPC nyloNPC, int zOffset)
+	{
+		int healthScale = nyloNPC.getHealthScale();
+		int healthRatio = nyloNPC.getHealthRatio();
+		if (nyloNPC.getName() != null && nyloNPC.getHealthScale() > 0)
+		{
+			healthScale = nyloNPC.getHealthScale();
+			healthRatio = Math.min(healthRatio, nyloNPC.getHealthRatio());
+		}
+
+		float nyloHp = ((float) healthRatio / (float) healthScale) * 100.0F;
+		String text = getNyloString(nyloNPC);
+		Point textLocation = nyloNPC.getCanvasTextLocation(graphics, text, 0);
+		if (!nyloNPC.isDead() && textLocation != null)
+		{
+			textLocation = new Point(textLocation.getX(), textLocation.getY() - zOffset);
+			Color color = percentageToColor(nyloHp);
+			renderTextLocation(graphics, text, color, textLocation);
+		}
+	}
+
+	private String getNyloString(NPC nyloNPC)
+	{
+		String string = "";
+		if (config.maidenRedsHealth())
+		{
+			int v_health = nyloNPC.getHealthScale();
+			int v_healthRation = nyloNPC.getHealthRatio();
+			if (nyloNPC.getName() != null && nyloNPC.getHealthScale() > 0)
+			{
+				v_health = nyloNPC.getHealthScale();
+				v_healthRation = Math.min(v_healthRation, nyloNPC.getHealthRatio());
+			}
+			float percentage = ((float) v_healthRation / (float) v_health) * 100f;
+			string = (String.valueOf(DECIMAL_FORMAT.format(percentage)));
+		}
+
+		if (config.maidenRedsHealth() && config.maidenRedsDistance())
+		{
+			string += " - ";
+		}
+
+		if (config.maidenRedsDistance())
+		{
+			final int maidenX = maiden.getMaidenNPC().getWorldLocation().getX() + maiden.getMaidenNPC().getTransformedComposition().getSize();
+
+			int deltaX = Math.max(0, nyloNPC.getWorldLocation().getX() - maidenX);
+			string += deltaX;
+		}
+
+		return string;
+	}
+
 	private Color percentageToColor(float percentage)
 	{
 		percentage = Math.max(Math.min(100.0F, percentage), 0.0F);
@@ -141,10 +190,5 @@ public class MaidenOverlay extends RoomOverlay
 		double gMod = 235.0D * percentage / 100.0D;
 		double bMod = 125.0D * percentage / 100.0D;
 		return new Color((int) Math.min(255.0D, 255.0D - rMod), Math.min(255, (int)(20.0D + gMod)), Math.min(255, (int)(0.0D + bMod)));
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

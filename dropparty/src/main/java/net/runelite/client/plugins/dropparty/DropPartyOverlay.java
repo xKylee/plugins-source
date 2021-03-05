@@ -27,9 +27,11 @@
  */
 package net.runelite.client.plugins.dropparty;
 
+import com.google.common.base.Strings;
 import com.google.inject.Provides;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -45,8 +47,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
-import static net.runelite.client.util.ColorUtil.setAlphaComponent;
 
 public class DropPartyOverlay extends Overlay
 {
@@ -69,7 +69,7 @@ public class DropPartyOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class DropPartyOverlay extends Overlay
 					{
 						graphics.setColor(new Color(setAlphaComponent(config.overlayColor().getRGB(), OUTLINE_START_ALPHA), true));
 						graphics.drawPolygon(tilePoly);
-						OverlayUtil.renderTextLocation(graphics, Integer.toString(i + 1), config.textSize(),
+						renderTextLocation(graphics, Integer.toString(i + 1), config.textSize(),
 							config.fontStyle().getFont(), Color.WHITE, centerPoint(tilePoly.getBounds()), true, 0);
 					}
 					markedTiles.add(path.get(i));
@@ -122,15 +122,67 @@ public class DropPartyOverlay extends Overlay
 		return new Point(x, y);
 	}
 
-	public void determineLayer()
+	/**
+	 * Modifies the alpha component on a Color
+	 *
+	 * @param color The color to set the alpha value on
+	 * @param alpha The alpha value to set on the color
+	 * @return color
+	 */
+	public static int setAlphaComponent(Color color, int alpha)
 	{
-		if (config.mirrorMode())
+		return setAlphaComponent(color.getRGB(), alpha);
+	}
+
+	/**
+	 * Modifies the alpha component on a Color
+	 *
+	 * @param color The color to set the alpha value on
+	 * @param alpha The alpha value to set on the color
+	 * @return color
+	 */
+	public static int setAlphaComponent(int color, int alpha)
+	{
+		if (alpha < 0 || alpha > 255)
 		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
+			throw new IllegalArgumentException("alpha must be between 0 and 255.");
 		}
-		if (!config.mirrorMode())
+		return (color & 0x00ffffff) | (alpha << 24);
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint, boolean shadows, int yOffset)
+	{
+		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+		if (canvasPoint != null)
 		{
-			setLayer(OverlayLayer.UNDER_WIDGETS);
+			final Point canvasCenterPoint = new Point(
+				canvasPoint.getX(),
+				canvasPoint.getY() + yOffset);
+			final Point canvasCenterPoint_shadow = new Point(
+				canvasPoint.getX() + 1,
+				canvasPoint.getY() + 1 + yOffset);
+			if (shadows)
+			{
+				renderTextLocation(graphics, canvasCenterPoint_shadow, txtString, Color.BLACK);
+			}
+			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
 		}
+	}
+
+	public static void renderTextLocation(Graphics2D graphics, Point txtLoc, String text, Color color)
+	{
+		if (Strings.isNullOrEmpty(text))
+		{
+			return;
+		}
+
+		int x = txtLoc.getX();
+		int y = txtLoc.getY();
+
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(text, x + 1, y + 1);
+
+		graphics.setColor(color);
+		graphics.drawString(text, x, y);
 	}
 }

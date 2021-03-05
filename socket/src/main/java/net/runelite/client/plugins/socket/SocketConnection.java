@@ -209,7 +209,7 @@ public class SocketConnection implements Runnable
 						String message = AES256.decrypt(secret, data.getString("payload"));
 						JSONObject payload = new JSONObject(message);
 						clientThread.invoke(
-							() -> eventBus.post(SocketReceivePacket.class, new SocketReceivePacket(payload)));
+							() -> eventBus.post(new SocketReceivePacket(payload)));
 
 					}
 					else if (header.equals(SocketPacket.JOIN))
@@ -228,7 +228,7 @@ public class SocketConnection implements Runnable
 
 						try
 						{
-							eventBus.post(SocketPlayerJoin.class, new SocketPlayerJoin(targetName));
+							eventBus.post(new SocketPlayerJoin(targetName));
 						}
 						catch (Exception ignored)
 						{
@@ -245,7 +245,7 @@ public class SocketConnection implements Runnable
 
 						try
 						{
-							eventBus.post(SocketPlayerLeave.class, new SocketPlayerLeave(targetName));
+							eventBus.post(new SocketPlayerLeave(targetName));
 						}
 						catch (Exception ignored)
 						{

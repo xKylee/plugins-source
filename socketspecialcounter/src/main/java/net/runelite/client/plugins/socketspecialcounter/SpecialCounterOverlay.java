@@ -63,19 +63,7 @@ public class SpecialCounterOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
-	}
-
-	private void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		else
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
-		}
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 	}
 
 	public void addOverlay(String player, SpecialIcon icon)

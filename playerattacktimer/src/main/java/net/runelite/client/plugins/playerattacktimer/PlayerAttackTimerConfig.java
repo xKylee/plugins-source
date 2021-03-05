@@ -48,10 +48,7 @@ public interface PlayerAttackTimerConfig extends Config
 		position = 0,
 		keyName = "settings"
 	)
-	default boolean settings()
-	{
-		return false;
-	}
+	String settings = "Settings";
 
 	@ConfigSection(
 		name = "Font Settings",
@@ -59,10 +56,7 @@ public interface PlayerAttackTimerConfig extends Config
 		position = 1,
 		keyName = "fontSettings"
 	)
-	default boolean fontSettings()
-	{
-		return false;
-	}
+	String fontSettings = "Font Settings";
 
 	//------------------------------------------------------------//
 	// Settings
@@ -74,7 +68,7 @@ public interface PlayerAttackTimerConfig extends Config
 			+ "<br>Animation IDs can be viewed by wielding a weapon and attacking an NPC.",
 		position = 0,
 		keyName = "debugAnimationIds",
-		section = "settings",
+		section = settings,
 		disabledBy = "playerAttackTimer"
 	)
 	default boolean debugAnimationIds()
@@ -90,7 +84,7 @@ public interface PlayerAttackTimerConfig extends Config
 			+ "<br>Weapon tick delays can be found on the wiki.",
 		position = 1,
 		keyName = "customAnimations",
-		section = "settings",
+		section = settings,
 		parse = true,
 		clazz = ConfigParser.class,
 		method = "parse"
@@ -109,7 +103,7 @@ public interface PlayerAttackTimerConfig extends Config
 		description = "Font style can be bold, plain, or italicized.",
 		position = 0,
 		keyName = "fontStyle",
-		section = "fontSettings",
+		section = fontSettings,
 		enumClass = FontStyle.class
 	)
 	default FontStyle fontStyle()
@@ -122,7 +116,7 @@ public interface PlayerAttackTimerConfig extends Config
 		description = "Toggle font shadow.",
 		position = 1,
 		keyName = "fontShadow",
-		section = "fontSettings"
+		section = fontSettings
 	)
 	default boolean fontShadow()
 	{
@@ -138,7 +132,7 @@ public interface PlayerAttackTimerConfig extends Config
 		description = "Adjust font size.",
 		position = 2,
 		keyName = "fontSize",
-		section = "fontSettings"
+		section = fontSettings
 	)
 	@Units(Units.POINTS)
 	default int fontSize()
@@ -152,7 +146,7 @@ public interface PlayerAttackTimerConfig extends Config
 		description = "Adjust font color.",
 		position = 3,
 		keyName = "fontColor",
-		section = "fontSettings"
+		section = fontSettings
 	)
 	default Color fontColor()
 	{
@@ -168,27 +162,12 @@ public interface PlayerAttackTimerConfig extends Config
 		description = "Adjust the Z coordinate offset.",
 		position = 4,
 		keyName = "fontZOffset",
-		section = "fontSettings"
+		section = fontSettings
 	)
 	@Units(Units.POINTS)
 	default int fontZOffset()
 	{
 		return 0;
-	}
-
-	//------------------------------------------------------------//
-	// Other
-	//------------------------------------------------------------//
-
-	@ConfigItem(
-		name = "Enable mirror mode",
-		description = "Toggle mirror mode compatibility.",
-		position = 99,
-		keyName = "mirrorMode"
-	)
-	default boolean mirrorMode()
-	{
-		return false;
 	}
 
 	//------------------------------------------------------------//

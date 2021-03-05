@@ -88,15 +88,4 @@ public interface SorceressGardenConfig extends Config
 	{
 		return false;
 	}
-
-	@ConfigItem(
-		name = "Enable mirror mode",
-		description = "Toggle mirror mode compatibility.",
-		position = 7,
-		keyName = "mirrorMode"
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
 }

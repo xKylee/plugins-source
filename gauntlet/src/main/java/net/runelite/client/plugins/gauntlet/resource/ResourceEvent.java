@@ -25,10 +25,9 @@
 package net.runelite.client.plugins.gauntlet.resource;
 
 import lombok.Value;
-import net.runelite.api.events.Event;
 
 @Value
-class ResourceEvent implements Event
+class ResourceEvent
 {
 	Resource resource;
 	int count;

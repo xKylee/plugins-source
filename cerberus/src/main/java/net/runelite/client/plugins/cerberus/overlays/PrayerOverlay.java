@@ -43,12 +43,12 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.client.plugins.cerberus.CerberusConfig;
 import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.domain.CerberusAttack;
+import net.runelite.client.plugins.cerberus.util.OverlayUtil;
 import net.runelite.client.plugins.cerberus.util.Utility;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class PrayerOverlay extends Overlay
@@ -72,7 +72,7 @@ public class PrayerOverlay extends Overlay
 
 		setPriority(OverlayPriority.HIGHEST);
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -185,10 +185,5 @@ public class PrayerOverlay extends Overlay
 		final Point point = new Point(x - 3, y + 6);
 
 		OverlayUtil.renderTextLocation(graphics2D, text, fontSize, fontStyle, fontColor, point, true, 0);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
 	}
 }

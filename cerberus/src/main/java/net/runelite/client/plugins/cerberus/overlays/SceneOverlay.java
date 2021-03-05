@@ -47,11 +47,11 @@ import net.runelite.client.plugins.cerberus.CerberusPlugin;
 import net.runelite.client.plugins.cerberus.domain.Arena;
 import net.runelite.client.plugins.cerberus.domain.Cerberus;
 import net.runelite.client.plugins.cerberus.domain.Ghost;
+import net.runelite.client.plugins.cerberus.util.OverlayUtil;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public final class SceneOverlay extends Overlay
@@ -82,7 +82,7 @@ public final class SceneOverlay extends Overlay
 
 		setPriority(OverlayPriority.HIGHEST);
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -209,10 +209,5 @@ public final class SceneOverlay extends Overlay
 		final int y = (int) (rect.getY() + rect.getHeight() / 2);
 
 		return new Point(x, y);
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

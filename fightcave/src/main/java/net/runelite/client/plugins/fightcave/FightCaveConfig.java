@@ -30,42 +30,27 @@ import lombok.Getter;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.Title;
 import net.runelite.client.config.Units;
 
 @ConfigGroup("fightcave")
 public interface FightCaveConfig extends Config
 {
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "mainConfig",
 		position = 0,
 		name = "Features",
 		description = ""
 	)
-	default Title mainConfig()
-	{
-		return new Title();
-	}
+	String mainConfig = "Features";
 
 	@ConfigItem(
 		position = 1,
 		keyName = "waveDisplay",
 		name = "Wave display",
 		description = "Shows monsters that will spawn on the selected wave(s).",
-		titleSection = "mainConfig"
+		section = mainConfig
 	)
 	default WaveDisplayMode waveDisplay()
 	{
@@ -77,30 +62,27 @@ public interface FightCaveConfig extends Config
 		keyName = "tickTimersWidget",
 		name = "Tick Timers in Prayer",
 		description = "Adds an overlay to the Prayer Interface with the ticks until next attack for that prayer.",
-		titleSection = "mainConfig"
+		section = mainConfig
 	)
 	default boolean tickTimersWidget()
 	{
 		return true;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "text",
 		position = 3,
 		name = "Text",
 		description = ""
 	)
-	default Title text()
-	{
-		return new Title();
-	}
+	String text = "Text";
 
 	@ConfigItem(
 		position = 4,
 		keyName = "fontStyle",
 		name = "Font Style",
 		description = "Plain | Bold | Italics",
-		titleSection = "text"
+		section = text
 	)
 	default FontStyle fontStyle()
 	{
@@ -116,7 +98,7 @@ public interface FightCaveConfig extends Config
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
-		titleSection = "text"
+		section = text
 	)
 	@Units(Units.POINTS)
 	default int textSize()
@@ -129,7 +111,7 @@ public interface FightCaveConfig extends Config
 		keyName = "shadows",
 		name = "Shadows",
 		description = "Adds Shadows to text.",
-		titleSection = "text"
+		section = text
 	)
 	default boolean shadows()
 	{

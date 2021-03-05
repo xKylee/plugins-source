@@ -58,7 +58,7 @@ public class AttackerOverlay extends Overlay
 		this.plugin = plugin;
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGHEST);
-		determineLayer();
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 	}
 
 	@Override
@@ -124,17 +124,5 @@ public class AttackerOverlay extends Overlay
 		graphics.setStroke(new BasicStroke(1));
 		graphics.setColor(color);
 		graphics.drawString(text, x, y);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
-		}
 	}
 }

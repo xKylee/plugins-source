@@ -43,14 +43,13 @@ import net.runelite.api.NPC;
 import net.runelite.api.Point;
 import net.runelite.api.Prayer;
 import net.runelite.api.widgets.Widget;
-import net.runelite.client.plugins.dagannothkings.DKConfig;
-import net.runelite.client.plugins.dagannothkings.DKPlugin;
+import net.runelite.client.plugins.dagannothkings.DagannothKingsConfig;
+import net.runelite.client.plugins.dagannothkings.DagannothKingsPlugin;
 import net.runelite.client.plugins.dagannothkings.entity.DagannothKing;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class PrayerOverlay extends Overlay
@@ -59,14 +58,14 @@ public class PrayerOverlay extends Overlay
 	private static final int BOX_WIDTH = 10;
 	private static final int BOX_HEIGHT = 5;
 
-	private final DKPlugin plugin;
-	private final DKConfig config;
+	private final DagannothKingsPlugin plugin;
+	private final DagannothKingsConfig config;
 	private final Client client;
 
 	private Set<DagannothKing> dagannothKings;
 
 	@Inject
-	public PrayerOverlay(final DKPlugin plugin, final DKConfig config, final Client client)
+	public PrayerOverlay(final DagannothKingsPlugin plugin, final DagannothKingsConfig config, final Client client)
 	{
 		super(plugin);
 
@@ -76,7 +75,7 @@ public class PrayerOverlay extends Overlay
 
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -92,11 +91,6 @@ public class PrayerOverlay extends Overlay
 		renderPrayer(graphics2D);
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	private void renderPrayer(final Graphics2D graphics2D)

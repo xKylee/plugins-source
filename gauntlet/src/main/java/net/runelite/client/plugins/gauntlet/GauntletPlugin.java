@@ -37,7 +37,6 @@ import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
@@ -51,7 +50,6 @@ import net.runelite.api.Player;
 import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.SoundEffectID;
-import net.runelite.api.Varbits;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
@@ -68,13 +66,11 @@ import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.gauntlet.entity.Demiboss;
 import net.runelite.client.plugins.gauntlet.entity.Hunllef;
 import net.runelite.client.plugins.gauntlet.entity.Missile;
@@ -95,18 +91,30 @@ import org.pf4j.Extension;
 	name = "Gauntlet",
 	enabledByDefault = false,
 	description = "All-in-one plugin for the Gauntlet.",
-	tags = {"gauntlet"},
-	type = PluginType.MINIGAME
+	tags = {"gauntlet"}
 )
 @Singleton
 public class GauntletPlugin extends Plugin
 {
+	public static final int ONEHAND_SLASH_AXE_ANIMATION = 395;
+	public static final int ONEHAND_CRUSH_PICKAXE_ANIMATION = 400;
+	public static final int ONEHAND_CRUSH_AXE_ANIMATION = 401;
+	public static final int UNARMED_PUNCH_ANIMATION = 422;
+	public static final int UNARMED_KICK_ANIMATION = 423;
+	public static final int BOW_ATTACK_ANIMATION = 426;
+	public static final int ONEHAND_STAB_HALBERD_ANIMATION = 428;
+	public static final int ONEHAND_SLASH_HALBERD_ANIMATION = 440;
+	public static final int ONEHAND_SLASH_SWORD_ANIMATION = 390;
+	public static final int ONEHAND_STAB_SWORD_ANIMATION = 386;
+	public static final int HIGH_LEVEL_MAGIC_ATTACK = 1167;
+	public static final int HUNLEFF_TORNADO = 8418;
+
 	private static final Set<Integer> MELEE_ANIM_IDS = Set.of(
-		AnimationID.ONEHAND_STAB_SWORD_ANIMATION, AnimationID.ONEHAND_SLASH_SWORD_ANIMATION,
-		AnimationID.ONEHAND_SLASH_AXE_ANIMATION, AnimationID.ONEHAND_CRUSH_PICKAXE_ANIMATION,
-		AnimationID.ONEHAND_CRUSH_AXE_ANIMATION, AnimationID.UNARMED_PUNCH_ANIMATION,
-		AnimationID.UNARMED_KICK_ANIMATION, AnimationID.ONEHAND_STAB_HALBERD_ANIMATION,
-		AnimationID.ONEHAND_SLASH_HALBERD_ANIMATION
+		ONEHAND_STAB_SWORD_ANIMATION, ONEHAND_SLASH_SWORD_ANIMATION,
+		ONEHAND_SLASH_AXE_ANIMATION, ONEHAND_CRUSH_PICKAXE_ANIMATION,
+		ONEHAND_CRUSH_AXE_ANIMATION, UNARMED_PUNCH_ANIMATION,
+		UNARMED_KICK_ANIMATION, ONEHAND_STAB_HALBERD_ANIMATION,
+		ONEHAND_SLASH_HALBERD_ANIMATION
 	);
 
 	private static final Set<Integer> ATTACK_ANIM_IDS = new HashSet<>();
@@ -114,8 +122,8 @@ public class GauntletPlugin extends Plugin
 	static
 	{
 		ATTACK_ANIM_IDS.addAll(MELEE_ANIM_IDS);
-		ATTACK_ANIM_IDS.add(AnimationID.BOW_ATTACK_ANIMATION);
-		ATTACK_ANIM_IDS.add(AnimationID.HIGH_LEVEL_MAGIC_ATTACK);
+		ATTACK_ANIM_IDS.add(BOW_ATTACK_ANIMATION);
+		ATTACK_ANIM_IDS.add(HIGH_LEVEL_MAGIC_ATTACK);
 	}
 
 	private static final Set<Integer> PROJECTILE_MAGIC_IDS = Set.of(
@@ -185,9 +193,6 @@ public class GauntletPlugin extends Plugin
 
 	@Inject
 	private ClientThread clientThread;
-
-	@Inject
-	private EventBus eventBus;
 
 	@Inject
 	private GauntletConfig config;
@@ -278,8 +283,6 @@ public class GauntletPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		eventBus.unregister(this);
-
 		overlays.forEach(o -> overlayManager.remove(o));
 
 		inGauntlet = false;
@@ -373,6 +376,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
 		if (hunllef == null)
@@ -393,6 +397,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameStateChanged(final GameStateChanged event)
 	{
 		switch (event.getGameState())
@@ -408,6 +413,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onWidgetLoaded(final WidgetLoaded event)
 	{
 		if (event.getGroupId() == WidgetID.GAUNTLET_TIMER_GROUP_ID)
@@ -417,6 +423,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameObjectSpawned(final GameObjectSpawned event)
 	{
 		final GameObject gameObject = event.getGameObject();
@@ -433,6 +440,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameObjectDespawned(final GameObjectDespawned event)
 	{
 		final GameObject gameObject = event.getGameObject();
@@ -449,6 +457,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -477,6 +486,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcDespawned(final NpcDespawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -505,6 +515,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onProjectileSpawned(final ProjectileSpawned event)
 	{
 		if (hunllef == null)
@@ -531,6 +542,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onChatMessage(final ChatMessage event)
 	{
 		final ChatMessageType type = event.getType();
@@ -541,6 +553,7 @@ public class GauntletPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onActorDeath(final ActorDeath event)
 	{
 		if (event.getActor() != client.getLocalPlayer())
@@ -551,9 +564,10 @@ public class GauntletPlugin extends Plugin
 		overlayTimer.onPlayerDeath();
 	}
 
+	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
-		if (hunllef == null)
+		if (!isHunllefVarbitSet() || hunllef == null)
 		{
 			return;
 		}
@@ -588,7 +602,7 @@ public class GauntletPlugin extends Plugin
 		}
 		else if (actor instanceof NPC)
 		{
-			if (animationId == AnimationID.HUNLEFF_TORNADO)
+			if (animationId == HUNLEFF_TORNADO)
 			{
 				hunllef.updateAttackCount();
 			}
@@ -597,7 +611,7 @@ public class GauntletPlugin extends Plugin
 
 	private boolean isAttackAnimationValid(final int animationId)
 	{
-		final HeadIcon headIcon = hunllef.getNpc().getDefinition().getOverheadIcon();
+		final HeadIcon headIcon = hunllef.getNpc().getComposition().getOverheadIcon();
 
 		if (headIcon == null)
 		{
@@ -613,13 +627,13 @@ public class GauntletPlugin extends Plugin
 				}
 				break;
 			case RANGED:
-				if (animationId == AnimationID.BOW_ATTACK_ANIMATION)
+				if (animationId == BOW_ATTACK_ANIMATION)
 				{
 					return false;
 				}
 				break;
 			case MAGIC:
-				if (animationId == AnimationID.HIGH_LEVEL_MAGIC_ATTACK)
+				if (animationId == HIGH_LEVEL_MAGIC_ATTACK)
 				{
 					return false;
 				}
@@ -649,7 +663,10 @@ public class GauntletPlugin extends Plugin
 	{
 		for (final GameObject gameObject : new GameObjectQuery().result(client))
 		{
-			onGameObjectSpawned(new GameObjectSpawned(null, gameObject));
+			GameObjectSpawned gameObjectSpawned = new GameObjectSpawned();
+			gameObjectSpawned.setTile(null);
+			gameObjectSpawned.setGameObject(gameObject);
+			onGameObjectSpawned(gameObjectSpawned);
 		}
 
 		for (final NPC npc : client.getNpcs())
@@ -664,14 +681,6 @@ public class GauntletPlugin extends Plugin
 
 		overlayManager.add(overlayTimer);
 		overlayManager.add(overlayGauntlet);
-
-		eventBus.subscribe(GameStateChanged.class, this, this::onGameStateChanged);
-		eventBus.subscribe(WidgetLoaded.class, this, this::onWidgetLoaded);
-		eventBus.subscribe(GameObjectSpawned.class, this, this::onGameObjectSpawned);
-		eventBus.subscribe(GameObjectDespawned.class, this, this::onGameObjectDespawned);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
-		eventBus.subscribe(ChatMessage.class, this, this::onChatMessage);
 	}
 
 	private void initHunllef()
@@ -685,24 +694,15 @@ public class GauntletPlugin extends Plugin
 		overlayManager.add(overlayHunllef);
 		overlayManager.add(overlayPrayerWidget);
 		overlayManager.add(overlayPrayerBox);
-
-		eventBus.unregister(this);
-		eventBus.subscribe(GameStateChanged.class, this, this::onGameStateChanged);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(ProjectileSpawned.class, this, this::onProjectileSpawned);
-		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
-		eventBus.subscribe(ActorDeath.class, this, this::onActorDeath);
 	}
 
 	private boolean isGauntletVarbitSet()
 	{
-		return client.getVar(Varbits.GAUNTLET_ENTERED) == 1;
+		return client.getVarbitValue(9178) == 1;
 	}
 
 	private boolean isHunllefVarbitSet()
 	{
-		return client.getVar(Varbits.GAUNTLET_FINAL_ROOM_ENTERED) == 1;
+		return client.getVarbitValue(9177) == 1;
 	}
 }

@@ -69,180 +69,180 @@ public class Olm
 
 	public void startPhase()
 	{
-		this.firstPhase = !this.active;
-		this.active = true;
-		this.ticksUntilNextAttack = -1;
-		this.attackCycle = 1;
-		this.specialCycle = 1;
-		this.crippled = false;
-		this.crippleTicks = 45;
-		this.prayer = null;
-		this.lastPrayTime = 0;
-		this.headAnimation = OlmAnimation.UNKNOWN;
-		this.handAnimation = OlmAnimation.UNKNOWN;
+		firstPhase = !active;
+		active = true;
+		ticksUntilNextAttack = -1;
+		attackCycle = 1;
+		specialCycle = 1;
+		crippled = false;
+		crippleTicks = 45;
+		prayer = null;
+		lastPrayTime = 0;
+		headAnimation = OlmAnimation.UNKNOWN;
+		handAnimation = OlmAnimation.UNKNOWN;
 	}
 
 	public void hardRest()
 	{
-		this.active = false;
-		this.firstPhase = false;
-		this.finalPhase = false;
-		this.phaseType = PhaseType.UNKNOWN;
-		this.hand = null;
-		this.head = null;
-		this.headAnimation = OlmAnimation.UNKNOWN;
-		this.handAnimation = OlmAnimation.UNKNOWN;
-		this.ticksUntilNextAttack = -1;
-		this.attackCycle = 1;
-		this.specialCycle = 1;
-		this.healPools.clear();
-		this.portals.clear();
-		this.portalTicks = 10;
-		this.victims.clear();
-		this.crippled = false;
-		this.crippleTicks = 45;
-		this.prayer = null;
-		this.lastPrayTime = 0;
+		active = false;
+		firstPhase = false;
+		finalPhase = false;
+		phaseType = PhaseType.UNKNOWN;
+		hand = null;
+		head = null;
+		headAnimation = OlmAnimation.UNKNOWN;
+		handAnimation = OlmAnimation.UNKNOWN;
+		ticksUntilNextAttack = -1;
+		attackCycle = 1;
+		specialCycle = 1;
+		healPools.clear();
+		portals.clear();
+		portalTicks = 10;
+		victims.clear();
+		crippled = false;
+		crippleTicks = 45;
+		prayer = null;
+		lastPrayTime = 0;
 	}
 
 	void setPrayer(Prayer pray)
 	{
-		this.prayer = pray;
-		this.lastPrayTime = System.currentTimeMillis();
+		prayer = pray;
+		lastPrayTime = System.currentTimeMillis();
 	}
 
 	void cripple()
 	{
-		this.crippled = true;
-		this.crippleTicks = 45;
+		crippled = true;
+		crippleTicks = 45;
 	}
 
 	void uncripple()
 	{
-		this.crippled = false;
-		this.crippleTicks = 45;
+		crippled = false;
+		crippleTicks = 45;
 	}
 
 	public void update()
 	{
-		this.updateVictims();
-		this.updateCrippleSticks();
-		this.updateSpecials();
-		this.incrementTickCycle();
-		this.headAnimations();
-		this.handAnimations();
+		updateVictims();
+		updateCrippleSticks();
+		updateSpecials();
+		incrementTickCycle();
+		headAnimations();
+		handAnimations();
 	}
 
 	public void incrementTickCycle()
 	{
-		if (this.ticksUntilNextAttack == 1)
+		if (ticksUntilNextAttack == 1)
 		{
-			this.ticksUntilNextAttack = 4;
-			this.incrementAttackCycle();
+			ticksUntilNextAttack = 4;
+			incrementAttackCycle();
 		}
-		else if (this.ticksUntilNextAttack != -1)
+		else if (ticksUntilNextAttack != -1)
 		{
-			this.ticksUntilNextAttack--;
+			ticksUntilNextAttack--;
 		}
 	}
 
 	public void incrementAttackCycle()
 	{
-		if (this.attackCycle == 4)
+		if (attackCycle == 4)
 		{
-			this.attackCycle = 1;
-			this.incrementSpecialCycle();
+			attackCycle = 1;
+			incrementSpecialCycle();
 		}
 		else
 		{
-			this.attackCycle++;
+			attackCycle++;
 		}
 	}
 
 	public void incrementSpecialCycle()
 	{
-		if ((this.specialCycle == 3 && !this.finalPhase) || this.specialCycle == 4)
+		if ((specialCycle == 3 && !finalPhase) || specialCycle == 4)
 		{
-			this.specialCycle = 1;
+			specialCycle = 1;
 		}
 		else
 		{
-			this.specialCycle++;
+			specialCycle++;
 		}
 	}
 
 	public void specialSync(OlmAnimation currentAnimation)
 	{
-		this.ticksUntilNextAttack = 4;
-		this.attackCycle = 1;
+		ticksUntilNextAttack = 4;
+		attackCycle = 1;
 		switch (currentAnimation)
 		{
 			case LEFT_HAND_CRYSTALS1:
 			case LEFT_HAND_CRYSTALS2:
-				this.specialCycle = 2;
+				specialCycle = 2;
 				break;
 			case LEFT_HAND_LIGHTNING1:
 			case LEFT_HAND_LIGHTNING2:
-				this.specialCycle = 3;
+				specialCycle = 3;
 				break;
 			case LEFT_HAND_PORTALS1:
 			case LEFT_HAND_PORTALS2:
-				this.specialCycle = this.finalPhase ? 4 : 1;
+				specialCycle = finalPhase ? 4 : 1;
 				break;
 			case LEFT_HAND_HEAL1:
 			case LEFT_HAND_HEAL2:
-				this.specialCycle = 1;
+				specialCycle = 1;
 				break;
 		}
 	}
 
 	void updateCrippleSticks()
 	{
-		if (!this.crippled)
+		if (!crippled)
 		{
 			return;
 		}
 
-		this.crippleTicks--;
-		if (this.crippleTicks <= 0)
+		crippleTicks--;
+		if (crippleTicks <= 0)
 		{
-			this.crippled = false;
-			this.crippleTicks = 45;
+			crippled = false;
+			crippleTicks = 45;
 		}
 	}
 
 	void updateVictims()
 	{
-		if (this.victims.size() > 0)
+		if (victims.size() > 0)
 		{
-			this.victims.forEach(Victim::updateTicks);
-			this.victims.removeIf(victim -> victim.getTicks() <= 0);
+			victims.forEach(Victim::updateTicks);
+			victims.removeIf(victim -> victim.getTicks() <= 0);
 		}
 	}
 
 	void updateSpecials()
 	{
-		this.healPools.clear();
-		this.portals.clear();
-		this.client.clearHintArrow();
+		healPools.clear();
+		portals.clear();
+		client.clearHintArrow();
 
-		for (GraphicsObject o : this.client.getGraphicsObjects())
+		for (GraphicsObject o : client.getGraphicsObjects())
 		{
 			if (o.getId() == GraphicID.OLM_TELEPORT)
 			{
-				this.portals.add(WorldPoint.fromLocal(this.client, o.getLocation()));
+				portals.add(WorldPoint.fromLocal(client, o.getLocation()));
 			}
 			if (o.getId() == GraphicID.OLM_HEAL)
 			{
-				this.healPools.add(WorldPoint.fromLocal(this.client, o.getLocation()));
+				healPools.add(WorldPoint.fromLocal(client, o.getLocation()));
 			}
-			if (!this.portals.isEmpty())
+			if (!portals.isEmpty())
 			{
-				this.portalTicks--;
-				if (this.portalTicks <= 0)
+				portalTicks--;
+				if (portalTicks <= 0)
 				{
-					this.client.clearHintArrow();
-					this.portalTicks = 10;
+					client.clearHintArrow();
+					portalTicks = 10;
 				}
 			}
 		}
@@ -250,14 +250,14 @@ public class Olm
 
 	private void headAnimations()
 	{
-		if (this.head == null || this.head.getEntity() == null)
+		if (head == null || head.getRenderable() == null)
 		{
 			return;
 		}
 
-		OlmAnimation currentAnimation = OlmAnimation.fromId(((DynamicObject) this.head.getEntity()).getAnimationID());
+		OlmAnimation currentAnimation = OlmAnimation.fromId(((DynamicObject) head.getRenderable()).getAnimationID());
 
-		if (currentAnimation == this.headAnimation)
+		if (currentAnimation == headAnimation)
 		{
 			return;
 		}
@@ -266,30 +266,30 @@ public class Olm
 		{
 			case HEAD_RISING_2:
 			case HEAD_ENRAGED_RISING_2:
-				this.ticksUntilNextAttack = this.firstPhase ? 6 : 8;
-				this.attackCycle = 1;
-				this.specialCycle = 1;
+				ticksUntilNextAttack = firstPhase ? 6 : 8;
+				attackCycle = 1;
+				specialCycle = 1;
 				break;
 			case HEAD_ENRAGED_LEFT:
 			case HEAD_ENRAGED_MIDDLE:
 			case HEAD_ENRAGED_RIGHT:
-				this.finalPhase = true;
+				finalPhase = true;
 				break;
 		}
 
-		this.headAnimation = currentAnimation;
+		headAnimation = currentAnimation;
 	}
 
 	private void handAnimations()
 	{
-		if (this.hand == null || this.hand.getEntity() == null)
+		if (hand == null || hand.getRenderable() == null)
 		{
 			return;
 		}
 
-		OlmAnimation currentAnimation = OlmAnimation.fromId(((DynamicObject) this.hand.getEntity()).getAnimationID());
+		OlmAnimation currentAnimation = OlmAnimation.fromId(((DynamicObject) hand.getRenderable()).getAnimationID());
 
-		if (currentAnimation == this.handAnimation)
+		if (currentAnimation == handAnimation)
 		{
 			return;
 		}
@@ -304,18 +304,18 @@ public class Olm
 			case LEFT_HAND_PORTALS2:
 			case LEFT_HAND_HEAL1:
 			case LEFT_HAND_HEAL2:
-				this.specialSync(currentAnimation);
+				specialSync(currentAnimation);
 				break;
 			case LEFT_HAND_CRIPPLING:
-				this.cripple();
+				cripple();
 				break;
 			case LEFT_HAND_UNCRIPPLING1:
 			case LEFT_HAND_UNCRIPPLING2:
-				this.uncripple();
+				uncripple();
 				break;
 		}
 
-		this.handAnimation = currentAnimation;
+		handAnimation = currentAnimation;
 	}
 
 	public enum PhaseType

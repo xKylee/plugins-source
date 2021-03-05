@@ -35,17 +35,6 @@ import net.runelite.client.config.Range;
 public interface EffectTimersConfig extends Config
 {
 	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		name = "Show NPCs",
 		keyName = "showNpcs",
 		description = "Should we show the overlay on NPCs?",
@@ -222,8 +211,7 @@ public interface EffectTimersConfig extends Config
 		keyName = "textSize",
 		name = "Text Size",
 		description = "Text Size for Timers.",
-		position = 16,
-		titleSection = "overlayTitle"
+		position = 16
 	)
 	default int textSize()
 	{

@@ -21,7 +21,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
@@ -86,17 +85,6 @@ public class Maiden extends Room
 		maidenReds.clear();
 		maidenBloodSpawnLocations.clear();
 		maidenBloodSpawnTrailingLocations.clear();
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged change)
-	{
-		if (change.getKey().equals("mirrorMode"))
-		{
-			maidenOverlay.determineLayer();
-			overlayManager.remove(maidenOverlay);
-			overlayManager.add(maidenOverlay);
-		}
 	}
 
 	@Subscribe

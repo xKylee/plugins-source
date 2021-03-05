@@ -50,10 +50,8 @@ import net.runelite.api.events.WidgetHiddenChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -62,8 +60,7 @@ import org.pf4j.Extension;
 	name = "Environment Aid",
 	enabledByDefault = false,
 	description = "Display or Remove Environment Aids.",
-	tags = {"Barrows", "Area", "Effects", "environment", "aid"},
-	type = PluginType.UTILITY
+	tags = {"Barrows", "Area", "Effects", "environment", "aid"}
 )
 public class EnvironmentAidPlugin extends Plugin
 {
@@ -213,22 +210,22 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		Widget event = widgetHiddenChanged.getWidget();
 
-		if (config.zamorakEffect() && event.getId() == client.getWidget(406, 2).getId() && isInZamorakRegion())
+		if (config.zamorakEffect() && isInZamorakRegion() && client.getWidget(406, 2) != null && event.getId() == client.getWidget(406, 2).getId())
 		{
 			hideWidget(event, true);
 		}
 
-		if (config.snowEffect() && event.getId() == client.getWidget(167, 0).getId() && isInSnowRegions())
+		if (config.snowEffect() && isInSnowRegions() && client.getWidget(167, 0) != null && event.getId() == client.getWidget(167, 0).getId())
 		{
 			hideWidget(event, true);
 		}
 
-		if (config.waterEffect() && isInWaterRegion() && event.getId() == client.getWidget(169, 0).getId())
+		if (config.waterEffect() && isInWaterRegion() && client.getWidget(169, 0) != null && event.getId() == client.getWidget(169, 0).getId())
 		{
 			hideWidget(event, true);
 		}
 
-		if (config.waterEffect() && isInWaterRegion() &&  event.getId() == client.getWidget(170, 0).getId())
+		if (config.waterEffect() && isInWaterRegion() && client.getWidget(170, 0) != null && event.getId() == client.getWidget(170, 0).getId())
 		{
 			hideWidget(event, true);
 		}
@@ -300,22 +297,6 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		GameObject gameObject = event.getGameObject();
 		ladders.remove(gameObject);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("areaeffects"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			environmentAidBarrowsOverlay.determineLayer();
-			overlayManager.remove(environmentAidBarrowsOverlay);
-			overlayManager.add(environmentAidBarrowsOverlay);
-		}
 	}
 
 	@Subscribe

@@ -39,7 +39,7 @@ public abstract class RoomOverlay extends Overlay
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	protected void drawTile(Graphics2D graphics, WorldPoint point, Color color, int strokeWidth, int outlineAlpha, int fillAlpha)
@@ -93,6 +93,18 @@ public abstract class RoomOverlay extends Overlay
 			graphics.setColor(color);
 			graphics.setStroke(new BasicStroke(width));
 			graphics.draw(polygon);
+		}
+	}
+
+	protected void renderPolyWithFillAlpha(Graphics2D graphics, Color color, Polygon polygon, int width, int alpha)
+	{
+		if (polygon != null)
+		{
+			graphics.setColor(color);
+			graphics.setStroke(new BasicStroke(width));
+			graphics.draw(polygon);
+			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
+			graphics.fill(polygon);
 		}
 	}
 
@@ -189,10 +201,5 @@ public abstract class RoomOverlay extends Overlay
 		}
 
 		return 0;
-	}
-
-	public void determineLayer()
-	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_SCENE);
 	}
 }

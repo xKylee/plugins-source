@@ -56,12 +56,9 @@ import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.cerberus.domain.Arena;
 import net.runelite.client.plugins.cerberus.domain.Cerberus;
 import net.runelite.client.plugins.cerberus.domain.CerberusAttack;
 import net.runelite.client.plugins.cerberus.domain.Ghost;
@@ -82,8 +79,7 @@ import org.pf4j.Extension;
 	name = "Cerberus",
 	enabledByDefault = false,
 	description = "A plugin for the Cerberus boss.",
-	tags = {"cerberus", "hellhound"},
-	type = PluginType.PVM
+	tags = {"cerberus", "hellhound"}
 )
 public class CerberusPlugin extends Plugin
 {
@@ -187,12 +183,6 @@ public class CerberusPlugin extends Plugin
 		overlayManager.add(prayerOverlay);
 		overlayManager.add(currentAttackOverlay);
 		overlayManager.add(upcomingAttackOverlay);
-
-		eventBus.subscribe(GameTick.class, this, this::onGameTick);
-		eventBus.subscribe(ProjectileSpawned.class, this, this::onProjectileSpawned);
-		eventBus.subscribe(AnimationChanged.class, this, this::onAnimationChanged);
-		eventBus.subscribe(NpcSpawned.class, this, this::onNpcSpawned);
-		eventBus.subscribe(NpcDespawned.class, this, this::onNpcDespawned);
 	}
 
 	@Override
@@ -218,36 +208,6 @@ public class CerberusPlugin extends Plugin
 		gameTick = 0;
 		tickTimestampIndex = 0;
 		lastTick = 0;
-	}
-
-	@Subscribe
-	private void onConfigChanged(final ConfigChanged event)
-	{
-		if (!event.getGroup().equals("cerberus"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			sceneOverlay.determineLayer();
-			prayerOverlay.determineLayer();
-			currentAttackOverlay.determineLayer();
-			upcomingAttackOverlay.determineLayer();
-
-			if (inArena)
-			{
-				overlayManager.remove(sceneOverlay);
-				overlayManager.remove(prayerOverlay);
-				overlayManager.remove(currentAttackOverlay);
-				overlayManager.remove(upcomingAttackOverlay);
-
-				overlayManager.add(sceneOverlay);
-				overlayManager.add(prayerOverlay);
-				overlayManager.add(currentAttackOverlay);
-				overlayManager.add(upcomingAttackOverlay);
-			}
-		}
 	}
 
 	@Subscribe
@@ -285,6 +245,7 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
 		if (cerberus == null)
@@ -342,6 +303,7 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onProjectileSpawned(final ProjectileSpawned event)
 	{
 		if (cerberus == null)
@@ -411,6 +373,7 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onAnimationChanged(final AnimationChanged event)
 	{
 		if (cerberus == null)
@@ -480,6 +443,7 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcSpawned(final NpcSpawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -511,6 +475,7 @@ public class CerberusPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onNpcDespawned(final NpcDespawned event)
 	{
 		final NPC npc = event.getNpc();
@@ -725,18 +690,6 @@ public class CerberusPlugin extends Plugin
 		{
 			prayer = Prayer.PROTECT_FROM_MELEE;
 		}
-	}
-
-	private boolean inCerberusArena()
-	{
-		final Player player = client.getLocalPlayer();
-
-		if (player == null)
-		{
-			return false;
-		}
-
-		return Arena.getArena(player.getWorldLocation()) != null;
 	}
 
 	private boolean inCerberusRegion()

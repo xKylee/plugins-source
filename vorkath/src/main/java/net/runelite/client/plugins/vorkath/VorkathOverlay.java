@@ -26,6 +26,7 @@
  */
 package net.runelite.client.plugins.vorkath;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -75,7 +76,7 @@ public class VorkathOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class VorkathOverlay extends Overlay
 						return null;
 					}
 
-					OverlayUtil.setProgressIcon(graphics, point, currentPhaseIcon, totalWidth, bgPadding, currentPosX,
+					setProgressIcon(graphics, point, currentPhaseIcon, totalWidth, bgPadding, currentPosX,
 						COLOR_ICON_BACKGROUND, OVERLAY_ICON_DISTANCE, COLOR_ICON_BORDER, COLOR_ICON_BORDER_FILL);
 
 					final Arc2D.Double arc = new Arc2D.Double(
@@ -168,15 +169,29 @@ public class VorkathOverlay extends Overlay
 		}
 	}
 
-	public void determineLayer()
+	public static void setProgressIcon(Graphics2D graphics, Point point, BufferedImage currentPhaseIcon, int totalWidth, int bgPadding, int currentPosX, Color colorIconBackground, int overlayIconDistance, Color colorIconBorder, Color colorIconBorderFill)
 	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
+		graphics.setStroke(new BasicStroke(2));
+		graphics.setColor(colorIconBackground);
+		graphics.fillOval(
+			point.getX() - totalWidth / 2 + currentPosX - bgPadding,
+			point.getY() - currentPhaseIcon.getHeight() / 2 - overlayIconDistance - bgPadding,
+			currentPhaseIcon.getWidth() + bgPadding * 2,
+			currentPhaseIcon.getHeight() + bgPadding * 2);
+
+		graphics.setColor(colorIconBorder);
+		graphics.drawOval(
+			point.getX() - totalWidth / 2 + currentPosX - bgPadding,
+			point.getY() - currentPhaseIcon.getHeight() / 2 - overlayIconDistance - bgPadding,
+			currentPhaseIcon.getWidth() + bgPadding * 2,
+			currentPhaseIcon.getHeight() + bgPadding * 2);
+
+		graphics.drawImage(
+			currentPhaseIcon,
+			point.getX() - totalWidth / 2 + currentPosX,
+			point.getY() - currentPhaseIcon.getHeight() / 2 - overlayIconDistance,
+			null);
+
+		graphics.setColor(colorIconBorderFill);
 	}
 }

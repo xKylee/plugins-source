@@ -81,6 +81,13 @@ public enum AoeProjectileInfo
 	CHAOS_FANATIC(ProjectileID.CHAOS_FANATIC_AOE, 1),
 
 	/**
+	 * The AOE of Mage Arena 2 Bosses
+	 */
+	JUSTICIAR_LEASH(ProjectileID.JUSTICIAR_LEASH, 1),
+	MAGE_ARENA_BOSS_FREEZE(ProjectileID.MAGE_ARENA_BOSS_FREEZE, 1),
+
+
+	/**
 	 * the AOE of the Corporeal Beast
 	 */
 	CORPOREAL_BEAST(ProjectileID.CORPOREAL_BEAST_AOE, 1),
@@ -128,7 +135,13 @@ public enum AoeProjectileInfo
 	/**
 	 * Marble gargoyle (Superior Gargoyle)
 	 */
-	MARBLE_GARGOYLE_AOE(ProjectileID.MARBLE_GARGOYLE_AOE, 1);
+	MARBLE_GARGOYLE_AOE(ProjectileID.MARBLE_GARGOYLE_AOE, 1),
+
+
+	/**
+	 * Verzik
+	 */
+	VERZIK_PURPLE_SPAWN(ProjectileID.VERZIK_PURPLE_SPAWN, 3);
 
 	private static final Map<Integer, AoeProjectileInfo> map = new HashMap<>();
 

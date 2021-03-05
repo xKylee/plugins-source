@@ -37,15 +37,13 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.NpcDespawned;
-import net.runelite.api.events.SpotAnimationChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.multiindicators.MapLocations;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
@@ -57,8 +55,7 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "Effect Timers",
 	description = "Effect timer overlay on players",
-	tags = {"freeze", "timers", "barrage", "teleblock", "pklite"},
-	type = PluginType.PVP
+	tags = {"freeze", "timers", "barrage", "teleblock", "pklite"}
 )
 public class EffectTimersPlugin extends Plugin
 {
@@ -127,9 +124,9 @@ public class EffectTimersPlugin extends Plugin
 
 		if (fakeSpotAnim != -1)
 		{
-			SpotAnimationChanged event = new SpotAnimationChanged();
+			GraphicChanged event = new GraphicChanged();
 			event.setActor(client.getLocalPlayer());
-			onSpotAnimChanged(event);
+			onGraphicChanged(event);
 		}
 
 		EnumSet<WorldType> worldTypes = client.getWorldType();
@@ -161,10 +158,10 @@ public class EffectTimersPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onSpotAnimChanged(SpotAnimationChanged event)
+	public void onGraphicChanged(GraphicChanged event)
 	{
 		Actor actor = event.getActor();
-		int spotAnim = fakeSpotAnim == -1 ? actor.getSpotAnimation() : fakeSpotAnim;
+		int spotAnim = fakeSpotAnim == -1 ? actor.getGraphic() : fakeSpotAnim;
 		fakeSpotAnim = -1;
 		if (spotAnim == prayerTracker.getSpotanimLastTick(event.getActor()))
 		{
@@ -231,22 +228,6 @@ public class EffectTimersPlugin extends Plugin
 		for (TimerType type : TimerType.values())
 		{
 			timerManager.setTimerFor(event.getActor(), type, new Timer(this, null));
-		}
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (!event.getGroup().equals("effecttimers"))
-		{
-			return;
-		}
-
-		if (event.getKey().equals("mirrorMode"))
-		{
-			overlay.determineLayer();
-			overlayManager.remove(overlay);
-			overlayManager.add(overlay);
 		}
 	}
 }

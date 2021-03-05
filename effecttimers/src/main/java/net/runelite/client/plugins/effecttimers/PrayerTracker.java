@@ -69,7 +69,7 @@ class PrayerTracker
 			newTick.get(actor).put("PrayerIcon",
 				((Player) actor).getOverheadIcon() == null ? -1 : ((Player) actor).getOverheadIcon().ordinal());
 		}
-		newTick.get(actor).put("SpotAnim", actor.getSpotAnimation());
+		newTick.get(actor).put("SpotAnim", actor.getGraphic());
 	}
 
 	int getPrayerIconLastTick(Actor p)

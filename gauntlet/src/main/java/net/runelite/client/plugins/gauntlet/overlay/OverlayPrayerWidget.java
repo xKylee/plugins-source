@@ -44,7 +44,6 @@ import net.runelite.client.plugins.gauntlet.entity.Hunllef;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class OverlayPrayerWidget extends Overlay
@@ -130,6 +129,6 @@ public class OverlayPrayerWidget extends Overlay
 
 	public void determineLayer()
 	{
-		setLayer(config.mirrorMode() ? OverlayLayer.AFTER_MIRROR : OverlayLayer.ABOVE_WIDGETS);
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 }

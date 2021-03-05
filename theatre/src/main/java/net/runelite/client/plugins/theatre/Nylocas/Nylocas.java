@@ -6,6 +6,8 @@
 
 package net.runelite.client.plugins.theatre.Nylocas;
 
+import com.openosrs.client.util.WeaponMap;
+import com.openosrs.client.util.WeaponStyle;
 import java.awt.Color;
 import java.time.Instant;
 import java.util.Arrays;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -22,7 +25,7 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.MenuOpcode;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Player;
@@ -37,7 +40,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
@@ -53,8 +56,6 @@ import net.runelite.client.plugins.theatre.TheatreInputListener;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.components.InfoBoxComponent;
 import net.runelite.client.util.ColorUtil;
-import net.runelite.client.util.WeaponMap;
-import net.runelite.client.util.WeaponStyle;
 import org.apache.commons.lang3.ObjectUtils;
 
 public class Nylocas extends Room
@@ -136,16 +137,22 @@ public class Nylocas extends Room
 
 	private HashMap<NyloNPC, NPC> currentWave = new HashMap<>();
 
+	@Getter
+	private final Map<LocalPoint, Integer> splitsMap = new HashMap();
+	private final Set<NPC> bigNylos = new HashSet();
+
 	private int varbit6447 = -1;
 	private boolean nextInstance = true;
+
+	@Getter
 	private int nyloWave = 0;
 
+	@Getter
+	private int ticksUntilNextWave = 0;
 	private int ticksSinceLastWave = 0;
 	private int totalStalledWaves = 0;
 
 	private static final int NPCID_NYLOCAS_PILLAR = 8358;
-	private static final int NYLO_MAP_REGION = 13122;
-	private static final int BLOAT_MAP_REGION = 13125;
 
 	private boolean skipTickCheck = false;
 
@@ -230,6 +237,8 @@ public class Nylocas extends Room
 		nyloBossAlive = false;
 		nyloWaveStart = null;
 		weaponStyle = null;
+		splitsMap.clear();
+		bigNylos.clear();
 	}
 
 	private void resetNylo()
@@ -243,6 +252,8 @@ public class Nylocas extends Room
 		currentWave.clear();
 		totalStalledWaves = 0;
 		weaponStyle = null;
+		splitsMap.clear();
+		bigNylos.clear();
 	}
 
 	private void setNyloWave(int wave)
@@ -258,6 +269,7 @@ public class Nylocas extends Room
 		if (wave != 0)
 		{
 			ticksSinceLastWave = NylocasWave.waves.get(wave).getWaveDelay();
+			ticksUntilNextWave = NylocasWave.waves.get(wave).getWaveDelay();
 		}
 
 		if (wave >= 20)
@@ -293,16 +305,6 @@ public class Nylocas extends Room
 		if (change.getKey().equals("nyloAliveCounter"))
 		{
 			nylocasAliveCounterOverlay.setHidden(!config.nyloAlivePanel());
-		}
-
-		if (change.getKey().equals("mirrorMode"))
-		{
-			nylocasAliveCounterOverlay.determineLayer();
-			nylocasOverlay.determineLayer();
-			overlayManager.remove(nylocasAliveCounterOverlay);
-			overlayManager.remove(nylocasOverlay);
-			overlayManager.add(nylocasOverlay);
-			overlayManager.add(nylocasAliveCounterOverlay);
 		}
 	}
 
@@ -359,6 +361,16 @@ public class Nylocas extends Room
 				nyloBossAlive = true;
 				isInstanceTimerRunning = false;
 				nyloBossNPC = npc;
+				break;
+		}
+
+		int id = npc.getId();
+		switch (id)
+		{
+			case 8345:
+			case 8346:
+			case 8347:
+				bigNylos.add(npc);
 				break;
 		}
 	}
@@ -489,12 +501,26 @@ public class Nylocas extends Room
 					}
 			}
 		}
+		if (!bigNylos.isEmpty() && event.getActor() instanceof NPC)
+		{
+			NPC npc = (NPC)event.getActor();
+			if (bigNylos.contains(npc))
+			{
+				int anim = npc.getAnimation();
+				if (anim == 8005 || anim == 7991 || anim == 7998)
+				{
+					splitsMap.putIfAbsent(npc.getLocalLocation(), 6);
+					bigNylos.remove(npc);
+				}
+
+			}
+		}
 	}
 
 	@Subscribe
-	public void onNpcDefinitionChanged(NpcDefinitionChanged npcDefinitionChanged)
+	public void onNpcChanged(NpcChanged npcChanged)
 	{
-		int npcId = npcDefinitionChanged.getNpc().getId();
+		int npcId = npcChanged.getNpc().getId();
 
 		switch (npcId)
 		{
@@ -515,7 +541,7 @@ public class Nylocas extends Room
 		int[] varps = client.getVarps();
 		int newVarbit6447 = client.getVarbitValue(varps, 6447);
 
-		if (isInNyloRegion() && newVarbit6447 != 0 && newVarbit6447 != varbit6447)
+		if (inRoomRegion(TheatrePlugin.NYLOCAS_REGION) && newVarbit6447 != 0 && newVarbit6447 != varbit6447)
 		{
 			nyloWaveStart = Instant.now();
 
@@ -536,7 +562,7 @@ public class Nylocas extends Room
 			return;
 		}
 
-		if (isInNyloRegion())
+		if (inRoomRegion(TheatrePlugin.NYLOCAS_REGION))
 		{
 			startupNyloOverlay();
 		}
@@ -557,7 +583,7 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (isInNyloRegion() && nyloActive)
+		if (inRoomRegion(TheatrePlugin.NYLOCAS_REGION) && nyloActive)
 		{
 			if (skipTickCheck)
 			{
@@ -565,12 +591,12 @@ public class Nylocas extends Room
 			}
 			else
 			{
-				if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerAppearance() == null)
+				if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerComposition() == null)
 				{
 					return;
 				}
 
-				int equippedWeapon = ObjectUtils.defaultIfNull(client.getLocalPlayer().getPlayerAppearance().getEquipmentId(KitType.WEAPON), -1);
+				int equippedWeapon = ObjectUtils.defaultIfNull(client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.WEAPON), -1);
 				weaponStyle = WeaponMap.StyleMap.get(equippedWeapon);
 			}
 
@@ -596,9 +622,9 @@ public class Nylocas extends Room
 				}
 			}
 
-			if (config.nyloStallMessage() && (instanceTimer + 1) % 4 == 1 && nyloWave < NylocasWave.MAX_WAVE && ticksSinceLastWave < 2)
+			if ((instanceTimer + 1) % 4 == 1 && nyloWave < NylocasWave.MAX_WAVE && ticksSinceLastWave < 2)
 			{
-				if (nylocasAliveCounterOverlay.getNyloAlive() >= nylocasAliveCounterOverlay.getMaxNyloAlive())
+				if (config.nyloStallMessage() && nylocasAliveCounterOverlay.getNyloAlive() >= nylocasAliveCounterOverlay.getMaxNyloAlive())
 				{
 					totalStalledWaves++;
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Stalled Wave: <col=EF1020>" +
@@ -606,9 +632,17 @@ public class Nylocas extends Room
 						" <col=00>- Nylos Alive: <col=EF1020>" + nylocasAliveCounterOverlay.getNyloAlive() + "/" + nylocasAliveCounterOverlay.getMaxNyloAlive() +
 						" <col=00>- Total Stalled Waves: <col=EF1020>" + totalStalledWaves, "");
 				}
+				ticksUntilNextWave = 4;
 			}
 
 			ticksSinceLastWave = Math.max(0, ticksSinceLastWave - 1);
+			ticksUntilNextWave = Math.max(0, ticksUntilNextWave - 1);
+
+			if (!splitsMap.isEmpty())
+			{
+				splitsMap.values().removeIf((value) -> value <= 1);
+				splitsMap.replaceAll((key, value) -> value - 1);
+			}
 		}
 
 
@@ -639,7 +673,7 @@ public class Nylocas extends Room
 					Point base = new Point(lp1.getSceneX(), lp1.getSceneY());
 					Point point = new Point(lp.getSceneX() - base.getX(), lp.getSceneY() - base.getY());
 
-					if (isInBloatRegion() && point.getX() == -1 && (point.getY() == -1 || point.getY() == -2 || point.getY() == -3) && nextInstance)
+					if (inRoomRegion(TheatrePlugin.BLOAT_REGION) && point.getX() == -1 && (point.getY() == -1 || point.getY() == -2 || point.getY() == -3) && nextInstance)
 					{
 						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Nylo instance timer started.", "");
 						instanceTimer = 3;
@@ -654,9 +688,9 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked option)
 	{
-		if (option.getMenuOpcode() == MenuOpcode.ITEM_SECOND_OPTION)
+		if (option.getMenuAction() == MenuAction.ITEM_SECOND_OPTION)
 		{
-			WeaponStyle newStyle = WeaponMap.StyleMap.get(option.getIdentifier());
+			WeaponStyle newStyle = WeaponMap.StyleMap.get(option.getId());
 			if (newStyle != null)
 			{
 				skipTickCheck = true;
@@ -675,7 +709,7 @@ public class Nylocas extends Room
 
 		String target = entry.getTarget();
 
-		if (config.removeNyloEntries() && entry.getMenuOpcode() == MenuOpcode.NPC_SECOND_OPTION && weaponStyle != null)
+		if (config.removeNyloEntries() && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION && weaponStyle != null)
 		{
 			switch (weaponStyle)
 			{
@@ -735,13 +769,4 @@ public class Nylocas extends Room
 		client.setMenuEntries(Arrays.stream(menu.getMenuEntries()).filter(s -> !s.getOption().equals("Examine")).toArray(MenuEntry[]::new));
 	}
 
-	boolean isInNyloRegion()
-	{
-		return client.isInInstancedRegion() && client.getMapRegions().length > 0 && client.getMapRegions()[0] == NYLO_MAP_REGION;
-	}
-
-	private boolean isInBloatRegion()
-	{
-		return client.isInInstancedRegion() && client.getMapRegions().length > 0 && client.getMapRegions()[0] == BLOAT_MAP_REGION;
-	}
 }

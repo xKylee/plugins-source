@@ -62,7 +62,7 @@ public class MultiIndicatorsOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -119,6 +119,7 @@ public class MultiIndicatorsOverlay extends Overlay
 		GeneralPath multicombatPath = plugin.getMulticombatPathToDisplay()[client.getPlane()];
 		GeneralPath pvpPath = plugin.getPvpPathToDisplay()[client.getPlane()];
 		GeneralPath wildernessLevelLinesPath = plugin.getWildernessLevelLinesPathToDisplay()[client.getPlane()];
+		GeneralPath wildernessTeleportLinesPath = plugin.getWildernessTeleportLinesPathToDisplay()[client.getPlane()];
 
 		if (config.multicombatZoneVisibility() != ZoneVisibility.HIDE && multicombatPath != null)
 		{
@@ -132,19 +133,11 @@ public class MultiIndicatorsOverlay extends Overlay
 		{
 			renderPath(graphics, wildernessLevelLinesPath, getTransparentColorVersion(config.wildernessLevelLinesColor()));
 		}
+		if (config.showWildernessTeleportLines() && wildernessTeleportLinesPath != null)
+		{
+			renderPath(graphics, wildernessTeleportLinesPath, getTransparentColorVersion(config.wildernessTeleportLinesColor()));
+		}
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }

@@ -33,8 +33,8 @@ import net.runelite.api.FriendsChatMember;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
+import net.runelite.api.ItemComposition;
 import net.runelite.api.ItemContainer;
-import net.runelite.api.ItemDefinition;
 import net.runelite.api.Player;
 import net.runelite.api.SkullIcon;
 import net.runelite.api.Varbits;
@@ -52,8 +52,6 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.friendschat.FriendsChatPlugin;
 import static net.runelite.client.plugins.pvptools.PvpToolsPanel.htmlLabel;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
@@ -71,8 +69,7 @@ import org.pf4j.Extension;
 	name = "PvP Tools",
 	enabledByDefault = false,
 	description = "Enable the PvP Tools panel",
-	tags = {"panel", "pvp", "pk", "pklite", "renderself"},
-	type = PluginType.PVP
+	tags = {"panel", "pvp", "pk", "pklite", "renderself"}
 )
 public class PvpToolsPlugin extends Plugin
 {
@@ -102,6 +99,8 @@ public class PvpToolsPlugin extends Plugin
 	private ItemManager itemManager;
 
 	private final PvpToolsPlugin uhPvpToolsPlugin = this;
+
+	private static final CopyOnWriteArrayList<Player> clanMembers = new CopyOnWriteArrayList<>();
 
 	/**
 	 * ActionListener for the missing cc members and refresh buttons
@@ -168,7 +167,7 @@ public class PvpToolsPlugin extends Plugin
 
 	private List<String> getMissingMembers()
 	{
-		CopyOnWriteArrayList<Player> ccMembers = FriendsChatPlugin.getClanMembers();
+		CopyOnWriteArrayList<Player> ccMembers = clanMembers;
 		ArrayList<String> missingMembers = new ArrayList<>();
 		if (this.client.getFriendsChatManager() != null)
 		{
@@ -190,7 +189,7 @@ public class PvpToolsPlugin extends Plugin
 
 	private List<String> getCurrentMembers()
 	{
-		CopyOnWriteArrayList<Player> ccMembers = FriendsChatPlugin.getClanMembers();
+		CopyOnWriteArrayList<Player> ccMembers = clanMembers;
 		ArrayList<String> currentMembers = new ArrayList<>();
 		if (this.client.getFriendsChatManager() != null)
 		{
@@ -337,12 +336,6 @@ public class PvpToolsPlugin extends Plugin
 			case "hideCastMode":
 			case "hideCastIgnored":
 				setCastOptions();
-				break;
-			case "mirrorMode":
-				playerCountOverlay.determineLayer();
-				overlayManager.remove(playerCountOverlay);
-				overlayManager.add(playerCountOverlay);
-			default:
 				break;
 		}
 	}
@@ -503,7 +496,7 @@ public class PvpToolsPlugin extends Plugin
 		for (Item i : items)
 		{
 			int value = (itemManager.getItemPrice(i.getId()) * i.getQuantity());
-			final ItemDefinition itemComposition = itemManager.getItemDefinition(i.getId());
+			final ItemComposition itemComposition = itemManager.getItemComposition(i.getId());
 
 			if (!itemComposition.isTradeable() && value == 0)
 			{
@@ -551,7 +544,7 @@ public class PvpToolsPlugin extends Plugin
 			{
 				if (!descendingMap.isEmpty())
 				{
-					itemManager.getItemDefinition(priceMap.descendingMap().pollFirstEntry().getValue().getId())
+					itemManager.getItemComposition(priceMap.descendingMap().pollFirstEntry().getValue().getId())
 						.getName();
 				}
 			}

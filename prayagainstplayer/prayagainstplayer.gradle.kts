@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.11"
+version = "5.0.1"
 
 project.extra["PluginName"] = "Pray Against Player"
 project.extra["PluginDescription"] = "Use plugin in PvP situations for best results"

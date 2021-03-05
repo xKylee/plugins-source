@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.NPC;
-import net.runelite.api.NPCDefinition;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.ObjectID;
 import net.runelite.api.Perspective;
@@ -56,7 +56,7 @@ public class MinimapOverlay extends Overlay
 		this.config = config;
 		this.plugin = plugin;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_WIDGETS);
 	}
 
 	@Override
@@ -100,8 +100,8 @@ public class MinimapOverlay extends Overlay
 
 	private void renderNpcMinimapOverlay(Graphics2D graphics, NPC actor, String name, Color color)
 	{
-		NPCDefinition npcDefinition = actor.getTransformedDefinition();
-		if (npcDefinition == null || !npcDefinition.isFollower())
+		NPCComposition npcComposition = actor.getComposition();
+		if (npcComposition == null || !npcComposition.isFollower())
 		{
 			return;
 		}
@@ -214,18 +214,6 @@ public class MinimapOverlay extends Overlay
 				}
 			}
 
-		}
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_WIDGETS);
 		}
 	}
 }

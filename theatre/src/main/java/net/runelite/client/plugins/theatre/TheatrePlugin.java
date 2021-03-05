@@ -2,6 +2,7 @@
  * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
  * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
  * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
+ * Extra contributors: terrabl#0001, nicole#1111
  */
 
 package net.runelite.client.plugins.theatre;
@@ -20,7 +21,7 @@ import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.NpcDefinitionChanged;
+import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
@@ -30,7 +31,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.theatre.Bloat.Bloat;
 import net.runelite.client.plugins.theatre.Maiden.Maiden;
 import net.runelite.client.plugins.theatre.Nylocas.Nylocas;
@@ -45,8 +45,7 @@ import org.pf4j.Extension;
 	name = "Theatre of Blood",
 	description = "All-in-one plugin for Theatre of Blood",
 	tags = {"ToB", "Theatre", "raids", "bloat", "verzik", "nylo", "xarpus", "sotetseg", "maiden"},
-	enabledByDefault = false,
-	type = PluginType.PVM
+	enabledByDefault = false
 )
 
 @Slf4j
@@ -71,6 +70,14 @@ public class TheatrePlugin extends Plugin
 
 	@Inject
 	private Verzik verzik;
+
+	public static final Integer MAIDEN_REGION = 12869;
+	public static final Integer BLOAT_REGION = 13125;
+	public static final Integer NYLOCAS_REGION = 13122;
+	public static final Integer SOTETSEG_REGION_OVERWORLD = 13123;
+	public static final Integer SOTETSEG_REGION_UNDERWORLD = 13379;
+	public static final Integer XARPUS_REGION = 12612;
+	public static final Integer VERZIK_REGION = 12611;
 
 	private Room[] rooms = null;
 
@@ -137,9 +144,9 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onNpcDefinitionChanged(NpcDefinitionChanged npcDefinitionChanged)
+	public void onNpcChanged(NpcChanged npcChanged)
 	{
-		nylocas.onNpcDefinitionChanged(npcDefinitionChanged);
+		nylocas.onNpcChanged(npcChanged);
 	}
 
 	@Subscribe
@@ -170,6 +177,7 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
+		bloat.onGameStateChanged(gameStateChanged);
 		nylocas.onGameStateChanged(gameStateChanged);
 		xarpus.onGameStateChanged(gameStateChanged);
 	}
@@ -178,6 +186,7 @@ public class TheatrePlugin extends Plugin
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
 		nylocas.onMenuEntryAdded(entry);
+		verzik.onMenuEntryAdded(entry);
 	}
 
 	@Subscribe
@@ -201,11 +210,7 @@ public class TheatrePlugin extends Plugin
 		}
 
 		nylocas.onConfigChanged(change);
-		bloat.onConfigChanged(change);
-		maiden.onConfigChanged(change);
-		sotetseg.onConfigChanged(change);
 		verzik.onConfigChanged(change);
-		xarpus.onConfigChanged(change);
 	}
 
 	@Subscribe

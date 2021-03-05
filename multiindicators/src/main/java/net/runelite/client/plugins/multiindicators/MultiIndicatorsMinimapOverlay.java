@@ -63,7 +63,7 @@ public class MultiIndicatorsMinimapOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		setPriority(OverlayPriority.LOW);
 	}
 
@@ -135,6 +135,7 @@ public class MultiIndicatorsMinimapOverlay extends Overlay
 		final GeneralPath multicombatPath = plugin.getMulticombatPathToDisplay()[client.getPlane()];
 		final GeneralPath pvpPath = plugin.getPvpPathToDisplay()[client.getPlane()];
 		final GeneralPath wildernessLevelLinesPath = plugin.getWildernessLevelLinesPathToDisplay()[client.getPlane()];
+		final GeneralPath wildernessTeleportLinesPath = plugin.getWildernessTeleportLinesPathToDisplay()[client.getPlane()];
 
 		if (config.multicombatZoneVisibility() != ZoneVisibility.HIDE && multicombatPath != null)
 		{
@@ -148,19 +149,11 @@ public class MultiIndicatorsMinimapOverlay extends Overlay
 		{
 			renderPath(graphics, wildernessLevelLinesPath, getTransparentColorVersion(config.wildernessLevelLinesColor()));
 		}
+		if (config.showWildernessTeleportLines() && wildernessTeleportLinesPath != null)
+		{
+			renderPath(graphics, wildernessTeleportLinesPath, getTransparentColorVersion(config.wildernessTeleportLinesColor()));
+		}
 
 		return null;
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ALWAYS_ON_TOP);
-		}
 	}
 }

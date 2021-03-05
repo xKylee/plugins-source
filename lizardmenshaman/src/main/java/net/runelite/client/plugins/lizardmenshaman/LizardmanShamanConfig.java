@@ -30,7 +30,7 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("lizardmanshaman")
 public interface LizardmanShamanConfig extends Config
@@ -51,33 +51,19 @@ public interface LizardmanShamanConfig extends Config
 		}
 	}
 
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
-
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "features",
 		name = "Features",
 		description = "Enable or disable plugin features.",
 		position = 0
 	)
-	default boolean features()
-	{
-		return true;
-	}
+	String features = "Features";
 
 	@ConfigItem(
 		keyName = "spawnOverlay",
 		name = "Spawn Overlay",
 		description = "Show an overlay for Spawn's explosion tiles.",
-		titleSection = "features",
+		section = features,
 		position = 1
 	)
 	default SpawnOverlayConfig showSpawnOverlay()
@@ -85,23 +71,20 @@ public interface LizardmanShamanConfig extends Config
 		return SpawnOverlayConfig.ALWAYS;
 	}
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "colors",
 		name = "Colors",
 		description = "Customize overlay colors.",
 		position = 1
 	)
-	default boolean colors()
-	{
-		return false;
-	}
+	String colors = "Colors";
 
 	@Alpha
 	@ConfigItem(
 		keyName = "explosionBorderColor",
 		name = "Explosion Border",
 		description = "Spawn explosion tiles overlay border.",
-		titleSection = "colors",
+		section = colors,
 		position = 1
 	)
 	default Color explosionBorderColor()
@@ -114,7 +97,7 @@ public interface LizardmanShamanConfig extends Config
 		keyName = "explosionFillColor",
 		name = "Explosion Fill",
 		description = "Spawn explosion tiles overlay fill.",
-		titleSection = "colors",
+		section = colors,
 		position = 2
 	)
 	default Color explosionFillColor()
@@ -127,7 +110,7 @@ public interface LizardmanShamanConfig extends Config
 		keyName = "spawnWalkableBorderColor",
 		name = "Walkable Border",
 		description = "Spawn walkable tiles overlay border.",
-		titleSection = "colors",
+		section = colors,
 		position = 3
 	)
 	default Color spawnWalkableBorderColor()
@@ -140,7 +123,7 @@ public interface LizardmanShamanConfig extends Config
 		keyName = "spawnWalkableFillColor",
 		name = "Walkable Fill",
 		description = "Spawn walkable tiles overlay fill.",
-		titleSection = "colors",
+		section = colors,
 		position = 4
 	)
 	default Color spawnWalkableFillColor()

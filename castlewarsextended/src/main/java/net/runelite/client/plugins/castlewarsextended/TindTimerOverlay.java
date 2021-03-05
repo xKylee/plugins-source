@@ -56,7 +56,7 @@ public class TindTimerOverlay extends Overlay
 		this.config = config;
 		this.client = client;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
@@ -135,17 +135,5 @@ public class TindTimerOverlay extends Overlay
 		pie.setPosition(loc);
 		pie.setProgress(1);
 		pie.render(graphics);
-	}
-
-	public void determineLayer()
-	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
 	}
 }

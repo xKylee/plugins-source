@@ -32,9 +32,8 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigTitleSection;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.Title;
 import net.runelite.client.config.Units;
 
 @ConfigGroup("hallowedsepulchre")
@@ -43,56 +42,36 @@ public interface HallowedSepulchreConfig extends Config
 	Color RED_OPAQUE = new Color(255, 0, 0, 255);
 	Color RED_TRANSPARENT = new Color(255, 0, 0, 20);
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "overlays",
 		position = 0,
 		name = "Overlays",
 		description = ""
 	)
-	default Title overlay()
-	{
-		return new Title();
-	}
+	String overlays = "Overlays";
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "colors",
 		name = "Colors",
 		description = "Customize overlay colors.",
 		position = 1
 	)
-	default boolean colors()
-	{
-		return false;
-	}
+	String colors = "Colors";
 
-	@ConfigTitleSection(
+	@ConfigSection(
 		keyName = "other",
 		name = "Other",
 		description = "Other settings.",
 		position = 2
 	)
-	default boolean other()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		name = "Mirror Mode Compatibility?",
-		keyName = "mirrorMode",
-		description = "Should we show the overlay on Mirror Mode?",
-		position = 0
-	)
-	default boolean mirrorMode()
-	{
-		return false;
-	}
+	String other = "Other";
 
 	@ConfigItem(
 		position = 0,
 		keyName = "highlightArrows",
 		name = "Highlight arrows",
 		description = "Overlay arrows with a colored outline.",
-		titleSection = "overlays"
+		section = overlays
 	)
 	default HighlightMode highlightArrows()
 	{
@@ -104,7 +83,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "highlightSwords",
 		name = "Highlight swords",
 		description = "Overlay swords with a colored outline.",
-		titleSection = "overlays"
+		section = overlays
 	)
 	default HighlightMode highlightSwords()
 	{
@@ -116,7 +95,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "highlightCrossbowmanStatue",
 		name = "Crossbow statue animation",
 		description = "Overlay shooting statues with a colored outline.",
-		titleSection = "overlays"
+		section = overlays
 	)
 	default boolean highlightCrossbowStatues()
 	{
@@ -128,7 +107,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "highlightWizardStatue",
 		name = "Wizard statue tick counter",
 		description = "Overlay wizard statues with a tick counter.",
-		titleSection = "overlays"
+		section = overlays
 	)
 	default boolean highlightWizardStatues()
 	{
@@ -140,7 +119,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "highlightServerTile",
 		name = "Highlight server tile",
 		description = "Highlight the tile the player is on, according to the server.",
-		titleSection = "overlays"
+		section = overlays
 	)
 	default boolean highlightServerTile()
 	{
@@ -152,7 +131,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "renderDistance",
 		name = "Render distance",
 		description = "How far to render overlays from your player's position.",
-		titleSection = "overlays"
+		section = overlays
 	)
 	default RenderDistance renderDistance()
 	{
@@ -165,7 +144,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "arrowsOutlineColor",
 		name = "Arrows outline",
 		description = "Change the overlay outline color of arrows.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color arrowsOutlineColor()
 	{
@@ -178,7 +157,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "arrowsFillColor",
 		name = "Arrows fill",
 		description = "Change the overlay fill color of arrows.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color arrowsFillColor()
 	{
@@ -191,7 +170,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "swordsOutlineColor",
 		name = "Swords outline",
 		description = "Change the overlay outline color of swords.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color swordsOutlineColor()
 	{
@@ -204,7 +183,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "swordsFillColor",
 		name = "Swords fill",
 		description = "Change the overlay fill color of swords.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color swordsFillColor()
 	{
@@ -217,7 +196,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "crossbowStatueOutlineColor",
 		name = "Crossbow outline",
 		description = "Change the overlay outline color of the crossbow statues.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color crossbowStatueOutlineColor()
 	{
@@ -230,7 +209,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "crossbowStatueFillColor",
 		name = "Crossbow fill",
 		description = "Change the overlay fill color of the crossbow statues.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color crossbowStatueFillColor()
 	{
@@ -243,7 +222,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "serverTileOutlineColor",
 		name = "Server tile outline",
 		description = "Change the overlay outline color of the player's server tile.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color serverTileOutlineColor()
 	{
@@ -256,7 +235,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "serverTileFillColor",
 		name = "Server tile  fill",
 		description = "Change the overlay fill color of the player's server tile.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color serverTileFillColor()
 	{
@@ -268,7 +247,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "wizardStatueTickCounterColor",
 		name = "Tick counter",
 		description = "Change the overlay color of the wizard statue tick counter.",
-		titleSection = "colors"
+		section = colors
 	)
 	default Color wizardStatueTickCounterColor()
 	{
@@ -284,7 +263,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "wizardFontSize",
 		name = "Tick counter font size",
 		description = "Adjust the font size of the wizard statue tick counter.",
-		titleSection = "other"
+		section = other
 	)
 	@Units(Units.POINTS)
 	default int wizardFontSize()
@@ -297,7 +276,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "fontStyle",
 		name = "Font style",
 		description = "Bold/Italics/Plain",
-		titleSection = "other"
+		section = other
 
 	)
 	default FontStyle fontStyle()
@@ -310,7 +289,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "wizardFontShadow",
 		name = "Tick counter font shadow",
 		description = "Toggle font shadow of the wizard statue tick counter.",
-		titleSection = "other"
+		section = other
 	)
 	default boolean wizardFontShadow()
 	{
@@ -326,7 +305,7 @@ public interface HallowedSepulchreConfig extends Config
 		keyName = "tileOutlineWidth",
 		name = "Tile outline width",
 		description = "Change width of tile outlines.",
-		titleSection = "other"
+		section = other
 	)
 	@Units(Units.POINTS)
 	default int tileOutlineWidth()

@@ -24,6 +24,7 @@
  */
 package net.runelite.client.plugins.demonicgorilla;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -42,7 +43,6 @@ import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
 
 @Singleton
 public class DemonicGorillaOverlay extends Overlay
@@ -55,19 +55,17 @@ public class DemonicGorillaOverlay extends Overlay
 
 	private final Client client;
 	private final DemonicGorillaPlugin plugin;
-	private final DemonicGorillaConfig config;
 
 	@Inject
 	private SkillIconManager iconManager;
 
 	@Inject
-	public DemonicGorillaOverlay(final Client client, final DemonicGorillaPlugin plugin, final DemonicGorillaConfig config)
+	public DemonicGorillaOverlay(final Client client, final DemonicGorillaPlugin plugin)
 	{
 		this.client = client;
 		this.plugin = plugin;
-		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		determineLayer();
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	private BufferedImage getIcon(DemonicGorilla.AttackStyle attackStyle)
@@ -120,7 +118,7 @@ public class DemonicGorillaOverlay extends Overlay
 					int currentPosX = 0;
 					for (BufferedImage icon : icons)
 					{
-						OverlayUtil.setProgressIcon(graphics, point, icon, totalWidth, bgPadding, currentPosX,
+						setProgressIcon(graphics, point, icon, totalWidth, bgPadding, currentPosX,
 							COLOR_ICON_BACKGROUND, OVERLAY_ICON_DISTANCE, COLOR_ICON_BORDER, COLOR_ICON_BORDER_FILL);
 						Arc2D.Double arc = new Arc2D.Double(
 							point.getX() - totalWidth / 2 + currentPosX - bgPadding,
@@ -141,15 +139,29 @@ public class DemonicGorillaOverlay extends Overlay
 		return null;
 	}
 
-	public void determineLayer()
+	public static void setProgressIcon(Graphics2D graphics, Point point, BufferedImage currentPhaseIcon, int totalWidth, int bgPadding, int currentPosX, Color colorIconBackground, int overlayIconDistance, Color colorIconBorder, Color colorIconBorderFill)
 	{
-		if (config.mirrorMode())
-		{
-			setLayer(OverlayLayer.AFTER_MIRROR);
-		}
-		if (!config.mirrorMode())
-		{
-			setLayer(OverlayLayer.ABOVE_SCENE);
-		}
+		graphics.setStroke(new BasicStroke(2));
+		graphics.setColor(colorIconBackground);
+		graphics.fillOval(
+			point.getX() - totalWidth / 2 + currentPosX - bgPadding,
+			point.getY() - currentPhaseIcon.getHeight() / 2 - overlayIconDistance - bgPadding,
+			currentPhaseIcon.getWidth() + bgPadding * 2,
+			currentPhaseIcon.getHeight() + bgPadding * 2);
+
+		graphics.setColor(colorIconBorder);
+		graphics.drawOval(
+			point.getX() - totalWidth / 2 + currentPosX - bgPadding,
+			point.getY() - currentPhaseIcon.getHeight() / 2 - overlayIconDistance - bgPadding,
+			currentPhaseIcon.getWidth() + bgPadding * 2,
+			currentPhaseIcon.getHeight() + bgPadding * 2);
+
+		graphics.drawImage(
+			currentPhaseIcon,
+			point.getX() - totalWidth / 2 + currentPosX,
+			point.getY() - currentPhaseIcon.getHeight() / 2 - overlayIconDistance,
+			null);
+
+		graphics.setColor(colorIconBorderFill);
 	}
 }
