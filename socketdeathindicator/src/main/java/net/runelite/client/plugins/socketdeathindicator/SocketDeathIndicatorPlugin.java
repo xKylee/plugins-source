@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.Hitsplat.HitsplatType;
@@ -65,7 +64,6 @@ import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
-@Slf4j
 @Extension
 @PluginDescriptor(
 		name = "Socket Death Indicators",
@@ -388,7 +386,6 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				newHiddenNpcIndicesList.remove((Integer) npc.getIndex());
 			}
 		}
-		log.info(newHiddenNpcIndicesList.toString());
 		client.setHiddenNpcIndices(newHiddenNpcIndicesList);
 
 	}

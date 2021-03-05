@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "5.0.0"
 
-project.extra["PluginName"] = "Socket Death Indicator"
-project.extra["PluginDescription"] = "Socket extension for extending removing dead nylocas during Theatre"
+project.extra["PluginName"] = "Entity Hider Extended"
+project.extra["PluginDescription"] = "Hide players, NPCs, and/or projectiles"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
@@ -36,8 +36,6 @@ dependencies {
 
     compileOnly("com.openosrs:runelite-api:$rlVersion")
     compileOnly("com.openosrs:runelite-client:$rlVersion")
-
-    compileOnly(project(":socket"))
 
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
@@ -51,7 +49,6 @@ tasks {
                     "Plugin-Version" to project.version,
                     "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
                     "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Dependencies" to nameToId("socket"),
                     "Plugin-Description" to project.extra["PluginDescription"],
                     "Plugin-License" to project.extra["PluginLicense"]
             ))
