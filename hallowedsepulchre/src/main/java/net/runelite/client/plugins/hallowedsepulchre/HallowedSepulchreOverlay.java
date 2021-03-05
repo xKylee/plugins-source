@@ -170,7 +170,7 @@ public class HallowedSepulchreOverlay extends Overlay
 				continue;
 			}
 
-			final DynamicObject dynamicObject = (DynamicObject) gameObject.getModel();
+			final DynamicObject dynamicObject = (DynamicObject) gameObject.getRenderable();
 
 			if (dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_DEFAULT || dynamicObject.getAnimationID() == CROSSBOW_STATUE_ANIM_FINAL)
 			{
