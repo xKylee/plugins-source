@@ -487,7 +487,10 @@ public class SotetsegPlugin extends Plugin
 		if (client.getWidget(28, 1) != null)
 		{
 			Widget[] widgetsOfSotetseg = client.getWidget(28, 1).getChildren();
-			hideWidget(client.getWidget(28, 1), true);
+			if (config.hideScreenFlash())
+			{
+				hideWidget(client.getWidget(28, 1), true);
+			}
 
 			for (Widget widget : widgetsOfSotetseg)
 			{
