@@ -28,6 +28,7 @@ package net.runelite.client.plugins.socketsotetseg;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
@@ -130,6 +131,20 @@ public class SotetsegOverlay extends Overlay
 				graphics.setColor(originalColor);
 
 				if (++flashTimeout >= 15)
+				{
+					flashTimeout = 0;
+					plugin.setFlashScreen(false);
+				}
+			}
+			if (plugin.isFlashScreen() && config.isChosenText())
+			{
+				String text = config.customChosenText();
+				graphics.setFont(new Font("Arial", Font.BOLD, 24));
+				int width = graphics.getFontMetrics().stringWidth(text);
+				int drawX = this.client.getViewportWidth() / 2 - width / 2;
+				int drawY = this.client.getViewportHeight() - this.client.getViewportHeight() / 2 - 12;
+				OverlayUtil.renderTextLocation(graphics, new net.runelite.api.Point(drawX, drawY), text, Color.WHITE);
+				if (++flashTimeout >= config.chosenTextDuration())
 				{
 					flashTimeout = 0;
 					plugin.setFlashScreen(false);
