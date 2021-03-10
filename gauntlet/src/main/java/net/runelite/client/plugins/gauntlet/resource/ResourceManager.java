@@ -25,9 +25,8 @@
 
 package net.runelite.client.plugins.gauntlet.resource;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -35,7 +34,6 @@ import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.api.util.Text;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.gauntlet.GauntletConfig;
 import net.runelite.client.plugins.gauntlet.GauntletConfig.ResourceFilter;
@@ -67,10 +65,7 @@ public class ResourceManager
 	@Inject
 	private InfoBoxManager infoBoxManager;
 
-	@Inject
-	private EventBus eventBus;
-
-	private final Set<Resource> resources = new HashSet<>();
+	private final Map<Resource, ResourceCounter> resources = new HashMap();
 
 	private Region region = Region.UNKNOWN;
 
@@ -89,11 +84,6 @@ public class ResourceManager
 		region = Region.UNKNOWN;
 
 		resources.clear();
-
-		infoBoxManager.getInfoBoxes()
-			.stream()
-			.filter(ResourceCounter.class::isInstance)
-			.forEach(eventBus::unregister);
 
 		infoBoxManager.removeIf(ResourceCounter.class::isInstance);
 	}
@@ -138,7 +128,7 @@ public class ResourceManager
 		final Resource resource = Resource.fromName(itemName, region == Region.CORRUPTED);
 
 		if (resource == null ||
-			(config.resourceTracker() == ResourceFilter.CUSTOM && !resources.contains(resource)) ||
+			(config.resourceTracker() == ResourceFilter.CUSTOM && !resources.containsKey(resource)) ||
 			(config.resourceTracker() == ResourceFilter.BASIC && isNonBasicResource(resource)))
 		{
 			return;
@@ -161,7 +151,7 @@ public class ResourceManager
 
 		final Resource resource = mapping.keySet().iterator().next();
 
-		if (config.resourceTracker() == ResourceFilter.CUSTOM && !resources.contains(resource))
+		if (config.resourceTracker() == ResourceFilter.CUSTOM && !resources.containsKey(resource))
 		{
 			return;
 		}
@@ -173,17 +163,31 @@ public class ResourceManager
 
 	private void processResource(final Resource resource, final int itemCount)
 	{
-		if (resources.add(resource))
+		if (!resources.containsKey(resource))
 		{
-			final ResourceCounter counter = new ResourceCounter(plugin, resource,
-				itemManager.getImage(resource.getItemId()), itemCount);
-
-			infoBoxManager.addInfoBox(counter);
+			initResource(resource, itemCount);
 		}
 		else
 		{
-			final boolean decrement = config.resourceTracker() == ResourceFilter.CUSTOM;
+			ResourceCounter counter = resources.get(resource);
+			if (config.resourceTracker() == ResourceFilter.CUSTOM)
+			{
+				counter.decrementCount(itemCount);
+			}
+			else
+			{
+				counter.incrementCount(itemCount);
+			}
 		}
+	}
+
+	private void initResource(final Resource resource, final int itemCount)
+	{
+		final ResourceCounter counter = new ResourceCounter(plugin, resource,
+			itemManager.getImage(resource.getItemId()), itemCount);
+
+		resources.put(resource, counter);
+		infoBoxManager.addInfoBox(counter);
 	}
 
 	private void createCustomCounters()
@@ -208,43 +212,43 @@ public class ResourceManager
 
 		if (ore > 0)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_ORE : Resource.CRYSTAL_ORE, ore);
+			initResource(corrupted ? Resource.CORRUPTED_ORE : Resource.CRYSTAL_ORE, ore);
 		}
 		if (bark > 0)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_PHREN_BARK : Resource.PHREN_BARK, bark);
+			initResource(corrupted ? Resource.CORRUPTED_PHREN_BARK : Resource.PHREN_BARK, bark);
 		}
 		if (tirinum > 0)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_LINUM_TIRINUM : Resource.LINUM_TIRINUM, tirinum);
+			initResource(corrupted ? Resource.CORRUPTED_LINUM_TIRINUM : Resource.LINUM_TIRINUM, tirinum);
 		}
 		if (grym > 0)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_GRYM_LEAF : Resource.GRYM_LEAF, grym);
+			initResource(corrupted ? Resource.CORRUPTED_GRYM_LEAF : Resource.GRYM_LEAF, grym);
 		}
 		if (frame > 0)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_WEAPON_FRAME : Resource.WEAPON_FRAME, frame);
+			initResource(corrupted ? Resource.CORRUPTED_WEAPON_FRAME : Resource.WEAPON_FRAME, frame);
 		}
 		if (fish > 0)
 		{
-			processResource(Resource.RAW_PADDLEFISH, fish);
+			initResource(Resource.RAW_PADDLEFISH, fish);
 		}
 		if (shard > 0)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_SHARDS : Resource.CRYSTAL_SHARDS, shard);
+			initResource(corrupted ? Resource.CORRUPTED_SHARDS : Resource.CRYSTAL_SHARDS, shard);
 		}
 		if (bowstring)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_BOWSTRING : Resource.CRYSTALLINE_BOWSTRING, 1);
+			initResource(corrupted ? Resource.CORRUPTED_BOWSTRING : Resource.CRYSTALLINE_BOWSTRING, 1);
 		}
 		if (spike)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_SPIKE : Resource.CRYSTAL_SPIKE, 1);
+			initResource(corrupted ? Resource.CORRUPTED_SPIKE : Resource.CRYSTAL_SPIKE, 1);
 		}
 		if (orb)
 		{
-			processResource(corrupted ? Resource.CORRUPTED_ORB : Resource.CRYSTAL_ORB, 1);
+			initResource(corrupted ? Resource.CORRUPTED_ORB : Resource.CRYSTAL_ORB, 1);
 		}
 	}
 

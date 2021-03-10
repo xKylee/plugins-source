@@ -53,15 +53,16 @@ class ResourceCounter extends Counter
 		return text;
 	}
 
-	void onResourceEvent(final ResourceEvent event)
+	public void incrementCount(int count)
 	{
-		if (resource != event.getResource())
-		{
-			return;
-		}
+		this.count += Math.max(0, count);
+		this.text = String.valueOf(this.count);
+	}
 
-		count = Math.max(0, count + event.getCount());
-		text = String.valueOf(count);
+	public void decrementCount(int count)
+	{
+		this.count -= Math.max(0, count);
+		this.text = String.valueOf(this.count);
 	}
 
 	private static InfoBoxPriority getPriority(final Resource resource)
