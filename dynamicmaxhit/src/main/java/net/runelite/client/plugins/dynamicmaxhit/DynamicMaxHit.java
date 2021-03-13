@@ -48,8 +48,8 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicChanged;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.PlayerDespawned;
-import net.runelite.api.events.PlayerMenuOptionClicked;
 import net.runelite.api.events.PlayerSpawned;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
@@ -155,7 +155,7 @@ public class DynamicMaxHit extends Plugin
 	}
 
 	@Subscribe
-	private void onPlayerMenuOptionClicked(PlayerMenuOptionClicked event)
+	private void onMenuOptionClicked(MenuOptionClicked event)
 	{
 		if (event.getMenuOption().equals(CALC))
 		{

@@ -25,35 +25,34 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "5.0.0"
 
-project.extra["PluginName"] = "Dynamic Max Hit"
-project.extra["PluginDescription"] = "Dynamic Max Hit Calculations"
+project.extra["PluginName"] = "Better Equipment Inspector"
+project.extra["PluginDescription"] = "Inspect other players their gear"
 
 dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+	annotationProcessor(Libraries.lombok)
+	annotationProcessor(Libraries.pf4j)
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
-    compileOnly("com.openosrs:http-api:$rlVersion")
+	compileOnly("com.openosrs:runelite-api:$rlVersion")
+	compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-    compileOnly(Libraries.okhttp3)
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
+	compileOnly(Libraries.guice)
+	compileOnly(Libraries.lombok)
+	compileOnly(Libraries.pf4j)
+	compileOnly(Libraries.apacheCommonsText)
 }
 
 tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	jar {
+		manifest {
+			attributes(mapOf(
+					"Plugin-Version" to project.version,
+					"Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+					"Plugin-Provider" to project.extra["PluginProvider"],
+					"Plugin-Description" to project.extra["PluginDescription"],
+					"Plugin-License" to project.extra["PluginLicense"]
+			))
+		}
+	}
 }

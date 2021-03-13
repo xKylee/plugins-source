@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2018, https://openosrs.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,36 +22,50 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.betterequipmentinspector;
 
-version = "5.0.1"
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Range;
 
-project.extra["PluginName"] = "Dynamic Max Hit"
-project.extra["PluginDescription"] = "Dynamic Max Hit Calculations"
+@ConfigGroup("betterequipmentinspector")
+public interface BetterEquipmentInspectorConfig extends Config
+{
+	@ConfigItem(
+		keyName = "ShowValue",
+		name = "Show the total value of the items",
+		description = "shows the total value of the items",
+		position = 1
+	)
+	default boolean showValue()
+	{
+		return true;
+	}
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+	@Range(
+		min = 0,
+		max = 4
+	)
+	@ConfigItem(
+		keyName = "protecteditems",
+		name = "Protected Items",
+		description = "Limited to 4",
+		position = 2
+	)
+	default int protectedItems()
+	{
+		return 1;
+	}
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
-    compileOnly("com.openosrs:http-api:$rlVersion")
-
-    compileOnly(Libraries.okhttp3)
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-}
-
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	@ConfigItem(
+		keyName = "ExactValue",
+		name = "Show exact value",
+		description = "shows the excact gp value",
+		position = 3
+	)
+	default boolean exactValue()
+	{
+		return false;
+	}
 }
