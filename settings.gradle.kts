@@ -27,7 +27,7 @@ rootProject.name = "xKylee Plugins"
 
 include(":alchemicalhydra")
 include(":aoewarnings")
-include(":bettergearinspector")
+include(":betterequipmentinspector")
 include(":blackjack")
 include(":castlewarsextended")
 include(":cerberus")
