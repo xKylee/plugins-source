@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.ItemComposition;
-import net.runelite.api.events.PlayerMenuOptionClicked;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.chat.ChatColorType;
@@ -127,7 +127,7 @@ public class BetterEquipmentInspectorPlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onPlayerMenuOptionClicked(PlayerMenuOptionClicked event)
+	private void onMenuOptionClicked(MenuOptionClicked event)
 	{
 		if (!event.getMenuOption().equals(INSPECT_EQUIPMENT))
 		{
