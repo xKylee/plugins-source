@@ -65,12 +65,23 @@ public interface EnvironmentAidConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 4,
-			keyName = "waterEffect",
-			name = "Underwater",
-			description = "Removes the on-screen water effect in when diving underwater"
+		position = 4,
+		keyName = "waterEffect",
+		name = "Remove Underwater",
+		description = "Removes the on-screen water effect in when diving underwater"
 	)
 	default boolean waterEffect()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 5,
+		keyName = "scryPool",
+		name = "Remove Scry Pool",
+		description = "Removes the on-screen Scry Pool effect"
+	)
+	default boolean scryPool()
 	{
 		return false;
 	}
