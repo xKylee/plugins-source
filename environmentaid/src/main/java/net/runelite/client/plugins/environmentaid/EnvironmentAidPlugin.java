@@ -151,7 +151,10 @@ public class EnvironmentAidPlugin extends Plugin
 		{
 			client.getWidget(170, 0).setHidden(config.waterEffect());
 		}
-
+		if (client.getWidget(404, 0) != null)
+		{
+			client.getWidget(404, 0).setHidden(config.scryPool());
+		}
 	}
 
 	private void onShutDown()
@@ -180,6 +183,11 @@ public class EnvironmentAidPlugin extends Plugin
 			client.getWidget(170, 0).setHidden(false);
 		}
 
+		if (client.getWidget(404, 0) != null)
+		{
+			client.getWidget(404, 0).setHidden(false);
+		}
+
 	}
 
 	@Subscribe
@@ -202,6 +210,10 @@ public class EnvironmentAidPlugin extends Plugin
 
 			if (client.getWidget(170, 0) != null)
 				client.getWidget(170, 0).setHidden(config.waterEffect());
+		}
+		if (client.getVarbitValue(4606) == 1 && client.getWidget(404, 0) != null)
+		{
+			client.getWidget(404, 0).setHidden(config.scryPool());
 		}
 	}
 
@@ -226,6 +238,11 @@ public class EnvironmentAidPlugin extends Plugin
 		}
 
 		if (config.waterEffect() && isInWaterRegion() && client.getWidget(170, 0) != null && event.getId() == client.getWidget(170, 0).getId())
+		{
+			hideWidget(event, true);
+		}
+
+		if (config.scryPool() && client.getVarbitValue(4606) == 1 && client.getWidget(404, 0) != null && event.getId() == client.getWidget(404, 0).getId())
 		{
 			hideWidget(event, true);
 		}
