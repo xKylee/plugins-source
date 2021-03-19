@@ -176,7 +176,7 @@ public class NylocasWave
 			.put(4, new String[]{"melee", "MAGE", "range"})
 			.put(5, new String[]{"mage", "melee", "RANGE"})
 			.put(6, new String[]{"MELEE", "range", "mage"})
-			.put(7, new String[]{"MELEE", "RANGE|mage", ""})
+			.put(7, new String[]{"melee", "RANGE|mage", ""})
 			.put(8, new String[]{"range", "melee", "MAGE"})
 			.put(9, new String[]{"mage", "", "RANGE|melee"})
 			.put(10, new String[]{"RANGE|range", "range|range", "range|range"})
