@@ -115,7 +115,7 @@ public class BlackjackPlugin extends Plugin
 				() -> state == State.KNOCKOUT && inPollnivneach
 			));
 			addedSwaps.add(mesPlugin.swapContains(
-				"Attack",
+				"attack",
 				(s) -> {
 					s = Text.standardize(s, true);
 					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
@@ -124,7 +124,7 @@ public class BlackjackPlugin extends Plugin
 				() -> state == State.PICKPOCKET && inPollnivneach
 			));
 			addedSwaps.add(mesPlugin.swapContains(
-				"Attack",
+				"attack",
 				(s) -> {
 					s = Text.standardize(s, true);
 					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
@@ -139,7 +139,7 @@ public class BlackjackPlugin extends Plugin
 	{
 		state = null;
 		addedSwaps.forEach(swap -> mesPlugin.remove("talk-to", swap));
-		addedSwaps.forEach(swap -> mesPlugin.remove("Attack", swap));
+		addedSwaps.forEach(swap -> mesPlugin.remove("attack", swap));
 		addedSwaps.clear();
 	}
 
@@ -171,7 +171,7 @@ public class BlackjackPlugin extends Plugin
 				() -> state == State.KNOCKOUT && inPollnivneach
 			));
 			addedSwaps.add(mesPlugin.swapContains(
-				"Attack",
+				"attack",
 				(s) -> {
 					s = Text.standardize(s, true);
 					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
@@ -180,7 +180,7 @@ public class BlackjackPlugin extends Plugin
 				() -> state == State.PICKPOCKET && inPollnivneach
 			));
 			addedSwaps.add(mesPlugin.swapContains(
-				"Attack",
+				"attack",
 				(s) -> {
 					s = Text.standardize(s, true);
 					return s.equalsIgnoreCase(BANDIT) || s.equalsIgnoreCase(MENAPHITE);
