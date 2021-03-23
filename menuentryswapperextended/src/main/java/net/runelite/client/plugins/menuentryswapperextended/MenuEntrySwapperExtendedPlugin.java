@@ -24,7 +24,6 @@
  */
 package net.runelite.client.plugins.menuentryswapperextended;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import java.util.ArrayList;
@@ -33,10 +32,6 @@ import java.util.function.Predicate;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import static net.runelite.api.ItemID.FIRE_TIARA;
-import static net.runelite.api.ItemID.MAX_CAPE;
-import static net.runelite.api.ItemID.RUNECRAFT_CAPE;
-import static net.runelite.api.ItemID.RUNECRAFT_CAPET;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.Player;
 import net.runelite.api.Varbits;
@@ -44,30 +39,27 @@ import net.runelite.api.WorldType;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.VarbitChanged;
-import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.input.KeyManager;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperPlugin;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.BurningAmuletMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.CombatBraceletMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.DigsitePendantMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.DuelingRingMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.GamesNecklaceMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.GloryMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.NecklaceOfPassageMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.RingOfWealthMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.SkillsNecklaceMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.XericsTalismanMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
 import net.runelite.client.plugins.pvptools.PvpToolsConfig;
 import net.runelite.client.plugins.pvptools.PvpToolsPlugin;
 import org.pf4j.Extension;
@@ -82,14 +74,6 @@ import org.pf4j.Extension;
 @PluginDependency(PvpToolsPlugin.class)
 public class MenuEntrySwapperExtendedPlugin extends Plugin
 {
-	private static final Object HOTKEY = new Object();
-	private static final Object HOTKEY_CHECK = new Object();
-
-	private static final Splitter NEWLINE_SPLITTER = Splitter
-		.on("\n")
-		.omitEmptyStrings()
-		.trimResults();
-
 	@Inject
 	private Client client;
 
@@ -106,12 +90,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private MenuManager menuManager;
 
 	@Inject
-	private KeyManager keyManager;
-
-	@Inject
-	private EventBus eventBus;
-
-	@Inject
 	private PvpToolsPlugin pvpTools;
 
 	@Inject
@@ -123,10 +101,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private boolean buildingMode;
 	private boolean inTobRaid = false;
 	private boolean inCoxRaid = false;
-
-	private static final int FIRE_ALTAR = 10315;
-	private static final int CWARS = 9776;
-	private static final int CRAFT_GUILD = 11571;
 
 	@Provides
 	MenuEntrySwapperExtendedConfig provideConfig(ConfigManager configManager)
@@ -148,7 +122,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Override
 	public void shutDown()
 	{
-		removeSwaps();
 		if (client.getGameState() == GameState.LOGGED_IN)
 		{
 			resetCastOptions();
@@ -163,7 +136,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			return;
 		}
 
-		removeSwaps();
 		loadSwaps();
 
 		switch (event.getKey())
@@ -197,7 +169,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		if (event.getGameState() == GameState.LOGGED_IN)
 		{
-			removeSwaps();
 			loadSwaps();
 		}
 	}
@@ -387,17 +358,5 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				client.setHideClanmateCastOptions(false);
 			}
 		});
-	}
-
-	private boolean checkFireAltarAccess()
-	{
-		if (client.getLocalPlayer() == null || client.getLocalPlayer().getPlayerComposition() == null)
-		{
-			return false;
-		}
-		return client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.HEAD) == FIRE_TIARA
-			|| client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPE
-			|| client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.CAPE) == RUNECRAFT_CAPET
-			|| client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.CAPE) == MAX_CAPE;
 	}
 }

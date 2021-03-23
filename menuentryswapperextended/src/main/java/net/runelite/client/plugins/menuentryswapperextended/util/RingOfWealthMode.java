@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019, Alan Baumgartner <https://github.com/alanbaumgartner>
+ * Copyright (c) 2018, https://openosrs.com
+ * Copyright (c) 2018, Kyle <https://github.com/kyleeld>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,19 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum GloryMode
+public enum RingOfWealthMode
 {
-	OFF("Off"),
-	EDGEVILLE("Edgeville"),
-	KARAMJA("Karamja"),
-	DRAYNOR_VILLAGE("Draynor Village"),
-	AL_KHARID("Al Kharid");
+	MISCELLANIA("Miscellania"),
+	GRAND_EXCHANGE("Grand Exchange"),
+	FALADOR("Falador"),
+	DONDAKAN("Dondakan");
 
 	private final String name;
 
-	GloryMode(String name)
+	RingOfWealthMode(String name)
 	{
 		this.name = name;
 	}

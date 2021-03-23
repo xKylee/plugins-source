@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019, Alan Baumgartner <https://github.com/alanbaumgartner>
+ * Copyright (c) 2018, https://openosrs.com
+ * Copyright (c) 2018, Kyle <https://github.com/kyleeld>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,20 +23,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum GamesNecklaceMode
+public enum CombatBraceletMode
 {
 	OFF("Off"),
-	BURTHORPE("Burthorpe"),
-	BARBARIAN_OUTPOST("Barbarian Outpost"),
-	CORPOREAL_BEAST("Corporeal Beast"),
-	TEARS_OF_GUTHIX("Tears of Guthix"),
-	WINTER("Wintertodt Camp");
+	WARRIORS_GUILD("Warriors' Guild"),
+	CHAMPIONS_GUILD("Champions' Guild"),
+	EDGEVILLE_MONASTERY("Edgeville Monastery"),
+	RANGING_GUILD("Ranging Guild");
 
 	private final String name;
 
-	GamesNecklaceMode(String name)
+	CombatBraceletMode(String name)
 	{
 		this.name = name;
 	}

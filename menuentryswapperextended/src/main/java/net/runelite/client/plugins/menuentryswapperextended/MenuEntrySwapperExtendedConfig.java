@@ -31,9 +31,17 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
-import net.runelite.client.config.Keybind;
-import net.runelite.client.plugins.menuentryswapperextended.util.*;
-import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.*;
+import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
 
 @ConfigGroup("menuentryswapperextended")
 public interface MenuEntrySwapperExtendedConfig extends Config
@@ -70,22 +78,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		keyName = "pvmSection"
 	)
 	String pvmSection = "PvM";
-
-	@ConfigSection(
-		name = "Miscellaneous Swapping",
-		description = "",
-		position = 1,
-		keyName = "miscellaneousSection"
-	)
-	String miscellaneousSection = "Miscellaneous Swapping";
-
-	@ConfigSection(
-		name = "Left Click Options",
-		description = "",
-		position = 1,
-		keyName = "leftClickSection"
-	)
-	String leftClickSection = "Left Click Options";
 
 	//------------------------------------------------------------//
 	// Skilling
@@ -491,53 +483,5 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default String hideCastIgnoredCoX()
 	{
 		return "cure other, energy transfer, heal other, vengeance other";
-	}
-
-	//------------------------------------------------------------//
-	// Miscellaneous menu swaps
-	//------------------------------------------------------------//
-
-	@ConfigItem(
-		keyName = "prioEntry",
-		name = "Prioritize Entry",
-		description = "This section is mainly for prioritizing entries. For example" +
-			"<br>ignoring attack on snakelings at zulrah." +
-			"<br>Example Syntax: walk here, snakeling" +
-			"<br>It's important to note that these will not take precedent over other swaps.",
-		position = 1,
-		section = miscellaneousSection,
-		parse = true,
-		clazz = PrioParse.class,
-		method = "parse"
-	)
-	default String prioEntry()
-	{
-		return "";
-	}
-
-	@ConfigItem(
-		keyName = "leftClickFollow",
-		name = "Left Click Follow",
-		description = "Left Click Follow people outside of the wilderness",
-		position = 0,
-		disabledBy  = "leftClickTrade",
-		section =  leftClickSection
-	)
-	default boolean leftClickFollow()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "leftClickTrade",
-		name = "Left Click Trade",
-		description = "Left Click trade people outside of the wilderness",
-		position = 1,
-		disabledBy  = "leftClickFollow",
-		section =  leftClickSection
-	)
-	default boolean leftClickTrade()
-	{
-		return false;
 	}
 }

@@ -23,18 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum DigsitePendantMode
+public enum BurningAmuletMode
 {
 	OFF("Off"),
-	DIGSITE("Digsite"),
-	FOSSIL_ISLAND("Fossil Island"),
-	LITHKREN("Lithkren Dungeon");
+	CHAOS_TEMPLE("Chaos Temple"),
+	BANDIT_CAMP("Bandit Camp"),
+	LAVA_MAZE("Lava Maze");
 
 	private final String name;
 
-	DigsitePendantMode(String name)
+	BurningAmuletMode(String name)
 	{
 		this.name = name;
 	}

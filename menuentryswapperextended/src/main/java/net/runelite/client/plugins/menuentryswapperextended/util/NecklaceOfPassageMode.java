@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019, Alan Baumgartner <https://github.com/alanbaumgartner>
+ * Copyright (c) 2018, https://openosrs.com
+ * Copyright (c) 2018, Kyle <https://github.com/kyleeld>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,18 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum DuelingRingMode
+public enum NecklaceOfPassageMode
 {
 	OFF("Off"),
-	DUEL_ARENA("Duel Arena"),
-	CASTLE_WARS("Castle Wars"),
-	FEROX_ENCLAVE("Ferox Enclave");
+	WIZARDS_TOWER("Wizards' Tower"),
+	THE_OUTPOST("The Outpost"),
+	EAGLES_EYRIE("Eagles' Eyrie");
 
 	private final String name;
 
-	DuelingRingMode(String name)
+	NecklaceOfPassageMode(String name)
 	{
 		this.name = name;
 	}

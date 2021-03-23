@@ -23,21 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum SkillsNecklaceMode
+public enum DigsitePendantMode
 {
 	OFF("Off"),
-	FISHING_GUILD("Fishing Guild"),
-	MINING_GUILD("Mining Guild"),
-	CRAFTING_GUILD("Crafting Guild"),
-	COOKING_GUILD("Cooking Guild"),
-	WOODCUTTING_GUILD("Woodcutting Guild"),
-	FARMING_GUILD("Farming Guild");
+	DIGSITE("Digsite"),
+	FOSSIL_ISLAND("Fossil Island"),
+	LITHKREN("Lithkren Dungeon");
 
 	private final String name;
 
-	SkillsNecklaceMode(String name)
+	DigsitePendantMode(String name)
 	{
 		this.name = name;
 	}

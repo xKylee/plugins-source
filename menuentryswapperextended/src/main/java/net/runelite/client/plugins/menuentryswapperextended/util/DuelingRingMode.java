@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2018, https://openosrs.com
- * Copyright (c) 2018, Kyle <https://github.com/kyleeld>
+ * Copyright (c) 2019, Alan Baumgartner <https://github.com/alanbaumgartner>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,19 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum XericsTalismanMode
+public enum DuelingRingMode
 {
-	XERICS_LOOKOUT("Xeric's Look-out"),
-	XERICS_GLADE("Xeric's Glade"),
-	XERICS_INFERNO("Xeric's Inferno"),
-	XERICS_HEART("Xeric's Heart"),
-	XERICS_HONOUR("Xeric's Honour");
+	OFF("Off"),
+	DUEL_ARENA("Duel Arena"),
+	CASTLE_WARS("Castle Wars"),
+	FEROX_ENCLAVE("Ferox Enclave");
 
 	private final String name;
 
-	XericsTalismanMode(String name)
+	DuelingRingMode(String name)
 	{
 		this.name = name;
 	}

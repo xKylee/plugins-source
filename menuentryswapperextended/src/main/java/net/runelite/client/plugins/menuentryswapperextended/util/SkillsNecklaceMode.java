@@ -23,18 +23,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-public enum BurningAmuletMode
+public enum SkillsNecklaceMode
 {
 	OFF("Off"),
-	CHAOS_TEMPLE("Chaos Temple"),
-	BANDIT_CAMP("Bandit Camp"),
-	LAVA_MAZE("Lava Maze");
+	FISHING_GUILD("Fishing Guild"),
+	MINING_GUILD("Mining Guild"),
+	CRAFTING_GUILD("Crafting Guild"),
+	COOKING_GUILD("Cooking Guild"),
+	WOODCUTTING_GUILD("Woodcutting Guild"),
+	FARMING_GUILD("Farming Guild");
 
 	private final String name;
 
-	BurningAmuletMode(String name)
+	SkillsNecklaceMode(String name)
 	{
 		this.name = name;
 	}

@@ -1,9 +1,7 @@
-package net.runelite.client.plugins.menuentryswapperextended.util.teleportmode;
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.runelite.client.menus.BaseComparableEntry;
-import static net.runelite.client.menus.ComparableEntries.newBaseComparableEntry;
 
 @Getter
 @AllArgsConstructor
