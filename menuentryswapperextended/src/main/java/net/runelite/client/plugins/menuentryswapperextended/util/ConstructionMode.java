@@ -1,41 +1,91 @@
 package net.runelite.client.plugins.menuentryswapperextended.util;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Getter
-@AllArgsConstructor
 public enum ConstructionMode
 {
-	ATTACK_STONE("Attack Stone",
-		newBaseComparableEntry("Remove", "Attack stone", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Stone space", -1, -1, true, true)),
+	// Didn't include expensive/marble/obsidian items because I doubt anyone is training construction that way
+	// and it's probably best so people don't one click yeet 3m gp on accident
+	ATTACK_STONE("Tables",
+			new String[]{"build", "remove"},
+			new String[]{"table", "table space", "clay attack stone", "limestone attack stone"}),
 	BENCH("Benches",
-		newBaseComparableEntry("Remove", "bench", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Seating space", -1, -1, true, true)),
+			new String[]{"build", "remove"},
+			new String[]{"bench", "seating space", "gnome bench", "teak garden bench", "wooden bench", "oak bench", "carved oak bench",
+					"Teak dining bench", "carved teak bench", "mahogany bench"}),
 	CHAIR("Chairs",
-		newBaseComparableEntry("Remove", "chair", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Chair space", -1, -1, true, true)),
-	DUNGEON("Dungeon Doors",
-		newBaseComparableEntry("Remove", "door", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Door space", -1, -1, true, true)),
+			new String[]{"build", "remove"},
+			new String[]{"chair", "chair space", "crude wooden chair", "wooden chair", "oak chair",
+					"rocking chair", "oak armchair", "teak armchair", "mahogany armchair"}),
+	DUNGEON("Dungeon doors",
+			new String[]{"build", "remove"},
+			new String[]{"door", "door space", "marble door", "oak door", "steel-plated door"}),
 	LARDER("Larders",
-		newBaseComparableEntry("Remove", "larder", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Larder space", -1, -1, true, true)),
-	MYTH_CAPE("Myth Cape",
-		newBaseComparableEntry("Remove", "cape", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Guild trophy space", -1, -1, true, true)),
+			new String[]{"build", "remove"},
+			new String[]{"larder", "larder space", "wooden larder", "oak larder", "teak larder"}),
+	MYTH_CAPE("Myth cape",
+			new String[]{"build", "remove"},
+			new String[]{"cape", "guild Trophy space", "mythical cape"}),
 	TABLE("Tables",
-		newBaseComparableEntry("Remove", "table", -1, -1, true, false),
-		newBaseComparableEntry("Build", "Table space", -1, -1, true, true));
+			new String[]{"build", "remove"},
+			new String[]{"table", "kitchen table", "oak kitchen table", "teak kitchen table", "table space", "teak table", "mahogany table",
+					"wood dining table", "oak dining table", "carved oak table", "teak dining table", "carved teak table", "opulent table"});
+
 
 	private final String name;
-	private final BaseComparableEntry build;
-	private final BaseComparableEntry remove;
+	private final String[] options;
+	private final String[] targets;
+
+	ConstructionMode(String name, String[] options, String[] targets)
+	{
+		this.name = name;
+		this.options = options;
+		this.targets = targets;
+	}
 
 	@Override
 	public String toString()
 	{
 		return name;
+	}
+
+	/**
+	 * Get array of strings relating to construction
+	 * @return String[] - returns an array of type String
+	 */
+	public String[] getOptions()
+	{
+		return options;
+	}
+
+	/**
+	 * Get array of strings of targets to build or remove
+	 * @return String[] - returns an array of type String
+	 */
+	public String[] getTargets()
+	{
+		return targets;
+	}
+
+	/**
+	 * Get a list of all targets
+	 * @return List of type String
+	 */
+	public List<String> getTargetList()
+	{
+		return Arrays.asList(targets);
+	}
+
+	/**
+	 * Get a list of all options
+	 * @return List of type String
+	 */
+	public List<String> getOptionsList()
+	{
+		return Arrays.asList(options);
 	}
 }
