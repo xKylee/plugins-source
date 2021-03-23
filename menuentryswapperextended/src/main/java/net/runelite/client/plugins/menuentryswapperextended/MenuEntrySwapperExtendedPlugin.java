@@ -28,13 +28,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Setter;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import static net.runelite.api.ItemID.FIRE_TIARA;
@@ -44,13 +40,9 @@ import static net.runelite.api.ItemID.RUNECRAFT_CAPET;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.Player;
 import net.runelite.api.Varbits;
-import static net.runelite.api.Varbits.IN_WILDERNESS;
 import net.runelite.api.WorldType;
-import net.runelite.api.events.ClientTick;
-import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOpened;
-import net.runelite.api.events.PlayerCompositionChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
@@ -78,7 +70,6 @@ import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.Sk
 import net.runelite.client.plugins.menuentryswapperextended.util.teleportmode.XericsTalismanMode;
 import net.runelite.client.plugins.pvptools.PvpToolsConfig;
 import net.runelite.client.plugins.pvptools.PvpToolsPlugin;
-import net.runelite.client.util.HotkeyListener;
 import org.pf4j.Extension;
 
 @Extension
@@ -93,8 +84,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 {
 	private static final Object HOTKEY = new Object();
 	private static final Object HOTKEY_CHECK = new Object();
-
-	private final Map<AbstractComparableEntry, AbstractComparableEntry> dePrioSwaps = new HashMap<>();
 
 	private static final Splitter NEWLINE_SPLITTER = Splitter
 		.on("\n")
@@ -134,30 +123,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private boolean buildingMode;
 	private boolean inTobRaid = false;
 	private boolean inCoxRaid = false;
-	private boolean stopHotkey = false;
-	@Setter(AccessLevel.PRIVATE)
-	private boolean hotkeyActive;
 
 	private static final int FIRE_ALTAR = 10315;
 	private static final int CWARS = 9776;
 	private static final int CRAFT_GUILD = 11571;
-
-	private final HotkeyListener hotkey = new HotkeyListener(() -> config.hotkeyMod())
-	{
-		@Override
-		public void hotkeyPressed()
-		{
-			startHotkey();
-			setHotkeyActive(true);
-		}
-
-		@Override
-		public void hotkeyReleased()
-		{
-			stopHotkey();
-			setHotkeyActive(false);
-		}
-	};
 
 	@Provides
 	MenuEntrySwapperExtendedConfig provideConfig(ConfigManager configManager)
@@ -172,7 +141,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		{
 			return;
 		}
-		keyManager.registerKeyListener(hotkey);
 		setCastOptions(true);
 		loadSwaps();
 	}
@@ -181,19 +149,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	public void shutDown()
 	{
 		removeSwaps();
-		keyManager.unregisterKeyListener(hotkey);
 		if (client.getGameState() == GameState.LOGGED_IN)
 		{
 			resetCastOptions();
-		}
-	}
-
-	@Subscribe
-	private void onFocusChanged(FocusChanged event)
-	{
-		if (!event.isFocused())
-		{
-			stopHotkey();
 		}
 	}
 
@@ -237,21 +195,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
-		final GameState gameState = event.getGameState();
-
-		switch (gameState)
+		if (event.getGameState() == GameState.LOGGED_IN)
 		{
-			case LOADING:
-			case CONNECTION_LOST:
-			case HOPPING:
-			case LOGIN_SCREEN:
-				keyManager.unregisterKeyListener(hotkey);
-				break;
-			case LOGGED_IN:
-				removeSwaps();
-				loadSwaps();
-				keyManager.registerKeyListener(hotkey);
-				break;
+			removeSwaps();
+			loadSwaps();
 		}
 	}
 
@@ -260,7 +207,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		buildingMode = client.getVarbitValue(2176) == 1;
 		setCastOptions(false);
-		leftClickTrade();
 	}
 
 	@Subscribe
@@ -302,23 +248,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		event.setModified();
 	}
 
-
-	@Subscribe
-	private void onPlayerCompositionChanged(PlayerCompositionChanged event)
-	{
-		if (!event.getPlayer().equals(client.getLocalPlayer()))
-		{
-			return;
-		}
-		rcSwaps();
-
-	}
-
 	private void loadSwaps()
 	{
 		addSwaps();
-		leftClickTrade();
-		rcSwaps();
 		loadConstructionItems();
 	}
 
@@ -329,22 +261,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void addSwaps()
 	{
-		final List<String> tmp = NEWLINE_SPLITTER.splitToList(config.prioEntry());
-
-		for (String str : tmp)
-		{
-			String[] strings = str.split(",");
-
-			if (strings.length <= 1)
-			{
-				continue;
-			}
-
-			final AbstractComparableEntry a = newBaseComparableEntry("", strings[1], -1, -1, false, true);
-			final AbstractComparableEntry b = newBaseComparableEntry(strings[0], "", -1, -1, false, false);
-			dePrioSwaps.put(a, b);
-			menuManager.addSwap(a, b);
-		}
 
 		mesPlugin.swapContains("", (s) -> true, "pickpocket", config::swapPickpocket);
 
@@ -399,87 +315,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		mesPlugin.swap("rub", sW("ring of wealth"), "Xeric's Honour", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
 	}
 
-	private void leftClickTrade()
-	{
-		if (client.getVar(IN_WILDERNESS) == 1 || WorldType.isAllPvpWorld(client.getWorldType()))
-		{
-			return;
-		}
-
-		if (config.leftClickTrade())
-		{
-			menuManager.addPriorityEntry(MESAbstractComparables.TRADE);
-		}
-
-		if (config.leftClickFollow())
-		{
-			menuManager.addPriorityEntry(MESAbstractComparables.FOLLOW);
-		}
-	}
-
-	private void rcSwaps()
-	{
-		if (client.getLocalPlayer() == null || !config.swapDuelRingLavas()
-			|| client.getLocalPlayer().getWorldLocation().getRegionID() != CWARS
-			|| client.getLocalPlayer().getWorldLocation().getRegionID() != CRAFT_GUILD
-			|| client.getLocalPlayer().getWorldLocation().getRegionID() != FIRE_ALTAR)
-		{
-			menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
-			menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
-			menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
-			menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
-			menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
-		}
-
-		if (checkFireAltarAccess())
-		{
-			if (client.getLocalPlayer().getWorldLocation().getRegionID() == FIRE_ALTAR)
-			{
-				menuManager.addPriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape")).setPriority(100);
-				menuManager.addPriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)")).setPriority(100);
-				menuManager.addPriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape")).setPriority(100);
-				menuManager.addPriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling")).setPriority(100);
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
-			}
-			else if (client.getLocalPlayer().getWorldLocation().getRegionID() == CWARS
-				|| client.getLocalPlayer().getWorldLocation().getRegionID() == CRAFT_GUILD)
-			{
-				menuManager.addPriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling")).setPriority(100);
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
-			}
-			else
-			{
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
-				menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
-			}
-		}
-	}
-
-	private void removeSwaps()
-	{
-		final Iterator<Map.Entry<AbstractComparableEntry, AbstractComparableEntry>> dePrioIter = dePrioSwaps.entrySet().iterator();
-		dePrioIter.forEachRemaining((e) ->
-		{
-			menuManager.removeSwap(e.getKey(), e.getValue());
-			dePrioIter.remove();
-		});
-		menuManager.removePriorityEntry(config.getConstructionMode().getBuild());
-		menuManager.removePriorityEntry(config.getConstructionMode().getRemove());
-		menuManager.removePriorityEntry(new EquipmentComparableEntry("castle wars", "ring of dueling"));
-		menuManager.removePriorityEntry(new EquipmentComparableEntry("duel arena", "ring of dueling"));
-		menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape"));
-		menuManager.removePriorityEntry(new EquipmentComparableEntry("Teleport", "Crafting cape(t)"));
-		menuManager.removePriorityEntry(new EquipmentComparableEntry("Crafting Guild", "Max cape"));
-		menuManager.removePriorityEntry(MESAbstractComparables.TRADE);
-		menuManager.removePriorityEntry(MESAbstractComparables.FOLLOW);
-	}
-
 	private void loadConstructionItems()
 	{
 		if (client.getGameState() != GameState.LOGGED_IN)
@@ -498,62 +333,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		{
 			menuManager.addPriorityEntry(config.getConstructionMode().getBuild()).setPriority(100);
 			menuManager.addPriorityEntry(config.getConstructionMode().getRemove()).setPriority(100);
-		}
-	}
-
-	private void startHotkey()
-	{
-		eventBus.subscribe(ClientTick.class, HOTKEY, this::addHotkey);
-		eventBus.subscribe(ClientTick.class, HOTKEY_CHECK, this::hotkeyCheck);
-	}
-
-	private void addHotkey(ClientTick event)
-	{
-		if (config.hotKeyLoot())
-		{
-			menuManager.addPriorityEntry(MESAbstractComparables.TAKE);
-		}
-		if (config.hotKeyWalk())
-		{
-			menuManager.addPriorityEntry(MESAbstractComparables.WALK);
-		}
-
-		eventBus.unregister(HOTKEY);
-	}
-
-	private void stopHotkey()
-	{
-		stopHotkey = true;
-	}
-
-	private void removeHotkey(ClientTick event)
-	{
-		if (!stopHotkey) return;
-
-		menuManager.removePriorityEntry(MESAbstractComparables.TAKE);
-		menuManager.removePriorityEntry(MESAbstractComparables.WALK);
-
-		eventBus.unregister(HOTKEY);
-	}
-
-	private void hotkeyCheck(ClientTick event)
-	{
-		if (hotkeyActive)
-		{
-			int i = 0;
-			for (boolean bol : client.getPressedKeys())
-			{
-				if (bol)
-				{
-					i++;
-				}
-			}
-			if (i == 0)
-			{
-				stopHotkey();
-				setHotkeyActive(false);
-				eventBus.unregister(HOTKEY_CHECK);
-			}
 		}
 	}
 

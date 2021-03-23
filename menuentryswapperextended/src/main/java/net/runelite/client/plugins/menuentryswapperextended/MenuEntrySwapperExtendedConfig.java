@@ -72,14 +72,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	String pvmSection = "PvM";
 
 	@ConfigSection(
-		name = "Hotkey Swapping",
-		description = "",
-		position = 1,
-		keyName = "hotkeySwapping"
-	)
-	String hotkeySwapping = "Hotkey Swapping";
-
-	@ConfigSection(
 		name = "Miscellaneous Swapping",
 		description = "",
 		position = 1,
@@ -499,46 +491,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default String hideCastIgnoredCoX()
 	{
 		return "cure other, energy transfer, heal other, vengeance other";
-	}
-
-	//------------------------------------------------------------//
-	// HotKey menu swaps
-	//------------------------------------------------------------//
-
-	@ConfigItem(
-		keyName = "hotkeyMod",
-		name = "Hotkey for Swaps",
-		description = "Set this hotkey to do custom swaps on hotkeys.",
-		position = 0,
-		section = hotkeySwapping
-	)
-	default Keybind hotkeyMod()
-	{
-		return Keybind.SHIFT;
-	}
-
-	@ConfigItem(
-		keyName = "hotKeyWalk",
-		name = "Hotkey to Walk",
-		description = "For when you want Walk here as a priority",
-		position = 1,
-		section = hotkeySwapping
-	)
-	default boolean hotKeyWalk()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "hotKeyLoot",
-		name = "Hotkey to Loot",
-		description = "For when people stand on your loot",
-		position = 2,
-		section = hotkeySwapping
-	)
-	default boolean hotKeyLoot()
-	{
-		return false;
 	}
 
 	//------------------------------------------------------------//
