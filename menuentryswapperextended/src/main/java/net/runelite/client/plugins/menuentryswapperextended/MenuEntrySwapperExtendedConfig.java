@@ -121,19 +121,6 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
-	@ConfigItem(
-		keyName = "swapDuelRingLavas",
-		name = "Lavas",
-		description = "Swaps Ring of dueling menu entry depending on location, requires fire tiara or RC cape to be worn.",
-		position = 3,
-		section = skillingSection,
-		disabledBy  = "getDuelingRing"
-	)
-	default boolean swapDuelRingLavas()
-	{
-		return false;
-	}
-
 	//------------------------------------------------------------//
 	// Teleportation
 	//------------------------------------------------------------//
