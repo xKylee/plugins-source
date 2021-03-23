@@ -37,6 +37,7 @@ import net.runelite.api.Player;
 import net.runelite.api.Varbits;
 import net.runelite.api.WorldType;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.util.Text;
@@ -98,9 +99,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Inject
 	private MenuEntrySwapperPlugin mesPlugin;
 
-	private boolean buildingMode;
 	private boolean inTobRaid = false;
 	private boolean inCoxRaid = false;
+	private MenuEntry[] menuEntries;
+	List<String> targetList;
+	List<String> optionsList;
 
 	@Provides
 	MenuEntrySwapperExtendedConfig provideConfig(ConfigManager configManager)
@@ -176,7 +179,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Subscribe
 	private void onVarbitChanged(VarbitChanged event)
 	{
-		buildingMode = client.getVarbitValue(2176) == 1;
 		setCastOptions(false);
 	}
 
@@ -217,6 +219,23 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
 		event.setModified();
+	}
+
+	@Subscribe
+	private void onMenuEntryAdded(MenuEntryAdded menuEntryAdded)
+	{
+		if (!config.getEasyConstruction())
+		{
+			return;
+		}
+
+		if ((client.getVarbitValue(2176) != 1) && menuEntryAdded.getOpcode() != 1001)
+		{
+			return;
+		}
+
+		menuEntries = client.getMenuEntries();
+		swapConstructionMenu(menuEntries);
 	}
 
 	private void loadSwaps()
@@ -288,23 +307,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void loadConstructionItems()
 	{
-		if (client.getGameState() != GameState.LOGGED_IN)
-		{
-			return;
-		}
-
-		if (!buildingMode)
-		{
-			menuManager.removePriorityEntry(config.getConstructionMode().getBuild());
-			menuManager.removePriorityEntry(config.getConstructionMode().getRemove());
-			return;
-		}
-
-		if (config.getEasyConstruction())
-		{
-			menuManager.addPriorityEntry(config.getConstructionMode().getBuild()).setPriority(100);
-			menuManager.addPriorityEntry(config.getConstructionMode().getRemove()).setPriority(100);
-		}
+		targetList = config.getConstructionMode().getTargetList();
+		optionsList = config.getConstructionMode().getOptionsList();
 	}
 
 	private void setCastOptions(boolean force)
@@ -358,5 +362,42 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				client.setHideClanmateCastOptions(false);
 			}
 		});
+	}
+
+	private void swapConstructionMenu(MenuEntry[] menuEntries)
+	{
+		for (MenuEntry menuEntry : menuEntries)
+		{
+			if (validConstructionSwap(menuEntry))
+			{
+				createConstructionMenu(menuEntry);
+			}
+		}
+	}
+
+	public boolean validConstructionSwap(MenuEntry menuEntry)
+	{
+		return (matchesConstructionOption(menuEntry) && matchesConstructionTarget(menuEntry));
+	}
+
+	public boolean matchesConstructionOption(MenuEntry menuEntry)
+	{
+		return config.getConstructionMode().getOptionsList().stream()
+				.anyMatch(Text.standardize(menuEntry.getOption())::contains);
+	}
+
+	public boolean matchesConstructionTarget(MenuEntry menuEntry)
+	{
+		return config.getConstructionMode().getTargetList().stream()
+				.anyMatch(Text.standardize(menuEntry.getTarget())::contains);
+	}
+
+	private void createConstructionMenu(MenuEntry menuEntry)
+	{
+		MenuEntry[] newEntries = new MenuEntry[1];
+
+		newEntries[0] = menuEntry;
+
+		client.setMenuEntries(newEntries);
 	}
 }
