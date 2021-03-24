@@ -39,9 +39,9 @@ import javax.swing.SwingUtilities;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.ItemComposition;
+import net.runelite.api.Player;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.kit.KitType;
-import net.runelite.api.util.Text;
 import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
 import net.runelite.client.chat.ChatMessageManager;
@@ -100,9 +100,9 @@ public class BetterEquipmentInspectorPlugin extends Plugin
 	protected void startUp()
 	{
 		betterEquipmentInspectorPanel = injector.getInstance(BetterEquipmentInspectorPanel.class);
+		client.setComparingAppearance(true);
 		if (client != null)
 		{
-			client.setComparingAppearance(true);
 			menuManager.addPlayerMenuItem(INSPECT_EQUIPMENT);
 		}
 
@@ -148,9 +148,9 @@ public class BetterEquipmentInspectorPlugin extends Plugin
 		{
 			throw new RuntimeException(e);
 		}
-
-		String playerName = Text.removeTags(event.getMenuTarget()).replace('\u00A0', ' ');
-		final PlayerContainer player = playerManager.getPlayer(playerName);
+		Player p = client.getCachedPlayers()[event.getId()];
+		
+		final PlayerContainer player = playerManager.getPlayer(p.getName());
 		final Map<KitType, ItemComposition> playerEquipment = new HashMap<>();
 
 		if (player == null)
@@ -207,7 +207,7 @@ public class BetterEquipmentInspectorPlugin extends Plugin
 					.build())
 				.build());
 		}
-		betterEquipmentInspectorPanel.update(playerEquipment, playerName);
+		betterEquipmentInspectorPanel.update(playerEquipment, p.getName());
 	}
 
 	private static void removeEntries(LinkedHashMap<Integer, Integer> map, int quantity)
