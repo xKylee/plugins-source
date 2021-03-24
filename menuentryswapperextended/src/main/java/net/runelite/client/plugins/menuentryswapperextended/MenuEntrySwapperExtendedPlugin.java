@@ -274,6 +274,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		mesPlugin.swap("remove", targetSwap("amulet of glory"), "karamja", () -> config.getGloryMode() == GloryMode.KARAMJA);
 		mesPlugin.swap("remove", targetSwap("amulet of glory"), "al kharid", () -> config.getGloryMode() == GloryMode.AL_KHARID);
 		mesPlugin.swap("remove", targetSwap("amulet of glory"), "draynor village", () -> config.getGloryMode() == GloryMode.DRAYNOR_VILLAGE);
+		mesPlugin.swap("remove", targetSwap("amulet of eternal glory"), "edgeville", () -> config.getGloryMode() == GloryMode.EDGEVILLE);
+		mesPlugin.swap("remove", targetSwap("amulet of eternal glory"), "karamja", () -> config.getGloryMode() == GloryMode.KARAMJA);
+		mesPlugin.swap("remove", targetSwap("amulet of eternal glory"), "al kharid", () -> config.getGloryMode() == GloryMode.AL_KHARID);
+		mesPlugin.swap("remove", targetSwap("amulet of eternal glory"), "draynor village", () -> config.getGloryMode() == GloryMode.DRAYNOR_VILLAGE);
 
 		mesPlugin.swap("remove", targetSwap("skills necklace"), "fishing guild", () -> config.getSkillsNecklaceMode() == SkillsNecklaceMode.FISHING_GUILD);
 		mesPlugin.swap("remove", targetSwap("skills necklace"), "mining guild", () -> config.getSkillsNecklaceMode() == SkillsNecklaceMode.MINING_GUILD);
