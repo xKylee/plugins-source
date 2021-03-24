@@ -31,8 +31,6 @@ project.extra["PluginDescription"] = "Make the special attack orb work everywher
 
 
 dependencies {
-	kapt(Libraries.pf4j)
-
 	annotationProcessor(Libraries.lombok)
 	annotationProcessor(Libraries.pf4j)
 
