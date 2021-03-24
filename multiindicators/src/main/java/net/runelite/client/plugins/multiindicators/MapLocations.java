@@ -3808,6 +3808,13 @@ public class MapLocations
 
 		// Soul Wars Bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+				3160, 2837,
+				3160, 2834,
+				3155, 2834,
+				3155, 2837);
+
+		// Unkah (Tempoross) Bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
 				2202, 2864,
 				2202, 2855,
 				2219, 2855,
