@@ -28,7 +28,7 @@ public enum ConstructionMode
 		new String[]{"larder", "larder space", "wooden larder", "oak larder", "teak larder"}),
 	MYTH_CAPE("Myth cape",
 		new String[]{"build", "remove"},
-		new String[]{"cape", "guild Trophy space", "mythical cape"}),
+		new String[]{"cape", "guild trophy space", "mythical cape"}),
 	TABLE("Tables",
 		new String[]{"build", "remove"},
 		new String[]{"table", "kitchen table", "oak kitchen table", "teak kitchen table", "table space", "teak table", "mahogany table",
