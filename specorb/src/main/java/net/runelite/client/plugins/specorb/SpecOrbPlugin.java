@@ -1,11 +1,11 @@
 package net.runelite.client.plugins.specorb;
 
-import java.awt.Rectangle;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.MenuEntryAdded;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -35,17 +35,16 @@ public class SpecOrbPlugin extends Plugin
 	@Subscribe
 	private void onClientTick(ClientTick event)
 	{
-		Rectangle specClickBox = client.getWidget(WidgetInfo.MINIMAP_SPEC_CLICKBOX).getBounds();
+		Widget specOrb = client.getWidget(WidgetInfo.MINIMAP_SPEC_CLICKBOX);
 
-		if (specClickBox == null)
+		if (specOrb == null)
 		{
 			return;
 		}
-
-		if (specClickBox.contains(client.getMouseCanvasPosition().getX(), client.getMouseCanvasPosition().getY()))
+		
+		if (specOrb.getBounds().contains(client.getMouseCanvasPosition().getX(), client.getMouseCanvasPosition().getY()))
 		{
 			client.insertMenuItem("Use <col=00ff00>Special Attack</col>", "", MenuAction.CC_OP.getId(), 1, -1, WidgetInfo.COMBAT_SPECIAL_ATTACK_CLICKBOX.getId(), false);
 		}
 	}
-
 }
