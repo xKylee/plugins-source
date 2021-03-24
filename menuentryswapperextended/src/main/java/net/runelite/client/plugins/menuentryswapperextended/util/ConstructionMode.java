@@ -1,7 +1,6 @@
 package net.runelite.client.plugins.menuentryswapperextended.util;
 
 import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
 
