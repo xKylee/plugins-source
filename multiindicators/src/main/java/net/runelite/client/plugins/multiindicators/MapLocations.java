@@ -3468,12 +3468,23 @@ public class MapLocations
 			1514, 3424,
 			1514, 3415);
 
-		// Chambers of xeric bank
+		// CoX Bank / Mount Quidamortem
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-			1252, 3570,
-			1252, 3574,
-			1257, 3574,
-			1257, 3570);
+			1270, 3564,
+			1270, 3568,
+			1268, 3569,
+			1264, 3573,
+			1264, 3580,
+			1219, 3580,
+			1219, 3555,
+			1228, 3545,
+			1240, 3545,
+			1245, 3548,
+			1250, 3551,
+			1258, 3551,
+			1264, 3557,
+			1266, 3557,
+			1266, 3560);
 
 		// Arceuus bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
