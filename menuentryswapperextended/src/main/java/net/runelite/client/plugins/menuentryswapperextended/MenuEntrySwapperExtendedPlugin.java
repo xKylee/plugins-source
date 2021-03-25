@@ -310,7 +310,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		// Disable this for now as the method does not support the operation to be executed with desired outcome
 		//mesPlugin.swap("remove", targetSwap("talisman"), "xeric's honour", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
 
-		mesPlugin.swap("remove", targetSwap("crafting cape"), "teleport",
+		mesPlugin.swap("wear", targetSwap("crafting cape"), "teleport",
 				() -> config.getCraftingCapeMode() == CraftingCapeMode.INVENTORY || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
 		mesPlugin.swap("remove", targetSwap("crafting cape"), "teleport",
 				() -> config.getCraftingCapeMode() == CraftingCapeMode.EQUIPPED || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
