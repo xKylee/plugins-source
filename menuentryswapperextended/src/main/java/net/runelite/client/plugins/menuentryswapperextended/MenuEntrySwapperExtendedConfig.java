@@ -33,11 +33,15 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.CraftingCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
@@ -384,6 +388,54 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default RingOfWealthMode getRingofWealthMode()
 	{
 		return RingOfWealthMode.GRAND_EXCHANGE;
+	}
+
+	@ConfigItem(
+			keyName = "swapConstructionCape",
+			name = "Construction Cape",
+			description = "Swap the left click option with 'Tele to POH' on a Construction Cape.",
+			position = 21,
+			section = teleportationSection
+	)
+	default ConstructionCapeMode getConstructionCapeMode()
+	{
+		return ConstructionCapeMode.OFF;
+	}
+
+	@ConfigItem(
+			keyName = "swapCraftingCape",
+			name = "Crafting Cape",
+			description = "Swap the left click option with 'teleport' on a Crafting Cape.",
+			position = 22,
+			section = teleportationSection
+	)
+	default CraftingCapeMode getCraftingCapeMode()
+	{
+		return CraftingCapeMode.OFF;
+	}
+
+	@ConfigItem(
+			keyName = "magicCapeMode",
+			name = "Magic Cape",
+			description = "Swap the left click option with 'spellbook' on a Magic Cape.",
+			position = 23,
+			section = teleportationSection
+	)
+	default MagicCapeMode getMagicCapeMode()
+	{
+		return MagicCapeMode.OFF;
+	}
+
+	@ConfigItem(
+			keyName = "swapMaxCapeEquipped",
+			name = "Max Cape",
+			description = "Swap the left click 'remove' option with another on a worn Max Cape.",
+			position = 24,
+			section = teleportationSection
+	)
+	default MaxCapeEquippedMode getMaxCapeEquippedMode()
+	{
+		return MaxCapeEquippedMode.OFF;
 	}
 
 	//------------------------------------------------------------//
