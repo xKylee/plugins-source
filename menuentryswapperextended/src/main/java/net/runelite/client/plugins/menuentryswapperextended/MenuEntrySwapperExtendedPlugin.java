@@ -52,10 +52,14 @@ import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperPlugin;
 import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.CraftingCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
@@ -303,7 +307,26 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		mesPlugin.swap("remove", targetSwap("talisman"), "xeric's look-out", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_LOOKOUT);
 		mesPlugin.swap("remove", targetSwap("talisman"), "xeric's inferno", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_INFERNO);
 		mesPlugin.swap("remove", targetSwap("talisman"), "xeric's heart", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HEART);
-		mesPlugin.swap("remove", targetSwap("talisman"), "xeric's honour", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
+		// Disable this for now as the method does not support the operation to be executed with desired outcome
+		//mesPlugin.swap("remove", targetSwap("talisman"), "xeric's honour", () -> config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
+
+		mesPlugin.swap("wear", targetSwap("crafting cape"), "teleport",
+				() -> config.getCraftingCapeMode() == CraftingCapeMode.INVENTORY || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
+		mesPlugin.swap("remove", targetSwap("crafting cape"), "teleport",
+				() -> config.getCraftingCapeMode() == CraftingCapeMode.EQUIPPED || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
+
+		mesPlugin.swap("wear", targetSwap("construct."), "tele to poh",
+				() -> config.getConstructionCapeMode() == ConstructionCapeMode.INVENTORY || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
+		mesPlugin.swap("remove", targetSwap("construct."), "tele to poh",
+				() -> config.getConstructionCapeMode() == ConstructionCapeMode.EQUIPPED || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
+
+		mesPlugin.swap("wear", targetSwap("magic cape"), "spellbook", () -> config.getMagicCapeMode() == MagicCapeMode.INVENTORY || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
+		mesPlugin.swap("remove", targetSwap("magic cape"), "spellbook", () -> config.getMagicCapeMode() == MagicCapeMode.EQUIPPED || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
+
+		mesPlugin.swap("remove", targetSwap("max cape"), "tele to poh", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.TELE_TO_POH);
+		mesPlugin.swap("remove", targetSwap("max cape"), "crafting guild", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.CRAFTING_GUILD);
+		mesPlugin.swap("remove", targetSwap("max cape"), "warriors' guild", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.WARRIORS_GUILD);
+		mesPlugin.swap("remove", targetSwap("max cape"), "fishing teleports", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FISHING_TELEPORTS);
 	}
 
 	private void setCastOptions(boolean force)
