@@ -143,12 +143,14 @@ public class AlchemicalHydraPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		atHydra = false;
-
 		eventBus.unregister(this);
+		reset();
+	}
 
+	private void reset()
+	{
+		atHydra = false;
 		removeOverlays();
-
 		hydra = null;
 		poisonProjectiles.clear();
 		lastAttackTick = -1;
@@ -173,7 +175,7 @@ public class AlchemicalHydraPlugin extends Plugin
 				{
 					if (atHydra)
 					{
-						shutDown();
+						reset();
 					}
 				}
 				break;
@@ -181,7 +183,7 @@ public class AlchemicalHydraPlugin extends Plugin
 			case LOGIN_SCREEN:
 				if (atHydra)
 				{
-					shutDown();
+					reset();
 				}
 			default:
 				break;
