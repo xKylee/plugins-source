@@ -69,7 +69,7 @@ public class FightCavesDisplayOverlay extends Overlay
 
 	public Dimension render(Graphics2D graphics)
 	{
-		if (plugin.inRegion(FightCavesSpawnRotationPlugin.TZHAAR_REGION) && config.displayMode() != FightCavesSpawnRotationConfig.DisplayMode.OFF && FightCavesSpawnRotationPlugin.getCurrentWave() > 0)
+		if (plugin.inRegion(FightCavesSpawnRotationPlugin.FIGHT_CAVES_REGION) && config.displayMode() != FightCavesSpawnRotationConfig.DisplayMode.OFF && FightCavesSpawnRotationPlugin.getCurrentWave() > 0)
 		{
 			int wave = FightCavesSpawnRotationPlugin.getCurrentWave() - 1;
 			List<FightCavesNpcSpawn> currentWaveContents = FightCavesSpawnRotationPlugin.getWaveData().get(wave);

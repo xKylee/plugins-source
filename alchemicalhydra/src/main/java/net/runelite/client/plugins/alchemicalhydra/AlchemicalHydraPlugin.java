@@ -46,7 +46,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -76,9 +75,6 @@ public class AlchemicalHydraPlugin extends Plugin
 
 	@Inject
 	private Client client;
-
-	@Inject
-	private EventBus eventBus;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -144,8 +140,6 @@ public class AlchemicalHydraPlugin extends Plugin
 	protected void shutDown()
 	{
 		atHydra = false;
-
-		eventBus.unregister(this);
 
 		removeOverlays();
 

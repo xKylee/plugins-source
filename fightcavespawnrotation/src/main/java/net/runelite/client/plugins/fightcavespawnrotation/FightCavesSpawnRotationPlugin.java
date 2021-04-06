@@ -82,7 +82,7 @@ public class FightCavesSpawnRotationPlugin extends Plugin
 	private int currentRotation = -1;
 	private static int rsSpawnRotation = -1;
 	public static final int TZHAAR_REGION = 9808;
-	private static final int FIGHT_CAVES_REGION = 9551;
+	public static final int FIGHT_CAVES_REGION = 9551;
 	private final Pattern WAVE_PATTERN = Pattern.compile(".*Wave: (\\d+).*");
 
 	public final LocalTime getUTCTime()

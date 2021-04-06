@@ -54,7 +54,6 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
@@ -107,9 +106,6 @@ public class CerberusPlugin extends Plugin
 
 	@Inject
 	private Client client;
-
-	@Inject
-	private EventBus eventBus;
 
 	@Inject
 	private CerberusConfig config;
@@ -189,8 +185,6 @@ public class CerberusPlugin extends Plugin
 	protected void shutDown()
 	{
 		inArena = false;
-
-		eventBus.unregister(this);
 
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(prayerOverlay);
