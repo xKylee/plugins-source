@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- package net.runelite.client.plugins.fightcavespawnrotation.overlay;
+package net.runelite.client.plugins.fightcavespawnrotation.overlay;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -69,7 +69,7 @@ public class FightCavesDisplayOverlay extends Overlay
 
 	public Dimension render(Graphics2D graphics)
 	{
-		if (plugin.inRegion(FightCavesSpawnRotationPlugin.TZHAAR_REGION) && config.displayMode() != FightCavesSpawnRotationConfig.DisplayMode.OFF && FightCavesSpawnRotationPlugin.getCurrentWave() > 0)
+		if (plugin.inRegion(FightCavesSpawnRotationPlugin.FIGHT_CAVES_REGION) && config.displayMode() != FightCavesSpawnRotationConfig.DisplayMode.OFF && FightCavesSpawnRotationPlugin.getCurrentWave() > 0)
 		{
 			int wave = FightCavesSpawnRotationPlugin.getCurrentWave() - 1;
 			List<FightCavesNpcSpawn> currentWaveContents = FightCavesSpawnRotationPlugin.getWaveData().get(wave);
