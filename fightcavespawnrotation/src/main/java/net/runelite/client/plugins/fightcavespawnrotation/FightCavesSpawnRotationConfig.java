@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- package net.runelite.client.plugins.fightcavespawnrotation;
+package net.runelite.client.plugins.fightcavespawnrotation;
 
 import java.awt.Color;
 import lombok.AllArgsConstructor;
