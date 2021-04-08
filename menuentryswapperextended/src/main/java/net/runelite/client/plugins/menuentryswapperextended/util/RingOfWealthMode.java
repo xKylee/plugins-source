@@ -27,6 +27,7 @@ package net.runelite.client.plugins.menuentryswapperextended.util;
 
 public enum RingOfWealthMode
 {
+	OFF("Off"),
 	MISCELLANIA("Miscellania"),
 	GRAND_EXCHANGE("Grand Exchange"),
 	FALADOR("Falador"),
