@@ -3808,17 +3808,24 @@ public class MapLocations
 
 		// Soul Wars Bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-				3160, 2837,
-				3160, 2834,
-				3155, 2834,
-				3155, 2837);
+			2202, 2864,
+			2202, 2855,
+			2219, 2855,
+			2219, 2864);
 
 		// Unkah (Tempoross) Bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-				2202, 2864,
-				2202, 2855,
-				2219, 2855,
-				2219, 2864);
+			3160, 2837,
+			3160, 2834,
+			3155, 2834,
+			3155, 2837);
+
+		// Ruins of Camdozaal Bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			2981, 5795,
+			2971, 5795,
+			2971, 5803,
+			2981, 5803);
 	}
 
 	private static void defineWilderness()
