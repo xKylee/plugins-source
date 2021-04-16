@@ -538,6 +538,37 @@ public class MapLocations
 			3686, 3896,
 			3680, 3896);
 
+		// Ammonite crabs at southeast Fossil Island
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			3800, 3761,
+			3801, 3761,
+			3801, 3762,
+			3803, 3762,
+			3803, 3763,
+			3807, 3763,
+			3807, 3764,
+			3808, 3764,
+			3808, 3765,
+			3810, 3765,
+			3810, 3766,
+			3812, 3766,
+			3812, 3767,
+			3814, 3767,
+			3814, 3768,
+			3820, 3768,
+			3820, 3767,
+			3824, 3767,
+			3824, 3766,
+			3826, 3766,
+			3826, 3747,
+			3799, 3747,
+			3799, 3749,
+			3798, 3750,
+			3798, 3754,
+			3799, 3754,
+			3799, 3757,
+			3800, 3758);
+
 		// Zeah, southwest of Wintertodt, snowy area with ice giants and wolves
 		addPolygonOnPlane(MULTICOMBAT, 0,
 			1540, 3898,
@@ -720,6 +751,29 @@ public class MapLocations
 			1665, 3746,
 			1667, 3746);
 
+		// Arceuus Tower of Magic
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1596, 3816,
+			1596, 3824,
+			1590, 3824,
+			1590, 3830,
+			1584, 3830,
+			1584, 3837,
+			1576, 3837,
+			1576, 3830,
+			1570, 3830,
+			1570, 3824,
+			1564, 3824,
+			1564, 3816,
+			1570, 3816,
+			1570, 3810,
+			1576, 3810,
+			1576, 3803,
+			1584, 3803,
+			1584, 3810,
+			1590, 3810,
+			1590, 3816);
+
 		// This one goes through western piscarilius, northen hosidius
 		// and southwestern arceuus
 		addPolygonOnPlane(MULTICOMBAT, 0,
@@ -766,6 +820,13 @@ public class MapLocations
 			1856, 3712,
 			1792, 3712,
 			1792, 3648);
+
+		// Odd 1x1 single combat tile on Piscarilius northwesternmost house
+		addPolygonOnPlane(NOT_MULTICOMBAT, 0,
+			1759, 3777,
+			1760, 3777,
+			1760, 3776,
+			1759, 3776);
 
 		// Kourend castle
 		addPolygonOnPlane(MULTICOMBAT, 0,
@@ -1474,6 +1535,122 @@ public class MapLocations
 			1745, 3505,
 			1741, 3505,
 			1740, 3504);
+
+		// Hosidius Onion field (East of Kourend POH Portal)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1747, 3521,
+			1758, 3521,
+			1760, 3523,
+			1760, 3524,
+			1758, 3526,
+			1756, 3526,
+			1754, 3528,
+			1748, 3528,
+			1746, 3526,
+			1746, 3522);
+
+		// Hosidius Cabbage field (Xeric's Glade)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1762, 3557,
+			1762, 3543,
+			1742, 3543,
+			1742, 3557);
+
+		// Hosidius Ruins (North of Hosidius Mine / West of Tithe Farm)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1771, 3514,
+			1771, 3513,
+			1768, 3513,
+			1768, 3510,
+			1767, 3510,
+			1767, 3501,
+			1768, 3501,
+			1768, 3500,
+			1773, 3500,
+			1773, 3499,
+			1781, 3499,
+			1781, 3500,
+			1784, 3500,
+			1784, 3504,
+			1785, 3504,
+			1785, 3510,
+			1783, 3510,
+			1783, 3513,
+			1777, 3513,
+			1777, 3514);
+
+		// Hosidius Town Square
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1771, 3607,
+			1771, 3591,
+			1755, 3591,
+			1755, 3607);
+
+		// Hosidius Pub
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1747, 3618,
+			1750, 3618,
+			1750, 3621,
+			1745, 3621,
+			1745, 3623,
+			1737, 3623,
+			1737, 3619,
+			1740, 3619,
+			1740, 3614,
+			1737, 3614,
+			1737, 3610,
+			1745, 3610,
+			1745, 3612,
+			1750, 3612,
+			1750, 3615,
+			1747, 3615);
+
+		// Hosidius Cow Pen
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1743, 3642,
+			1746, 3639,
+			1746, 3636,
+			1747, 3635,
+			1751, 3635,
+			1752, 3634,
+			1755, 3634,
+			1756, 3635,
+			1757, 3635,
+			1758, 3636,
+			1764, 3636,
+			1764, 3635,
+			1765, 3635,
+			1766, 3636,
+			1766, 3637,
+			1767, 3638,
+			1767, 3644,
+			1766, 3645,
+			1765, 3645,
+			1764, 3646,
+			1760, 3646,
+			1759, 3647,
+			1750, 3647,
+			1750, 3646,
+			1747, 3646);
+
+		// Kourend Saltpetre pit (southernmost)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1700, 3513,
+			1700, 3506,
+			1704, 3506,
+			1704, 3513);
+
+		// Kourend Saltpetre River Hos (Northeast bank)
+		addPolygonOnPlane(MULTICOMBAT, 0,
+			1699, 3559,
+			1705, 3562,
+			1709, 3562,
+			1719, 3557,
+			1721, 3553,
+			1721, 3549,
+			1721, 3547,
+			1719, 3542,
+			1699, 3542);
 
 		// Isle of Souls northern rare trees (Teak & Mahogany)
 		addPolygonOnPlane(MULTICOMBAT, 0,
@@ -3808,17 +3985,24 @@ public class MapLocations
 
 		// Soul Wars Bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-				3160, 2837,
-				3160, 2834,
-				3155, 2834,
-				3155, 2837);
+			2202, 2864,
+			2202, 2855,
+			2219, 2855,
+			2219, 2864);
 
 		// Unkah (Tempoross) Bank
 		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
-				2202, 2864,
-				2202, 2855,
-				2219, 2855,
-				2219, 2864);
+			3160, 2837,
+			3160, 2834,
+			3155, 2834,
+			3155, 2837);
+
+		// Ruins of Camdozaal Bank
+		addPolygonOnPlane(PVP_WORLD_SAFE_ZONES, 0,
+			2981, 5795,
+			2971, 5795,
+			2971, 5803,
+			2981, 5803);
 	}
 
 	private static void defineWilderness()
