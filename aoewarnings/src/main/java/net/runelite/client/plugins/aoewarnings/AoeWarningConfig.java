@@ -195,7 +195,7 @@ public interface AoeWarningConfig extends Config
 	}
 
 	@Range(
-		min = 20,
+		min = 10,
 		max = 40
 	)
 	@ConfigItem(
