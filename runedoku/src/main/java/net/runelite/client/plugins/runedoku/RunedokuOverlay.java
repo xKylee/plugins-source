@@ -64,7 +64,7 @@ class RunedokuOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		final Widget sudokuScreen = client.getWidget(288, 131);
+		final Widget sudokuScreen = client.getWidget(292, 13);
 
 		if (sudokuScreen != null && !sudokuScreen.isHidden())
 		{
@@ -86,9 +86,9 @@ class RunedokuOverlay extends Overlay
 	private void renderReferenceRunes(Graphics2D graphics, boolean solved)
 	{
 		//reference runes on the left handside
-		for (int i = 121; i < 130; i++)
+		for (int i = 1; i < 9; i++)
 		{
-			Widget widget = client.getWidget(288, i);
+			Widget widget = client.getWidget(292, 9).getChild(i);
 			if (solved)
 			{
 				if (!util.makeSimple(util.createTable(client)).contains(0))
@@ -120,9 +120,9 @@ class RunedokuOverlay extends Overlay
 		List<Integer> simpleArr = util.makeSimple(sudoku.getBoard());
 		//highlight each cell to tell you which piece to place
 		int iteration = 0;
-		for (int i = 10; i < 91; i++)
+		for (int i = 0; i < 81; i++)
 		{
-			Widget squareToHighlight = client.getWidget(288, i);
+			Widget squareToHighlight = client.getWidget(292, 13).getChild(i);
 			if (solved)
 			{
 				if (!util.makeSimple(util.createTable(client)).contains(0))

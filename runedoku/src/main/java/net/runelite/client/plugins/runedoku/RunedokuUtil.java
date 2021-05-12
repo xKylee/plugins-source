@@ -77,24 +77,24 @@ class RunedokuUtil
 	{
 		switch (i)
 		{
-			case 121: //earth
-				return config.earthRuneColor();
-			case 122: //water
+			case 1: //water
 				return config.waterRuneColor();
-			case 123: //air
-				return config.airRuneColor();
-			case 124: //mind
-				return config.mindRuneColor();
-			case 125: //fire
+			case 2: //fire
 				return config.fireRuneColor();
-			case 126: //body
+			case 3: //earth
+				return config.earthRuneColor();
+			case 4: //air
+				return config.airRuneColor();
+			case 5: //mind
+				return config.mindRuneColor();
+			case 6: //body
 				return config.bodyRuneColor();
-			case 127: //death
-				return config.deathRuneColor();
-			case 128: //chaos
-				return config.chaosRuneColor();
-			case 129: //plugin
+			case 7: //plugin
 				return config.lawRuneColor();
+			case 8: //chaos
+				return config.chaosRuneColor();
+			case 9: //death
+				return config.deathRuneColor();
 			default:
 				return Color.RED;
 		}
@@ -142,12 +142,12 @@ class RunedokuUtil
 	int[][] createTable(Client client)
 	{
 		int[][] myArr = new int[9][9];
-		Widget sudokuScreen = client.getWidget(288, 131);
+			Widget sudokuScreen = client.getWidget(292, 13);
 		for (int i = 0; i < 9; i++)
 		{
 			for (int ii = 0; ii < 9; ii++)
 			{
-				WidgetItem item;
+				int item;
 				int myIndex;
 				if (i > 0)
 				{
@@ -161,17 +161,10 @@ class RunedokuUtil
 				{
 					break;
 				}
-				item = sudokuScreen.getWidgetItem(myIndex);
-				if (item != null)
+				item = sudokuScreen.getChild(myIndex).getItemId();
+				if (item > 0)
 				{
-					if (item.getId() != -1)
-					{
-						myArr[i][ii] = Objects.requireNonNull(RunedokuPiece.getById(item.getId())).getPieceForSudoku();
-					}
-					else
-					{
-						myArr[i][ii] = 0;
-					}
+					myArr[i][ii] = Objects.requireNonNull(RunedokuPiece.getById(item)).getPieceForSudoku();
 				}
 				else
 				{
@@ -188,34 +181,18 @@ class RunedokuUtil
 	 */
 	int getSelectedPiece(Client client)
 	{
-		for (int i = 91; i < 100; i++)
-		{
-			Widget selectedPieceWidget = client.getWidget(288, i);
+
+			Widget selectedPieceWidget = client.getWidget(292, 9);
 			if (!selectedPieceWidget.isHidden())
 			{
-				switch (i)
+				for (int i = 1; i < 10; i++)
 				{
-					case 91:
-						return 8;
-					case 92:
-						return 6;
-					case 93:
-						return 4;
-					case 94:
-						return 2;
-					case 95:
-						return 1;
-					case 96:
-						return 3;
-					case 97:
-						return 5;
-					case 98:
-						return 7;
-					case 99:
-						return 9;
+					if (selectedPieceWidget.getChild(i).getBorderType() == 2)
+					{
+						return RunedokuPiece.getById(selectedPieceWidget.getChild(i).getItemId()).getPieceForSudoku();
+					}
 				}
 			}
-		}
 		return -1;
 	}
 
