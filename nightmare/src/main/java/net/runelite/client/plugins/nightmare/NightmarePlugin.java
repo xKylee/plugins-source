@@ -357,7 +357,7 @@ public class NightmarePlugin extends Plugin
 		}
 
 		//if nightmare's id is 9433, the fight has ended and everything should be reset
-		if (nm.getId() == 9433)
+		if (nm.getId() == 9433  || nm.getId() == 378)
 		{
 			reset();
 		}
