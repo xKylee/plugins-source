@@ -161,7 +161,7 @@ public class WildernessLocationsPlugin extends Plugin
 
 	private boolean inClanChat()
 	{
-		return client.getWidget(WidgetInfo.FRIENDS_CHAT_TITLE) != null;
+		return client.getWidget(WidgetID.FRIENDS_CHAT_GROUP_ID, 1) != null;
 	}
 
 	private void sendMessage(String text)
