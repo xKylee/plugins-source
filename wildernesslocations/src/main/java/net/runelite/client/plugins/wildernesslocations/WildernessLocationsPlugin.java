@@ -39,7 +39,7 @@ import net.runelite.api.WorldType;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.VarClientStrChanged;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -161,7 +161,7 @@ public class WildernessLocationsPlugin extends Plugin
 
 	private boolean inClanChat()
 	{
-		return client.getWidget(WidgetInfo.FRIENDS_CHAT_TITLE) != null;
+		return client.getWidget(WidgetID.FRIENDS_CHAT_GROUP_ID, 1) != null;
 	}
 
 	private void sendMessage(String text)
