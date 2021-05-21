@@ -225,9 +225,8 @@ public class NightmarePlugin extends Plugin
 		NPC npc = (NPC) actor;
 		int id = npc.getId();
 		
-		// this will trigger once when the fight begins
-		// 9432 is Nightmare Id when it's first woken up, 9425 is Id on a subsequent kill
-		if (id == 9432 || id == 9425)
+		//this will trigger once when the fight begins
+		if (id == 9432)
 		{
 			//reset everything
 			reset();
