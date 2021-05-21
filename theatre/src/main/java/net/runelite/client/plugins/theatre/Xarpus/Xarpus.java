@@ -24,6 +24,7 @@ import net.runelite.api.Point;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectDespawned;
@@ -256,7 +257,11 @@ public class Xarpus extends Room
 		{
 			instanceTimer = (instanceTimer + 1) % 4;
 		}
+	}
 
+	@Subscribe
+	public void onClientTick(ClientTick event)
+	{
 		if (client.getLocalPlayer() == null)
 		{
 			return;

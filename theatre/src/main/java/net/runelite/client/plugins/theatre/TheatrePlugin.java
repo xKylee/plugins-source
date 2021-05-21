@@ -164,6 +164,7 @@ public class TheatrePlugin extends Plugin
 	public void onClientTick(ClientTick event)
 	{
 		nylocas.onClientTick(event);
+		xarpus.onClientTick(event);
 	}
 
 	@Subscribe
