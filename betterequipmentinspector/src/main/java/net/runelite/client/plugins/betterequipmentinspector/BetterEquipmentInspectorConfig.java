@@ -61,7 +61,7 @@ public interface BetterEquipmentInspectorConfig extends Config
 	@ConfigItem(
 		keyName = "ExactValue",
 		name = "Show exact value",
-		description = "shows the excact gp value",
+		description = "shows the exact gp value",
 		position = 3
 	)
 	default boolean exactValue()
