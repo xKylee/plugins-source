@@ -24,11 +24,17 @@
  */
 package net.runelite.client.plugins.menuentryswapperextended;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -37,6 +43,7 @@ import net.runelite.api.MenuEntry;
 import net.runelite.api.Player;
 import net.runelite.api.Varbits;
 import net.runelite.api.WorldType;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.VarbitChanged;
@@ -58,15 +65,18 @@ import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantM
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.comparableentry.AbstractComparableEntry;
 import net.runelite.client.plugins.pvptools.PvpToolsConfig;
 import net.runelite.client.plugins.pvptools.PvpToolsPlugin;
 import org.pf4j.Extension;
+import static net.runelite.api.Varbits.IN_WILDERNESS;
+import static net.runelite.client.plugins.menuentryswapperextended.util.comparableentry.ComparableEntries.newBaseComparableEntry;
 
 @Extension
 @PluginDescriptor(
@@ -92,6 +102,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private PluginManager pluginManager;
 
 	@Inject
+	private ConfigManager configManager;
+
+	@Inject
 	private PvpToolsPlugin pvpTools;
 
 	@Inject
@@ -107,6 +120,13 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	List<String> targetList;
 	List<String> optionsList;
 
+	private static final Splitter NEWLINE_SPLITTER = Splitter
+			.on("\n")
+			.omitEmptyStrings()
+			.trimResults();
+	private final Map<AbstractComparableEntry, Integer> customSwaps = new HashMap<>();
+	private final Map<AbstractComparableEntry, AbstractComparableEntry> prioSwaps = new HashMap<>();
+
 	@Provides
 	MenuEntrySwapperExtendedConfig provideConfig(ConfigManager configManager)
 	{
@@ -116,6 +136,20 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
+		//Clean up old custom swaps configuration in MenuEntrySwapper-plugin
+		if (configManager != null && Strings.isNullOrEmpty(config.customSwaps()))
+		{
+			String oldCustomSwaps = configManager.getConfiguration("menuentryswapper", "customSwaps");
+			if (!Strings.isNullOrEmpty(oldCustomSwaps))
+			{
+				configManager.setConfiguration("menuentryswapperextended", "customSwaps", oldCustomSwaps);
+				configManager.unsetConfiguration("menuentryswapper", "customSwaps");
+			}
+		}
+
+		loadCustomSwaps(config.customSwaps(), customSwaps);
+		loadPrioSwaps(config.prioEntry(), prioSwaps);
+
 		if (client.getGameState() != GameState.LOGGED_IN)
 		{
 			return;
@@ -127,6 +161,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Override
 	public void shutDown()
 	{
+		loadCustomSwaps("", customSwaps); // Removes all custom swaps
+		loadPrioSwaps("", prioSwaps); // Removes all priority swaps
+
 		if (client.getGameState() == GameState.LOGGED_IN)
 		{
 			resetCastOptions();
@@ -162,6 +199,12 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		switch (event.getKey())
 		{
+			case "customSwaps":
+				loadCustomSwaps(config.customSwaps(), customSwaps);
+				return;
+			case "prioEntry":
+				loadPrioSwaps(config.prioEntry(), prioSwaps);
+				return;
 			case "hideCastToB":
 			case "hideCastIgnoredToB":
 				if (config.hideCastToB())
@@ -202,33 +245,79 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			return;
 		}
 
-		List<MenuEntry> menu_entries = new ArrayList<>();
+		event.setMenuEntries(updateMenuEntries(event.getMenuEntries()));
+		event.setModified();
+	}
 
-		for (MenuEntry entry : event.getMenuEntries())
+	private final Predicate<MenuEntry> filterMenuEntries = entry ->
+	{
+		String option = Text.removeTags(entry.getOption()).toLowerCase();
+
+		if (option.contains("trade with") && config.hideTradeWith())
 		{
-			String option = Text.removeTags(entry.getOption()).toLowerCase();
+			return false;
+		}
 
-			if (option.contains("trade with") && config.hideTradeWith())
-			{
-				continue;
-			}
-
-			if (option.contains("empty") && config.hideEmpty())
-			{
-				if (entry.getTarget().contains("potion") || entry.getTarget().contains("Antidote")
+		if (option.contains("empty") && config.hideEmpty())
+		{
+			if (entry.getTarget().contains("potion") || entry.getTarget().contains("Antidote")
 					|| entry.getTarget().contains("venom") || entry.getTarget().contains("antifire")
 					|| entry.getTarget().contains("Antipoison") || entry.getTarget().contains("Superantipoison")
 					|| entry.getTarget().contains("Saradomin brew") || entry.getTarget().contains("Super restore")
 					|| entry.getTarget().contains("Zamorak brew") || entry.getTarget().contains("Guthix rest"))
-				{
-					continue;
-				}
+			{
+				return false;
 			}
-
-			menu_entries.add(entry);
 		}
-		event.setMenuEntries(menu_entries.toArray(new MenuEntry[0]));
-		event.setModified();
+
+		return true;
+	};
+
+	@Subscribe
+	public void onClientTick(ClientTick clientTick)
+	{
+		// The menu is not rebuilt when it is open, so don't swap or else it will
+		// repeatedly swap entries
+		if (client.getGameState() != GameState.LOGGED_IN || client.isMenuOpen())
+		{
+			return;
+		}
+
+		client.setMenuEntries(updateMenuEntries(client.getMenuEntries()));
+	}
+
+	private MenuEntry[] updateMenuEntries(MenuEntry[] menuEntries)
+	{
+		return Arrays.stream(menuEntries)
+				.filter(filterMenuEntries)
+				.sorted((o1, o2) ->
+				{
+					//Priority swaps
+					var prioSwap = prioSwaps.entrySet()
+							.stream()
+							.filter(o -> o.getKey().matches(o1) && o.getValue().matches(o2))
+							.findFirst();
+					if (prioSwap.isPresent())
+						return 1;
+
+					prioSwap = prioSwaps.entrySet()
+							.stream()
+							.filter(o -> o.getKey().matches(o2) && o.getValue().matches(o1))
+							.findFirst();
+					if (prioSwap.isPresent())
+						return -1;
+
+					return 0;
+				})
+				.sorted(
+					//Hotkey swaps
+					Comparator.comparingInt(o -> customSwaps.entrySet()
+						.stream()
+						.filter(x -> x.getKey().matches(o))
+						.map(x -> x.getValue())
+						.sorted(Comparator.reverseOrder())
+						.findFirst().orElse(Integer.MIN_VALUE)))
+				.toArray(MenuEntry[]::new);
 	}
 
 	private void loadSwaps()
@@ -241,6 +330,76 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		targetList = config.getConstructionMode().getTargetList();
 		optionsList = config.getConstructionMode().getOptionsList();
+	}
+
+
+	private void loadPrioSwaps(String config, Map<AbstractComparableEntry, AbstractComparableEntry> map)
+	{
+		map.clear();
+		if (Strings.isNullOrEmpty(config))
+		{
+			return;
+		}
+
+		StreamSupport
+			.stream(NEWLINE_SPLITTER.split(config).spliterator(), false)
+			.map(s -> Arrays.stream(s.split(",")).filter(o -> !Strings.isNullOrEmpty(o)).toArray(String[]::new))
+			.filter(o -> o.length == 2)
+			.forEach(o -> map.put(
+					newBaseComparableEntry(o[0], "", -1, -1, true, false),
+					newBaseComparableEntry("", o[1], -1, -1, false, false)));
+	}
+
+	private void loadCustomSwaps(String config, Map<AbstractComparableEntry, Integer> map)
+	{
+		final Map<AbstractComparableEntry, Integer> tmp = new HashMap<>();
+
+		if (!Strings.isNullOrEmpty(config))
+		{
+			final StringBuilder sb = new StringBuilder();
+
+			for (String str : NEWLINE_SPLITTER.split(config))
+			{
+				if (!str.startsWith("//"))
+				{
+					sb.append(str).append("\n");
+				}
+			}
+
+			final Map<String, String> split = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(sb);
+
+			for (Map.Entry<String, String> entry : split.entrySet())
+			{
+				final String prio = entry.getKey();
+				int priority;
+				try
+				{
+					priority = Integer.parseInt(entry.getValue().trim());
+				}
+				catch (NumberFormatException e)
+				{
+					priority = 0;
+				}
+				final String[] splitFrom = Text.standardize(prio).split(",");
+				final String optionFrom = splitFrom[0].trim();
+				final String targetFrom;
+				if (splitFrom.length == 1)
+				{
+					targetFrom = "";
+				}
+				else
+				{
+					targetFrom = splitFrom[1].trim();
+				}
+
+				final AbstractComparableEntry prioEntry = newBaseComparableEntry(optionFrom, targetFrom, !Strings.isNullOrEmpty(targetFrom));
+
+				tmp.put(prioEntry, priority);
+			}
+		}
+
+		map.clear();
+		map.putAll(tmp);
 	}
 
 	private Predicate<String> targetSwap(String string)
@@ -370,7 +529,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		clientThread.invoke(() ->
 		{
-			if (client.getVar(Varbits.IN_WILDERNESS) == 1 || WorldType.isAllPvpWorld(client.getWorldType()) && pluginManager.isPluginEnabled(pvpTools) && pvpToolsConfig.hideCast())
+			if (client.getVar(IN_WILDERNESS) == 1 || WorldType.isAllPvpWorld(client.getWorldType()) && pluginManager.isPluginEnabled(pvpTools) && pvpToolsConfig.hideCast())
 			{
 				pvpTools.setCastOptions();
 			}

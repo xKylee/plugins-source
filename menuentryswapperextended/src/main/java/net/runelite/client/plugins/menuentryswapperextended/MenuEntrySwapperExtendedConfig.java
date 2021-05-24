@@ -36,13 +36,15 @@ import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletM
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CraftingCapeMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.CustomSwapParse;
 import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.PrioParse;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
@@ -82,6 +84,14 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		keyName = "pvmSection"
 	)
 	String pvmSection = "PvM";
+
+	@ConfigSection(
+			name = "Miscellaneous Swapping",
+			description = "",
+			position = 1,
+			keyName = "miscSection"
+	)
+	String miscSection = "Miscellaneous Swapping";
 
 	//------------------------------------------------------------//
 	// Skilling
@@ -522,5 +532,47 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default String hideCastIgnoredCoX()
 	{
 		return "cure other, energy transfer, heal other, vengeance other";
+	}
+
+	//------------------------------------------------------------//
+	// Miscellaneous menu swaps
+	//------------------------------------------------------------//
+
+	@ConfigItem(
+		keyName = "customSwaps",
+		name = "Custom Swaps",
+		description = "Add custom swaps here, 1 per line. Syntax: option,target:priority" +
+				"<br>Examples:" +
+				"<br> Check-charge,Camulet:1" +
+				"<br> Rub,Camulet:0" +
+				"<br> Wear:0" +
+				"<br>Note that the higher your set the priority, the more it will overtake over swaps.",
+		position = 1,
+		section = miscSection,
+		parse = true,
+		clazz = CustomSwapParse.class,
+		method = "parse"
+	)
+	default String customSwaps()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+		keyName = "prioEntry",
+		name = "Prioritize Entry",
+		description = "This section is mainly for prioritizing entries. For example" +
+			"<br>ignoring attack on snakelings at zulrah." +
+			"<br>Example Syntax: walk here, snakeling" +
+			"<br>It's important to note that these will not take precedent over other custom swaps.",
+		position = 2,
+		section = miscSection,
+		parse = true,
+		clazz = PrioParse.class,
+		method = "parse"
+	)
+	default String prioEntry()
+	{
+		return "";
 	}
 }
