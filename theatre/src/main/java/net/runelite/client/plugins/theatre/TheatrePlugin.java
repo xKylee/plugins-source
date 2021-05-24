@@ -228,12 +228,6 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onGroundObjectDespawned(GroundObjectDespawned event)
-	{
-		xarpus.onGroundObjectDespawned(event);
-	}
-
-	@Subscribe
 	public void onAnimationChanged(AnimationChanged animationChanged)
 	{
 		bloat.onAnimationChanged(animationChanged);

@@ -8,7 +8,6 @@ package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -27,7 +26,6 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
@@ -169,35 +167,23 @@ public class Xarpus extends Room
 			if (o.getId() == 32743)
 			{
 				exhumedSpawned = true;
+				xarpusExhumeds.put(o, 11);
 				if (exhumedCounter == null)
 				{
 
-					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, 1);
+					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, xarpusExhumeds.size());
 					infoBoxManager.addInfoBox(exhumedCounter);
 				}
 				else
 				{
 
-					exhumedCounter.setCount(exhumedCounter.getCount() + 1);
+					exhumedCounter.setCount(xarpusExhumeds.size());
 				}
 
-				xarpusExhumeds.put(o, 11);
 			}
 		}
 	}
 
-	@Subscribe
-	public void onGroundObjectDespawned(GroundObjectDespawned event)
-	{
-		if (xarpusActive)
-		{
-			GroundObject o = event.getGroundObject();
-			if (o.getId() == GROUNDOBJECT_ID_EXHUMED)
-			{
-				xarpusExhumeds.remove(o);
-			}
-		}
-	}
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
@@ -214,13 +200,11 @@ public class Xarpus extends Room
 	{
 		if (xarpusActive)
 		{
-			for (Iterator<GroundObject> it = xarpusExhumeds.keySet().iterator(); it.hasNext(); )
+			for (GroundObject key : xarpusExhumeds.keySet())
 			{
-				GroundObject key = it.next();
-				xarpusExhumeds.replace(key, xarpusExhumeds.get(key) - 1);
-				if (xarpusExhumeds.get(key) < 0)
+				if (xarpusExhumeds.get(key) >= 0)
 				{
-					it.remove();
+					xarpusExhumeds.replace(key, xarpusExhumeds.get(key) - 1);
 				}
 			}
 
