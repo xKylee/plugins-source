@@ -7,9 +7,11 @@
 package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
 import net.runelite.api.ChatMessageType;
@@ -80,6 +82,10 @@ public class Xarpus extends Room
 
 	@Getter
 	private Counter exhumedCounter;
+
+	private int exhumedCount;
+
+	private int partySize;
 
 	@Getter
 	private int xarpusTicksUntilAttack;
@@ -154,6 +160,8 @@ public class Xarpus extends Room
 				isInstanceTimerRunning = false;
 				exhumedSpawned = false;
 				postScreech = false;
+				exhumedCount = -1;
+				partySize = -1;
 				break;
 		}
 	}
@@ -171,13 +179,42 @@ public class Xarpus extends Room
 				if (exhumedCounter == null)
 				{
 
-					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, xarpusExhumeds.size());
+					try
+					{
+						partySize = (int) Arrays.stream(Objects.requireNonNull(client.getWidget(28, 10)).getStaticChildren()).filter((w) ->
+								w.getDynamicChildren() != null && Arrays.stream(w.getDynamicChildren()).anyMatch((r) -> !Objects.equals(r.getText(), ""))).count();
+					}
+					catch (NullPointerException ignored)
+					{
+					}
+					if (partySize == 5)
+					{
+						exhumedCount = 18;
+					}
+					else if (partySize == 4)
+					{
+						exhumedCount = 15;
+					}
+					else if (partySize == 3)
+					{
+						exhumedCount = 12;
+					}
+					else if (partySize == 2)
+					{
+						exhumedCount = 9;
+					}
+					else
+					{
+						exhumedCount = 7;
+					}
+
+					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, exhumedCount - xarpusExhumeds.size());
 					infoBoxManager.addInfoBox(exhumedCounter);
 				}
 				else
 				{
 
-					exhumedCounter.setCount(xarpusExhumeds.size());
+					exhumedCounter.setCount(exhumedCount - xarpusExhumeds.size());
 				}
 
 			}
