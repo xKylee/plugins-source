@@ -28,6 +28,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -74,6 +75,8 @@ import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanM
 import net.runelite.client.plugins.menuentryswapperextended.util.comparableentry.AbstractComparableEntry;
 import net.runelite.client.plugins.pvptools.PvpToolsConfig;
 import net.runelite.client.plugins.pvptools.PvpToolsPlugin;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.pf4j.Extension;
 import static net.runelite.api.Varbits.IN_WILDERNESS;
 import static net.runelite.client.plugins.menuentryswapperextended.util.comparableentry.ComparableEntries.newBaseComparableEntry;
@@ -125,7 +128,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			.omitEmptyStrings()
 			.trimResults();
 	private final Map<AbstractComparableEntry, Integer> customSwaps = new HashMap<>();
-	private final Map<AbstractComparableEntry, AbstractComparableEntry> prioSwaps = new HashMap<>();
+	private final List<Pair<AbstractComparableEntry, AbstractComparableEntry>> prioSwaps = new ArrayList<>();
 
 	@Provides
 	MenuEntrySwapperExtendedConfig provideConfig(ConfigManager configManager)
@@ -293,14 +296,14 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				.sorted((o1, o2) ->
 				{
 					//Priority swaps
-					var prioSwap = prioSwaps.entrySet()
+					var prioSwap = prioSwaps
 							.stream()
 							.filter(o -> o.getKey().matches(o1) && o.getValue().matches(o2))
 							.findFirst();
 					if (prioSwap.isPresent())
 						return 1;
 
-					prioSwap = prioSwaps.entrySet()
+					prioSwap = prioSwaps
 							.stream()
 							.filter(o -> o.getKey().matches(o2) && o.getValue().matches(o1))
 							.findFirst();
@@ -333,7 +336,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	}
 
 
-	private void loadPrioSwaps(String config, Map<AbstractComparableEntry, AbstractComparableEntry> map)
+	private void loadPrioSwaps(String config, List<Pair<AbstractComparableEntry, AbstractComparableEntry>> map)
 	{
 		map.clear();
 		if (Strings.isNullOrEmpty(config))
@@ -345,9 +348,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			.stream(NEWLINE_SPLITTER.split(config).spliterator(), false)
 			.map(s -> Arrays.stream(s.split(",")).filter(o -> !Strings.isNullOrEmpty(o)).toArray(String[]::new))
 			.filter(o -> o.length == 2)
-			.forEach(o -> map.put(
+			.forEach(o -> map.add(new ImmutablePair<>(
 					newBaseComparableEntry(o[0], "", -1, -1, true, false),
-					newBaseComparableEntry("", o[1], -1, -1, false, false)));
+					newBaseComparableEntry("", o[1], -1, -1, false, false))));
 	}
 
 	private void loadCustomSwaps(String config, Map<AbstractComparableEntry, Integer> map)
