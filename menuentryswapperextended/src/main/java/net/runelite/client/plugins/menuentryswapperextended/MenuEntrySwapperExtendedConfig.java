@@ -89,7 +89,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 			name = "Miscellaneous Swapping",
 			description = "",
 			position = 1,
-			keyName = "miscellaneousSection"
+			keyName = "miscSection"
 	)
 	String miscSection = "Miscellaneous Swapping";
 
@@ -539,19 +539,19 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-			keyName = "customSwaps",
-			name = "Custom Swaps",
-			description = "Add custom swaps here, 1 per line. Syntax: option,target:priority" +
-					"<br>Examples:" +
-					"<br> Check-charge,Camulet:1" +
-					"<br> Rub,Camulet:0" +
-					"<br> Wear:0" +
-					"<br>Note that the higher your set the priority, the more it will overtake over swaps.",
-			position = 1,
-			section = miscSection,
-			parse = true,
-			clazz = CustomSwapParse.class,
-			method = "parse"
+		keyName = "customSwaps",
+		name = "Custom Swaps",
+		description = "Add custom swaps here, 1 per line. Syntax: option,target:priority" +
+				"<br>Examples:" +
+				"<br> Check-charge,Camulet:1" +
+				"<br> Rub,Camulet:0" +
+				"<br> Wear:0" +
+				"<br>Note that the higher your set the priority, the more it will overtake over swaps.",
+		position = 1,
+		section = miscSection,
+		parse = true,
+		clazz = CustomSwapParse.class,
+		method = "parse"
 	)
 	default String customSwaps()
 	{
