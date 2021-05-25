@@ -16,7 +16,6 @@ import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicsObjectCreated;
-import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
@@ -225,12 +224,6 @@ public class TheatrePlugin extends Plugin
 	{
 		sotetseg.onGroundObjectSpawned(event);
 		xarpus.onGroundObjectSpawned(event);
-	}
-
-	@Subscribe
-	private void onGroundObjectDespawned(GroundObjectDespawned event)
-	{
-		xarpus.onGroundObjectDespawned(event);
 	}
 
 	@Subscribe
