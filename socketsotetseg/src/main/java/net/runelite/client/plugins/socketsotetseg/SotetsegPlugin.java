@@ -419,6 +419,13 @@ public class SotetsegPlugin extends Plugin
 		if (this.client.getWidget(28, 1) != null)
 		{
 			this.hideWidget(this.client.getWidget(28, 1), false);
+
+			// Clear widget text to prevent chosen set incorrectly sometimes on maze start
+			Widget[] widgetsOfSotetseg = client.getWidget(28, 1).getChildren();
+			for (Widget widget : widgetsOfSotetseg)
+			{
+				widget.setText("");
+			}
 		}
 
 		showFirstTile = false;
