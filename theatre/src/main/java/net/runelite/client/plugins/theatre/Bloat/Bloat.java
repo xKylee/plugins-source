@@ -317,4 +317,15 @@ public class Bloat extends Room
 		return col;
 	}
 
+	public int getBloatDownCount()
+	{
+		return bloatDownCount;
+	}
+
+	public int getBloatState()
+	{
+		return bloatState;
+	}
+
+
 }
