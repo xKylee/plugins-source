@@ -306,7 +306,7 @@ public class SpellbookPlugin extends Plugin
 		switch (event.getEventName())
 		{
 			case "startSpellRedraw":
-				final Spellbook pook = Spellbook.getByID(client.getVarbitValue(6718));
+				final Spellbook pook = Spellbook.getByID(client.getVarbitValue(4070));
 
 				if (pook != spellbook)
 				{
