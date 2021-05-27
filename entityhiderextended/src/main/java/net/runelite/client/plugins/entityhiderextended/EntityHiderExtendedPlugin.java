@@ -51,7 +51,7 @@ import java.util.Set;
 @PluginDescriptor(
 		name = "Entity Hider Extended",
 		enabledByDefault = false,
-		description = "Hide ALL dead NPCs animations",
+		description = "Hide dead NPCs animations",
 		tags = {"npcs"}
 )
 public class EntityHiderExtendedPlugin extends Plugin
@@ -69,9 +69,10 @@ public class EntityHiderExtendedPlugin extends Plugin
 	}
 
 	private ArrayList<Integer> hiddenIndices;
+	private ArrayList<Integer> animationHiddenIndices;
 	private Set<String> hideNPCsOnDeathName;
 	private Set<Integer> hideNPCsOnDeathID;
-	private Set<Integer> hideNPCsOnDeathAnimationID;
+	private Set<Integer> hideNPCsOnAnimationID;
 	private Set<String> blacklistName;
 	private Set<Integer> blacklistID;
 
@@ -81,6 +82,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 		client.setIsHidingEntities(true);
 		//client.setDeadNPCsHidden(true);
 		hiddenIndices = new ArrayList<>();
+		animationHiddenIndices = new ArrayList<>();
 		updateConfig();
 	}
 
@@ -101,6 +103,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 		//client.setDeadNPCsHidden(false);
 		clearHiddenNpcs();
 		hiddenIndices = null;
+		animationHiddenIndices = null;
 	}
 
 	@Subscribe
@@ -116,11 +119,19 @@ public class EntityHiderExtendedPlugin extends Plugin
 			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !blacklistName.contains(npc.getName().toLowerCase()) && !blacklistID.contains(npc.getId()))
 			|| (npc.getName() != null && npc.getHealthRatio() == 0 && hideNPCsOnDeathName.contains(npc.getName().toLowerCase()))
 			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId()))
-			|| (hideNPCsOnDeathAnimationID.contains(npc.getAnimation())))
+			|| (hideNPCsOnAnimationID.contains(npc.getAnimation())))
 			{
 				if (!hiddenIndices.contains(npc.getIndex()))
 				{
 					setHiddenNpc(npc, true);
+				}
+			}
+
+			if (animationHiddenIndices.contains(npc.getIndex()) && !hideNPCsOnAnimationID.contains(npc.getAnimation()))
+			{
+				if (hiddenIndices.contains(npc.getIndex()))
+				{
+					setHiddenNpc(npc, false);
 				}
 			}
 		}
@@ -150,7 +161,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 	{
 		hideNPCsOnDeathName = new HashSet<>();
 		hideNPCsOnDeathID = new HashSet<>();
-		hideNPCsOnDeathAnimationID = new HashSet<>();
+		hideNPCsOnAnimationID = new HashSet<>();
 		blacklistID = new HashSet<>();
 		blacklistName = new HashSet<>();
 
@@ -169,11 +180,11 @@ public class EntityHiderExtendedPlugin extends Plugin
 			}
 
 		}
-		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathAnimationID()))
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnAnimationID()))
 		{
 			try
 			{
-				hideNPCsOnDeathAnimationID.add(Integer.parseInt(s));
+				hideNPCsOnAnimationID.add(Integer.parseInt(s));
 			}
 			catch (NumberFormatException ignored)
 			{
@@ -205,6 +216,10 @@ public class EntityHiderExtendedPlugin extends Plugin
 		{
 			newHiddenNpcIndicesList.add(npc.getIndex());
 			hiddenIndices.add(npc.getIndex());
+			if (hideNPCsOnAnimationID.contains(npc.getAnimation()))
+			{
+				animationHiddenIndices.add(npc.getIndex());
+			}
 		}
 		else
 		{
@@ -212,6 +227,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 			{
 				newHiddenNpcIndicesList.remove((Integer) npc.getIndex());
 				hiddenIndices.remove((Integer) npc.getIndex());
+				animationHiddenIndices.remove((Integer) npc.getIndex());
 			}
 		}
 		client.setHiddenNpcIndices(newHiddenNpcIndicesList);
@@ -226,6 +242,7 @@ public class EntityHiderExtendedPlugin extends Plugin
 			newHiddenNpcIndicesList.removeAll(hiddenIndices);
 			client.setHiddenNpcIndices(newHiddenNpcIndicesList);
 			hiddenIndices.clear();
+			animationHiddenIndices.clear();
 		}
 	}
 }
