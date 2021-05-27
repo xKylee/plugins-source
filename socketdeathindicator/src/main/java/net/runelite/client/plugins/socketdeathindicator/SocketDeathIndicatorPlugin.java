@@ -94,6 +94,11 @@ public class SocketDeathIndicatorPlugin extends Plugin
 
 	private ArrayList<Integer> hiddenIndices;
 
+	private int partySize = -1;
+	private int bigHP = -1;
+	private int smallHP = -1;
+	private int maidenHP = -1;
+
 	@Provides
 	SocketDeathIndicatorsConfig getConfig(ConfigManager configManager)
 	{
@@ -121,22 +126,9 @@ public class SocketDeathIndicatorPlugin extends Plugin
 	@Subscribe
 	public void onNpcSpawned(NpcSpawned event)
 	{
-		int partySize = -1;
-
-		try
-		{
-			partySize = (int) Arrays.stream(Objects.requireNonNull(client.getWidget(28, 10)).getStaticChildren()).filter((w) ->
-					w.getDynamicChildren() != null && Arrays.stream(w.getDynamicChildren()).anyMatch((r) -> !Objects.equals(r.getText(), ""))).count();
-		}
-		catch (NullPointerException ignored)
-		{
-		}
 
 		if (partySize != -1)
 		{
-			int bigHP = -1;
-			int smallHP = -1;
-			int maidenHP = -1;
 			if (partySize < 4)
 			{
 				bigHP = 16;
@@ -548,6 +540,15 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		{
 			inNylo = true;
 
+			try
+			{
+				partySize = (int) Arrays.stream(Objects.requireNonNull(client.getWidget(28, 10)).getStaticChildren()).filter((w) ->
+						w.getDynamicChildren() != null && Arrays.stream(w.getDynamicChildren()).anyMatch((r) -> !Objects.equals(r.getText(), ""))).count();
+			}
+			catch (NullPointerException ignored)
+			{
+			}
+
 			for (NyloQ q : nylos)
 			{
 				if (q.hidden)
@@ -567,12 +568,21 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		else
 		{
 			inNylo = false;
+			partySize = -1;
+			bigHP = -1;
+			smallHP = -1;
+			maidenHP = -1;
 			if (!hiddenIndices.isEmpty())
 			{
 				List<Integer> newHiddenNpcIndicesList = client.getHiddenNpcIndices();
 				newHiddenNpcIndicesList.removeAll(hiddenIndices);
 				client.setHiddenNpcIndices(newHiddenNpcIndicesList);
 				hiddenIndices.clear();
+			}
+			if (!nylos.isEmpty() || !deadNylos.isEmpty())
+			{
+				nylos.clear();
+				deadNylos.clear();
 			}
 		}
 	}
