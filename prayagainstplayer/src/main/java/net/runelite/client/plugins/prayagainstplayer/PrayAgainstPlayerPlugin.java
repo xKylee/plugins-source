@@ -46,7 +46,6 @@ import net.runelite.api.events.PlayerDespawned;
 import net.runelite.api.events.PlayerSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.game.FriendChatManager;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -100,9 +99,6 @@ public class PrayAgainstPlayerPlugin extends Plugin
 	@Inject
 	private PrayAgainstPlayerConfig config;
 
-	@Inject
-	private FriendChatManager friendChatManager;
-
 	public static final int BLOCK_DEFENDER = 4177;
 	public static final int BLOCK_NO_SHIELD = 420;
 	public static final int BLOCK_SHIELD = 1156;
@@ -152,7 +148,7 @@ public class PrayAgainstPlayerPlugin extends Plugin
 			{
 				return;
 			}
-			if (friendChatManager.isMember(sourcePlayer.getName()) && config.ignoreClanMates())
+			if (sourcePlayer.isFriendsChatMember() && config.ignoreClanMates())
 			{
 				return;
 			}
@@ -195,7 +191,7 @@ public class PrayAgainstPlayerPlugin extends Plugin
 				{
 					return;
 				}
-				if (friendChatManager.isMember(sourcePlayer.getName()) && config.ignoreClanMates())
+				if (sourcePlayer.isFriendsChatMember() && config.ignoreClanMates())
 				{
 					return;
 				}
@@ -232,7 +228,7 @@ public class PrayAgainstPlayerPlugin extends Plugin
 			{
 				return;
 			}
-			if (friendChatManager.isMember(p.getName()) && config.ignoreClanMates())
+			if (p.isFriendsChatMember() && config.ignoreClanMates())
 			{
 				return;
 			}
