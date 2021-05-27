@@ -25,10 +25,10 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "5.0.2"
 
 project.extra["PluginName"] = "Entity Hider Extended"
-project.extra["PluginDescription"] = "Hide players, NPCs, and/or projectiles"
+project.extra["PluginDescription"] = "Hide dead NPCs animations"
 
 dependencies {
     annotationProcessor(Libraries.lombok)
