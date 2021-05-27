@@ -70,10 +70,10 @@ public interface EntityHiderExtendedConfig extends Config
 	@ConfigItem(
 		position = 3,
 		keyName = "hideNPCsOnAnimationID",
-		name = "Hide NPCs On Death (Animation ID)",
-		description = "Configures which NPCs by Animation ID to hide when they die"
+		name = "Hide NPCs On Animation (ID)",
+		description = "Configures which NPCs by Animation ID to hide"
 	)
-	default String hideNPCsOnDeathAnimationID()
+	default String hideNPCsOnAnimationID()
 	{
 		return "";
 	}
