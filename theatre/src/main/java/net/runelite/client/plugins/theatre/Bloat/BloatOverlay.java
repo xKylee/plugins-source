@@ -45,7 +45,14 @@ public class BloatOverlay extends RoomOverlay
 				int tick = bloat.getBloatTickCount();
 				final String ticksCounted = String.valueOf(tick);
 				Point canvasPoint = boss.getCanvasTextLocation(graphics, ticksCounted, 50);
-				renderTextLocation(graphics, ticksCounted, Color.WHITE, canvasPoint);
+				if (bloat.getBloatState() != 1 && bloat.getBloatState() != 4)
+				{
+					renderTextLocation(graphics, String.valueOf(33 - bloat.getBloatDownCount()), Color.WHITE, canvasPoint);
+				}
+				else
+				{
+					renderTextLocation(graphics, ticksCounted, Color.WHITE, canvasPoint);
+				}
 			}
 
 			if (config.bloatHands())
