@@ -241,9 +241,21 @@ public interface TheatreConfig extends Config
 	{
 		return true;
 	}
-
+	
 	@ConfigItem(
 		position = 6,
+		keyName = "BloatTickCountStyle",
+		name = "Bloat Tick Time Style",
+		description = "Count up or Count down options on bloat downed state",
+		section = bloatSection
+	)
+	default BLOATTIMEDOWN BloatTickCountStyle()
+	{
+		return BLOATTIMEDOWN.COUNTDOWN;
+	}
+
+	@ConfigItem(
+		position = 7,
 		keyName = "bloatHands",
 		name = "Bloat Hands Overlay",
 		description = "Highlights the tiles where Bloat's hands will fall.",
@@ -256,7 +268,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 7,
+		position = 8,
 		keyName = "bloatHandsColor",
 		name = "Bloat Hands Overlay Color",
 		description = "Select a color for the Bloat Hands Overlay to be.",
@@ -269,7 +281,7 @@ public interface TheatreConfig extends Config
 
 	@Range(max = 10)
 	@ConfigItem(
-		position = 8,
+		position = 9,
 		keyName = "bloatHandsWidth",
 		name = "Bloat Hands Overlay Thickness",
 		description = "Sets the stroke width of the tile overlay where the hands fall. (BIGGER = THICKER).",
@@ -284,7 +296,7 @@ public interface TheatreConfig extends Config
 		name = "Hide Bloat Tank",
 		keyName = "hideBloatTank",
 		description = "Hides the entire Bloat tank in the center of the room",
-		position = 9,
+		position = 10,
 		section = bloatSection
 	)
 	default boolean hideBloatTank()
@@ -296,7 +308,7 @@ public interface TheatreConfig extends Config
 		name = "Hide Ceiling Chains",
 		keyName = "hideCeilingChains",
 		description = "Hides the chains hanging from the ceiling in the Bloat room",
-		position = 10,
+		position = 11,
 		section = bloatSection
 	)
 	default boolean hideCeilingChains()
@@ -1137,6 +1149,12 @@ public interface TheatreConfig extends Config
 		{
 			return getName();
 		}
+	}
+	
+	enum BLOATTIMEDOWN
+	{
+		COUNTUP,
+		COUNTDOWN
 	}
 
 	enum NYLOTIMEALIVE
