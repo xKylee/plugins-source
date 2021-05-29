@@ -2,6 +2,7 @@
  * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
  * Copyright (c) 2020, capslock13#0001
  * Copyright (c) 2021, Andrew Terra <github.com/andrewterra>
+ * Copyright (c) 2021, BickusDiggus <https://github.com/BickusDiggus>
 
  * All rights reserved.
  *
