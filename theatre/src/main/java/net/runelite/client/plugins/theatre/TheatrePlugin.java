@@ -7,10 +7,12 @@
 
 package net.runelite.client.plugins.theatre;
 
+import com.google.common.base.Strings;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.Varbits;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
@@ -36,7 +38,9 @@ import net.runelite.client.plugins.theatre.Nylocas.Nylocas;
 import net.runelite.client.plugins.theatre.Sotetseg.Sotetseg;
 import net.runelite.client.plugins.theatre.Verzik.Verzik;
 import net.runelite.client.plugins.theatre.Xarpus.Xarpus;
+import net.runelite.client.util.Text;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import org.pf4j.Extension;
 
 @Extension
@@ -80,6 +84,10 @@ public class TheatrePlugin extends Plugin
 
 	private Room[] rooms = null;
 
+	private boolean tobActive;
+	public static int partySize = 0;
+	private final ArrayList<String> playerList = new ArrayList<>();
+
 	@Override
 	public void configure(Binder binder)
 	{
@@ -118,6 +126,9 @@ public class TheatrePlugin extends Plugin
 		{
 			room.unload();
 		}
+
+		partySize = 0;
+		playerList.clear();
 	}
 
 	@Subscribe
@@ -151,6 +162,19 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
+		if (tobActive)
+		{
+			for (int v = 330; v < 335; ++v)
+			{
+				String name = Text.standardize(client.getVarcStrValue(v));
+				if (!Strings.isNullOrEmpty(name) && !playerList.contains(name))
+				{
+					playerList.add(name);
+					partySize = playerList.size();
+				}
+			}
+		}
+
 		maiden.onGameTick(event);
 		bloat.onGameTick(event);
 		nylocas.onGameTick(event);
@@ -169,6 +193,13 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
+		tobActive = client.getVar(Varbits.THEATRE_OF_BLOOD) > 1;
+		if (!tobActive)
+		{
+			partySize = 0;
+			playerList.clear();
+		}
+
 		bloat.onVarbitChanged(event);
 		nylocas.onVarbitChanged(event);
 		xarpus.onVarbitChanged(event);
