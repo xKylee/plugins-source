@@ -30,6 +30,7 @@
 package net.runelite.client.plugins.socketdeathindicator;
 
 
+import com.google.common.base.Strings;
 import com.google.inject.Provides;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +64,7 @@ import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.Text;
 import org.pf4j.Extension;
 
 @Extension
@@ -95,6 +97,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 
 	private ArrayList<Integer> hiddenIndices;
 
+	private ArrayList<String> playerList;
 	private int partySize = -1;
 	private int bigHP = -1;
 	private int smallHP = -1;
@@ -112,6 +115,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		deadNylos = new ArrayList<>();
 		nylos = new ArrayList<>();
 		hiddenIndices = new ArrayList<>();
+		playerList = new ArrayList<>();
 		overlayManager.add(overlay);
 	}
 
@@ -121,6 +125,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		deadNylos = null;
 		nylos = null;
 		hiddenIndices = null;
+		playerList = null;
 		overlayManager.remove(overlay);
 	}
 
@@ -541,13 +546,14 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		{
 			inNylo = true;
 
-			try
+			for (int v = 330; v < 335; ++v)
 			{
-				partySize = (int) Arrays.stream(Objects.requireNonNull(client.getWidget(28, 10)).getStaticChildren()).filter((w) ->
-						w.getDynamicChildren() != null && Arrays.stream(w.getDynamicChildren()).anyMatch((r) -> !Objects.equals(r.getText(), ""))).count();
-			}
-			catch (NullPointerException ignored)
-			{
+				String name = Text.standardize(client.getVarcStrValue(v));
+				if (!Strings.isNullOrEmpty(name) && !playerList.contains(name))
+				{
+					playerList.add(name);
+					partySize = playerList.size();
+				}
 			}
 
 			for (NyloQ q : nylos)
@@ -569,10 +575,6 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		else
 		{
 			inNylo = false;
-			partySize = -1;
-			bigHP = -1;
-			smallHP = -1;
-			maidenHP = -1;
 			if (!hiddenIndices.isEmpty())
 			{
 				List<Integer> newHiddenNpcIndicesList = client.getHiddenNpcIndices();
@@ -580,10 +582,12 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				client.setHiddenNpcIndices(newHiddenNpcIndicesList);
 				hiddenIndices.clear();
 			}
-			if (!nylos.isEmpty() || !deadNylos.isEmpty())
+			if (!nylos.isEmpty() || !deadNylos.isEmpty() || !playerList.isEmpty())
 			{
+				partySize = -1;
 				nylos.clear();
 				deadNylos.clear();
+				playerList.clear();
 			}
 		}
 	}
