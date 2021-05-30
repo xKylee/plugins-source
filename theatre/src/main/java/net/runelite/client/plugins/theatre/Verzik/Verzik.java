@@ -35,6 +35,7 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.kit.KitType;
+import net.runelite.api.util.Text;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
@@ -89,7 +90,7 @@ public class Verzik extends Room
 	private int verzikYellows;
 
 	@Getter
-	private Map<Projectile, WorldPoint> verzikRangeProjectiles = new HashMap();
+	private Map<Projectile, WorldPoint> verzikRangeProjectiles = new HashMap<>();
 
 	@Getter
 	private HashSet<NPC> verzikAggros = new HashSet<>();
@@ -109,7 +110,7 @@ public class Verzik extends Room
 	@Getter
 	private int verzikLightningAttacks = 4;
 
-	private final List<Projectile> verzikRangedAttacks = new ArrayList();
+	private final List<Projectile> verzikRangedAttacks = new ArrayList<>();
 
 	private final Predicate<Projectile> isValidVerzikAttack = (p) ->
 		p.getRemainingCycles() > 0 && (p.getId() == VERZIK_RANGE_BALL || p.getId() == VERZIK_LIGHTNING_BALL);
@@ -145,13 +146,13 @@ public class Verzik extends Room
 	private static final int P3_YELLOW_ATTACK_COUNT = 15;
 	private static final int P3_GREEN_ATTACK_COUNT = 20;
 
-	public static Set<String> WEAPON_SET;
-	public static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
+	private Set<Integer> WEAPON_SET;
+	private static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
 	@Override
 	public void load()
 	{
-		WEAPON_SET = ImmutableSet.of(config.weaponSet());
+		updateConfig();
 		overlayManager.add(verzikOverlay);
 	}
 
@@ -167,7 +168,23 @@ public class Verzik extends Room
 	{
 		if (change.getKey().equals("weaponSet"))
 		{
-			WEAPON_SET = ImmutableSet.of(config.weaponSet());
+			updateConfig();
+		}
+	}
+
+	private void updateConfig()
+	{
+		WEAPON_SET = new HashSet<>();
+		for (String s : Text.COMMA_SPLITTER.split(config.weaponSet()))
+		{
+			try
+			{
+				WEAPON_SET.add(Integer.parseInt(s));
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+
 		}
 	}
 
@@ -268,25 +285,11 @@ public class Verzik extends Room
 	{
 		if (config.purpleCrabAttackMES() && verzikNPC != null && verzikNPC.getId() == 8372)
 		{
-			List<Integer> weaponIds = new ArrayList<>();
-
-			for (String item : WEAPON_SET)
-			{
-				try
-				{
-					weaponIds.add(Integer.parseInt(item));
-				}
-				catch (NumberFormatException ignored)
-				{
-					ignored.printStackTrace();
-				}
-			}
-
 			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION)
 			{
 				Player player = client.getLocalPlayer();
 				PlayerComposition playerComp = player != null ? player.getPlayerComposition() : null;
-				if (playerComp == null || weaponIds.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
+				if (playerComp == null || WEAPON_SET.contains(playerComp.getEquipmentId(KitType.WEAPON)) || HELMET_SET.contains(playerComp.getEquipmentId(KitType.HEAD)))
 				{
 					return;
 				}
