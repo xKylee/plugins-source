@@ -84,7 +84,7 @@ public class XarpusOverlay extends RoomOverlay
 				for (GroundObject o : xarpus.getXarpusExhumeds().keySet())
 				{
 					Polygon poly = o.getCanvasTilePoly();
-					if (poly != null && xarpus.getXarpusExhumeds().get(o) >= 0)
+					if (poly != null)
 					{
 						graphics.setColor(new Color(0, 255, 0, 130));
 						graphics.setStroke(new BasicStroke(1));
