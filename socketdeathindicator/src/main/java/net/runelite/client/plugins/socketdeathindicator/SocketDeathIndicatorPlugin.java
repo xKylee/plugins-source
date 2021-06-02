@@ -99,9 +99,6 @@ public class SocketDeathIndicatorPlugin extends Plugin
 
 	private ArrayList<String> playerList;
 	private int partySize = -1;
-	private int bigHP = -1;
-	private int smallHP = -1;
-	private int maidenHP = -1;
 
 	@Provides
 	SocketDeathIndicatorsConfig getConfig(ConfigManager configManager)
@@ -135,6 +132,9 @@ public class SocketDeathIndicatorPlugin extends Plugin
 
 		if (partySize != -1)
 		{
+			int bigHP = -1;
+			int smallHP = -1;
+			int maidenHP = -1;
 			if (partySize < 4)
 			{
 				bigHP = 16;
@@ -192,6 +192,18 @@ public class SocketDeathIndicatorPlugin extends Plugin
 			deadNylos.removeIf((q) -> q.equals(event.getNpc()));
 		}
 
+		int id = event.getNpc().getId();
+		switch (id)
+		{
+			case 8360:
+			case 8361:
+			case 8362:
+			case 8363:
+			case 8364:
+			case 8365:
+				maidenNPC = null;
+				break;
+		}
 	}
 
 	@Subscribe
@@ -269,9 +281,9 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				else
 				{
 					q.hp -= hitsplatApplied.getHitsplat().getAmount();
+					q.queuedDamage -= hitsplatApplied.getHitsplat().getAmount();
 				}
 
-				q.queuedDamage -= hitsplatApplied.getHitsplat().getAmount();
 				if (q.hp <= 0)
 				{
 					NyloQ finalQ = q;
@@ -280,17 +292,17 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				else if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363)
 				{
 					double percent = (double) q.hp / (double) q.maxHP;
-					if (percent < 0.7D)
+					if (percent < 0.7D && q.phase == 0)
 					{
 						q.phase = 1;
 					}
 
-					if (percent < 0.5D)
+					if (percent < 0.5D && q.phase == 1)
 					{
 						q.phase = 2;
 					}
 
-					if (percent < 0.3D)
+					if (percent < 0.3D && q.phase == 2)
 					{
 						q.phase = 3;
 					}
@@ -344,17 +356,17 @@ public class SocketDeathIndicatorPlugin extends Plugin
 						} while (q.npc.getId() != 8360 && q.npc.getId() != 8361 && q.npc.getId() != 8362 && q.npc.getId() != 8363);
 
 						double percent = ((double) q.hp - (double) q.queuedDamage) / (double) q.maxHP;
-						if (percent < 0.7D)
+						if (percent < 0.7D && q.phase == 0)
 						{
 							q.phase = 1;
 						}
 
-						if (percent < 0.5D)
+						if (percent < 0.5D && q.phase == 1)
 						{
 							q.phase = 2;
 						}
 
-						if (percent < 0.3D)
+						if (percent < 0.3D && q.phase == 2)
 						{
 							q.phase = 3;
 						}
