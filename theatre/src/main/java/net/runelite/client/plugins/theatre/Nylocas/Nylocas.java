@@ -351,10 +351,6 @@ public class Nylocas extends Room
 			case 10783:
 			case 10784:
 			case 10785:
-			case 10786:
-			case 10787:
-			case 10788:
-			case 10789:
 			case 10791:
 			case 10792:
 			case 10793:
@@ -387,6 +383,10 @@ public class Nylocas extends Room
 			case NpcID.NYLOCAS_VASILIAS_8355:
 			case NpcID.NYLOCAS_VASILIAS_8356:
 			case NpcID.NYLOCAS_VASILIAS_8357:
+			case 10786:
+			case 10787:
+			case 10788:
+			case 10789:
 			case 10807:
 			case 10808:
 			case 10809:
@@ -404,6 +404,9 @@ public class Nylocas extends Room
 			case 8345:
 			case 8346:
 			case 8347:
+			case 10794:
+			case 10795:
+			case 10796:
 				bigNylos.add(npc);
 				break;
 		}
@@ -507,10 +510,6 @@ public class Nylocas extends Room
 			case 10783:
 			case 10784:
 			case 10785:
-			case 10786:
-			case 10787:
-			case 10788:
-			case 10789:
 			case 10791:
 			case 10792:
 			case 10793:
@@ -537,6 +536,10 @@ public class Nylocas extends Room
 			case NpcID.NYLOCAS_VASILIAS_8355:
 			case NpcID.NYLOCAS_VASILIAS_8356:
 			case NpcID.NYLOCAS_VASILIAS_8357:
+			case 10786:
+			case 10787:
+			case 10788:
+			case 10789:
 			case 10807:
 			case 10808:
 			case 10809:
@@ -560,7 +563,9 @@ public class Nylocas extends Room
 				case 8355:
 				case 8356:
 				case 8357:
-				case 10807:
+				case 10787:
+				case 10788:
+				case 10789:
 				case 10808:
 				case 10809:
 				case 10810:
@@ -599,7 +604,9 @@ public class Nylocas extends Room
 			case 8355:
 			case 8356:
 			case 8357:
-			case 10807:
+			case 10787:
+			case 10788:
+			case 10789:
 			case 10808:
 			case 10809:
 			case 10810:
