@@ -93,12 +93,17 @@ public class Bloat extends Room
 	public void onNpcSpawned(NpcSpawned npcSpawned)
 	{
 		NPC npc = npcSpawned.getNpc();
-		if (npc.getId() == NpcID.PESTILENT_BLOAT)
+		switch (npc.getId())
 		{
-			bloatActive = true;
-			bloatNPC = npc;
-			bloatTickCount = 0;
-			bloatStarted = false;
+			case NpcID.PESTILENT_BLOAT:
+			case 10812:
+			case 10813:
+				bloatActive = true;
+				bloatNPC = npc;
+				bloatTickCount = 0;
+				bloatStarted = false;
+				break;
+
 		}
 	}
 
@@ -106,11 +111,16 @@ public class Bloat extends Room
 	public void onNpcDespawned(NpcDespawned npcDespawned)
 	{
 		NPC npc = npcDespawned.getNpc();
-		if (npc.getId() == NpcID.PESTILENT_BLOAT)
+		switch (npc.getId())
 		{
-			bloatActive = false;
-			bloatNPC = null;
-			bloatTickCount = -1;
+			case NpcID.PESTILENT_BLOAT:
+			case 10812:
+			case 10813:
+				bloatActive = false;
+				bloatNPC = null;
+				bloatTickCount = -1;
+				break;
+
 		}
 	}
 

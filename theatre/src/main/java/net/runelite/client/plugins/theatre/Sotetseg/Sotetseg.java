@@ -104,6 +104,10 @@ public class Sotetseg extends Room
 		{
 			case NpcID.SOTETSEG:
 			case NpcID.SOTETSEG_8388:
+			case 10864:
+			case 10865:
+			case 10867:
+			case 10868:
 				sotetsegActive = true;
 				sotetsegNPC = npc;
 				break;
@@ -118,6 +122,10 @@ public class Sotetseg extends Room
 		{
 			case NpcID.SOTETSEG:
 			case NpcID.SOTETSEG_8388:
+			case 10864:
+			case 10865:
+			case 10867:
+			case 10868:
 				if (client.getPlane() != 3)
 				{
 					sotetsegActive = false;
