@@ -203,34 +203,13 @@ public class Xarpus extends Room
 				if (exhumedCounter == null)
 				{
 
-					if (TheatrePlugin.partySize == 5)
-					{
-						exhumedCount = 18;
-					}
-					else if (TheatrePlugin.partySize == 4)
-					{
-						exhumedCount = 15;
-					}
-					else if (TheatrePlugin.partySize == 3)
-					{
-						exhumedCount = 12;
-					}
-					else if (TheatrePlugin.partySize == 2)
-					{
-						exhumedCount = 9;
-					}
-					else
-					{
-						exhumedCount = 7;
-					}
-
-					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, exhumedCount - 1);
+					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, 1);
 					infoBoxManager.addInfoBox(exhumedCounter);
 				}
 				else
 				{
 
-					exhumedCounter.setCount(exhumedCounter.getCount() - 1);
+					exhumedCounter.setCount(exhumedCounter.getCount() + 1);
 				}
 
 				xarpusExhumeds.put(o, 11);
