@@ -195,6 +195,8 @@ public class Verzik extends Room
 		switch (npc.getId())
 		{
 			case NpcID.WEB:
+			case 10837:
+			case 10854:
 				if (verzikNPC != null && verzikNPC.getInteracting() == null)
 				{
 					verzikSpecial = SpecialAttack.WEBS;
@@ -209,6 +211,8 @@ public class Verzik extends Room
 				verzikAggros.add(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS_8385:
+			case 10820:
+			case 10828:
 				verzikReds.putIfAbsent(npc, new MutablePair<>(npc.getHealthRatio(), npc.getHealthScale()));
 				break;
 			case NPC_ID_TORNADO:
@@ -279,6 +283,8 @@ public class Verzik extends Room
 				verzikAggros.remove(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS_8385:
+			case 10820:
+			case 10828:
 				verzikReds.remove(npc);
 				break;
 			case NPC_ID_TORNADO:
@@ -458,18 +464,24 @@ public class Verzik extends Room
 				switch (verzikNPC.getId())
 				{
 					case NpcID.VERZIK_VITUR_8370:
+					case 10831:
+					case 10848:
 						verzikPhase = Phase.PHASE1;
 						verzikAttackCount = 0;
 						verzikTicksUntilAttack = 18;
 						verzikTickPaused = false;
 						break;
 					case NpcID.VERZIK_VITUR_8372:
+					case 10833:
+					case 10850:
 						verzikPhase = Phase.PHASE2;
 						verzikAttackCount = 0;
 						verzikTicksUntilAttack = 3;
 						verzikTickPaused = false;
 						break;
 					case NpcID.VERZIK_VITUR_8374:
+					case 10835:
+					case 10852:
 						verzikPhase = Phase.PHASE3;
 						verzikAttackCount = 0;
 						verzikTicksUntilAttack = 6;

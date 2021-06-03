@@ -560,6 +560,10 @@ public class Nylocas extends Room
 				case 8355:
 				case 8356:
 				case 8357:
+				case 10807:
+				case 10808:
+				case 10809:
+				case 10810:
 					if (event.getActor().getAnimation() == 8004 ||
 						event.getActor().getAnimation() == 7999 ||
 						event.getActor().getAnimation() == 7989)
@@ -595,6 +599,10 @@ public class Nylocas extends Room
 			case 8355:
 			case 8356:
 			case 8357:
+			case 10807:
+			case 10808:
+			case 10809:
+			case 10810:
 			{
 				nyloBossAttackTickCount = 3;
 				nyloBossSwitchTickCount = 11;

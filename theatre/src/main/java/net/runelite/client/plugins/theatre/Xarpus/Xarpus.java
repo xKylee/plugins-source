@@ -295,7 +295,7 @@ public class Xarpus extends Room
 					xarpusTicksUntilAttack = 8;
 				}
 			}
-			else if (xarpusNPC.getId() == NpcID.XARPUS_8340)
+			else if (xarpusNPC.getId() == NpcID.XARPUS_8340 || xarpusNPC.getId() == 10768 || xarpusNPC.getId() == 10772)
 			{
 				xarpusTicksUntilAttack--;
 				if (xarpusTicksUntilAttack <= 0)

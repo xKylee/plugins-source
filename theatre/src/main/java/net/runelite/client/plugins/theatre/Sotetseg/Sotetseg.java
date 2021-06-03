@@ -161,7 +161,7 @@ public class Sotetseg extends Room
 	{
 		if (sotetsegActive)
 		{
-			if (sotetsegNPC != null && sotetsegNPC.getId() == NpcID.SOTETSEG_8388)
+			if (sotetsegNPC != null && (sotetsegNPC.getId() == NpcID.SOTETSEG_8388 || sotetsegNPC.getId() == 10865 || sotetsegNPC.getId() == 10868))
 			{
 				if (sotetsegTickCount >= 0)
 				{
