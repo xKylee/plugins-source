@@ -71,7 +71,7 @@ public class XarpusOverlay extends RoomOverlay
 			NPC boss = xarpus.getXarpusNPC();
 
 			if ((config.xarpusTickP2() && (boss.getId() == NpcID.XARPUS_8340 || boss.getId() == 10768 || boss.getId() == 10772))
-					|| (config.xarpusTickP3() && (boss.getId() == NpcID.XARPUS_8341 || boss.getId() == 10769 || boss.getId() == 10773)))
+				|| (config.xarpusTickP3() && (boss.getId() == NpcID.XARPUS_8341 || boss.getId() == 10769 || boss.getId() == 10773)))
 			{
 				int tick = xarpus.getXarpusTicksUntilAttack();
 				final String ticksLeftStr = String.valueOf(tick);
