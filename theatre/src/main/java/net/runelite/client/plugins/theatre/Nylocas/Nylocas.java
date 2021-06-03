@@ -315,6 +315,7 @@ public class Nylocas extends Room
 		switch (npc.getId())
 		{
 			case NPCID_NYLOCAS_PILLAR:
+			case 10811:
 				nyloActive = true;
 				if (nylocasPillars.size() > 3)
 				{
@@ -337,6 +338,34 @@ public class Nylocas extends Room
 			case 8351:
 			case 8352:
 			case 8353:
+			case 10774:
+			case 10775:
+			case 10776:
+			case 10777:
+			case 10778:
+			case 10779:
+			case 10780:
+			case 10781:
+			case 10782:
+			case 10783:
+			case 10784:
+			case 10785:
+			case 10786:
+			case 10787:
+			case 10788:
+			case 10789:
+			case 10791:
+			case 10792:
+			case 10793:
+			case 10794:
+			case 10795:
+			case 10796:
+			case 10797:
+			case 10798:
+			case 10799:
+			case 10800:
+			case 10801:
+			case 10802:
 				if (nyloActive)
 				{
 					nylocasNpcs.put(npc, 52);
@@ -357,6 +386,10 @@ public class Nylocas extends Room
 			case NpcID.NYLOCAS_VASILIAS_8355:
 			case NpcID.NYLOCAS_VASILIAS_8356:
 			case NpcID.NYLOCAS_VASILIAS_8357:
+			case 10807:
+			case 10808:
+			case 10809:
+			case 10810:
 				nyloBossTotalTickCount = -4;
 				nyloBossAlive = true;
 				isInstanceTimerRunning = false;
@@ -459,6 +492,34 @@ public class Nylocas extends Room
 			case 8351:
 			case 8352:
 			case 8353:
+			case 10774:
+			case 10775:
+			case 10776:
+			case 10777:
+			case 10778:
+			case 10779:
+			case 10780:
+			case 10781:
+			case 10782:
+			case 10783:
+			case 10784:
+			case 10785:
+			case 10786:
+			case 10787:
+			case 10788:
+			case 10789:
+			case 10791:
+			case 10792:
+			case 10793:
+			case 10794:
+			case 10795:
+			case 10796:
+			case 10797:
+			case 10798:
+			case 10799:
+			case 10800:
+			case 10801:
+			case 10802:
 				if (nylocasNpcs.remove(npc) != null)
 				{
 					nylocasAliveCounterOverlay.setNyloAlive(nylocasNpcs.size());
@@ -473,6 +534,10 @@ public class Nylocas extends Room
 			case NpcID.NYLOCAS_VASILIAS_8355:
 			case NpcID.NYLOCAS_VASILIAS_8356:
 			case NpcID.NYLOCAS_VASILIAS_8357:
+			case 10807:
+			case 10808:
+			case 10809:
+			case 10810:
 				nyloBossAlive = false;
 				nyloBossAttackTickCount = -1;
 				nyloBossSwitchTickCount = -1;

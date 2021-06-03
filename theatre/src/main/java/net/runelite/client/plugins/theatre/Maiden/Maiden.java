@@ -99,14 +99,30 @@ public class Maiden extends Room
 			case NpcID.THE_MAIDEN_OF_SUGADINTI_8363:
 			case NpcID.THE_MAIDEN_OF_SUGADINTI_8364:
 			case NpcID.THE_MAIDEN_OF_SUGADINTI_8365:
+			case 10814:
+			case 10815:
+			case 10816:
+			case 10817:
+			case 10818:
+			case 10819:
+			case 10822:
+			case 10823:
+			case 10824:
+			case 10825:
+			case 10826:
+			case 10827:
 				ticksUntilAttack = 10;
 				maidenActive = true;
 				maidenNPC = npc;
 				break;
 			case NpcID.BLOOD_SPAWN:
+			case 10821:
+			case 10829:
 				maidenSpawns.add(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS:
+			case 10820:
+			case 10828:
 				maidenReds.putIfAbsent(npc, new MutablePair<>(npc.getHealthRatio(), npc.getHealthScale()));
 				break;
 		}
@@ -124,15 +140,31 @@ public class Maiden extends Room
 			case NpcID.THE_MAIDEN_OF_SUGADINTI_8363:
 			case NpcID.THE_MAIDEN_OF_SUGADINTI_8364:
 			case NpcID.THE_MAIDEN_OF_SUGADINTI_8365:
+			case 10814:
+			case 10815:
+			case 10816:
+			case 10817:
+			case 10818:
+			case 10819:
+			case 10822:
+			case 10823:
+			case 10824:
+			case 10825:
+			case 10826:
+			case 10827:
 				ticksUntilAttack = 0;
 				maidenActive = false;
 				maidenSpawns.clear();
 				maidenNPC = null;
 				break;
 			case NpcID.BLOOD_SPAWN:
+			case 10821:
+			case 10829:
 				maidenSpawns.remove(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS:
+			case 10820:
+			case 10828:
 				maidenReds.remove(npc);
 				break;
 		}

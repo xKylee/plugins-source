@@ -133,6 +133,14 @@ public class Xarpus extends Room
 			case NpcID.XARPUS_8339:
 			case NpcID.XARPUS_8340:
 			case NpcID.XARPUS_8341:
+			case 10766:
+			case 10767:
+			case 10768:
+			case 10769:
+			case 10770:
+			case 10771:
+			case 10772:
+			case 10773:
 				xarpusActive = true;
 				xarpusNPC = npc;
 				xarpusStare = false;
@@ -153,6 +161,14 @@ public class Xarpus extends Room
 			case NpcID.XARPUS_8339:
 			case NpcID.XARPUS_8340:
 			case NpcID.XARPUS_8341:
+			case 10766:
+			case 10767:
+			case 10768:
+			case 10769:
+			case 10770:
+			case 10771:
+			case 10772:
+			case 10773:
 				xarpusActive = false;
 				xarpusNPC = null;
 				xarpusStare = false;

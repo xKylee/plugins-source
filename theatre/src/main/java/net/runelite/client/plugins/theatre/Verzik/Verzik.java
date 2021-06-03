@@ -203,6 +203,9 @@ public class Verzik extends Room
 			case NpcID.NYLOCAS_ISCHYROS_8381:
 			case NpcID.NYLOCAS_HAGIOS_8383:
 			case NpcID.NYLOCAS_TOXOBOLOS_8382:
+			case 10858:
+			case 10859:
+			case 10860:
 				verzikAggros.add(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS_8385:
@@ -220,28 +223,42 @@ public class Verzik extends Room
 				}
 				break;
 			case NpcID.VERZIK_VITUR_8369:
+			case 10830:
+			case 10847:
 				verzikSpawn(npc);
 				break;
 			case NpcID.VERZIK_VITUR_8370:
+			case 10831:
+			case 10848:
 				verzikPhase = Phase.PHASE1;
 				verzikSpawn(npc);
 				break;
 			case NpcID.VERZIK_VITUR_8371:
+			case 10832:
+			case 10849:
 				verzikSpawn(npc);
 				break;
 			case NpcID.VERZIK_VITUR_8372:
+			case 10833:
+			case 10850:
 				verzikPhase = Phase.PHASE2;
 				verzikSpawn(npc);
 				break;
 			case NpcID.VERZIK_VITUR_8373:
+			case 10834:
+			case 10851:
 				verzikSpawn(npc);
 				break;
 			case NpcID.VERZIK_VITUR_8374:
+			case 10835:
+			case 10852:
 				verzikRangeProjectiles.clear();
 				verzikPhase = Phase.PHASE3;
 				verzikSpawn(npc);
 				break;
 			case NpcID.VERZIK_VITUR_8375:
+			case 10836:
+			case 10853:
 				verzikSpawn(npc);
 				break;
 		}
@@ -256,6 +273,9 @@ public class Verzik extends Room
 			case NpcID.NYLOCAS_ISCHYROS_8381:
 			case NpcID.NYLOCAS_HAGIOS_8383:
 			case NpcID.NYLOCAS_TOXOBOLOS_8382:
+			case 10858:
+			case 10859:
+			case 10860:
 				verzikAggros.remove(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS_8385:
@@ -275,6 +295,20 @@ public class Verzik extends Room
 			case NpcID.VERZIK_VITUR_8373:
 			case NpcID.VERZIK_VITUR_8374:
 			case NpcID.VERZIK_VITUR_8375:
+			case 10830:
+			case 10831:
+			case 10832:
+			case 10833:
+			case 10834:
+			case 10835:
+			case 10836:
+			case 10847:
+			case 10848:
+			case 10849:
+			case 10850:
+			case 10851:
+			case 10852:
+			case 10853:
 				verzikCleanup();
 				break;
 		}
