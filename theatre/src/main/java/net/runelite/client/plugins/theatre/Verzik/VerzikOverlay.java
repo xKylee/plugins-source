@@ -18,7 +18,6 @@ import net.runelite.api.Actor;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCComposition;
-import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
