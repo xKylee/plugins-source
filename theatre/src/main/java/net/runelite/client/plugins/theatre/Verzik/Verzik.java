@@ -211,8 +211,8 @@ public class Verzik extends Room
 				verzikAggros.add(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS_8385:
-			case 10820:
-			case 10828:
+			case 10845:
+			case 10862:
 				verzikReds.putIfAbsent(npc, new MutablePair<>(npc.getHealthRatio(), npc.getHealthScale()));
 				break;
 			case NPC_ID_TORNADO:
@@ -283,8 +283,8 @@ public class Verzik extends Room
 				verzikAggros.remove(npc);
 				break;
 			case NpcID.NYLOCAS_MATOMENOS_8385:
-			case 10820:
-			case 10828:
+			case 10845:
+			case 10862:
 				verzikReds.remove(npc);
 				break;
 			case NPC_ID_TORNADO:
@@ -378,7 +378,7 @@ public class Verzik extends Room
 		{
 			if (verzikPhase == Phase.PHASE2)
 			{
-				if (verzikNPC.getId() == NpcID.VERZIK_VITUR_8372)
+				if (verzikNPC.getId() == NpcID.VERZIK_VITUR_8372 || verzikNPC.getId() == 10833 || verzikNPC.getId() == 10850)
 				{
 					client.getProjectiles().stream().filter(isValidVerzikAttack).findFirst().ifPresent(this::handleVerzikAttacks);
 					verzikRangedAttacks.removeIf((Projectile p) -> p.getRemainingCycles() <= 0);
