@@ -315,6 +315,7 @@ public class Nylocas extends Room
 		switch (npc.getId())
 		{
 			case NPCID_NYLOCAS_PILLAR:
+			case 10790:
 			case 10811:
 				nyloActive = true;
 				if (nylocasPillars.size() > 3)
@@ -470,6 +471,8 @@ public class Nylocas extends Room
 		switch (npc.getId())
 		{
 			case NPCID_NYLOCAS_PILLAR:
+			case 10790:
+			case 10811:
 				if (nylocasPillars.containsKey(npc))
 				{
 					nylocasPillars.remove(npc);
