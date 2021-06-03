@@ -70,8 +70,8 @@ public class XarpusOverlay extends RoomOverlay
 		{
 			NPC boss = xarpus.getXarpusNPC();
 
-			if ((config.xarpusTickP2() && boss.getId() == NpcID.XARPUS_8340)
-				|| (config.xarpusTickP3() && boss.getId() == NpcID.XARPUS_8341))
+			if ((config.xarpusTickP2() && (boss.getId() == NpcID.XARPUS_8340 || boss.getId() == 10768 || boss.getId() == 10772))
+					|| (config.xarpusTickP3() && (boss.getId() == NpcID.XARPUS_8341 || boss.getId() == 10769 || boss.getId() == 10773)))
 			{
 				int tick = xarpus.getXarpusTicksUntilAttack();
 				final String ticksLeftStr = String.valueOf(tick);
@@ -116,7 +116,7 @@ public class XarpusOverlay extends RoomOverlay
 	private void renderLineOfSightPolygon(Graphics2D graphics)
 	{
 		NPC xarpusNpc = xarpus.getXarpusNPC();
-		if (xarpusNpc != null && xarpusNpc.getId() == NpcID.XARPUS_8340 && !xarpusNpc.isDead() && xarpus.isPostScreech())
+		if (xarpusNpc != null && (xarpusNpc.getId() == NpcID.XARPUS_8340 || xarpusNpc.getId() == 10768 || xarpusNpc.getId() == 10772) && !xarpusNpc.isDead() && xarpus.isPostScreech())
 		{
 			WorldPoint xarpusWorldPoint = WorldPoint.fromLocal(client, xarpusNpc.getLocalLocation());
 			Direction dir = Direction.getPreciseDirection(xarpusNpc.getOrientation());
