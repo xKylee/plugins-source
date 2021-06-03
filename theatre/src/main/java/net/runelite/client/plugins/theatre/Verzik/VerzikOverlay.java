@@ -158,7 +158,7 @@ public class VerzikOverlay extends RoomOverlay
 					}
 				}
 
-				if (verzik.getVerzikPhase() == Verzik.Phase.PHASE2 && config.lightningAttackHelper())
+				if (verzik.getVerzikPhase() == Verzik.Phase.PHASE2 && verzik.getVerzikNPC() != null && config.lightningAttackHelper())
 				{
 					Point imageLocation;
 					if (verzik.getVerzikLightningAttacks() == 0)

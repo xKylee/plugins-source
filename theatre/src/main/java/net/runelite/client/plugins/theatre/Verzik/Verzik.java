@@ -323,7 +323,7 @@ public class Verzik extends Room
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
-		if (config.purpleCrabAttackMES() && verzikNPC != null && verzikNPC.getId() == 8372)
+		if (config.purpleCrabAttackMES() && verzikNPC != null && (verzikNPC.getId() == 8372 || verzikNPC.getId() == 10833 || verzikNPC.getId() == 10850))
 		{
 			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION)
 			{
