@@ -79,7 +79,7 @@ public class XarpusOverlay extends RoomOverlay
 				renderTextLocation(graphics, ticksLeftStr, Color.WHITE, canvasPoint);
 			}
 
-			if (config.xarpusExhumed() && boss.getId() == NpcID.XARPUS_8339)
+			if (config.xarpusExhumed() && (boss.getId() == NpcID.XARPUS_8339 || boss.getId() == 10767 || boss.getId() == 10771))
 			{
 				for (GroundObject o : xarpus.getXarpusExhumeds().keySet())
 				{
