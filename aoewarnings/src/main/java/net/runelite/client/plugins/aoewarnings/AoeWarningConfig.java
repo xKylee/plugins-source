@@ -880,7 +880,7 @@ public interface AoeWarningConfig extends Config
 	@ConfigItem(
 		keyName = "verzik",
 		name = "Verzik",
-		description = "Configures if Verzik purple Nylo AOE is shown",
+		description = "Configures if Verzik purple Nylo/falling rock AOE is shown",
 		section = verzikTitle,
 		position = 73
 	)
@@ -892,7 +892,7 @@ public interface AoeWarningConfig extends Config
 	@ConfigItem(
 		keyName = "verzikNotify",
 		name = "Verzik Notify",
-		description = "Configures whether or not AoE Projectile Warnings for Verzik boulders should trigger a notification",
+		description = "Configures whether or not AoE Projectile Warnings for Verzik boulders/purple nylo should trigger a notification",
 		section = verzikTitle,
 		position = 74,
 		hide = "aoeNotifyAll"

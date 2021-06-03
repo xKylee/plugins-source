@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "5.0.2"
 
 project.extra["PluginName"] = "AoE Warnings"
 project.extra["PluginDescription"] = "Shows the final destination for AoE Attack projectiles"
@@ -40,6 +40,7 @@ dependencies {
     compileOnly(Libraries.guice)
     compileOnly(Libraries.lombok)
     compileOnly(Libraries.pf4j)
+	compileOnly(Libraries.apacheCommonsText)
 }
 
 tasks {

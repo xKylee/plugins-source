@@ -55,6 +55,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
 import static net.runelite.client.plugins.aoewarnings.AoeWarningConfig.*;
 
@@ -102,6 +103,9 @@ public class AoeWarningPlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private List<GameObject> wintertodtSnowFall = new ArrayList<>();
+
+	private static final int VERZIK_REGION = 12611;
+	private static final int GROTESQUE_GUARDIANS_REGION = 6727;
 
 	@Provides
 	AoeWarningConfig getConfig(ConfigManager configManager)
@@ -330,7 +334,15 @@ public class AoeWarningPlugin extends Plugin
 				return notify ? config.isGalvekNotifyEnabled() : config.isGalvekEnabled();
 			case DAWN_FREEZE:
 			case DUSK_CEILING:
-				return notify ? config.isGargBossNotifyEnabled() : config.isGargBossEnabled();
+				if (regionCheck(GROTESQUE_GUARDIANS_REGION))
+				{
+					return notify ? config.isGargBossNotifyEnabled() : config.isGargBossEnabled();
+				}
+			case VERZIK_P1_ROCKS:
+				if (regionCheck(VERZIK_REGION))
+				{
+					return notify ? config.isVerzikNotifyEnabled() : config.isVerzikEnabled();
+				}
 			case OLM_FALLING_CRYSTAL:
 			case OLM_BURNING:
 			case OLM_FALLING_CRYSTAL_TRAIL:
@@ -365,5 +377,10 @@ public class AoeWarningPlugin extends Plugin
 		wintertodtSnowFall.clear();
 		bombs.clear();
 		projectiles.clear();
+	}
+
+	private boolean regionCheck(int region)
+	{
+		return ArrayUtils.contains(client.getMapRegions(), region);
 	}
 }
