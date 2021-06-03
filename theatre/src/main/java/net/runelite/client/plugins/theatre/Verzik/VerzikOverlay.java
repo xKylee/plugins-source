@@ -18,7 +18,6 @@ import net.runelite.api.Actor;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCComposition;
-import net.runelite.api.NpcID;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
@@ -159,7 +158,7 @@ public class VerzikOverlay extends RoomOverlay
 					}
 				}
 
-				if (verzik.getVerzikNPC().getId() == NpcID.VERZIK_VITUR_8372 && config.lightningAttackHelper())
+				if (verzik.getVerzikPhase() == Verzik.Phase.PHASE2 && config.lightningAttackHelper())
 				{
 					Point imageLocation;
 					if (verzik.getVerzikLightningAttacks() == 0)
