@@ -216,6 +216,8 @@ public class Verzik extends Room
 				verzikReds.putIfAbsent(npc, new MutablePair<>(npc.getHealthRatio(), npc.getHealthScale()));
 				break;
 			case NPC_ID_TORNADO:
+			case 10846:
+			case 10863:
 				if (verzikLocalTornado == null)
 				{
 					verzikTornadoes.add(new MemorizedTornado(npc));
@@ -288,6 +290,8 @@ public class Verzik extends Room
 				verzikReds.remove(npc);
 				break;
 			case NPC_ID_TORNADO:
+			case 10846:
+			case 10863:
 				verzikTornadoes.remove(npc);
 				if (verzikLocalTornado == npc)
 				{
