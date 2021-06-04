@@ -177,8 +177,6 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				case 8347:
 				case 10779:
 				case 10796:
-				case 8351:
-				case 10783:
 					nylos.add(new NyloQ(event.getNpc(), 0, bigHP));
 					break;
 				case 8360:
