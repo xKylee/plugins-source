@@ -158,24 +158,18 @@ public class SocketDeathIndicatorPlugin extends Plugin
 			switch (id)
 			{
 				case 8342:
-				case 10774:
 				case 10791:
 				case 8343:
-				case 10775:
 				case 10792:
 				case 8344:
-				case 10776:
 				case 10793:
 					nylos.add(new NyloQ(event.getNpc(), 0, smallHP));
 					break;
 				case 8345:
-				case 10777:
 				case 10794:
 				case 8346:
-				case 10778:
 				case 10795:
 				case 8347:
-				case 10779:
 				case 10796:
 					nylos.add(new NyloQ(event.getNpc(), 0, bigHP));
 					break;
