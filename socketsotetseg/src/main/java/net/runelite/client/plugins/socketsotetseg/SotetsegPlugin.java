@@ -130,6 +130,7 @@ public class SotetsegPlugin extends Plugin
 	// This represents the state of the raid.
 	private boolean wasInUnderworld;
 	private int overworldRegionID;
+	private int underworldRegionID;
 
 	private ArrayList<Point> mazeTiles;
 	@Getter
@@ -175,6 +176,7 @@ public class SotetsegPlugin extends Plugin
 		dispatchCount = 5;
 		wasInUnderworld = false;
 		overworldRegionID = -1;
+		underworldRegionID = -1;
 
 		packetReceived = false;
 		mazePoints = new ArrayList<>();
@@ -207,9 +209,13 @@ public class SotetsegPlugin extends Plugin
 		switch (npc.getId())
 		{
 			case 8388:
+			case 10865:
+			case 10868:
 				flashFlag = true;
 				// fall through into below
 			case 8387:
+			case 10864:
+			case 10867:
 				mazePoints.clear();
 				mazeSolved.clear();
 				mazeActive = false;
@@ -229,6 +235,10 @@ public class SotetsegPlugin extends Plugin
 		{
 			case 8387:
 			case 8388:
+			case 10867:
+			case 10864:
+			case 10865:
+			case 10868:
 				if (client.getPlane() != 3)
 				{
 					sotetsegActive = false;
@@ -262,10 +272,11 @@ public class SotetsegPlugin extends Plugin
 			final Player player = client.getLocalPlayer();
 
 			// This check resets all the data if sotetseg is attackable.
-			if (sotetsegNPC != null && sotetsegNPC.getId() == 8388)
+			if (sotetsegNPC != null && (sotetsegNPC.getId() == 8388 || sotetsegNPC.getId() == 10868 || sotetsegNPC.getId() == 10865))
 			{
 				redTiles.clear();
 				mazePings.clear();
+				mazeTiles.clear();
 				dispatchCount = 5;
 				flashFlag = true;
 
@@ -285,10 +296,12 @@ public class SotetsegPlugin extends Plugin
 				if (dispatchCount > 0)
 				{ // Ensure we only send the data a couple times.
 					dispatchCount--;
+					underworldRegionID = player.getWorldLocation().getRegionID();
 
 					if (pluginManager.isPluginEnabled(socketPlugin))
 					{
 						JSONArray data = new JSONArray();
+						JSONArray dataUnder = new JSONArray();
 
 						for (final Point p : redTiles)
 						{
@@ -300,12 +313,24 @@ public class SotetsegPlugin extends Plugin
 							jsonwp.put("plane", wp.getPlane());
 
 							data.put(jsonwp);
+
+							WorldPoint wp2 = translateUnderWorldPoint(p);
+
+							JSONObject jsonunder = new JSONObject();
+							jsonunder.put("x", wp2.getX());
+							jsonunder.put("y", wp2.getY());
+							jsonunder.put("plane", wp2.getPlane());
+
+							dataUnder.put(jsonunder);
 						}
 
 						JSONObject payload = new JSONObject();
 						payload.put("sotetseg-extended", data);
-
 						eventBus.post(new SocketBroadcastPacket(payload));
+
+						JSONObject payloadunder = new JSONObject();
+						payloadunder.put("sotetseg-extended", dataUnder);
+						eventBus.post(new SocketBroadcastPacket(payloadunder));
 					}
 				}
 			}
@@ -393,13 +418,13 @@ public class SotetsegPlugin extends Plugin
 
 	private void adjustMazeState()
 	{
-		if (sotetsegNPC.getId() == 8388 && !started)
+		if ((sotetsegNPC.getId() == 8388 || sotetsegNPC.getId() == 10868 || sotetsegNPC.getId() == 10865) && !started)
 		{
 			started = true;
 			mazeActive = false;
 			soteEntryTick = client.getTickCount();
 		}
-		else if (sotetsegNPC.getId() == 8388 && mazeActive)
+		else if ((sotetsegNPC.getId() == 8388 || sotetsegNPC.getId() == 10868 || sotetsegNPC.getId() == 10865) && mazeActive)
 		{
 			mazeEnds();
 			mazePoints.clear();
@@ -407,7 +432,7 @@ public class SotetsegPlugin extends Plugin
 			mazeSolvedIndex = -1;
 			mazeActive = false;
 		}
-		else if ((sotetsegNPC.getId() == 8387 || isInUnderWorld()) && !mazeActive && started)
+		else if (((sotetsegNPC.getId() == 8387 || sotetsegNPC.getId() == 10864 || sotetsegNPC.getId() == 10867) || isInUnderWorld()) && !mazeActive && started)
 		{
 			mazeActive = true;
 			mazeStarts();
@@ -540,7 +565,7 @@ public class SotetsegPlugin extends Plugin
 
 	private void adjustIndexRunners()
 	{
-		if (sotetsegNPC.getId() == 8387 && mazeActive)
+		if ((sotetsegNPC.getId() == 8387 || sotetsegNPC.getId() == 10864 || sotetsegNPC.getId() == 10867) && mazeActive)
 		{
 			if (!madePlayerList && client.getTickCount() - mazeStartTick > 5)
 			{
@@ -653,8 +678,6 @@ public class SotetsegPlugin extends Plugin
 				return;
 			}
 
-			mazePings.clear();
-			mazeTiles.clear();
 			JSONArray data = payload.getJSONArray("sotetseg-extended");
 			for (int i = 0; i < data.length(); i++)
 			{
@@ -669,7 +692,7 @@ public class SotetsegPlugin extends Plugin
 				mazeTiles.add(p);
 			}
 
-			if (config.solveMaze())
+			if (config.solveMaze() && isInOverWorld())
 			{
 				mazePoints.clear();
 				mazeTiles.sort(Comparator.comparing(Point::getY).thenComparing(Point::getY));
@@ -696,20 +719,18 @@ public class SotetsegPlugin extends Plugin
 		if (sotetsegActive)
 		{
 			GroundObject o = event.getGroundObject();
-			if (o.getId() == 33035)
+			if (o.getId() == 33035 || (o.getId() > 41749 && o.getId() < 41754) )
 			{
 				final Tile t = event.getTile();
 				final WorldPoint p = WorldPoint.fromLocal(client, t.getLocalLocation());
 				final Point point = new Point(p.getRegionX(), p.getRegionY());
 
-				if (this
-					.isInOverWorld())
+				if (this.isInOverWorld())
 				{  // (9, 22) are magical numbers that represent the overworld maze offset.
 					redTiles.add(new Point(point.getX() - 9, point.getY() - 22));
 				}
 
-				if (this
-					.isInUnderWorld())
+				if (this.isInUnderWorld())
 				{   // (42, 31) are magical numbers that represent the underworld maze offset.
 					redTiles.add(new Point(point.getX() - 42, point.getY() - 31));
 					wasInUnderworld = true;
@@ -752,12 +773,16 @@ public class SotetsegPlugin extends Plugin
 		if (overworldRegionID == -1 && p != null)
 		{
 			WorldPoint wp = p.getWorldLocation();
-			return WorldPoint
-				.fromRegion(wp.getRegionID(), mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
+			return WorldPoint.fromRegion(wp.getRegionID(), mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
 		}
 
-		return WorldPoint
-			.fromRegion(overworldRegionID, mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
+		return WorldPoint.fromRegion(overworldRegionID, mazePoint.getX() + 9, mazePoint.getY() + 22, 0);
+	}
+
+	private WorldPoint translateUnderWorldPoint(final Point mazePoint)
+	{
+		// (42, 31) are magical numbers that represent the underworld maze offset.
+		return WorldPoint.fromRegion(underworldRegionID, mazePoint.getX() + 42, mazePoint.getY() + 31, 3);
 	}
 
 	private void addStartingTiles(ArrayList<Point> mazePoints)
