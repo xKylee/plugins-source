@@ -433,7 +433,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 202))
 				{
 					// sang/tridents
-					if (weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292)
+					if (weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292 || weaponUsed == 25731)
 					{
 						if (client.getLocalPlayer().getAnimation() == 1979)
 						{
@@ -471,7 +471,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 					if (client.getVarbitValue(4696) == 0)
 					{
 						// checking if casting on long range
-						if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292)
+						if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292 && weaponUsed != 25731)
 						{
 							if (weaponUsed == 12006)
 							{
