@@ -281,6 +281,7 @@ public class AlchemicalHydraPlugin extends Plugin
 		}
 	}
 
+	@Subscribe
 	private void onChatMessage(final ChatMessage event)
 	{
 		final ChatMessageType chatMessageType = event.getType();
