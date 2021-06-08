@@ -158,16 +158,19 @@ public class SocketDeathIndicatorPlugin extends Plugin
 			switch (id)
 			{
 				case 8342:
+				case 10791:
 				case 8343:
+				case 10792:
 				case 8344:
+				case 10793:
 					nylos.add(new NyloQ(event.getNpc(), 0, smallHP));
 					break;
 				case 8345:
+				case 10794:
 				case 8346:
+				case 10795:
 				case 8347:
-				case 8351:
-				case 8352:
-				case 8353:
+				case 10796:
 					nylos.add(new NyloQ(event.getNpc(), 0, bigHP));
 					break;
 				case 8360:
@@ -430,7 +433,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 202))
 				{
 					// sang/tridents
-					if (weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292)
+					if (weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292 || weaponUsed == 25731)
 					{
 						if (client.getLocalPlayer().getAnimation() == 1979)
 						{
@@ -468,7 +471,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 					if (client.getVarbitValue(4696) == 0)
 					{
 						// checking if casting on long range
-						if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292)
+						if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292 && weaponUsed != 25731)
 						{
 							if (weaponUsed == 12006)
 							{
