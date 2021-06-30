@@ -62,6 +62,7 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_MUSHROOM = 37739;
 	private static final int NIGHTMARE_SHADOW = 1767;   // graphics object
 
+	private static final LocalPoint MIDDLE_LOCATION = new LocalPoint(6208, 8128);
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
@@ -223,11 +224,9 @@ public class NightmarePlugin extends Plugin
 		}
 
 		NPC npc = (NPC) actor;
-		int id = npc.getId();
-		
+
 		// this will trigger once when the fight begins
-		// 9432 is Nightmare Id when it's first woken up, 9425 is Id on a subsequent kill
-		if (id == 9432 || (nm == null && id == 9425))
+		if (nm == null && npc.getName() != null && (npc.getName().equalsIgnoreCase("The Nightmare") || npc.getName().equalsIgnoreCase("Phosani's Nightmare")))
 		{
 			//reset everything
 			reset();
@@ -265,16 +264,16 @@ public class NightmarePlugin extends Plugin
 			cursed = true;
 			attacksSinceCurse = 0;
 		}
-		else if ((id == 9427 || id == 9430) && animationId == NIGHTMARE_CHARGE_2)
+		else if (!npc.getLocalLocation().equals(MIDDLE_LOCATION) && animationId == NIGHTMARE_CHARGE_2)
 		{
 			nightmareCharging = true;
 		}
-		else if ((id == 9427 || id == 9430) && animationId == NIGHTMARE_CHARGE_1)
+		else if (animationId == NIGHTMARE_CHARGE_1)
 		{
 			nightmareCharging = false;
 		}
 
-		if (animationId != NIGHTMARE_HUSK_SPAWN && (id == 9425 || id == 9428) && !huskTarget.isEmpty())
+		if (animationId != NIGHTMARE_HUSK_SPAWN && !huskTarget.isEmpty())
 		{
 			huskTarget.clear();
 		}
@@ -335,6 +334,12 @@ public class NightmarePlugin extends Plugin
 			flash = true;
 		}
 
+		if (event.getMessage().toLowerCase().contains("you feel the effects of the nightmare's curse wear off."))
+		{
+			cursed = false;
+			attacksSinceCurse = -1;
+		}
+
 	}
 
 	@Subscribe
@@ -358,7 +363,7 @@ public class NightmarePlugin extends Plugin
 		}
 
 		//if nightmare's id is 9433, the fight has ended and everything should be reset
-		if (nm.getId() == 9433  || nm.getId() == 378)
+		if (nm.getId() == 9433  || nm.getId() == 378 || nm.getId() == 377)
 		{
 			reset();
 		}
@@ -398,8 +403,8 @@ public class NightmarePlugin extends Plugin
 		}
 	}
 
-	private boolean isNightmareNpc(int id)
+	private boolean isPhosanisNightmare(int id)
 	{
-		return id >= 9425 && id <= 9433;
+		return (id >= 9416 && id <= 9424) || (id >= 11153 && id <= 11155);
 	}
 }
