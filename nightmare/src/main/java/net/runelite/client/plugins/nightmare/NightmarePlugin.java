@@ -62,6 +62,7 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_MUSHROOM = 37739;
 	private static final int NIGHTMARE_SHADOW = 1767;   // graphics object
 
+	private static final LocalPoint MIDDLE_LOCATION = new LocalPoint(6208, 8128);
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
@@ -89,7 +90,6 @@ public class NightmarePlugin extends Plugin
 	private boolean inFight;
 
 	private boolean cursed;
-	private int attacksSinceCurse;
 
 	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAttack = 0;
@@ -149,7 +149,6 @@ public class NightmarePlugin extends Plugin
 		shadowsSpawning = false;
 		cursed = false;
 		flash = false;
-		attacksSinceCurse = 0;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
 		totems.clear();
@@ -223,11 +222,9 @@ public class NightmarePlugin extends Plugin
 		}
 
 		NPC npc = (NPC) actor;
-		int id = npc.getId();
-		
+
 		// this will trigger once when the fight begins
-		// 9432 is Nightmare Id when it's first woken up, 9425 is Id on a subsequent kill
-		if (id == 9432 || (nm == null && id == 9425))
+		if (nm == null && npc.getName() != null && (npc.getName().equalsIgnoreCase("The Nightmare") || npc.getName().equalsIgnoreCase("Phosani's Nightmare")))
 		{
 			//reset everything
 			reset();
@@ -245,45 +242,34 @@ public class NightmarePlugin extends Plugin
 		if (animationId == NIGHTMARE_MAGIC_ATTACK)
 		{
 			ticksUntilNextAttack = 7;
-			attacksSinceCurse++;
 			pendingNightmareAttack = cursed ? NightmareAttack.CURSE_MAGIC : NightmareAttack.MAGIC;
 		}
 		else if (animationId == NIGHTMARE_MELEE_ATTACK)
 		{
 			ticksUntilNextAttack = 7;
-			attacksSinceCurse++;
 			pendingNightmareAttack = cursed ? NightmareAttack.CURSE_MELEE : NightmareAttack.MELEE;
 		}
 		else if (animationId == NIGHTMARE_RANGE_ATTACK)
 		{
 			ticksUntilNextAttack = 7;
-			attacksSinceCurse++;
 			pendingNightmareAttack = cursed ? NightmareAttack.CURSE_RANGE : NightmareAttack.RANGE;
 		}
 		else if (animationId == NIGHTMARE_CURSE)
 		{
 			cursed = true;
-			attacksSinceCurse = 0;
 		}
-		else if ((id == 9427 || id == 9430) && animationId == NIGHTMARE_CHARGE_2)
+		else if (!npc.getLocalLocation().equals(MIDDLE_LOCATION) && animationId == NIGHTMARE_CHARGE_2)
 		{
 			nightmareCharging = true;
 		}
-		else if ((id == 9427 || id == 9430) && animationId == NIGHTMARE_CHARGE_1)
+		else if (animationId == NIGHTMARE_CHARGE_1)
 		{
 			nightmareCharging = false;
 		}
 
-		if (animationId != NIGHTMARE_HUSK_SPAWN && (id == 9425 || id == 9428) && !huskTarget.isEmpty())
+		if (animationId != NIGHTMARE_HUSK_SPAWN && !huskTarget.isEmpty())
 		{
 			huskTarget.clear();
-		}
-
-		if (cursed && attacksSinceCurse == 5)
-		{
-			//curse is removed when she phases, or does 5 attacks
-			cursed = false;
-			attacksSinceCurse = -1;
 		}
 
 		if (animationId == NIGHTMARE_PARASITE_TOSS2)
@@ -300,13 +286,6 @@ public class NightmarePlugin extends Plugin
 		if (npc == null)
 		{
 			return;
-		}
-
-		//if ID changes to 9431 (3rd phase) and is cursed, remove the curse
-		if (cursed && npc.getId() == 9431)
-		{
-			cursed = false;
-			attacksSinceCurse = -1;
 		}
 
 		//if npc is in the totems map, update its phase
@@ -335,6 +314,11 @@ public class NightmarePlugin extends Plugin
 			flash = true;
 		}
 
+		if (event.getMessage().toLowerCase().contains("you feel the effects of the nightmare's curse wear off."))
+		{
+			cursed = false;
+		}
+
 	}
 
 	@Subscribe
@@ -357,8 +341,8 @@ public class NightmarePlugin extends Plugin
 			return;
 		}
 
-		//if nightmare's id is 9433, the fight has ended and everything should be reset
-		if (nm.getId() == 9433  || nm.getId() == 378)
+		//the fight has ended and everything should be reset
+		if (nm.getId() == 378 || nm.getId() == 377)
 		{
 			reset();
 		}
@@ -396,10 +380,5 @@ public class NightmarePlugin extends Plugin
 				shadowsSpawning = false;
 			}
 		}
-	}
-
-	private boolean isNightmareNpc(int id)
-	{
-		return id >= 9425 && id <= 9433;
 	}
 }
