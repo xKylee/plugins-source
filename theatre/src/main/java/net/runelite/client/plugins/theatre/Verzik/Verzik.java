@@ -149,6 +149,9 @@ public class Verzik extends Room
 	private Set<Integer> WEAPON_SET;
 	private static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
+	private boolean isHM;
+	private static final Set<Integer> VERZIK_HM_ID = ImmutableSet.of(10847, 10848, 10849, 10850, 10851, 10852, 10853);
+
 	@Override
 	public void load()
 	{
@@ -568,7 +571,14 @@ public class Verzik extends Room
 						else if (verzikAttackCount < P3_YELLOW_ATTACK_COUNT + 1)
 						{
 							verzikSpecial = SpecialAttack.YELLOWS;
-							verzikTicksUntilAttack = 14 + 7;
+							if (isHM)
+							{
+								verzikTicksUntilAttack = 27;
+							}
+							else
+							{
+								verzikTicksUntilAttack = 21;
+							}
 						}
 						// Between Yellows and Green Ball
 						else if (verzikAttackCount < P3_GREEN_ATTACK_COUNT)
@@ -633,6 +643,7 @@ public class Verzik extends Room
 
 	private void verzikSpawn(NPC npc)
 	{
+		isHM = VERZIK_HM_ID.contains(npc.getId());
 		verzikActive = true;
 		verzikNPC = npc;
 		verzikSpecial = SpecialAttack.NONE;
@@ -650,6 +661,7 @@ public class Verzik extends Room
 
 	private void verzikCleanup()
 	{
+		isHM = false;
 		verzikNPC = null;
 		verzikPhase = null;
 		verzikSpecial = SpecialAttack.NONE;
