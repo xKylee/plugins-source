@@ -1,6 +1,5 @@
 package net.runelite.client.plugins.nightmare;
 
-import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,6 +29,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 @Slf4j
@@ -64,25 +64,25 @@ class NightmareOverlay extends Overlay
 
 		if (config.highlightShadows())
 		{
-			for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+			for (GraphicsObject graphicsObject : plugin.getNightmareShadows().keySet())
 			{
-				Color color;
-
-				if (graphicsObject.getId() == NIGHTMARE_SHADOW)
-				{
-					color = Color.ORANGE;
-				}
-				else
-				{
-					continue;
-				}
-
 				LocalPoint lp = graphicsObject.getLocation();
 				Polygon poly = Perspective.getCanvasTilePoly(client, lp);
 
-				if (poly != null)
+				if (poly != null && plugin.getNightmareShadows().get(graphicsObject) >= 0)
 				{
+					Color color = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : config.highlightColour();
 					OverlayUtil.renderPolygon(graphics, poly, color);
+					if (config.shadowsTickCounter())
+					{
+						String count = Integer.toString(plugin.getNightmareShadows().get(graphicsObject));
+						Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
+						if (point != null)
+						{
+							Color textcolor = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : Color.WHITE;
+							renderTextLocation(graphics, count, 12, Font.BOLD, textcolor, point);
+						}
+					}
 				}
 			}
 			if (plugin.isShadowsSpawning())
@@ -90,7 +90,7 @@ class NightmareOverlay extends Overlay
 				if (plugin.getNm() != null)
 				{
 					Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-					OverlayUtil.renderPolygon(graphics, tilePoly, Color.ORANGE);
+					OverlayUtil.renderPolygon(graphics, tilePoly, config.highlightColour());
 				}
 			}
 		}
@@ -134,7 +134,7 @@ class NightmareOverlay extends Overlay
 			{
 				if (totem.getCurrentPhase().isActive())
 				{
-					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor());
+					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor(), 0);
 				}
 			}
 		}
@@ -238,7 +238,7 @@ class NightmareOverlay extends Overlay
 		if (plugin.getNm() != null)
 		{
 			Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-			OverlayUtil.renderPolygon(graphics, tilePoly, Color.ORANGE);
+			OverlayUtil.renderPolygon(graphics, tilePoly, config.highlightColour());
 		}
 	}
 
