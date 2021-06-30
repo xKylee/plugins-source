@@ -392,7 +392,7 @@ public class NightmarePlugin extends Plugin
 			{
 				GraphicsObject key = it.next();
 				nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
-				if (nightmareShadows.get(key) < -5)
+				if (nightmareShadows.get(key) <= -5)
 				{
 					it.remove();
 				}
