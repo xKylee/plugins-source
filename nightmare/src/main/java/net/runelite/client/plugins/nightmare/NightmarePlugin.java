@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import java.awt.Polygon;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -104,6 +105,9 @@ public class NightmarePlugin extends Plugin
 	private boolean shadowsSpawning = false;
 
 	@Getter(AccessLevel.PACKAGE)
+	private final Map<GraphicsObject, Integer> nightmareShadows = new HashMap<>();
+
+	@Getter(AccessLevel.PACKAGE)
 	@Setter
 	private boolean flash = false;
 	@Inject
@@ -155,6 +159,7 @@ public class NightmarePlugin extends Plugin
 		spores.clear();
 		huskTarget.clear();
 		parasiteTargets.clear();
+		nightmareShadows.clear();
 	}
 
 	@Subscribe
@@ -372,12 +377,25 @@ public class NightmarePlugin extends Plugin
 				{
 					shadowsSpawning = true;
 					doShadowsExist = true;
-					break;
+					if (!nightmareShadows.containsKey(graphicsObject))
+					{
+						nightmareShadows.put(graphicsObject, 5);
+					}
 				}
 			}
 			if (!doShadowsExist)
 			{
 				shadowsSpawning = false;
+			}
+
+			for (Iterator<GraphicsObject> it = nightmareShadows.keySet().iterator(); it.hasNext(); )
+			{
+				GraphicsObject key = it.next();
+				nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
+				if (nightmareShadows.get(key) < -5)
+				{
+					it.remove();
+				}
 			}
 		}
 	}
