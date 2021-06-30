@@ -402,9 +402,4 @@ public class NightmarePlugin extends Plugin
 			}
 		}
 	}
-
-	private boolean isPhosanisNightmare(int id)
-	{
-		return (id >= 9416 && id <= 9424) || (id >= 11153 && id <= 11155);
-	}
 }
