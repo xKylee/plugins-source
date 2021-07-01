@@ -336,9 +336,11 @@ class NightmareOverlay extends Overlay
 			switch (id)
 			{
 				case 9454:
+				case 9466:
 					color = Color.CYAN;
 					break;
 				case 9455:
+				case 9467:
 					color = Color.GREEN;
 					break;
 				default:
