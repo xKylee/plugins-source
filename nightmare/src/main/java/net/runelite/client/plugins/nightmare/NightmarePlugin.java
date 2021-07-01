@@ -158,6 +158,7 @@ public class NightmarePlugin extends Plugin
 		flash = false;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
+		lastAnimation = 0;
 		totems.clear();
 		spores.clear();
 		huskTarget.clear();
