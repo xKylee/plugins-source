@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nightmare;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,7 +30,6 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
-import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 @Slf4j
@@ -134,7 +134,7 @@ class NightmareOverlay extends Overlay
 			{
 				if (totem.getCurrentPhase().isActive())
 				{
-					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor(), 0);
+					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor());
 				}
 			}
 		}
