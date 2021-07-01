@@ -55,6 +55,7 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_CHARGE_1 = 8597;
 	private static final int NIGHTMARE_CURSE = 8599;
 	private static final int NIGHTMARE_PARASITE_TOSS2 = 8606;
+	private static final int NIGHTMARE_TELEPORT = 8607;
 	private static final int NIGHTMARE_CHARGE_2 = 8609;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
@@ -106,6 +107,8 @@ public class NightmarePlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<GraphicsObject, Integer> nightmareShadows = new HashMap<>();
+
+	private int lastAnimation = 0;
 
 	@Getter(AccessLevel.PACKAGE)
 	@Setter
@@ -263,7 +266,7 @@ public class NightmarePlugin extends Plugin
 		{
 			cursed = true;
 		}
-		else if (!npc.getLocalLocation().equals(MIDDLE_LOCATION) && animationId == NIGHTMARE_CHARGE_2)
+		else if (!npc.getLocalLocation().equals(MIDDLE_LOCATION) && animationId == NIGHTMARE_CHARGE_2 && lastAnimation == NIGHTMARE_TELEPORT)
 		{
 			nightmareCharging = true;
 		}
@@ -280,6 +283,11 @@ public class NightmarePlugin extends Plugin
 		if (animationId == NIGHTMARE_PARASITE_TOSS2)
 		{
 			ticksUntilParasite = 27;
+		}
+
+		if (npc.equals(nm) && animationId != -1)
+		{
+			lastAnimation = animationId;
 		}
 	}
 
