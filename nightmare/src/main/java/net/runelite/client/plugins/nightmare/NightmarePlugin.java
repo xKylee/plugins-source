@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nightmare;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
 import java.awt.Polygon;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -65,6 +67,7 @@ public class NightmarePlugin extends Plugin
 	private static final int NIGHTMARE_SHADOW = 1767;   // graphics object
 
 	private static final LocalPoint MIDDLE_LOCATION = new LocalPoint(6208, 8128);
+	private static final Set<LocalPoint> PHOSANIS_MIDDLE_LOCATIONS = ImmutableSet.of(new LocalPoint(6208, 7104), new LocalPoint(7232, 7104));
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
@@ -267,7 +270,8 @@ public class NightmarePlugin extends Plugin
 		{
 			cursed = true;
 		}
-		else if (!npc.getLocalLocation().equals(MIDDLE_LOCATION) && animationId == NIGHTMARE_CHARGE_2 && lastAnimation == NIGHTMARE_TELEPORT)
+		// check if phosanis because the middle locations may be used in the others charge locations
+		else if (animationId == NIGHTMARE_CHARGE_2 && ((!isPhosanis(npc.getId()) && !MIDDLE_LOCATION.equals(npc.getLocalLocation())) || (isPhosanis(npc.getId()) && !PHOSANIS_MIDDLE_LOCATIONS.contains(npc.getLocalLocation()))))
 		{
 			nightmareCharging = true;
 		}
@@ -407,5 +411,10 @@ public class NightmarePlugin extends Plugin
 				}
 			}
 		}
+	}
+
+	private boolean isPhosanis(int id)
+	{
+		return (id >= 9416 && id <= 9424) || (id >= 11153 && id <= 11155);
 	}
 }
