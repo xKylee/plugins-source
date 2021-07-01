@@ -257,13 +257,13 @@ class NightmareOverlay extends Overlay
 
 		// if nightmare is at the gates, there are extra dangerous squares
 		int offset = 1792;
-		if (nmX == 6208)
+		if (nmX == 6208 || nmX == 7232)
 		{
 			offset = 2048;
 		}
 
 		// facing west
-		if (nmX == 5312)
+		if (nmX == 5312 || nmX == 6336)
 		{
 			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - 256 - 64, nmY + 256 + 64);
@@ -271,7 +271,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY - 256 - 64);
 		}
 		// facing east
-		else if (nmX == 7104)
+		else if (nmX == 7104 || nmX == 8000)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - offset - 256 - 64, nmY + 256 + 64);
@@ -279,7 +279,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY - 256 - 64);
 		}
 		// facing north
-		else if (nmY == 8000 || nmY == 8128)
+		else if (nmY == 8000 || nmY == 8128 || nmY == 9024 || nmY == 9152)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - 256 - 64, nmY + 256 + 64);
@@ -287,7 +287,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY - offset - 256 - 64);
 		}
 		//facing south
-		else if (nmY == 6080 || nmY == 6208)
+		else if (nmY == 6080 || nmY == 6208 || nmY == 7104 || nmY == 7232)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + offset + 256 + 64);
 			polyAddPoints.addPoint(nmX - 256 - 64, nmY + offset + 256 + 64);
