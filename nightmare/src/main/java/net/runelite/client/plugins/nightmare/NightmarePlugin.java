@@ -271,7 +271,7 @@ public class NightmarePlugin extends Plugin
 			nightmareCharging = true;
 		}
 
-		if (animationId != -1 && animationId != NIGHTMARE_CHARGE)
+		if (nightmareCharging && animationId != -1 && animationId != NIGHTMARE_CHARGE)
 		{
 			nightmareCharging = false;
 		}
