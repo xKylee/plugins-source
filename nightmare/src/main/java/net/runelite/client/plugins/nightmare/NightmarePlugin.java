@@ -54,10 +54,9 @@ public class NightmarePlugin extends Plugin
 {
 	// Nightmare's attack animations
 	private static final int NIGHTMARE_HUSK_SPAWN = 8565;
-	private static final int NIGHTMARE_CHARGE_1 = 8597;
 	private static final int NIGHTMARE_CURSE = 8599;
 	private static final int NIGHTMARE_PARASITE_TOSS2 = 8606;
-	private static final int NIGHTMARE_CHARGE_2 = 8609;
+	private static final int NIGHTMARE_CHARGE = 8609;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
 	private static final int NIGHTMARE_MAGIC_ATTACK = 8595;
@@ -240,7 +239,7 @@ public class NightmarePlugin extends Plugin
 			inFight = true;
 		}
 		
-		if (!inFight || nm == null)
+		if (!inFight || !npc.equals(nm))
 		{
 			return;
 		}
@@ -267,11 +266,12 @@ public class NightmarePlugin extends Plugin
 			cursed = true;
 		}
 		// check if phosanis because the middle locations may be used in the others charge locations
-		else if (animationId == NIGHTMARE_CHARGE_2 && ((!isPhosanis(npc.getId()) && !MIDDLE_LOCATION.equals(npc.getLocalLocation())) || (isPhosanis(npc.getId()) && !PHOSANIS_MIDDLE_LOCATIONS.contains(npc.getLocalLocation()))))
+		else if (animationId == NIGHTMARE_CHARGE && ((!isPhosanis(npc.getId()) && !MIDDLE_LOCATION.equals(npc.getLocalLocation())) || (isPhosanis(npc.getId()) && !PHOSANIS_MIDDLE_LOCATIONS.contains(npc.getLocalLocation()))))
 		{
 			nightmareCharging = true;
 		}
-		else if (animationId == NIGHTMARE_CHARGE_1)
+
+		if (animationId != -1 && animationId != NIGHTMARE_CHARGE)
 		{
 			nightmareCharging = false;
 		}
