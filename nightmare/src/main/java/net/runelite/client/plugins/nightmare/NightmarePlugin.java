@@ -156,6 +156,7 @@ public class NightmarePlugin extends Plugin
 		shadowsSpawning = false;
 		cursed = false;
 		flash = false;
+		parasite = false;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
 		totems.clear();
