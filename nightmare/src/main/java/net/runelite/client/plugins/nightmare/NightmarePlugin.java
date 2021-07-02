@@ -292,11 +292,6 @@ public class NightmarePlugin extends Plugin
 	{
 		final NPC npc = event.getNpc();
 
-		if (npc == null)
-		{
-			return;
-		}
-
 		//if npc is in the totems map, update its phase
 		if (totems.containsKey(npc.getIndex()))
 		{
