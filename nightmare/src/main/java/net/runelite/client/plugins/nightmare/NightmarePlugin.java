@@ -268,6 +268,7 @@ public class NightmarePlugin extends Plugin
 		else if (animationId == NIGHTMARE_CHARGE && ((!isPhosanis(npc.getId()) && !MIDDLE_LOCATION.equals(npc.getLocalLocation())) || (isPhosanis(npc.getId()) && !PHOSANIS_MIDDLE_LOCATIONS.contains(npc.getLocalLocation()))))
 		{
 			nightmareCharging = true;
+			ticksUntilNextAttack = 5;
 		}
 
 		if (nightmareCharging && animationId != -1 && animationId != NIGHTMARE_CHARGE)
