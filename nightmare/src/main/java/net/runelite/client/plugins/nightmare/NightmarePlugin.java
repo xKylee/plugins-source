@@ -65,7 +65,7 @@ public class NightmarePlugin extends Plugin
 
 	private static final LocalPoint MIDDLE_LOCATION = new LocalPoint(6208, 8128);
 	private static final Set<LocalPoint> PHOSANIS_MIDDLE_LOCATIONS = ImmutableSet.of(new LocalPoint(6208, 7104), new LocalPoint(7232, 7104));
-	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
+	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9435, 9438, 9441, 9444);
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
 	@Getter(AccessLevel.PACKAGE)
