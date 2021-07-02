@@ -71,8 +71,10 @@ class NightmareOverlay extends Overlay
 
 				if (poly != null && plugin.getNightmareShadows().get(graphicsObject) >= 0)
 				{
-					Color color = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : config.highlightColour();
-					OverlayUtil.renderPolygon(graphics, poly, color);
+					OverlayUtil.renderPolygon(graphics, poly, config.shadowsBorderColour());
+					graphics.setColor(config.shadowsColour());
+					graphics.fillPolygon(poly);
+
 					if (config.shadowsTickCounter())
 					{
 						String count = Integer.toString(plugin.getNightmareShadows().get(graphicsObject));
@@ -90,7 +92,7 @@ class NightmareOverlay extends Overlay
 				if (plugin.getNm() != null)
 				{
 					Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-					OverlayUtil.renderPolygon(graphics, tilePoly, config.highlightColour());
+					OverlayUtil.renderPolygon(graphics, tilePoly, config.shadowsBorderColour());
 				}
 			}
 		}
@@ -238,7 +240,7 @@ class NightmareOverlay extends Overlay
 		if (plugin.getNm() != null)
 		{
 			Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-			OverlayUtil.renderPolygon(graphics, tilePoly, config.highlightColour());
+			OverlayUtil.renderPolygon(graphics, tilePoly, config.nightmareChargeBorderCol());
 		}
 	}
 
