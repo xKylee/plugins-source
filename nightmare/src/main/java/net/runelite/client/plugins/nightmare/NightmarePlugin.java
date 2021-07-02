@@ -388,19 +388,15 @@ public class NightmarePlugin extends Plugin
 					}
 				}
 			}
-			if (!doShadowsExist)
+			if (!doShadowsExist && shadowsSpawning)
 			{
 				shadowsSpawning = false;
+				nightmareShadows.clear();
 			}
 
-			for (Iterator<GraphicsObject> it = nightmareShadows.keySet().iterator(); it.hasNext(); )
+			for (GraphicsObject key : nightmareShadows.keySet())
 			{
-				GraphicsObject key = it.next();
 				nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
-				if (nightmareShadows.get(key) <= -5)
-				{
-					it.remove();
-				}
 			}
 		}
 	}
