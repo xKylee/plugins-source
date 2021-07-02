@@ -97,6 +97,8 @@ public class NightmarePlugin extends Plugin
 	private int ticksUntilNextAttack = 0;
 
 	@Getter(AccessLevel.PACKAGE)
+	private boolean parasite;
+	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilParasite = 0;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -316,6 +318,12 @@ public class NightmarePlugin extends Plugin
 		if (event.getMessage().contains("The Nightmare has impregnated you with a deadly parasite!"))
 		{
 			flash = true;
+			parasite = true;
+		}
+
+		if (event.getMessage().toLowerCase().contains("the parasite within you has been weakened") || event.getMessage().toLowerCase().contains("the parasite bursts out of you, fully grown"))
+		{
+			parasite = false;
 		}
 
 		if (event.getMessage().toLowerCase().contains("you feel the effects of the nightmare's curse wear off."))

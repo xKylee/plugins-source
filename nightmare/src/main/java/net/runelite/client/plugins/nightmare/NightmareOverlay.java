@@ -125,8 +125,9 @@ class NightmareOverlay extends Overlay
 			{
 				LocalPoint lp = player.getLocalLocation();
 				Point point = Perspective.getCanvasTextLocation(client, graphics, lp, str, 0);
+				Color color = !plugin.isParasite() && player.equals(client.getLocalPlayer()) ? Color.GREEN : Color.RED;
 
-				renderTextLocation(graphics, str, 14, Font.BOLD, Color.RED, point);
+				renderTextLocation(graphics, str, 14, Font.BOLD, color, point);
 			}
 		}
 
