@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nightmare;
 
+import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,7 +30,6 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
-import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 @Slf4j
@@ -71,8 +71,10 @@ class NightmareOverlay extends Overlay
 
 				if (poly != null && plugin.getNightmareShadows().get(graphicsObject) >= 0)
 				{
-					Color color = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : config.highlightColour();
-					OverlayUtil.renderPolygon(graphics, poly, color);
+					OverlayUtil.renderPolygon(graphics, poly, config.shadowsBorderColour());
+					graphics.setColor(config.shadowsColour());
+					graphics.fillPolygon(poly);
+
 					if (config.shadowsTickCounter())
 					{
 						String count = Integer.toString(plugin.getNightmareShadows().get(graphicsObject));
@@ -90,7 +92,7 @@ class NightmareOverlay extends Overlay
 				if (plugin.getNm() != null)
 				{
 					Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-					OverlayUtil.renderPolygon(graphics, tilePoly, config.highlightColour());
+					OverlayUtil.renderPolygon(graphics, tilePoly, config.shadowsBorderColour());
 				}
 			}
 		}
@@ -134,7 +136,7 @@ class NightmareOverlay extends Overlay
 			{
 				if (totem.getCurrentPhase().isActive())
 				{
-					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor(), 0);
+					outliner.drawOutline(totem.getNpc(), config.totemOutlineSize(), totem.getCurrentPhase().getColor());
 				}
 			}
 		}
@@ -238,7 +240,7 @@ class NightmareOverlay extends Overlay
 		if (plugin.getNm() != null)
 		{
 			Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, plugin.getNm().getLocalLocation(), 5);
-			OverlayUtil.renderPolygon(graphics, tilePoly, config.highlightColour());
+			OverlayUtil.renderPolygon(graphics, tilePoly, config.nightmareChargeBorderCol());
 		}
 	}
 
@@ -257,13 +259,13 @@ class NightmareOverlay extends Overlay
 
 		// if nightmare is at the gates, there are extra dangerous squares
 		int offset = 1792;
-		if (nmX == 6208)
+		if (nmX == 6208 || nmX == 7232)
 		{
 			offset = 2048;
 		}
 
 		// facing west
-		if (nmX == 5312)
+		if (nmX == 5312 || nmX == 6336)
 		{
 			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - 256 - 64, nmY + 256 + 64);
@@ -271,7 +273,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY - 256 - 64);
 		}
 		// facing east
-		else if (nmX == 7104)
+		else if (nmX == 7104 || nmX == 8128)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - offset - 256 - 64, nmY + 256 + 64);
@@ -279,7 +281,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY - 256 - 64);
 		}
 		// facing north
-		else if (nmY == 8000 || nmY == 8128)
+		else if (nmY == 8000 || nmY == 8128 || nmY == 9024 || nmY == 9152)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - 256 - 64, nmY + 256 + 64);
@@ -287,7 +289,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY - offset - 256 - 64);
 		}
 		//facing south
-		else if (nmY == 6080 || nmY == 6208)
+		else if (nmY == 6080 || nmY == 6208 || nmY == 7104 || nmY == 7232)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + offset + 256 + 64);
 			polyAddPoints.addPoint(nmX - 256 - 64, nmY + offset + 256 + 64);
@@ -336,9 +338,11 @@ class NightmareOverlay extends Overlay
 			switch (id)
 			{
 				case 9454:
+				case 9466:
 					color = Color.CYAN;
 					break;
 				case 9455:
+				case 9467:
 					color = Color.GREEN;
 					break;
 				default:
