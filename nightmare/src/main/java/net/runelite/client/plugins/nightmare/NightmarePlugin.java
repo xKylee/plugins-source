@@ -384,6 +384,7 @@ public class NightmarePlugin extends Plugin
 					if (!nightmareShadows.containsKey(graphicsObject))
 					{
 						nightmareShadows.put(graphicsObject, 5);
+						ticksUntilNextAttack = 4;
 					}
 				}
 			}
