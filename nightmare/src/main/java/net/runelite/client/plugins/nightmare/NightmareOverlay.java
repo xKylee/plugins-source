@@ -273,7 +273,7 @@ class NightmareOverlay extends Overlay
 			polyAddPoints.addPoint(nmX + offset + 256 + 64, nmY - 256 - 64);
 		}
 		// facing east
-		else if (nmX == 7104 || nmX == 8000)
+		else if (nmX == 7104 || nmX == 8128)
 		{
 			polyAddPoints.addPoint(nmX + 256 + 64, nmY + 256 + 64);
 			polyAddPoints.addPoint(nmX - offset - 256 - 64, nmY + 256 + 64);
