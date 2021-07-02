@@ -98,7 +98,7 @@ class NightmareOverlay extends Overlay
 		}
 
 		int ticksUntilNext = plugin.getTicksUntilNextAttack();
-		if (config.ticksCounter() && ticksUntilNext > 0 && plugin.getNm() != null)
+		if (config.ticksCounter() && ticksUntilNext >= 0 && plugin.getNm() != null)
 		{
 			String str = Integer.toString(ticksUntilNext);
 

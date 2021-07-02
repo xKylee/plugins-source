@@ -5,7 +5,6 @@ import com.google.inject.Provides;
 import java.awt.Polygon;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -384,22 +383,19 @@ public class NightmarePlugin extends Plugin
 					if (!nightmareShadows.containsKey(graphicsObject))
 					{
 						nightmareShadows.put(graphicsObject, 5);
+						ticksUntilNextAttack = 4;
 					}
 				}
 			}
-			if (!doShadowsExist)
+			if (!doShadowsExist && shadowsSpawning)
 			{
 				shadowsSpawning = false;
+				nightmareShadows.clear();
 			}
 
-			for (Iterator<GraphicsObject> it = nightmareShadows.keySet().iterator(); it.hasNext(); )
+			for (GraphicsObject key : nightmareShadows.keySet())
 			{
-				GraphicsObject key = it.next();
 				nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
-				if (nightmareShadows.get(key) <= -5)
-				{
-					it.remove();
-				}
 			}
 		}
 	}
