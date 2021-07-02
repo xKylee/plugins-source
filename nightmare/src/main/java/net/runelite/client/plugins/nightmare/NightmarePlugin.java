@@ -371,28 +371,28 @@ public class NightmarePlugin extends Plugin
 			pendingNightmareAttack = null;
 		}
 
-		if (config.highlightShadows())
+		boolean doShadowsExist = false;
+		for (GraphicsObject graphicsObject : client.getGraphicsObjects())
 		{
-			boolean doShadowsExist = false;
-			for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+			if (graphicsObject.getId() == NIGHTMARE_SHADOW)
 			{
-				if (graphicsObject.getId() == NIGHTMARE_SHADOW)
+				shadowsSpawning = true;
+				doShadowsExist = true;
+				if (!nightmareShadows.containsKey(graphicsObject))
 				{
-					shadowsSpawning = true;
-					doShadowsExist = true;
-					if (!nightmareShadows.containsKey(graphicsObject))
-					{
-						nightmareShadows.put(graphicsObject, 5);
-						ticksUntilNextAttack = 4;
-					}
+					nightmareShadows.put(graphicsObject, 5);
+					ticksUntilNextAttack = 4;
 				}
 			}
-			if (!doShadowsExist && shadowsSpawning)
-			{
-				shadowsSpawning = false;
-				nightmareShadows.clear();
-			}
+		}
+		if (!doShadowsExist && shadowsSpawning)
+		{
+			shadowsSpawning = false;
+			nightmareShadows.clear();
+		}
 
+		if (config.highlightShadows())
+		{
 			for (GraphicsObject key : nightmareShadows.keySet())
 			{
 				nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
