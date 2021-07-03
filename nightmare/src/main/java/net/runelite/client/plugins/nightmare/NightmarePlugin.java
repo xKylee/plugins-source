@@ -54,7 +54,6 @@ public class NightmarePlugin extends Plugin
 	// Nightmare's attack animations
 	private static final int NIGHTMARE_HUSK_SPAWN = 8565;
 	private static final int NIGHTMARE_CURSE = 8599;
-	private static final int NIGHTMARE_PARASITE_TOSS2 = 8606;
 	private static final int NIGHTMARE_CHARGE = 8609;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
@@ -213,6 +212,7 @@ public class NightmarePlugin extends Plugin
 			case 1770:
 				targetPlayer = (Player) projectile.getInteracting();
 				parasiteTargets.putIfAbsent(targetPlayer.getPlayerId(), targetPlayer);
+				ticksUntilParasite = 25;
 				break;
 			case 1781:
 				targetPlayer = (Player) projectile.getInteracting();
@@ -282,11 +282,6 @@ public class NightmarePlugin extends Plugin
 		if (animationId != NIGHTMARE_HUSK_SPAWN && !huskTarget.isEmpty())
 		{
 			huskTarget.clear();
-		}
-
-		if (animationId == NIGHTMARE_PARASITE_TOSS2)
-		{
-			ticksUntilParasite = 27;
 		}
 	}
 
