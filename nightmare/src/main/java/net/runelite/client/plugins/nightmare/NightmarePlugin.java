@@ -54,7 +54,6 @@ public class NightmarePlugin extends Plugin
 	// Nightmare's attack animations
 	private static final int NIGHTMARE_HUSK_SPAWN = 8565;
 	private static final int NIGHTMARE_CURSE = 8599;
-	private static final int NIGHTMARE_PARASITE_TOSS2 = 8606;
 	private static final int NIGHTMARE_CHARGE = 8609;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
@@ -65,7 +64,7 @@ public class NightmarePlugin extends Plugin
 
 	private static final LocalPoint MIDDLE_LOCATION = new LocalPoint(6208, 8128);
 	private static final Set<LocalPoint> PHOSANIS_MIDDLE_LOCATIONS = ImmutableSet.of(new LocalPoint(6208, 7104), new LocalPoint(7232, 7104));
-	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9434, 9437, 9440, 9443);
+	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9435, 9438, 9441, 9444);
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
 	@Getter(AccessLevel.PACKAGE)
@@ -96,6 +95,8 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAttack = 0;
 
+	@Getter(AccessLevel.PACKAGE)
+	private boolean parasite;
 	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilParasite = 0;
 
@@ -154,6 +155,7 @@ public class NightmarePlugin extends Plugin
 		shadowsSpawning = false;
 		cursed = false;
 		flash = false;
+		parasite = false;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
 		totems.clear();
@@ -210,6 +212,7 @@ public class NightmarePlugin extends Plugin
 			case 1770:
 				targetPlayer = (Player) projectile.getInteracting();
 				parasiteTargets.putIfAbsent(targetPlayer.getPlayerId(), targetPlayer);
+				ticksUntilParasite = 25;
 				break;
 			case 1781:
 				targetPlayer = (Player) projectile.getInteracting();
@@ -268,6 +271,7 @@ public class NightmarePlugin extends Plugin
 		else if (animationId == NIGHTMARE_CHARGE && ((!isPhosanis(npc.getId()) && !MIDDLE_LOCATION.equals(npc.getLocalLocation())) || (isPhosanis(npc.getId()) && !PHOSANIS_MIDDLE_LOCATIONS.contains(npc.getLocalLocation()))))
 		{
 			nightmareCharging = true;
+			ticksUntilNextAttack = 5;
 		}
 
 		if (nightmareCharging && animationId != -1 && animationId != NIGHTMARE_CHARGE)
@@ -279,22 +283,12 @@ public class NightmarePlugin extends Plugin
 		{
 			huskTarget.clear();
 		}
-
-		if (animationId == NIGHTMARE_PARASITE_TOSS2)
-		{
-			ticksUntilParasite = 27;
-		}
 	}
 
 	@Subscribe
 	public void onNpcChanged(NpcChanged event)
 	{
 		final NPC npc = event.getNpc();
-
-		if (npc == null)
-		{
-			return;
-		}
 
 		//if npc is in the totems map, update its phase
 		if (totems.containsKey(npc.getIndex()))
@@ -320,6 +314,12 @@ public class NightmarePlugin extends Plugin
 		if (event.getMessage().contains("The Nightmare has impregnated you with a deadly parasite!"))
 		{
 			flash = true;
+			parasite = true;
+		}
+
+		if (event.getMessage().toLowerCase().contains("the parasite within you has been weakened") || event.getMessage().toLowerCase().contains("the parasite bursts out of you, fully grown"))
+		{
+			parasite = false;
 		}
 
 		if (event.getMessage().toLowerCase().contains("you feel the effects of the nightmare's curse wear off."))
@@ -371,32 +371,29 @@ public class NightmarePlugin extends Plugin
 			pendingNightmareAttack = null;
 		}
 
-		if (config.highlightShadows())
+		for (GraphicsObject key : nightmareShadows.keySet())
 		{
-			boolean doShadowsExist = false;
-			for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+			nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
+		}
+
+		boolean doShadowsExist = false;
+		for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+		{
+			if (graphicsObject.getId() == NIGHTMARE_SHADOW)
 			{
-				if (graphicsObject.getId() == NIGHTMARE_SHADOW)
+				shadowsSpawning = true;
+				doShadowsExist = true;
+				if (!nightmareShadows.containsKey(graphicsObject))
 				{
-					shadowsSpawning = true;
-					doShadowsExist = true;
-					if (!nightmareShadows.containsKey(graphicsObject))
-					{
-						nightmareShadows.put(graphicsObject, 5);
-						ticksUntilNextAttack = 4;
-					}
+					nightmareShadows.put(graphicsObject, 4);
+					ticksUntilNextAttack = 4;
 				}
 			}
-			if (!doShadowsExist && shadowsSpawning)
-			{
-				shadowsSpawning = false;
-				nightmareShadows.clear();
-			}
-
-			for (GraphicsObject key : nightmareShadows.keySet())
-			{
-				nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
-			}
+		}
+		if (!doShadowsExist && shadowsSpawning)
+		{
+			shadowsSpawning = false;
+			nightmareShadows.clear();
 		}
 	}
 

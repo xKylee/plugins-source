@@ -24,6 +24,7 @@ import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
 import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.geometry.Geometry;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -68,21 +69,27 @@ class NightmareOverlay extends Overlay
 			{
 				LocalPoint lp = graphicsObject.getLocation();
 				Polygon poly = Perspective.getCanvasTilePoly(client, lp);
+				Player localPlayer = client.getLocalPlayer();
 
-				if (poly != null && plugin.getNightmareShadows().get(graphicsObject) >= 0)
+				if (poly != null && localPlayer != null && plugin.getNightmareShadows().get(graphicsObject) >= 0)
 				{
-					OverlayUtil.renderPolygon(graphics, poly, config.shadowsBorderColour());
-					graphics.setColor(config.shadowsColour());
-					graphics.fillPolygon(poly);
+					WorldPoint playerWorldPoint = localPlayer.getWorldLocation();
+					WorldPoint shadowsWorldPoint = WorldPoint.fromLocal(client, lp);
 
-					if (config.shadowsTickCounter())
+					if (playerWorldPoint.distanceTo(shadowsWorldPoint) <= config.shadowsRenderDistance())
 					{
-						String count = Integer.toString(plugin.getNightmareShadows().get(graphicsObject));
-						Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
-						if (point != null)
+						OverlayUtil.renderPolygon(graphics, poly, config.shadowsBorderColour());
+						graphics.setColor(config.shadowsColour());
+						graphics.fillPolygon(poly);
+						if (config.shadowsTickCounter())
 						{
-							Color textcolor = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : Color.WHITE;
-							renderTextLocation(graphics, count, 12, Font.BOLD, textcolor, point);
+							String count = Integer.toString(plugin.getNightmareShadows().get(graphicsObject));
+							Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
+							if (point != null)
+							{
+								Color textcolor = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : Color.WHITE;
+								renderTextLocation(graphics, count, 12, Font.BOLD, textcolor, point);
+							}
 						}
 					}
 				}
@@ -98,7 +105,7 @@ class NightmareOverlay extends Overlay
 		}
 
 		int ticksUntilNext = plugin.getTicksUntilNextAttack();
-		if (config.ticksCounter() && ticksUntilNext >= 0 && plugin.getNm() != null)
+		if (config.ticksCounter() && ticksUntilNext > 0 && plugin.getNm() != null)
 		{
 			String str = Integer.toString(ticksUntilNext);
 
@@ -125,8 +132,9 @@ class NightmareOverlay extends Overlay
 			{
 				LocalPoint lp = player.getLocalLocation();
 				Point point = Perspective.getCanvasTextLocation(client, graphics, lp, str, 0);
+				Color color = !plugin.isParasite() && player.equals(client.getLocalPlayer()) ? Color.GREEN : Color.RED;
 
-				renderTextLocation(graphics, str, 14, Font.BOLD, Color.RED, point);
+				renderTextLocation(graphics, str, 14, Font.BOLD, color, point);
 			}
 		}
 
