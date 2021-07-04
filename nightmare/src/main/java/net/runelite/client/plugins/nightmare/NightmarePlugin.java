@@ -3,6 +3,7 @@ package net.runelite.client.plugins.nightmare;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
 import java.awt.Polygon;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +22,10 @@ import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.GraphicsObject;
+import net.runelite.api.ItemID;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
+import net.runelite.api.SpriteID;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
@@ -34,9 +37,13 @@ import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.ItemManager;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
+import net.runelite.client.ui.overlay.infobox.Timer;
 import org.pf4j.Extension;
 
 @Extension
@@ -51,9 +58,31 @@ import org.pf4j.Extension;
 @Singleton
 public class NightmarePlugin extends Plugin
 {
+	@Inject
+	private Client client;
+	@Inject
+	private NightmareConfig config;
+	@Inject
+	private OverlayManager overlayManager;
+	@Inject
+	private InfoBoxManager infoBoxManager;
+	@Inject
+	private SpriteManager spriteManager;
+	@Inject
+	private ItemManager itemManager;
+	@Inject
+	private NightmareOverlay overlay;
+	@Inject
+	private NightmarePrayerOverlay prayerOverlay;
+	@Inject
+	private NightmarePrayerInfoBox prayerInfoBox;
+	@Inject
+	private SanfewInfoBox sanfewInfoBox;
+
 	// Nightmare's attack animations
 	private static final int NIGHTMARE_HUSK_SPAWN = 8565;
 	private static final int NIGHTMARE_CURSE = 8599;
+	private static final int NIGHTMARE_PARASITE_TOSS = 8606;
 	private static final int NIGHTMARE_CHARGE = 8609;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
 	private static final int NIGHTMARE_RANGE_ATTACK = 8596;
@@ -73,14 +102,7 @@ public class NightmarePlugin extends Plugin
 	private final Map<Polygon, Player> huskTarget = new HashMap<>();
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, Player> parasiteTargets = new HashMap<>();
-	@Inject
-	private Client client;
-	@Inject
-	private NightmareConfig config;
-	@Inject
-	private OverlayManager overlayManager;
-	@Inject
-	private NightmarePrayerInfoBox prayerInfoBox;
+
 	@Nullable
 	@Getter(AccessLevel.PACKAGE)
 	private NightmareAttack pendingNightmareAttack;
@@ -112,10 +134,6 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	@Setter
 	private boolean flash = false;
-	@Inject
-	private NightmareOverlay overlay;
-	@Inject
-	private NightmarePrayerOverlay prayerOverlay;
 
 	public NightmarePlugin()
 	{
@@ -134,6 +152,7 @@ public class NightmarePlugin extends Plugin
 		overlayManager.add(overlay);
 		overlayManager.add(prayerOverlay);
 		overlayManager.add(prayerInfoBox);
+		overlayManager.add(sanfewInfoBox);
 		reset();
 	}
 
@@ -143,6 +162,7 @@ public class NightmarePlugin extends Plugin
 		overlayManager.remove(overlay);
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(prayerInfoBox);
+		overlayManager.remove(sanfewInfoBox);
 		reset();
 	}
 
@@ -283,6 +303,13 @@ public class NightmarePlugin extends Plugin
 		{
 			huskTarget.clear();
 		}
+
+		if (config.parasitesInfoBox() && animationId == NIGHTMARE_PARASITE_TOSS)
+		{
+			Timer parasiteInfoBox = new Timer(16000L, ChronoUnit.MILLIS, itemManager.getImage(ItemID.PARASITIC_EGG), this);
+			parasiteInfoBox.setTooltip("Parasites");
+			infoBoxManager.addInfoBox(parasiteInfoBox);
+		}
 	}
 
 	@Subscribe
@@ -325,6 +352,13 @@ public class NightmarePlugin extends Plugin
 		if (event.getMessage().toLowerCase().contains("you feel the effects of the nightmare's curse wear off."))
 		{
 			cursed = false;
+		}
+
+		if (config.yawnInfoBox() && event.getMessage().toLowerCase().contains("the nightmare's spores have infected you, making you feel drowsy!"))
+		{
+			Timer yawnInfoBox = new Timer(15600L, ChronoUnit.MILLIS, spriteManager.getSprite(SpriteID.SPELL_DREAM, 0), this);
+			yawnInfoBox.setTooltip("Yawning");
+			infoBoxManager.addInfoBox(yawnInfoBox);
 		}
 
 	}
