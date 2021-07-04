@@ -81,7 +81,6 @@ public class NightmarePlugin extends Plugin
 
 	// Nightmare's attack animations
 	private static final int NIGHTMARE_HUSK_SPAWN = 8565;
-	private static final int NIGHTMARE_CURSE = 8599;
 	private static final int NIGHTMARE_PARASITE_TOSS = 8606;
 	private static final int NIGHTMARE_CHARGE = 8609;
 	private static final int NIGHTMARE_MELEE_ATTACK = 8594;
@@ -283,10 +282,6 @@ public class NightmarePlugin extends Plugin
 			ticksUntilNextAttack = 7;
 			pendingNightmareAttack = cursed ? NightmareAttack.CURSE_RANGE : NightmareAttack.RANGE;
 		}
-		else if (animationId == NIGHTMARE_CURSE)
-		{
-			cursed = true;
-		}
 		// check if phosanis because the middle locations may be used in the others charge locations
 		else if (animationId == NIGHTMARE_CHARGE && ((!isPhosanis(npc.getId()) && !MIDDLE_LOCATION.equals(npc.getLocalLocation())) || (isPhosanis(npc.getId()) && !PHOSANIS_MIDDLE_LOCATIONS.contains(npc.getLocalLocation()))))
 		{
@@ -347,6 +342,11 @@ public class NightmarePlugin extends Plugin
 		if (event.getMessage().toLowerCase().contains("the parasite within you has been weakened") || event.getMessage().toLowerCase().contains("the parasite bursts out of you, fully grown"))
 		{
 			parasite = false;
+		}
+
+		if (event.getMessage().toLowerCase().contains("the nightmare has cursed you, shuffling your prayers!"))
+		{
+			cursed = true;
 		}
 
 		if (event.getMessage().toLowerCase().contains("you feel the effects of the nightmare's curse wear off."))
