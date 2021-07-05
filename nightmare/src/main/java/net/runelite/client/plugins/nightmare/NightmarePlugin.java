@@ -6,6 +6,7 @@ import java.awt.Polygon;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,17 +24,22 @@ import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.ItemID;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.SpriteID;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcChanged;
+import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -44,6 +50,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.ui.overlay.infobox.Timer;
+import net.runelite.client.util.Text;
 import org.pf4j.Extension;
 
 @Extension
@@ -93,6 +100,7 @@ public class NightmarePlugin extends Plugin
 	private static final LocalPoint MIDDLE_LOCATION = new LocalPoint(6208, 8128);
 	private static final Set<LocalPoint> PHOSANIS_MIDDLE_LOCATIONS = ImmutableSet.of(new LocalPoint(6208, 7104), new LocalPoint(7232, 7104));
 	private static final List<Integer> INACTIVE_TOTEMS = Arrays.asList(9435, 9438, 9441, 9444);
+	private static final List<Integer> ACTIVE_TOTEMS = Arrays.asList(9436, 9439, 9442, 9445);
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, MemorizedTotem> totems = new HashMap<>();
 	@Getter(AccessLevel.PACKAGE)
@@ -101,6 +109,10 @@ public class NightmarePlugin extends Plugin
 	private final Map<Polygon, Player> huskTarget = new HashMap<>();
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, Player> parasiteTargets = new HashMap<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<GraphicsObject, Integer> nightmareShadows = new HashMap<>();
+	private final Set<NPC> husks = new HashSet<>();
+	private final Set<NPC> parasites = new HashSet<>();
 
 	@Nullable
 	@Getter(AccessLevel.PACKAGE)
@@ -127,8 +139,8 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private boolean shadowsSpawning = false;
 
-	@Getter(AccessLevel.PACKAGE)
-	private final Map<GraphicsObject, Integer> nightmareShadows = new HashMap<>();
+	private int totemsAlive = 0;
+	private int sleepwalkersAlive = 0;
 
 	@Getter(AccessLevel.PACKAGE)
 	@Setter
@@ -177,9 +189,13 @@ public class NightmarePlugin extends Plugin
 		parasite = false;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
+		totemsAlive = 0;
+		sleepwalkersAlive = 0;
 		totems.clear();
 		spores.clear();
+		husks.clear();
 		huskTarget.clear();
+		parasites.clear();
 		parasiteTargets.clear();
 		nightmareShadows.clear();
 	}
@@ -317,10 +333,66 @@ public class NightmarePlugin extends Plugin
 		{
 			totems.get(npc.getIndex()).updateCurrentPhase(npc.getId());
 		}
-		else if (INACTIVE_TOTEMS.contains(npc.getId()))
+		if (INACTIVE_TOTEMS.contains(npc.getId()))
 		{
 			//else if the totem is not in the totem array and it is an inactive totem, add it to the totem map.
 			totems.putIfAbsent(npc.getIndex(), new MemorizedTotem(npc));
+			++totemsAlive;
+		}
+		if (ACTIVE_TOTEMS.contains(npc.getId()))
+		{
+			--totemsAlive;
+		}
+	}
+
+	@Subscribe
+	public void onNpcSpawned(NpcSpawned event)
+	{
+		final NPC npc = event.getNpc();
+
+		if (npc.getName() != null && npc.getName().equalsIgnoreCase("parasite"))
+		{
+			parasites.add(npc);
+		}
+
+		if (npc.getName() != null && npc.getName().equalsIgnoreCase("husk"))
+		{
+			husks.add(npc);
+		}
+
+		if (npc.getName() != null && npc.getName().equalsIgnoreCase("sleepwalker"))
+		{
+			++sleepwalkersAlive;
+		}
+	}
+
+	@Subscribe
+	public void onNpcDespawned(NpcDespawned event)
+	{
+		final NPC npc = event.getNpc();
+
+		if (npc.getName() != null && npc.getName().equalsIgnoreCase("sleepwalker"))
+		{
+			--sleepwalkersAlive;
+		}
+	}
+
+	@Subscribe
+	public void onActorDeath(ActorDeath event)
+	{
+		if (event.getActor() instanceof NPC && event.getActor().getName() != null)
+		{
+			final NPC npc = (NPC)event.getActor();
+
+			if (npc.getName() != null && npc.getName().equalsIgnoreCase("parasite"))
+			{
+				parasites.remove(npc);
+			}
+
+			if (npc.getName() != null && npc.getName().equalsIgnoreCase("husk"))
+			{
+				husks.remove(npc);
+			}
 		}
 	}
 
@@ -428,6 +500,27 @@ public class NightmarePlugin extends Plugin
 		{
 			shadowsSpawning = false;
 			nightmareShadows.clear();
+		}
+	}
+
+	@Subscribe
+	public void onMenuEntryAdded(MenuEntryAdded event)
+	{
+		if (!inFight || nm == null || event.getMenuAction() != MenuAction.NPC_SECOND_OPTION)
+		{
+			return;
+		}
+
+		String target = Text.removeTags(event.getTarget()).toLowerCase();
+
+		if ((target.contains("the nightmare") || target.contains("phosani's nightmare"))
+			&& ((config.hideAttackNightmareTotems() && totemsAlive > 0)
+			|| (config.hideAttackNightmareParasites() && parasites.size() > 0)
+			|| (config.hideAttackNightmareHusk() && husks.size() > 0)
+			|| (config.hideAttackNightmareSleepwalkers() && nm.getId() != 11154 && sleepwalkersAlive > 0))
+			|| (config.hideAttackSleepwalkers() && nm.getId() == 11154 && target.contains("sleepwalker")))
+		{
+			client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 		}
 	}
 

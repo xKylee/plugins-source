@@ -117,6 +117,66 @@ public interface NightmareConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+		keyName = "hideAttackNightmareTotems",
+		name = "Hide Attack during Totems",
+		description = "Remove the attack option on Nightmare during Totems",
+		position = 2,
+		section = generalSection
+	)
+	default boolean hideAttackNightmareTotems()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "hideAttackNightmareParasites",
+		name = "Hide Attack during Parasites",
+		description = "Remove the attack option on Nightmare during Parasites",
+		position = 3,
+		section = generalSection
+	)
+	default boolean hideAttackNightmareParasites()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "hideAttackNightmareHusk",
+		name = "Hide Attack during Husks",
+		description = "Remove the attack option on Nightmare during Husks",
+		position = 4,
+		section = generalSection
+	)
+	default boolean hideAttackNightmareHusk()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "hideAttackNightmareSleepwalkers",
+		name = "Hide Attack during Sleepwalkers",
+		description = "Remove the attack option on Nightmare during Sleepwalkers (not on last phase of Phosanis)",
+		position = 5,
+		section = generalSection
+	)
+	default boolean hideAttackNightmareSleepwalkers()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "hideAttackSleepwalkers",
+		name = "Hide Attack Sleepwalkers Last Phase",
+		description = "Remove the attack option on Sleepwalkers during the last phase of Phosanis",
+		position = 6,
+		section = generalSection
+	)
+	default boolean hideAttackSleepwalkers()
+	{
+		return false;
+	}
+
 	//TOTEMS SECTION
 	@ConfigItem(
 		keyName = "highlightTotems",
