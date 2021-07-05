@@ -41,7 +41,6 @@ public enum SmithingItem
 	 *      in order to select those instead of the ambigious categories of 'exclusive 1/2'
 	 *      - Would need a check to control type of bar which is going to be smithed
 	 */
-	//JAVELIN("Javelin head", WidgetInfo.SMITHING_ANVIL_JAVELIN_HEADS, WidgetInfo.SMITHING_ANVIL_JAVELIN_HEADS.getId()),
 	ARROWHEAD("Arrowtip", WidgetInfo.SMITHING_ANVIL_ARROW_HEADS, WidgetInfo.SMITHING_ANVIL_ARROW_HEADS.getId(), 330, 91, 55, 65),
 	AXE("Axe", WidgetInfo.SMITHING_ANVIL_AXE, WidgetInfo.SMITHING_ANVIL_AXE.getId(), 90, 36, 55, 80),
 	BATTLE_AXE("Battleaxe", WidgetInfo.SMITHING_ANVIL_BATTLE_AXE, WidgetInfo.SMITHING_ANVIL_BATTLE_AXE.getId(), 90, 201, 55, 80),
@@ -52,6 +51,7 @@ public enum SmithingItem
 	DART("Dart tip", WidgetInfo.SMITHING_ANVIL_DART_TIPS, WidgetInfo.SMITHING_ANVIL_DART_TIPS.getId(), 330, 36, 55, 65),
 	FULL_HELM("Full helm", WidgetInfo.SMITHING_ANVIL_FULL_HELM, WidgetInfo.SMITHING_ANVIL_FULL_HELM.getId(), 250, 91, 55, 80),
 	HASTAE("Hastae", WidgetInfo.SMITHING_ANVIL_EXCLUSIVE2, WidgetInfo.SMITHING_ANVIL_EXCLUSIVE2.getId(), 330, 201, 55, 80),
+	//JAVELIN("Javelin head", WidgetInfo.SMITHING_ANVIL_JAVELIN_HEADS, WidgetInfo.SMITHING_ANVIL_JAVELIN_HEADS.getId()),
 	KITE_SHIELD("Kiteshield", WidgetInfo.SMITHING_ANVIL_KITE_SHIELD, WidgetInfo.SMITHING_ANVIL_KITE_SHIELD.getId(), 250, 201, 55, 80),
 	KNIFE("Knife", WidgetInfo.SMITHING_ANVIL_KNIVES, WidgetInfo.SMITHING_ANVIL_KNIVES.getId(), 330, 146, 55, 80),
 	LONGSWORD("Long-sword", WidgetInfo.SMITHING_ANVIL_LONG_SWORD, WidgetInfo.SMITHING_ANVIL_LONG_SWORD.getId(), 10, 201, 55, 80),
