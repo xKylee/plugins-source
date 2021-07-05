@@ -36,6 +36,7 @@ import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicsObjectCreated;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
@@ -110,9 +111,10 @@ public class NightmarePlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<Integer, Player> parasiteTargets = new HashMap<>();
 	@Getter(AccessLevel.PACKAGE)
-	private final Map<GraphicsObject, Integer> nightmareShadows = new HashMap<>();
+	private final Set<GraphicsObject> shadows = new HashSet<>();
 	private final Set<NPC> husks = new HashSet<>();
 	private final Set<NPC> parasites = new HashSet<>();
+	private final Set<NPC> sleepwalkers = new HashSet<>();
 
 	@Nullable
 	@Getter(AccessLevel.PACKAGE)
@@ -138,9 +140,10 @@ public class NightmarePlugin extends Plugin
 
 	@Getter(AccessLevel.PACKAGE)
 	private boolean shadowsSpawning = false;
+	@Getter(AccessLevel.PACKAGE)
+	private int shadowsTicks;
 
 	private int totemsAlive = 0;
-	private int sleepwalkersAlive = 0;
 
 	@Getter(AccessLevel.PACKAGE)
 	@Setter
@@ -189,15 +192,16 @@ public class NightmarePlugin extends Plugin
 		parasite = false;
 		ticksUntilNextAttack = 0;
 		ticksUntilParasite = 0;
+		shadowsTicks = 0;
 		totemsAlive = 0;
-		sleepwalkersAlive = 0;
 		totems.clear();
 		spores.clear();
+		shadows.clear();
 		husks.clear();
 		huskTarget.clear();
 		parasites.clear();
 		parasiteTargets.clear();
-		nightmareShadows.clear();
+		sleepwalkers.clear();
 	}
 
 	@Subscribe
@@ -229,6 +233,23 @@ public class NightmarePlugin extends Plugin
 		if (id == NIGHTMARE_MUSHROOM || id == NIGHTMARE_PRE_MUSHROOM)
 		{
 			spores.remove(gameObj.getLocalLocation());
+		}
+	}
+
+	@Subscribe
+	public void onGraphicsObjectCreated(GraphicsObjectCreated event)
+	{
+		if (!inFight)
+		{
+			return;
+		}
+
+		if (event.getGraphicsObject().getId() == NIGHTMARE_SHADOW)
+		{
+			shadows.add(event.getGraphicsObject());
+			shadowsSpawning = true;
+			shadowsTicks = 5;
+			ticksUntilNextAttack = 5;
 		}
 	}
 
@@ -337,11 +358,11 @@ public class NightmarePlugin extends Plugin
 		{
 			//else if the totem is not in the totem array and it is an inactive totem, add it to the totem map.
 			totems.putIfAbsent(npc.getIndex(), new MemorizedTotem(npc));
-			++totemsAlive;
+			totemsAlive++;
 		}
 		if (ACTIVE_TOTEMS.contains(npc.getId()))
 		{
-			--totemsAlive;
+			totemsAlive--;
 		}
 	}
 
@@ -362,7 +383,7 @@ public class NightmarePlugin extends Plugin
 
 		if (npc.getName() != null && npc.getName().equalsIgnoreCase("sleepwalker"))
 		{
-			++sleepwalkersAlive;
+			sleepwalkers.add(npc);
 		}
 	}
 
@@ -373,7 +394,7 @@ public class NightmarePlugin extends Plugin
 
 		if (npc.getName() != null && npc.getName().equalsIgnoreCase("sleepwalker"))
 		{
-			--sleepwalkersAlive;
+			sleepwalkers.remove(npc);
 		}
 	}
 
@@ -399,7 +420,6 @@ public class NightmarePlugin extends Plugin
 	@Subscribe
 	private void onChatMessage(ChatMessage event)
 	{
-
 		if (!inFight || nm == null || event.getType() != ChatMessageType.GAMEMESSAGE)
 		{
 			return;
@@ -432,7 +452,6 @@ public class NightmarePlugin extends Plugin
 			yawnInfoBox.setTooltip("Yawning");
 			infoBoxManager.addInfoBox(yawnInfoBox);
 		}
-
 	}
 
 	@Subscribe
@@ -477,29 +496,14 @@ public class NightmarePlugin extends Plugin
 			pendingNightmareAttack = null;
 		}
 
-		for (GraphicsObject key : nightmareShadows.keySet())
+		if (shadowsTicks > 0)
 		{
-			nightmareShadows.replace(key, nightmareShadows.get(key) - 1);
-		}
-
-		boolean doShadowsExist = false;
-		for (GraphicsObject graphicsObject : client.getGraphicsObjects())
-		{
-			if (graphicsObject.getId() == NIGHTMARE_SHADOW)
+			shadowsTicks--;
+			if (shadowsTicks == 0)
 			{
-				shadowsSpawning = true;
-				doShadowsExist = true;
-				if (!nightmareShadows.containsKey(graphicsObject))
-				{
-					nightmareShadows.put(graphicsObject, 4);
-					ticksUntilNextAttack = 4;
-				}
+				shadowsSpawning = false;
+				shadows.clear();
 			}
-		}
-		if (!doShadowsExist && shadowsSpawning)
-		{
-			shadowsSpawning = false;
-			nightmareShadows.clear();
 		}
 	}
 
@@ -517,7 +521,7 @@ public class NightmarePlugin extends Plugin
 			&& ((config.hideAttackNightmareTotems() && totemsAlive > 0)
 			|| (config.hideAttackNightmareParasites() && parasites.size() > 0)
 			|| (config.hideAttackNightmareHusk() && husks.size() > 0)
-			|| (config.hideAttackNightmareSleepwalkers() && nm.getId() != 11154 && sleepwalkersAlive > 0))
+			|| (config.hideAttackNightmareSleepwalkers() && nm.getId() != 11154 && sleepwalkers.size() > 0))
 			|| (config.hideAttackSleepwalkers() && nm.getId() == 11154 && target.contains("sleepwalker")))
 		{
 			client.setMenuOptionCount(client.getMenuOptionCount() - 1);

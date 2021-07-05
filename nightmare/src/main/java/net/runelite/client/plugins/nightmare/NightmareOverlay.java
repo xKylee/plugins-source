@@ -65,30 +65,32 @@ class NightmareOverlay extends Overlay
 
 		if (config.highlightShadows())
 		{
-			for (GraphicsObject graphicsObject : plugin.getNightmareShadows().keySet())
+			for (GraphicsObject graphicsObject : plugin.getShadows())
 			{
 				LocalPoint lp = graphicsObject.getLocation();
 				Polygon poly = Perspective.getCanvasTilePoly(client, lp);
 				Player localPlayer = client.getLocalPlayer();
 
-				if (poly != null && localPlayer != null && plugin.getNightmareShadows().get(graphicsObject) >= 0)
+				if (poly != null && localPlayer != null)
 				{
 					WorldPoint playerWorldPoint = localPlayer.getWorldLocation();
 					WorldPoint shadowsWorldPoint = WorldPoint.fromLocal(client, lp);
 
 					if (playerWorldPoint.distanceTo(shadowsWorldPoint) <= config.shadowsRenderDistance())
 					{
-						OverlayUtil.renderPolygon(graphics, poly, config.shadowsBorderColour());
+						graphics.setPaintMode();
+						graphics.setColor(config.shadowsBorderColour());
+						graphics.draw(poly);
 						graphics.setColor(config.shadowsColour());
-						graphics.fillPolygon(poly);
+						graphics.fill(poly);
+
 						if (config.shadowsTickCounter())
 						{
-							String count = Integer.toString(plugin.getNightmareShadows().get(graphicsObject));
+							String count = Integer.toString(plugin.getShadowsTicks());
 							Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
 							if (point != null)
 							{
-								Color textcolor = plugin.getNightmareShadows().get(graphicsObject) == 0 ? Color.RED : Color.WHITE;
-								renderTextLocation(graphics, count, 12, Font.BOLD, textcolor, point);
+								renderTextLocation(graphics, count, 12, Font.BOLD, Color.WHITE, point);
 							}
 						}
 					}
@@ -137,7 +139,6 @@ class NightmareOverlay extends Overlay
 		if (config.showTicksUntilParasite() && ticksUntilNextParasite > 0)
 		{
 			String str = Integer.toString(ticksUntilNextParasite);
-
 			for (Player player : plugin.getParasiteTargets().values())
 			{
 				LocalPoint lp = player.getLocalLocation();
