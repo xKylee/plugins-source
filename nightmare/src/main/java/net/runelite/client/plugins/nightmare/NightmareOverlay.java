@@ -104,6 +104,16 @@ class NightmareOverlay extends Overlay
 			}
 		}
 
+		if (config.highlightNightmareHitboxOnCharge())
+		{
+			drawNightmareHitboxOnCharge(graphics, plugin.getNm(), plugin.isNightmareCharging());
+		}
+
+		if (config.highlightNightmareChargeRange())
+		{
+			drawNightmareChargeRange(graphics, plugin.getNm(), plugin.isNightmareCharging());
+		}
+
 		int ticksUntilNext = plugin.getTicksUntilNextAttack();
 		if (config.ticksCounter() && ticksUntilNext > 0 && plugin.getNm() != null)
 		{
@@ -157,16 +167,6 @@ class NightmareOverlay extends Overlay
 		if (config.highlightHuskTarget())
 		{
 			drawHuskTarget(graphics, plugin.getHuskTarget());
-		}
-
-		if (config.highlightNightmareHitboxOnCharge())
-		{
-			drawNightmareHitboxOnCharge(graphics, plugin.getNm(), plugin.isNightmareCharging());
-		}
-
-		if (config.highlightNightmareChargeRange())
-		{
-			drawNightmareChargeRange(graphics, plugin.getNm(), plugin.isNightmareCharging());
 		}
 
 		if (config.huskHighlight())
