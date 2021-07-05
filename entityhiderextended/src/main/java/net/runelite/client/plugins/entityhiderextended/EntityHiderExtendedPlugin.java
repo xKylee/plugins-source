@@ -116,8 +116,8 @@ public class EntityHiderExtendedPlugin extends Plugin
 				continue;
 			}
 
-			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !blacklistName.contains(npc.getName().toLowerCase()) && !blacklistID.contains(npc.getId()))
-			|| (npc.getName() != null && npc.getHealthRatio() == 0 && hideNPCsOnDeathName.contains(npc.getName().toLowerCase()))
+			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !blacklistName.contains(Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
+			|| (npc.getName() != null && npc.getHealthRatio() == 0 && hideNPCsOnDeathName.contains(Text.standardize(npc.getName())))
 			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId()))
 			|| (hideNPCsOnAnimationID.contains(npc.getAnimation())))
 			{
