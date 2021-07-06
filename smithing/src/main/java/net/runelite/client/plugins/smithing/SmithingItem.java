@@ -58,7 +58,7 @@ public enum SmithingItem
 	MACE("Mace", WidgetInfo.SMITHING_ANVIL_MACE, WidgetInfo.SMITHING_ANVIL_MACE.getId(), 90, 91, 55, 80),
 	MED_HELM("Med helm", WidgetInfo.SMITHING_ANVIL_MED_HELM, WidgetInfo.SMITHING_ANVIL_MED_HELM.getId(), 250, 36, 55, 80),
 	NAIL("Nails", WidgetInfo.SMITHING_ANVIL_NAILS, WidgetInfo.SMITHING_ANVIL_NAILS.getId(), 170, 256, 55, 80),
-	PLATEBODY("Platebody", WidgetInfo.SMITHING_ANVIL_PLATE_BODY, WidgetInfo.SMITHING_ANVIL_PLATE_BODY.getId(), 170, 201, 55, 80);
+	PLATEBODY("Platebody", WidgetInfo.SMITHING_ANVIL_PLATE_BODY, WidgetInfo.SMITHING_ANVIL_PLATE_BODY.getId(), 170, 201, 55, 80),
 	PLATELEGS("Platelegs", WidgetInfo.SMITHING_ANVIL_PLATE_LEGS, WidgetInfo.SMITHING_ANVIL_PLATE_LEGS.getId(), 170, 91, 55, 80),
 	PLATESKIRT("Plateskirt", WidgetInfo.SMITHING_ANVIL_PLATE_SKIRT, WidgetInfo.SMITHING_ANVIL_PLATE_SKIRT.getId(), 170, 146, 55, 80),
 	SCIM("Scimitar", WidgetInfo.SMITHING_ANVIL_SCIMITAR, WidgetInfo.SMITHING_ANVIL_SCIMITAR.getId(), 10, 146, 55, 80),
@@ -68,7 +68,7 @@ public enum SmithingItem
 	SPECIAL_2("Special - 2", WidgetInfo.SMITHING_ANVIL_EXCLUSIVE2, WidgetInfo.SMITHING_ANVIL_EXCLUSIVE2.getId(), 330, 201, 55, 80),
 	SQUARE_SHIELD("SQ Shield", WidgetInfo.SMITHING_ANVIL_SQ_SHIELD, WidgetInfo.SMITHING_ANVIL_SQ_SHIELD.getId(), 250, 146, 55, 80),
 	TWO_HANDED_SWORD("2H Sword", WidgetInfo.SMITHING_ANVIL_TWO_H_SWORD, WidgetInfo.SMITHING_ANVIL_TWO_H_SWORD.getId(), 10, 256, 55, 80),
-	WARHAMMER("Warhammer", WidgetInfo.SMITHING_ANVIL_WARHAMMER, WidgetInfo.SMITHING_ANVIL_WARHAMMER.getId(), 90, 146, 55, 80),
+	WARHAMMER("Warhammer", WidgetInfo.SMITHING_ANVIL_WARHAMMER, WidgetInfo.SMITHING_ANVIL_WARHAMMER.getId(), 90, 146, 55, 80);
 
 	private final String name;
 	private final WidgetInfo widgetInfo;
