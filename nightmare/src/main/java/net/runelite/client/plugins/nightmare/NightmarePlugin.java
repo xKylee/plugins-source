@@ -268,7 +268,6 @@ public class NightmarePlugin extends Plugin
 			case 1770:
 				targetPlayer = (Player) projectile.getInteracting();
 				parasiteTargets.putIfAbsent(targetPlayer.getPlayerId(), targetPlayer);
-				ticksUntilParasite = 25;
 				break;
 			case 1781:
 				targetPlayer = (Player) projectile.getInteracting();
@@ -336,11 +335,16 @@ public class NightmarePlugin extends Plugin
 			huskTarget.clear();
 		}
 
-		if (config.parasitesInfoBox() && animationId == NIGHTMARE_PARASITE_TOSS)
+		if (animationId == NIGHTMARE_PARASITE_TOSS)
 		{
-			Timer parasiteInfoBox = new Timer(16000L, ChronoUnit.MILLIS, itemManager.getImage(ItemID.PARASITIC_EGG), this);
-			parasiteInfoBox.setTooltip("Parasites");
-			infoBoxManager.addInfoBox(parasiteInfoBox);
+			ticksUntilParasite = 27;
+
+			if (config.parasitesInfoBox())
+			{
+				Timer parasiteInfoBox = new Timer(16200L, ChronoUnit.MILLIS, itemManager.getImage(ItemID.PARASITIC_EGG), this);
+				parasiteInfoBox.setTooltip("Parasites");
+				infoBoxManager.addInfoBox(parasiteInfoBox);
+			}
 		}
 	}
 
@@ -427,8 +431,15 @@ public class NightmarePlugin extends Plugin
 
 		if (event.getMessage().contains("The Nightmare has impregnated you with a deadly parasite!"))
 		{
+			Player localPlayer = client.getLocalPlayer();
+			if (localPlayer != null)
+			{
+				parasiteTargets.putIfAbsent(localPlayer.getPlayerId(), localPlayer);
+			}
+
 			flash = true;
 			parasite = true;
+			ticksUntilParasite = 22;
 		}
 
 		if (event.getMessage().toLowerCase().contains("the parasite within you has been weakened") || event.getMessage().toLowerCase().contains("the parasite bursts out of you, fully grown"))
