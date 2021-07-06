@@ -225,17 +225,10 @@ class NightmareOverlay extends Overlay
 		{
 			LocalPoint point = entry.getKey();
 			Polygon poly = getCanvasTileAreaPoly(client, point, 3);
-			Player localPlayer = client.getLocalPlayer();
 
-			if (poly != null && localPlayer != null)
+			if (poly != null)
 			{
-				WorldPoint playerWorldPoint = localPlayer.getWorldLocation();
-				WorldPoint sporesWorldPoint = WorldPoint.fromLocal(client, point);
-
-				if (playerWorldPoint.distanceTo(sporesWorldPoint) <= config.sporesRenderDistance())
-				{
-					poisonTiles.add(new Area(poly));
-				}
+				poisonTiles.add(new Area(poly));
 			}
 		}
 

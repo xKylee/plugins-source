@@ -290,29 +290,12 @@ public interface NightmareConfig extends Config
 		return true;
 	}
 
-	@Range(
-		max = 20,
-		min = 3
-	)
-	@ConfigItem(
-		keyName = "sporesRenderDistance",
-		name = "Render Distance",
-		description = "Render spores distance in tiles from your player",
-		position = 1,
-		section = sporesSection
-	)
-	@Units("tiles")
-	default int sporesRenderDistance()
-	{
-		return 6;
-	}
-
 	@Alpha
 	@ConfigItem(
 		keyName = "poisonBorderCol",
 		name = "Poison border colour",
 		description = "Colour the edges of the area highlighted by poison special will be",
-		position = 2,
+		position = 1,
 		section = sporesSection
 	)
 	default Color poisonBorderCol()
@@ -325,7 +308,7 @@ public interface NightmareConfig extends Config
 		keyName = "poisonCol",
 		name = "Poison colour",
 		description = "Colour the fill of the area highlighted by poison special will be",
-		position = 3,
+		position = 2,
 		section = sporesSection
 	)
 	default Color poisonCol()
@@ -337,7 +320,7 @@ public interface NightmareConfig extends Config
 		keyName = "yawnInfoBox",
 		name = "Yawn InfoBox",
 		description = "InfoBox telling you the time until your yawning ends",
-		position = 4,
+		position = 3,
 		section = sporesSection
 	)
 	default boolean yawnInfoBox()
