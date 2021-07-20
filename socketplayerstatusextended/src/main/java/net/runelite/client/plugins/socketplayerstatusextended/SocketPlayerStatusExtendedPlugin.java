@@ -96,7 +96,7 @@ public class SocketPlayerStatusExtendedPlugin extends Plugin
 			if (enforceRegion())
 			{
 				inTheatre = true;
-				sendFlag(client.getLocalPlayer().getName() + " is using extended player status v1");
+				sendFlag(client.getLocalPlayer().getName() + " is using extended player status v1.05");
 			}
 		}
 		else if (!enforceRegion())
