@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.1.4"
+version = "5.1.5"
 
 project.extra["PluginName"] = "Nightmare of Ashihama"
 project.extra["PluginDescription"] = "Shows what to pray and what to do at Nightmare of Ashihama"
