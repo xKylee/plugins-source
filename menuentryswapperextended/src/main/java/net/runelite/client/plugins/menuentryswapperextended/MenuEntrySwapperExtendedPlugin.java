@@ -248,7 +248,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			return;
 		}
 
-		event.setMenuEntries(updateMenuEntries(event.getMenuEntries()));
+		event.setMenuEntries(updateMenuEntries(client.getMenuEntries()));
 		event.setModified();
 	}
 
