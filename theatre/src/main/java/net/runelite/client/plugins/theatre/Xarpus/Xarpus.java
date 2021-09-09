@@ -83,7 +83,7 @@ public class Xarpus extends Room
 	@Getter
 	private final Map<GroundObject, Integer> xarpusExhumeds = new HashMap<>();
 
-	private final Set<LocalPoint> xarpusExhumedsLocation = new HashSet<>();
+	private final Set<WorldPoint> xarpusExhumedsLocation = new HashSet<>();
 
 	@Getter
 	private Counter exhumedCounter;
@@ -193,12 +193,12 @@ public class Xarpus extends Room
 			GroundObject o = event.getGroundObject();
 			if (o.getId() == 32743)
 			{
-				if (xarpusExhumedsLocation.contains(o.getLocalLocation()))
+				if (xarpusExhumedsLocation.contains(o.getWorldLocation()))
 				{
 					return;
 				}
 				exhumedSpawned = true;
-				xarpusExhumedsLocation.add(o.getLocalLocation());
+				xarpusExhumedsLocation.add(o.getWorldLocation());
 
 				if (exhumedCounter == null)
 				{
@@ -225,7 +225,7 @@ public class Xarpus extends Room
 			GroundObject o = event.getGroundObject();
 			if (o.getId() == GROUNDOBJECT_ID_EXHUMED)
 			{
-				xarpusExhumedsLocation.remove(o.getLocalLocation());
+				xarpusExhumedsLocation.remove(o.getWorldLocation());
 				xarpusExhumeds.remove(o);
 			}
 		}
@@ -252,6 +252,7 @@ public class Xarpus extends Room
 				xarpusExhumeds.replace(key, xarpusExhumeds.get(key) - 1);
 				if (xarpusExhumeds.get(key) < 0)
 				{
+					xarpusExhumedsLocation.remove(key.getWorldLocation());
 					it.remove();
 				}
 			}
