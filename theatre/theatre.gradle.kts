@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.1.6"
+version = "5.1.7"
 
 project.extra["PluginName"] = "Theatre Of Blood"
 project.extra["PluginDescription"] = "All-in-one plugin for Theatre of Blood"
