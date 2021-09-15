@@ -110,6 +110,9 @@ public class SotetsegPlugin extends Plugin
 	@Inject
 	private SotetsegOverlay overlay;
 
+	@Inject
+	private MazeTrueTileOverlay mazeOverlay;
+
 	// This boolean states whether or not the room is currently active.
 	@Getter(AccessLevel.PUBLIC)
 	private boolean sotetsegActive;
@@ -194,6 +197,7 @@ public class SotetsegPlugin extends Plugin
 		flashFlag = true;
 
 		overlayManager.add(overlay);
+		overlayManager.add(mazeOverlay);
 	}
 
 	@Override
