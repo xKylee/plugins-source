@@ -204,6 +204,7 @@ public class SotetsegPlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(overlay);
+		overlayManager.remove(mazeOverlay);
 	}
 
 	@Subscribe // Boss has entered the scene. Played has entered the room.
