@@ -335,43 +335,43 @@ public class SocketDeathIndicatorPlugin extends Plugin
 						NyloQ q;
 						do
 						{
-							do
+							if (!nyloQIterator.hasNext())
 							{
-								if (!nyloQIterator.hasNext())
-								{
-									return;
-								}
-
-								q = nyloQIterator.next();
-							} while (q.npc.getIndex() != index);
-
-							q.queuedDamage += damage;
-							NyloQ finalQ = q;
-							if (q.hp - q.queuedDamage <= 0 && deadNylos.stream().noneMatch((o) -> o.getIndex() == finalQ.npc.getIndex()))
-							{
-								deadNylos.add(q.npc);
-								if (config.hideNylo())
-								{
-									setHiddenNpc(q.npc, true);
-									q.hidden = true;
-								}
+								return;
 							}
-						} while (q.npc.getId() != 8360 && q.npc.getId() != 8361 && q.npc.getId() != 8362 && q.npc.getId() != 8363);
 
-						double percent = ((double) q.hp - (double) q.queuedDamage) / (double) q.maxHP;
-						if (percent < 0.7D && q.phase == 0)
+							q = nyloQIterator.next();
+						} while (q.npc.getIndex() != index);
+
+						q.queuedDamage += damage;
+						NyloQ finalQ = q;
+
+						if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363)
 						{
-							q.phase = 1;
+							double percent = ((double) q.hp - (double) q.queuedDamage) / (double) q.maxHP;
+							if (percent < 0.7D && q.phase == 0)
+							{
+								q.phase = 1;
+							}
+
+							if (percent < 0.5D && q.phase == 1)
+							{
+								q.phase = 2;
+							}
+
+							if (percent < 0.3D && q.phase == 2)
+							{
+								q.phase = 3;
+							}
 						}
-
-						if (percent < 0.5D && q.phase == 1)
+						else if (q.hp - q.queuedDamage <= 0 && deadNylos.stream().noneMatch((o) -> o.getIndex() == finalQ.npc.getIndex()))
 						{
-							q.phase = 2;
-						}
-
-						if (percent < 0.3D && q.phase == 2)
-						{
-							q.phase = 3;
+							deadNylos.add(q.npc);
+							if (config.hideNylo())
+							{
+								setHiddenNpc(q.npc, true);
+								q.hidden = true;
+							}
 						}
 					}
 				}
@@ -544,12 +544,14 @@ public class SocketDeathIndicatorPlugin extends Plugin
 	{
 		if (text.contains("<"))
 		{
-			return text.split("<")[0];
-		}
-		// Shouldn't fall in here often since in my logs the "(" is always prepended with <col=ff0000>
-		if (text.contains("("))
-		{
-			return text.split("\\(")[0];
+			if (text.contains("<img=11>"))
+			{
+				text = text.substring(9);
+			}
+			if (text.contains("<"))
+			{
+				text = text.substring(0, text.indexOf("<"));
+			}
 		}
 		return text;
 	}

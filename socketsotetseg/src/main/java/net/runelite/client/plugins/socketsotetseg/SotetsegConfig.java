@@ -34,10 +34,10 @@ import net.runelite.client.config.ConfigItem;
 public interface SotetsegConfig extends Config
 {
 	@ConfigItem(
-		position = 1,
-		keyName = "getTileColor",
-		name = "Tile Color",
-		description = "The color of the tiles."
+			position = 1,
+			keyName = "getTileColor",
+			name = "Tile Color",
+			description = "The color of the tiles."
 	)
 	default Color getTileColor()
 	{
@@ -45,10 +45,10 @@ public interface SotetsegConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 2,
-		keyName = "getTileTransparency",
-		name = "Tile Transparency",
-		description = "The color transparency of the tiles. Ranges from 0 to 255, inclusive."
+			position = 2,
+			keyName = "getTileTransparency",
+			name = "Tile Transparency",
+			description = "The color transparency of the tiles. Ranges from 0 to 255, inclusive."
 	)
 	default int getTileTransparency()
 	{
@@ -56,10 +56,10 @@ public interface SotetsegConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
-		keyName = "getTileOutline",
-		name = "Tile Outline Color",
-		description = "The color of the outline of the tiles."
+			position = 3,
+			keyName = "getTileOutline",
+			name = "Tile Outline Color",
+			description = "The color of the outline of the tiles."
 	)
 	default Color getTileOutline()
 	{
@@ -67,10 +67,10 @@ public interface SotetsegConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
-		keyName = "getTileOutlineSize",
-		name = "Tile Outline Size",
-		description = "The size of the outline of the tiles."
+			position = 4,
+			keyName = "getTileOutlineSize",
+			name = "Tile Outline Size",
+			description = "The size of the outline of the tiles."
 	)
 	default int getTileOutlineSize()
 	{
@@ -263,5 +263,15 @@ public interface SotetsegConfig extends Config
 	default int chosenTextDuration()
 	{
 		return 500;
+	}
+
+	@ConfigItem(position = 20,
+			keyName = "trueMaze",
+			name = "Maze True Tile",
+			description = "Shows your true tile in the maze"
+	)
+	default boolean trueMaze()
+	{
+		return true;
 	}
 }
