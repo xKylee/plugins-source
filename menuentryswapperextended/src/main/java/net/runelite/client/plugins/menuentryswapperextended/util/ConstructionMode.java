@@ -11,7 +11,7 @@ public enum ConstructionMode
 	// and it's probably best so people don't one click yeet 3m gp on accident
 	ATTACK_STONE("Attack Stone",
 		new String[]{"build", "remove"},
-		new String[]{"clay attack stone", "limestone attack stone", "marble attack stone"}),
+		new String[]{"clay attack stone", "limestone attack stone", "marble attack stone", "stone space", "attack stone"}),
 	BENCH("Benches",
 		new String[]{"build", "remove"},
 		new String[]{"bench", "seating space", "gnome bench", "teak garden bench", "wooden bench", "oak bench", "carved oak bench",
