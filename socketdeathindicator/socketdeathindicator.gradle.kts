@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.5"
+version = "5.0.6"
 
 project.extra["PluginName"] = "Socket Death Indicator"
 project.extra["PluginDescription"] = "Socket extension for extending removing dead nylocas during Theatre"
