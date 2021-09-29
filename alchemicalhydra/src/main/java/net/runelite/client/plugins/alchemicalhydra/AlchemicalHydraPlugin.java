@@ -271,6 +271,10 @@ public class AlchemicalHydraPlugin extends Plugin
 		if (npc.getId() == NpcID.ALCHEMICAL_HYDRA)
 		{
 			hydra = new Hydra(npc);
+			if (client.isInInstancedRegion() && fountainTicks == -1) //handles the initial hydra spawn when your in the lobby but havent gone through the main doors
+			{
+				fountainTicks = 10;
+			}
 		}
 	}
 
