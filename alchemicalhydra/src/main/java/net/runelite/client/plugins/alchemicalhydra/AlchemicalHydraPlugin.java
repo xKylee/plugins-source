@@ -53,7 +53,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -273,7 +272,7 @@ public class AlchemicalHydraPlugin extends Plugin
 			hydra = new Hydra(npc);
 			if (client.isInInstancedRegion() && fountainTicks == -1) //handles the initial hydra spawn when your in the lobby but havent gone through the main doors
 			{
-				fountainTicks = 10;
+				fountainTicks = 11;
 			}
 		}
 	}
