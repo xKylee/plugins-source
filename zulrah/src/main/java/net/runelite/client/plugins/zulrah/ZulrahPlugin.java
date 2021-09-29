@@ -41,6 +41,7 @@ import net.runelite.client.input.KeyListener;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.zulrah.ZulrahConfig;
 import net.runelite.client.plugins.zulrah.overlays.InstanceTimerOverlay;
 import net.runelite.client.plugins.zulrah.overlays.PhaseOverlay;
 import net.runelite.client.plugins.zulrah.overlays.PrayerHelperOverlay;
@@ -54,34 +55,20 @@ import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ImageUtil;
 import org.pf4j.Extension;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Extension
 @PluginDescriptor(
-	name = "Zulrah",
-	description = "All-in-One tool to help during the Zulrah fight",
-	tags = {"zulrah", "zul", "andra", "snakeling", "zhuri/nicole", "girls rule boys drool"},
-	enabledByDefault = false//cringe
+		name = "Zulrah",
+		description = "All-in-One tool to help during the Zulrah fight",
+		tags = {"zulrah", "zul", "andra", "snakeling", "zhuri/nicole", "girls rule boys drool"},
+		enabledByDefault = false
 )
+
 public class ZulrahPlugin extends Plugin implements KeyListener
 {
-
-	public static final BufferedImage[] ZULRAH_IMAGES = new BufferedImage[3];
-	private static final BufferedImage CLOCK_ICON = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "clock.png");
-	private static boolean flipStandLocation = false;
-	private static boolean flipPhasePrayer = false;
-	private static boolean zulrahReset = false;
-
-	static
-	{
-		ZULRAH_IMAGES[0] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_range.png");
-		ZULRAH_IMAGES[1] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_melee.png");
-		ZULRAH_IMAGES[2] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_magic.png");
-	}
-
-	private final Map<LocalPoint, Integer> projectilesMap = new HashMap();
-	private final Map<GameObject, Integer> toxicCloudsMap = new HashMap();
-	private final Collection<Renderable> snakelings = new ArrayList();
+	private static final Logger log = LoggerFactory.getLogger(ZulrahPlugin.class);
 	@Inject
 	private Client client;
 	@Inject
@@ -101,79 +88,44 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 	@Inject
 	private SceneOverlay sceneOverlay;
 	@Inject
-	@com.google.inject.Inject
 	private ZulrahConfig config;
 	private NPC zulrahNpc = null;
 	private int stage = 0;
 	private int phaseTicks = -1;
+	private int attackTicks = -1;
+	private int totalTicks = 0;
+	private RotationType currentRotation = null;
+	private List<RotationType> potentialRotations = new ArrayList<RotationType>();
+	private final Map<LocalPoint, Integer> projectilesMap = new HashMap<LocalPoint, Integer>();
+	private final Map<GameObject, Integer> toxicCloudsMap = new HashMap<GameObject, Integer>();
+	private static boolean flipStandLocation = false;
+	private static boolean flipPhasePrayer = false;
+	private static boolean zulrahReset = false;
+	private final Collection<NPC> snakelings = new ArrayList<NPC>();
+	private boolean holdingSnakelingHotkey = false;
+	private Counter zulrahTotalTicksInfoBox;
+	public static final BufferedImage[] ZULRAH_IMAGES = new BufferedImage[3];
+	private static final BufferedImage CLOCK_ICON = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "clock.png");
 	private final BiConsumer<RotationType, RotationType> phaseTicksHandler = (current, potential) -> {
-		if (zulrahReset)
-		{
+		if (zulrahReset) 
+	{
 			phaseTicks = 38;
 		}
 		else
 		{
-			ZulrahPhase p = current != null ? getCurrentPhase(current) : getCurrentPhase(potential);
+			ZulrahPhase p = current != null ? getCurrentPhase((RotationType)((Object)current)) : getCurrentPhase((RotationType)((Object)potential));
 			Preconditions.checkNotNull(p, "Attempted to set phase ticks but current Zulrah phase was somehow null. Stage: " + stage);
 			phaseTicks = p.getAttributes().getPhaseTicks();
 		}
-
 	};
-	private int attackTicks = -1;
-	private int totalTicks = 0;
-	private RotationType currentRotation = null;
-	private List<RotationType> potentialRotations = new ArrayList();
-	private boolean holdingSnakelingHotkey = false;
-	private Counter zulrahTotalTicksInfoBox;
-
-	private static void setHidden(Renderable renderable, boolean hidden)
-	{
-		Method setHidden = null;
-
-		try
-		{
-			setHidden = renderable.getClass().getMethod("setHidden", Boolean.TYPE);
-		}
-		catch (NoSuchMethodException var5)
-		{
-
-			return;
-		}
-
-		try
-		{
-			setHidden.invoke(renderable, hidden);
-		}
-		catch (InvocationTargetException | IllegalAccessException var4)
-		{
-
-		}
-
-	}
-
-	public static boolean isFlipStandLocation()
-	{
-		return flipStandLocation;
-	}
-
-	public static boolean isFlipPhasePrayer()
-	{
-		return flipPhasePrayer;
-	}
-
-	public static boolean isZulrahReset()
-	{
-		return zulrahReset;
-	}
 
 	@Provides
-	public ZulrahConfig getConfig(ConfigManager configManager)
+	ZulrahConfig provideConfig(ConfigManager configManager) 
 	{
 		return configManager.getConfig(ZulrahConfig.class);
 	}
 
-	@Override
-	protected void startUp()
+	protected void startUp() 
 	{
 		overlayManager.add(instanceTimerOverlay);
 		overlayManager.add(phaseOverlay);
@@ -183,8 +135,7 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 		keyManager.registerKeyListener(this);
 	}
 
-	@Override
-	protected void shutDown()
+	protected void shutDown() 
 	{
 		reset();
 		overlayManager.remove(instanceTimerOverlay);
@@ -195,7 +146,7 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 		keyManager.unregisterKeyListener(this);
 	}
 
-	private void reset()
+	private void reset() 
 	{
 		zulrahNpc = null;
 		stage = 0;
@@ -213,319 +164,295 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 		clearSnakelingCollection();
 		holdingSnakelingHotkey = false;
 		handleTotalTicksInfoBox(true);
-
+		log.debug("Zulrah Reset!");
 	}
 
-	public void keyTyped(KeyEvent e)
+	public void keyTyped(KeyEvent e) 
 	{
 	}
 
-	public void keyPressed(KeyEvent e)
+	public void keyPressed(KeyEvent e) 
 	{
-		if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.MES && config.snakelingMesHotkey().matches(e))
-		{
+		if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.MES && config.snakelingMesHotkey().matches(e)) 
+	{
 			holdingSnakelingHotkey = true;
 		}
-
 	}
 
-	public void keyReleased(KeyEvent e)
+	public void keyReleased(KeyEvent e) 
 	{
-		if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.MES && config.snakelingMesHotkey().matches(e))
-		{
+		if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.MES && config.snakelingMesHotkey().matches(e)) 
+	{
 			holdingSnakelingHotkey = false;
 		}
-
 	}
 
 	@Subscribe
-	private void onConfigChanged(ConfigChanged event)
+	private void onConfigChanged(ConfigChanged event) 
 	{
-		if (event.getGroup().equalsIgnoreCase("znzulrah"))
-		{
-			String var2 = event.getKey();
-			byte var3 = -1;
-			switch (var2.hashCode())
-			{
-				case -1906254917:
-					if (var2.equals("totalTickCounter"))
-					{
-						var3 = 1;
-					}
-					break;
-				case -1662720966:
-					if (var2.equals("snakelingSetting"))
-					{
-						var3 = 0;
-					}
-			}
-
-			switch (var3)
-			{
-				case 0:
-					if (config.snakelingSetting() != ZulrahConfig.SnakelingSettings.ENTITY)
-					{
+		if (event.getGroup().equalsIgnoreCase("znzulrah")) 
+	{
+			switch (event.getKey()) 
+	{
+				case "snakelingSetting":
+				{
+					if (config.snakelingSetting() != ZulrahConfig.SnakelingSettings.ENTITY) 
+	{
 						clearSnakelingCollection();
 					}
-
-					if (config.snakelingSetting() != ZulrahConfig.SnakelingSettings.MES)
-					{
-						holdingSnakelingHotkey = false;
-					}
+					if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.MES) break;
+					holdingSnakelingHotkey = false;
 					break;
-				case 1:
-					if (!config.totalTickCounter())
-					{
-						handleTotalTicksInfoBox(true);
-					}
+				}
+				case "totalTickCounter":
+				{
+					if (config.totalTickCounter()) break;
+					handleTotalTicksInfoBox(true);
+				}
 			}
 		}
-
 	}
 
-	private void clearSnakelingCollection()
+	private void clearSnakelingCollection() 
 	{
-		snakelings.forEach((npc) -> {
-			setHidden(npc, false);
-		});
+		snakelings.forEach(npc -> ZulrahPlugin.setHidden(npc, false));
 		snakelings.clear();
 	}
 
 	@Subscribe
-	private void onClientTick(ClientTick event)
+	private void onClientTick(ClientTick event) 
 	{
-		if (client.getGameState() == GameState.LOGGED_IN && zulrahNpc != null)
-		{
-			if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.ENTITY)
-			{
-				snakelings.addAll((Collection) client.getNpcs().stream().filter((npc) -> {
-					return npc != null && npc.getName() != null && npc.getName().equalsIgnoreCase("snakeling") && npc.getCombatLevel() == 90;
-				}).collect(Collectors.toList()));
-				snakelings.forEach((npc) -> {
-					setHidden(npc, true);
-				});
-			}
-
+		if (client.getGameState() != GameState.LOGGED_IN || zulrahNpc == null) 
+	{
+			return;
+		}
+		if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.ENTITY) 
+	{
+			snakelings.addAll(client.getNpcs().stream().filter(npc -> npc != null && npc.getName() != null && npc.getName().equalsIgnoreCase("snakeling") && npc.getCombatLevel() == 90).collect(Collectors.toList()));
+			snakelings.forEach(npc -> ZulrahPlugin.setHidden(npc, true));
 		}
 	}
 
 	@Subscribe
-	private void onGameTick(GameTick event)
+	private void onGameTick(GameTick event) 
 	{
-		if (client.getGameState() == GameState.LOGGED_IN && zulrahNpc != null)
-		{
-			++totalTicks;
-			if (attackTicks >= 0)
-			{
-				--attackTicks;
-			}
-
-			if (phaseTicks >= 0)
-			{
-				--phaseTicks;
-			}
-
-			if (projectilesMap.size() > 0)
-			{
-				projectilesMap.values().removeIf((v) -> v <= 0);
-				projectilesMap.replaceAll((k, v) -> v - 1);
-			}
-
-			if (toxicCloudsMap.size() > 0)
-			{
-				toxicCloudsMap.values().removeIf((v) -> v <= 0);
-				toxicCloudsMap.replaceAll((k, v) -> v - 1);
-			}
-
-			handleTotalTicksInfoBox(false);
+		if (client.getGameState() != GameState.LOGGED_IN || zulrahNpc == null) 
+	{
+			return;
 		}
+		++totalTicks;
+		if (attackTicks >= 0) 
+	{
+			--attackTicks;
+		}
+		if (phaseTicks >= 0) 
+	{
+			--phaseTicks;
+		}
+		if (projectilesMap.size() > 0) 
+	{
+			projectilesMap.values().removeIf(v -> v <= 0);
+			projectilesMap.replaceAll((k, v) -> v - 1);
+		}
+		if (toxicCloudsMap.size() > 0) 
+	{
+			toxicCloudsMap.values().removeIf(v -> v <= 0);
+			toxicCloudsMap.replaceAll((k, v) -> v - 1);
+		}
+		handleTotalTicksInfoBox(false);
 	}
 
 	@Subscribe
-	private void onAnimationChanged(AnimationChanged event)
+	private void onAnimationChanged(AnimationChanged event) 
 	{
-		if (event.getActor() instanceof NPC)
-		{
-			NPC npc = (NPC) event.getActor();
-			if (npc.getName() == null || npc.getName().equalsIgnoreCase("zulrah"))
+		if (!(event.getActor() instanceof NPC)) 
+	{
+			return;
+		}
+		NPC npc = (NPC)((Object)event.getActor());
+		if (npc.getName() != null && !npc.getName().equalsIgnoreCase("zulrah")) 
+	{
+			return;
+		}
+		switch (npc.getAnimation()) 
+	{
+			case 5071:
 			{
-				switch (npc.getAnimation())
-				{
-					case 5069:
-						attackTicks = 4;
-						if (currentRotation != null && getCurrentPhase(currentRotation).getZulrahNpc().isJad() && zulrahNpc.getInteracting() == client.getLocalPlayer())
-						{
-							flipPhasePrayer = !flipPhasePrayer;
-						}
-						break;
-					case 5071:
-						zulrahNpc = npc;
-						instanceTimerOverlay.setTimer();
-						potentialRotations = RotationType.findPotentialRotations(npc, stage);
-						phaseTicksHandler.accept(currentRotation, potentialRotations.get(0));
-
-						break;
-					case 5072:
-						if (zulrahReset)
-						{
-							zulrahReset = false;
-						}
-
-						if (currentRotation != null && isLastPhase(currentRotation))
-						{
-							stage = -1;
-							currentRotation = null;
-							potentialRotations.clear();
-							snakelings.clear();
-							flipStandLocation = false;
-							flipPhasePrayer = false;
-							zulrahReset = true;
-
-						}
-						break;
-					case 5073:
-						++stage;
-						if (currentRotation == null)
-						{
-							potentialRotations = RotationType.findPotentialRotations(npc, stage);
-							currentRotation = potentialRotations.size() == 1 ? potentialRotations.get(0) : null;
-						}
-
-						phaseTicksHandler.accept(currentRotation, potentialRotations.get(0));
-						break;
-					case 5804:
-						reset();
-						break;
-					case 5806:
-					case 5807:
-						attackTicks = 8;
-						flipStandLocation = !flipStandLocation;
+				zulrahNpc = npc;
+				instanceTimerOverlay.setTimer();
+				potentialRotations = RotationType.findPotentialRotations(npc, stage);
+				phaseTicksHandler.accept(currentRotation, potentialRotations.get(0));
+				log.debug("New Zulrah Encounter Started");
+				break;
+			}
+			case 5073:
+			{
+				++stage;
+				if (currentRotation == null) 
+	{
+					potentialRotations = RotationType.findPotentialRotations(npc, stage);
+					currentRotation = potentialRotations.size() == 1 ? potentialRotations.get(0) : null;
 				}
-
+				phaseTicksHandler.accept(currentRotation, potentialRotations.get(0));
+				break;
+			}
+			case 5072:
+			{
+				if (zulrahReset) 
+	{
+					zulrahReset = false;
+				}
+				if (currentRotation == null || !isLastPhase(currentRotation)) break;
+				stage = -1;
+				currentRotation = null;
+				potentialRotations.clear();
+				snakelings.clear();
+				flipStandLocation = false;
+				flipPhasePrayer = false;
+				zulrahReset = true;
+				log.debug("Resetting Zulrah");
+				break;
+			}
+			case 5069:
+			{
+				attackTicks = 4;
+				if (currentRotation == null || !getCurrentPhase(currentRotation).getZulrahNpc().isJad() || zulrahNpc.getInteracting() != client.getLocalPlayer()) break;
+				flipPhasePrayer = !flipPhasePrayer;
+				break;
+			}
+			case 5806:
+			case 5807:
+			{
+				attackTicks = 8;
+				flipStandLocation = !flipStandLocation;
+				break;
+			}
+			case 5804:
+			{
+				reset();
 			}
 		}
 	}
 
 	@Subscribe
-	private void onFocusChanged(FocusChanged event)
+	private void onFocusChanged(FocusChanged event) 
 	{
-		if (!event.isFocused())
-		{
+		if (!event.isFocused()) 
+	{
 			holdingSnakelingHotkey = false;
 		}
-
 	}
 
 	@Subscribe
-	private void onMenuEntryAdded(MenuEntryAdded event)
+	private void onMenuEntryAdded(MenuEntryAdded event) 
 	{
-		if (config.snakelingSetting() == ZulrahConfig.SnakelingSettings.MES && zulrahNpc != null && !zulrahNpc.isDead())
-		{
-			if (!holdingSnakelingHotkey && event.getTarget().contains("Snakeling") && event.getOption().equalsIgnoreCase("attack"))
-			{
-				NPC npc = client.getCachedNPCs()[event.getIdentifier()];
-				if (npc == null)
-				{
-					return;
-				}
-
-				client.setMenuEntries(Arrays.copyOf(client.getMenuEntries(), client.getMenuEntries().length - 1));
+		if (config.snakelingSetting() != ZulrahConfig.SnakelingSettings.MES || zulrahNpc == null || zulrahNpc.isDead()) 
+	{
+			return;
+		}
+		if (!holdingSnakelingHotkey && event.getTarget().contains("Snakeling") && event.getOption().equalsIgnoreCase("attack")) 
+	{
+			NPC npc = client.getCachedNPCs()[event.getIdentifier()];
+			if (npc == null) 
+	{
+				return;
 			}
-
+			client.setMenuEntries(Arrays.copyOf(client.getMenuEntries(), client.getMenuEntries().length - 1));
 		}
 	}
 
 	@Subscribe
-	private void onProjectileMoved(ProjectileMoved event)
+	private void onProjectileMoved(ProjectileMoved event) 
 	{
-		if (zulrahNpc != null)
-		{
-			Projectile p = event.getProjectile();
-			switch (p.getId())
+		if (zulrahNpc == null) 
+	{
+			return;
+		}
+		Projectile p = event.getProjectile();
+		switch (p.getId()) 
+	{
+			case 1045:
+			case 1047:
 			{
-				case 1045:
-				case 1047:
-					projectilesMap.put(event.getPosition(), p.getRemainingCycles() / 30);
-				default:
+				projectilesMap.put(event.getPosition(), p.getRemainingCycles() / 30);
 			}
 		}
 	}
 
 	@Subscribe
-	private void onGameObjectSpawned(GameObjectSpawned event)
+	private void onGameObjectSpawned(GameObjectSpawned event) 
 	{
-		if (zulrahNpc != null)
-		{
-			GameObject obj = event.getGameObject();
-			if (obj.getId() == 11700)
-			{
-				toxicCloudsMap.put(obj, 30);
-			}
-
+		if (zulrahNpc == null) 
+	{
+			return;
+		}
+		GameObject obj = event.getGameObject();
+		if (obj.getId() == 11700) 
+	{
+			toxicCloudsMap.put(obj, 30);
 		}
 	}
 
 	@Subscribe
-	private void onGameStateChanged(GameStateChanged event)
+	private void onGameStateChanged(GameStateChanged event) 
 	{
-		if (zulrahNpc != null)
-		{
-			switch (event.getGameState())
+		if (zulrahNpc == null) 
+	{
+			return;
+		}
+		switch (event.getGameState()) 
+	{
+			case LOADING:
+			case CONNECTION_LOST:
+			case HOPPING:
 			{
-				case LOADING:
-				case CONNECTION_LOST:
-				case HOPPING:
-					reset();
-				default:
+				reset();
 			}
 		}
 	}
 
 	@Nullable
-	private ZulrahPhase getCurrentPhase(RotationType type)
+	private ZulrahPhase getCurrentPhase(RotationType type) 
 	{
 		return stage >= type.getZulrahPhases().size() ? null : type.getZulrahPhases().get(stage);
 	}
 
 	@Nullable
-	private ZulrahPhase getNextPhase(RotationType type)
+	private ZulrahPhase getNextPhase(RotationType type) 
 	{
 		return isLastPhase(type) ? null : type.getZulrahPhases().get(stage + 1);
 	}
 
-	private boolean isLastPhase(RotationType type)
+	private boolean isLastPhase(RotationType type) 
 	{
 		return stage == type.getZulrahPhases().size() - 1;
 	}
 
-	public Set<ZulrahData> getZulrahData()
+	public Set<ZulrahData> getZulrahData() 
 	{
-		Set<ZulrahData> zulrahDataSet = new LinkedHashSet<>();
-		if (currentRotation == null)
-		{
-			potentialRotations.forEach((type) -> {
-				zulrahDataSet.add(new ZulrahData(getCurrentPhase(type), getNextPhase(type)));
-			});
+		LinkedHashSet<ZulrahData> zulrahDataSet = new LinkedHashSet<ZulrahData>();
+		if (currentRotation == null) 
+	{
+			potentialRotations.forEach(type -> zulrahDataSet.add(new ZulrahData(getCurrentPhase((RotationType)((Object)type)), getNextPhase((RotationType)((Object)type)))));
 		}
 		else
 		{
 			zulrahDataSet.add(new ZulrahData(getCurrentPhase(currentRotation), getNextPhase(currentRotation)));
 		}
-
-		return (Set<ZulrahData>) (zulrahDataSet.size() > 0 ? zulrahDataSet : Collections.emptySet());
+		return zulrahDataSet.size() > 0 ? zulrahDataSet : Collections.emptySet();
 	}
 
-	private void handleTotalTicksInfoBox(boolean remove)
+	private void handleTotalTicksInfoBox(boolean remove) 
 	{
-		if (remove)
-		{
+		if (remove) 
+	{
 			infoBoxManager.removeInfoBox(zulrahTotalTicksInfoBox);
 			zulrahTotalTicksInfoBox = null;
 		}
 		else if (config.totalTickCounter())
-		{
-			if (zulrahTotalTicksInfoBox == null)
-			{
+	{
+			if (zulrahTotalTicksInfoBox == null) 
+	{
 				zulrahTotalTicksInfoBox = new Counter(CLOCK_ICON, this, totalTicks);
 				zulrahTotalTicksInfoBox.setTooltip("Total Ticks Alive");
 				infoBoxManager.addInfoBox(zulrahTotalTicksInfoBox);
@@ -535,36 +462,79 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 				zulrahTotalTicksInfoBox.setCount(totalTicks);
 			}
 		}
-
 	}
 
-	public NPC getZulrahNpc()
+	private static void setHidden(Renderable renderable, boolean hidden) 
+	{
+		Method setHidden = null;
+		try
+		{
+			setHidden = renderable.getClass().getMethod("setHidden", Boolean.TYPE);
+		}
+		catch (NoSuchMethodException e) 
+	{
+			log.debug("Couldn't find method setHidden for class {}", renderable.getClass());
+			return;
+		}
+		try
+		{
+			setHidden.invoke(renderable, hidden);
+		}
+		catch (IllegalAccessException | InvocationTargetException e) 
+	{
+			log.debug("Couldn't call method setHidden for class {}", renderable.getClass());
+		}
+	}
+
+	public NPC getZulrahNpc() 
 	{
 		return zulrahNpc;
 	}
 
-	public int getPhaseTicks()
+	public int getPhaseTicks() 
 	{
 		return phaseTicks;
 	}
 
-	public int getAttackTicks()
+	public int getAttackTicks() 
 	{
 		return attackTicks;
 	}
 
-	public RotationType getCurrentRotation()
+	public RotationType getCurrentRotation() 
 	{
 		return currentRotation;
 	}
 
-	public Map<LocalPoint, Integer> getProjectilesMap()
+	public Map<LocalPoint, Integer> getProjectilesMap() 
 	{
 		return projectilesMap;
 	}
 
-	public Map<GameObject, Integer> getToxicCloudsMap()
+	public Map<GameObject, Integer> getToxicCloudsMap() 
 	{
 		return toxicCloudsMap;
+	}
+
+	public static boolean isFlipStandLocation() 
+	{
+		return flipStandLocation;
+	}
+
+	public static boolean isFlipPhasePrayer() 
+	{
+		return flipPhasePrayer;
+	}
+
+	public static boolean isZulrahReset() 
+	{
+		return zulrahReset;
+	}
+
+	static
+	{
+		ZulrahPlugin.ZULRAH_IMAGES[0] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_range.png");
+		ZulrahPlugin.ZULRAH_IMAGES[1] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_melee.png");
+		ZulrahPlugin.ZULRAH_IMAGES[2] = ImageUtil.getResourceStreamFromClass(ZulrahPlugin.class, "zulrah_magic.png");
 	}
 }

@@ -79,7 +79,7 @@ public final class ZulrahPhase
 
 	public String toString()
 	{
-		ZulrahNpc var10000 = getZulrahNpc();
-		return "ZulrahPhase(zulrahNpc=" + var10000 + ", attributes=" + getAttributes() + ")";
+		ZulrahNpc zulrahNpc = getZulrahNpc();
+		return "ZulrahPhase(zulrahNpc=" + zulrahNpc + ", attributes=" + getAttributes() + ")";
 	}
 }
