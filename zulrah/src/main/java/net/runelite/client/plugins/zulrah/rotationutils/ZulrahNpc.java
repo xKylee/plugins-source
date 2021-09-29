@@ -55,8 +55,8 @@ public final class ZulrahNpc
 
 	public String toString()
 	{
-		ZulrahType var10000 = getType();
-		return "ZulrahNpc(type=" + var10000 + ", zulrahLocation=" + getZulrahLocation() + ", jad=" + isJad() + ")";
+		ZulrahType type = getType();
+		return "ZulrahNpc(type=" + type + ", zulrahLocation=" + getZulrahLocation() + ", jad=" + isJad() + ")";
 	}
 
 	public boolean equals(Object o)
