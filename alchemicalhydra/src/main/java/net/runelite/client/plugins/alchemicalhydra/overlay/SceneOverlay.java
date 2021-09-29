@@ -107,6 +107,7 @@ public class SceneOverlay extends Overlay
 		renderPoisonProjectileAreaTiles(graphics2D);
 		renderLightning(graphics2D);
 		renderFountainOutline(graphics2D);
+		renderFountainTicks(graphics2D);
 
 		return null;
 	}
@@ -273,6 +274,55 @@ public class SceneOverlay extends Overlay
 		}
 
 		drawOutlineAndFill(graphics2D, color, new Color(color.getRed(), color.getGreen(), color.getBlue(), 30), 1, polygon);
+	}
+
+	private void renderFountainTicks(final Graphics2D graphics2D)
+	{
+
+		if (!config.fountainTicks())
+		{
+			return;
+		}
+
+		final Collection<WorldPoint> fountainWorldPoints = WorldPoint.toLocalInstance(client, HydraPhase.POISON.getFountainWorldPoint());
+		fountainWorldPoints.addAll(WorldPoint.toLocalInstance(client, HydraPhase.LIGHTNING.getFountainWorldPoint()));
+		fountainWorldPoints.addAll(WorldPoint.toLocalInstance(client, HydraPhase.FLAME.getFountainWorldPoint()));
+
+		if (fountainWorldPoints.isEmpty())
+		{
+			return;
+		}
+
+		WorldPoint worldPoint;
+
+		for (final WorldPoint wp : fountainWorldPoints)
+		{
+			worldPoint = wp;
+			final LocalPoint localPoint = LocalPoint.fromWorld(client, worldPoint);
+
+			if (localPoint == null)
+			{
+				return;
+			}
+
+
+			final String text = String.valueOf(plugin.getFountainTicks());
+			Point timeLoc = Perspective.getCanvasTextLocation(client, graphics2D, localPoint, text, graphics2D.getFontMetrics().getHeight());
+
+
+			OverlayUtil.renderTextLocation(
+				graphics2D,
+				text,
+				config.fountainTicksFontSize(),
+				config.fountainTicksFontStyle().getFont(),
+				config.fountainTicksFontColor(),
+				timeLoc,
+				config.fountainTicksFontShadow(),
+				config.fountainTicksFontZOffset() * -1
+			);
+		}
+
+
 	}
 
 	private void renderHpUntilPhaseChange(final Graphics2D graphics2D)
