@@ -41,6 +41,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.util.WildcardMatcher;
 import org.pf4j.Extension;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -116,8 +117,8 @@ public class EntityHiderExtendedPlugin extends Plugin
 				continue;
 			}
 
-			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !blacklistName.contains(Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
-			|| (npc.getName() != null && npc.getHealthRatio() == 0 && hideNPCsOnDeathName.contains(Text.standardize(npc.getName())))
+			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
+			|| (npc.getHealthRatio() == 0 && npc.getName() != null && matchWildCards(hideNPCsOnDeathName, Text.standardize(npc.getName())))
 			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId()))
 			|| (hideNPCsOnAnimationID.contains(npc.getAnimation())))
 			{
@@ -244,5 +245,19 @@ public class EntityHiderExtendedPlugin extends Plugin
 			hiddenIndices.clear();
 			animationHiddenIndices.clear();
 		}
+	}
+
+	private boolean matchWildCards(Set<String> items, String pattern)
+	{
+		boolean matched = false;
+		for (final String item : items)
+		{
+			matched = WildcardMatcher.matches(item, pattern);
+			if (matched)
+			{
+				break;
+			}
+		}
+		return matched;
 	}
 }
