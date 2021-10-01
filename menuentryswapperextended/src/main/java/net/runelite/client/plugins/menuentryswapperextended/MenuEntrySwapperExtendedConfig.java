@@ -31,12 +31,12 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Keybind;
 import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CraftingCapeMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.CustomSwapParse;
 import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
@@ -44,7 +44,6 @@ import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
-import net.runelite.client.plugins.menuentryswapperextended.util.PrioParse;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
@@ -53,56 +52,84 @@ import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanM
 public interface MenuEntrySwapperExtendedConfig extends Config
 {
 	@ConfigSection(
-		name = "Skilling",
-		description = "",
-		position = 1,
-		keyName = "skillingSection"
+			name = "Skilling",
+			description = "",
+			position = 4,
+			keyName = "skillingSection",
+			closedByDefault = true
 	)
 	String skillingSection = "Skilling";
 
 	@ConfigSection(
-		name = "Teleportation",
-		description = "",
-		position = 1,
-		keyName = "teleportationSection"
+			name = "Teleportation",
+			description = "",
+			position = 5,
+			keyName = "teleportationSection",
+			closedByDefault = true
 	)
 	String teleportationSection = "Teleportation";
 
 	@ConfigSection(
-		name = "Right Click Options",
-		description = "",
-		position = 1,
-		keyName = "rightClickOptionsSection"
+			name = "Right Click Options",
+			description = "",
+			position = 6,
+			keyName = "rightClickOptionsSection",
+			closedByDefault = true
 	)
 	String rightClickOptionsSection = "Right Click Options";
 
 
 	@ConfigSection(
-		name = "PvM",
-		description = "",
-		position = 1,
-		keyName = "pvmSection"
+			name = "PvM",
+			description = "",
+			position = 7,
+			keyName = "pvmSection",
+			closedByDefault = true
 	)
 	String pvmSection = "PvM";
 
 	@ConfigSection(
-			name = "Miscellaneous Swapping",
-			description = "",
-			position = 1,
-			keyName = "miscSection"
+			name = "Custom Swaps",
+			description = "Configuration for custom Swaps",
+			position = 0,
+			closedByDefault = true
 	)
-	String miscSection = "Miscellaneous Swapping";
+	String customSwapsSection = "Custom Swaps";
+
+	@ConfigSection(
+			name = "Shift Swaps",
+			description = "Configuration for Shift Swaps",
+			position = 1,
+			closedByDefault = true
+	)
+	String shiftCustomSwapsSection = "Shift Swaps";
+
+	@ConfigSection(
+			name = "Hotkey Swaps",
+			description = "Configuration for Hotkey Custom Swaps",
+			position = 2,
+			closedByDefault = true
+	)
+	String keyCustomSwapsSection = "Hotkey Swaps";
+
+	@ConfigSection(
+			name = "Remove Options",
+			description = "Configuration for removing swaps",
+			position = 3,
+			closedByDefault = true
+	)
+	String removeSwapsSection = "Remove Options";
 
 	//------------------------------------------------------------//
 	// Skilling
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-		keyName = "getEasyConstruction",
-		name = "Easy Construction",
-		description = "Makes 'Remove'/'Build' the default option for listed items.",
-		position = 0,
-		section = skillingSection
+			keyName = "getEasyConstruction",
+			name = "Easy Construction",
+			description = "Makes 'Remove'/'Build' the default option for listed items.",
+			position = 0,
+			section = skillingSection
 	)
 	default boolean getEasyConstruction()
 	{
@@ -110,13 +137,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "getConstructionMode",
-		name = "EZ Construction Type",
-		description = "",
-		position = 1,
-		section = skillingSection,
-		hidden = true,
-		unhide = "getEasyConstruction"
+			keyName = "getConstructionMode",
+			name = "EZ Construction Type",
+			description = "",
+			position = 1,
+			section = skillingSection,
+			hidden = true,
+			unhide = "getEasyConstruction"
 	)
 	default ConstructionMode getConstructionMode()
 	{
@@ -124,11 +151,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapPickpocket",
-		name = "Pickpocket",
-		description = "Swap Talk-to with Pickpocket on NPC<br>Example: Man, Woman",
-		position = 2,
-		section = skillingSection
+			keyName = "swapPickpocket",
+			name = "Pickpocket",
+			description = "Swap Talk-to with Pickpocket on NPC<br>Example: Man, Woman",
+			position = 2,
+			section = skillingSection
 	)
 	default boolean swapPickpocket()
 	{
@@ -140,11 +167,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-		keyName = "swapGamesNecklace",
-		name = "Games Necklace",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Games Necklace.",
-		position = 1,
-		section = teleportationSection
+			keyName = "swapGamesNecklace",
+			name = "Games Necklace",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Games Necklace.",
+			position = 1,
+			section = teleportationSection
 	)
 	default boolean getGamesNecklace()
 	{
@@ -152,13 +179,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "gamesNecklaceMode",
-		name = "Mode",
-		description = "",
-		position = 2,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapGamesNecklace"
+			keyName = "gamesNecklaceMode",
+			name = "Mode",
+			description = "",
+			position = 2,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapGamesNecklace"
 	)
 	default GamesNecklaceMode getGamesNecklaceMode()
 	{
@@ -166,12 +193,12 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapDuelingRing",
-		name = "Dueling Ring",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Ring of Dueling.",
-		position = 3,
-		section = teleportationSection,
-		disabledBy  = "swapDuelRingLavas"
+			keyName = "swapDuelingRing",
+			name = "Dueling Ring",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Ring of Dueling.",
+			position = 3,
+			section = teleportationSection,
+			disabledBy = "swapDuelRingLavas"
 	)
 	default boolean getDuelingRing()
 	{
@@ -179,13 +206,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "duelingRingMode",
-		name = "Mode",
-		description = "",
-		position = 4,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapDuelingRing"
+			keyName = "duelingRingMode",
+			name = "Mode",
+			description = "",
+			position = 4,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapDuelingRing"
 	)
 	default DuelingRingMode getDuelingRingMode()
 	{
@@ -193,11 +220,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapGlory",
-		name = "Glory",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Amulet of Glory / Amulet of Eternal Glory.",
-		position = 5,
-		section = teleportationSection
+			keyName = "swapGlory",
+			name = "Glory",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Amulet of Glory / Amulet of Eternal Glory.",
+			position = 5,
+			section = teleportationSection
 	)
 	default boolean getGlory()
 	{
@@ -205,13 +232,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "gloryMode",
-		name = "Mode",
-		description = "",
-		position = 6,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapGlory"
+			keyName = "gloryMode",
+			name = "Mode",
+			description = "",
+			position = 6,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapGlory"
 	)
 	default GloryMode getGloryMode()
 	{
@@ -219,11 +246,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapSkill",
-		name = "Skills Necklace",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Skills Necklace.",
-		position = 7,
-		section = teleportationSection
+			keyName = "swapSkill",
+			name = "Skills Necklace",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Skills Necklace.",
+			position = 7,
+			section = teleportationSection
 	)
 	default boolean getSkillsNecklace()
 	{
@@ -231,13 +258,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "skillsnecklacemode",
-		name = "Mode",
-		description = "",
-		position = 8,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapSkill"
+			keyName = "skillsnecklacemode",
+			name = "Mode",
+			description = "",
+			position = 8,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapSkill"
 	)
 	default SkillsNecklaceMode getSkillsNecklaceMode()
 	{
@@ -245,11 +272,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapPassage",
-		name = "Passage Necklace",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Necklace of Passage.",
-		position = 9,
-		section = teleportationSection
+			keyName = "swapPassage",
+			name = "Passage Necklace",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Necklace of Passage.",
+			position = 9,
+			section = teleportationSection
 	)
 	default boolean getNecklaceofPassage()
 	{
@@ -257,13 +284,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "necklaceofpassagemode",
-		name = "Mode",
-		description = "",
-		position = 10,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapPassage"
+			keyName = "necklaceofpassagemode",
+			name = "Mode",
+			description = "",
+			position = 10,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapPassage"
 	)
 	default NecklaceOfPassageMode getNecklaceofPassageMode()
 	{
@@ -271,11 +298,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapDigsite",
-		name = "Digsite Pendant",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Digsite Pendant.",
-		position = 11,
-		section = teleportationSection
+			keyName = "swapDigsite",
+			name = "Digsite Pendant",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Digsite Pendant.",
+			position = 11,
+			section = teleportationSection
 	)
 	default boolean getDigsitePendant()
 	{
@@ -283,13 +310,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "digsitependantmode",
-		name = "Mode",
-		description = "",
-		position = 12,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapDigsite"
+			keyName = "digsitependantmode",
+			name = "Mode",
+			description = "",
+			position = 12,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapDigsite"
 	)
 	default DigsitePendantMode getDigsitePendantMode()
 	{
@@ -297,11 +324,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapCombat",
-		name = "Combat Bracelet",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Combat Bracelet.",
-		position = 13,
-		section = teleportationSection
+			keyName = "swapCombat",
+			name = "Combat Bracelet",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Combat Bracelet.",
+			position = 13,
+			section = teleportationSection
 	)
 	default boolean getCombatBracelet()
 	{
@@ -309,13 +336,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "combatbraceletmode",
-		name = "Mode",
-		description = "",
-		position = 14,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapCombat"
+			keyName = "combatbraceletmode",
+			name = "Mode",
+			description = "",
+			position = 14,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapCombat"
 	)
 	default CombatBraceletMode getCombatBraceletMode()
 	{
@@ -323,11 +350,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapburning",
-		name = "Burning Amulet",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Burning Amulet.",
-		position = 15,
-		section = teleportationSection
+			keyName = "swapburning",
+			name = "Burning Amulet",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Burning Amulet.",
+			position = 15,
+			section = teleportationSection
 	)
 	default boolean getBurningAmulet()
 	{
@@ -335,13 +362,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "burningamuletmode",
-		name = "Mode",
-		description = "",
-		position = 16,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapburning"
+			keyName = "burningamuletmode",
+			name = "Mode",
+			description = "",
+			position = 16,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapburning"
 	)
 	default BurningAmuletMode getBurningAmuletMode()
 	{
@@ -349,11 +376,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapxeric",
-		name = "Xeric's Talisman",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Xeric's Talisman.",
-		position = 17,
-		section = teleportationSection
+			keyName = "swapxeric",
+			name = "Xeric's Talisman",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Xeric's Talisman.",
+			position = 17,
+			section = teleportationSection
 	)
 	default boolean getXericsTalisman()
 	{
@@ -361,13 +388,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "xericstalismanmode",
-		name = "Mode",
-		description = "",
-		position = 18,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapxeric"
+			keyName = "xericstalismanmode",
+			name = "Mode",
+			description = "",
+			position = 18,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapxeric"
 	)
 	default XericsTalismanMode getXericsTalismanMode()
 	{
@@ -375,11 +402,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapwealth",
-		name = "Ring of Wealth",
-		description = "Swap the left click 'remove' option with the desired teleport location on a worn Ring of Wealth.",
-		position = 19,
-		section = teleportationSection
+			keyName = "swapwealth",
+			name = "Ring of Wealth",
+			description = "Swap the left click 'remove' option with the desired teleport location on a worn Ring of Wealth.",
+			position = 19,
+			section = teleportationSection
 	)
 	default boolean getRingofWealth()
 	{
@@ -387,13 +414,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "ringofwealthmode",
-		name = "Mode",
-		description = "",
-		position = 20,
-		section = teleportationSection,
-		hidden = true,
-		unhide = "swapwealth"
+			keyName = "ringofwealthmode",
+			name = "Mode",
+			description = "",
+			position = 20,
+			section = teleportationSection,
+			hidden = true,
+			unhide = "swapwealth"
 	)
 	default RingOfWealthMode getRingofWealthMode()
 	{
@@ -453,11 +480,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-		keyName = "hideTradeWith",
-		name = "Hide 'Trade With'",
-		description = "Hides the 'Trade with' option from the right click menu.",
-		position = 1,
-		section = rightClickOptionsSection
+			keyName = "hideTradeWith",
+			name = "Hide 'Trade With'",
+			description = "Hides the 'Trade with' option from the right click menu.",
+			position = 1,
+			section = rightClickOptionsSection
 	)
 	default boolean hideTradeWith()
 	{
@@ -465,11 +492,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "hideEmpty",
-		name = "Hide 'Empty'",
-		description = "Hides the 'Empty' option from the right click menu for potions.",
-		position = 2,
-		section = rightClickOptionsSection
+			keyName = "hideEmpty",
+			name = "Hide 'Empty'",
+			description = "Hides the 'Empty' option from the right click menu for potions.",
+			position = 2,
+			section = rightClickOptionsSection
 	)
 	default boolean hideEmpty()
 	{
@@ -481,11 +508,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-		keyName = "hideCastToB",
-		name = "Hide cast in ToB",
-		description = "Hides the cast option for clanmates and friends in ToB",
-		position = 0,
-		section = pvmSection
+			keyName = "hideCastToB",
+			name = "Hide cast in ToB",
+			description = "Hides the cast option for clanmates and friends in ToB",
+			position = 0,
+			section = pvmSection
 	)
 
 	default boolean hideCastToB()
@@ -494,13 +521,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "hideCastIgnoredToB",
-		name = "Ignored spells",
-		description = "Spells that should not be hidden from being cast, separated by a comma",
-		position = 1,
-		section = pvmSection,
-		hidden = true,
-		unhide = "hideCastToB"
+			keyName = "hideCastIgnoredToB",
+			name = "Ignored spells",
+			description = "Spells that should not be hidden from being cast, separated by a comma",
+			position = 1,
+			section = pvmSection,
+			hidden = true,
+			unhide = "hideCastToB"
 	)
 	default String hideCastIgnoredToB()
 	{
@@ -508,11 +535,11 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "hideCastCoX",
-		name = "Hide cast in CoX",
-		description = "Hides the cast option for clanmates and friends in CoX",
-		position = 2,
-		section = pvmSection
+			keyName = "hideCastCoX",
+			name = "Hide cast in CoX",
+			description = "Hides the cast option for clanmates and friends in CoX",
+			position = 2,
+			section = pvmSection
 	)
 
 	default boolean hideCastCoX()
@@ -521,13 +548,13 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "hideCastIgnoredCoX",
-		name = "Ignored spells",
-		description = "Spells that should not be hidden from being cast, separated by a comma",
-		position = 3,
-		section = pvmSection,
-		hidden = true,
-		unhide = "hideCastCoX"
+			keyName = "hideCastIgnoredCoX",
+			name = "Ignored spells",
+			description = "Spells that should not be hidden from being cast, separated by a comma",
+			position = 3,
+			section = pvmSection,
+			hidden = true,
+			unhide = "hideCastCoX"
 	)
 	default String hideCastIgnoredCoX()
 	{
@@ -535,43 +562,148 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	//------------------------------------------------------------//
-	// Miscellaneous menu swaps
+	// Custom swaps
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-		keyName = "customSwaps",
-		name = "Custom Swaps",
-		description = "Add custom swaps here, 1 per line. Syntax: option,target:priority" +
-				"<br>Examples:" +
-				"<br> Check-charge,Camulet:1" +
-				"<br> Rub,Camulet:0" +
-				"<br> Wear:0" +
-				"<br>Note that the higher your set the priority, the more it will overtake over swaps.",
-		position = 1,
-		section = miscSection,
-		parse = true,
-		clazz = CustomSwapParse.class,
-		method = "parse"
+			name = "Custom Swaps Toggle",
+			keyName = "customSwapsToggle",
+			description = "Toggles the use of the Custom Swaps",
+			section = customSwapsSection,
+			position = 3
 	)
-	default String customSwaps()
+	default boolean customSwapsToggle()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			name = "Custom Swaps",
+			keyName = "customSwapsStr",
+			description = "",
+			section = customSwapsSection,
+			position = 4
+	)
+	default String customSwapsString()
 	{
 		return "";
 	}
 
 	@ConfigItem(
-		keyName = "prioEntry",
-		name = "Prioritize Entry",
-		description = "This section is mainly for prioritizing entries. For example" +
-			"<br>ignoring attack on snakelings at zulrah." +
-			"<br>Example Syntax: walk here, snakeling" +
-			"<br>It's important to note that these will not take precedent over other custom swaps.",
-		position = 2,
-		section = miscSection,
-		parse = true,
-		clazz = PrioParse.class,
-		method = "parse"
+			name = "Bank Swaps",
+			keyName = "bankCustomSwapsStr",
+			description = "",
+			section = customSwapsSection,
+			position = 5
 	)
-	default String prioEntry()
+	default String bankCustomSwapsString()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+			name = "Shift Swaps Toggle",
+			keyName = "shiftCustomSwapsToggle",
+			description = "Toggles the use of the Shift Swaps",
+			section = shiftCustomSwapsSection,
+			position = 6
+	)
+	default boolean shiftCustomSwapsToggle()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			name = "Shift Swaps",
+			keyName = "shiftCustomSwapsStr",
+			description = "",
+			section = shiftCustomSwapsSection,
+			position = 7
+	)
+	default String shiftCustomSwapsString()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+			name = "Shift Bank Swaps",
+			keyName = "bankShiftCustomSwapsStr",
+			description = "",
+			section = shiftCustomSwapsSection,
+			position = 8
+	)
+	default String bankShiftCustomSwapsString()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+			name = "Hotkey Swaps Toggle",
+			keyName = "keyCustomSwapsToggle",
+			description = "Toggles the use of the Hotkey Swaps",
+			section = keyCustomSwapsSection,
+			position = 1
+	)
+	default boolean keyCustomSwapsToggle()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "hotkey",
+			name = "Set Hotkey",
+			description = "Binds the key to hold to enable this section",
+			section = keyCustomSwapsSection,
+			position = 2
+	)
+	default Keybind hotkey()
+	{
+		return Keybind.NOT_SET;
+	}
+	@ConfigItem(
+			name = "Hotkey Swaps",
+			keyName = "keyCustomSwapsStr",
+			description = "",
+			section = keyCustomSwapsSection,
+			position = 3
+	)
+	default String keyCustomSwapsString()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+			name = "Hotkey Bank Swaps",
+			keyName = "bankKeyCustomSwapsStr",
+			description = "",
+			section = keyCustomSwapsSection,
+			position = 4
+	)
+	default String bankKeyCustomSwapsString()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+			name = "Remove Options Toggle",
+			keyName = "removeOptionsToggle",
+			description = "Toggles the use of the removing options",
+			section = removeSwapsSection,
+			position = 9
+	)
+	default boolean removeOptionsToggle()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			name = "Remove Options",
+			keyName = "removeOptionsStr",
+			description = "",
+			section = removeSwapsSection,
+			position = 10
+	)
+	default String removeOptionsString()
 	{
 		return "";
 	}
