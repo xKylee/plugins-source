@@ -483,7 +483,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 			keyName = "hideTradeWith",
 			name = "Hide 'Trade With'",
 			description = "Hides the 'Trade with' option from the right click menu.",
-			position = 1,
+			position = 0,
 			section = rightClickOptionsSection
 	)
 	default boolean hideTradeWith()
@@ -495,10 +495,46 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 			keyName = "hideEmpty",
 			name = "Hide 'Empty'",
 			description = "Hides the 'Empty' option from the right click menu for potions.",
-			position = 2,
+			position = 1,
 			section = rightClickOptionsSection
 	)
 	default boolean hideEmpty()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "hideExamine",
+			name = "Hide 'Examine'",
+			description = "Hides the 'Examine' option from the right click menu.",
+			position = 2,
+			section = rightClickOptionsSection
+	)
+	default boolean hideExamine()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "hideDestroy",
+			name = "Hide 'Destroy' Rune Pouch",
+			description = "Hides the 'Destroy' option from rune pouch.",
+			position = 3,
+			section = rightClickOptionsSection
+	)
+	default boolean hideDestroy()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "hideLootImpJars",
+			name = "Hide 'Loot' Impling Jars",
+			description = "Hides the 'Loot' option from impling jars if you have the type of clue.",
+			position = 4,
+			section = rightClickOptionsSection
+	)
+	default boolean hideLootImpJars()
 	{
 		return false;
 	}
@@ -508,57 +544,67 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	//------------------------------------------------------------//
 
 	@ConfigItem(
-			keyName = "hideCastToB",
-			name = "Hide cast in ToB",
-			description = "Hides the cast option for clanmates and friends in ToB",
+			keyName = "hideAttack",
+			name = "Hide Attack On Dead NPCs",
+			description = "Hides the 'Attack' option on dead npcs.",
 			position = 0,
 			section = pvmSection
 	)
-
-	default boolean hideCastToB()
+	default boolean hideAttack()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
-			keyName = "hideCastIgnoredToB",
-			name = "Ignored spells",
-			description = "Spells that should not be hidden from being cast, separated by a comma",
+			keyName = "hideAttackIgnoredNPCs",
+			name = "Ignored NPCs",
+			description = "NPCs that should not be hidden from being attacked, separated by a comma",
 			position = 1,
 			section = pvmSection,
 			hidden = true,
-			unhide = "hideCastToB"
+			unhide = "hideAttack"
 	)
-	default String hideCastIgnoredToB()
+	default String hideAttackIgnoredNPCs()
 	{
-		return "cure other, energy transfer, heal other, vengeance other";
+		return "vet'ion";
 	}
 
 	@ConfigItem(
-			keyName = "hideCastCoX",
-			name = "Hide cast in CoX",
-			description = "Hides the cast option for clanmates and friends in CoX",
+			keyName = "hideCastRaids",
+			name = "Hide Cast On Players In Raids",
+			description = "Hides the cast option for players while in raids.",
 			position = 2,
 			section = pvmSection
 	)
-
-	default boolean hideCastCoX()
+	default boolean hideCastRaids()
 	{
 		return true;
 	}
 
 	@ConfigItem(
-			keyName = "hideCastIgnoredCoX",
-			name = "Ignored spells",
+			keyName = "hideCastIgnoredSpells",
+			name = "Ignored Spells",
 			description = "Spells that should not be hidden from being cast, separated by a comma",
 			position = 3,
 			section = pvmSection,
 			hidden = true,
-			unhide = "hideCastCoX"
+			unhide = "hideCastRaids"
 	)
-	default String hideCastIgnoredCoX()
+	default String hideCastIgnoredSpells()
 	{
 		return "cure other, energy transfer, heal other, vengeance other";
+	}
+
+	@ConfigItem(
+			keyName = "hideCastThralls",
+			name = "Hide Cast On Thralls",
+			description = "Hides the cast option on thralls.",
+			position = 4,
+			section = pvmSection
+	)
+	default boolean hideCastThralls()
+	{
+		return true;
 	}
 
 	//------------------------------------------------------------//
