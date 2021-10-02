@@ -625,7 +625,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 
 	@ConfigItem(
 			name = "Custom Swaps",
-			keyName = "customSwapsStr",
+			keyName = "customSwaps",
 			description = "",
 			section = customSwapsSection,
 			position = 4

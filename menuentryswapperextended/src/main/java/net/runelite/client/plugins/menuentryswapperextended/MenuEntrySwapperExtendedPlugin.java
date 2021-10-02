@@ -223,6 +223,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
+		parseOldFormatConfig();
 		eventBus.register(customswaps);
 		keyManager.registerKeyListener(customswaps);
 
@@ -1070,5 +1071,26 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 								.sorted(Comparator.reverseOrder())
 								.findFirst().orElse(Integer.MIN_VALUE)))
 				.toArray(MenuEntry[]::new);
+	}
+
+	private void parseOldFormatConfig()
+	{
+		if (config.customSwapsString().trim().isEmpty())
+		{
+			return;
+		}
+
+		// LOAD OLD FORMAT CUSTOM SWAPS
+		StringBuilder newFormatString = new StringBuilder();
+		for (String oldFormat : config.customSwapsString().trim().split("\n"))
+		{
+			oldFormat = oldFormat.split(":")[0];
+			newFormatString.append(oldFormat).append("\n");
+		}
+
+		if (newFormatString.length() > 0)
+		{
+			configManager.setConfiguration("menuentryswapperextended", "customSwaps", newFormatString);
+		}
 	}
 }
