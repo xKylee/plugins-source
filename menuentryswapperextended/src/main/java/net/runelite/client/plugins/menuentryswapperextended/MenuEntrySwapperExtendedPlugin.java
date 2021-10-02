@@ -612,9 +612,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		MenuEntry entry1 = entries[index1],
 				entry2 = entries[index2];
 
-		int temp = entry1.getType();
-		entry1.setType(entry2.getType());
-		entry2.setType(temp);
+		//int temp = entry1.getType();
+		//entry1.setType(entry2.getType());
+		//entry2.setType(temp);
 
 		entries[index1] = entry2;
 		entries[index2] = entry1;
@@ -735,12 +735,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FISHING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "mining guild", () ->
 				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.MINING_GUILD);
-		swap("remove", targetSwap("skills necklace"), "farming guild", () ->
-				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FARMING_GUILD);
+		//swap("remove", targetSwap("skills necklace"), "farming guild", () -> config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FARMING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "cooking guild", () ->
 				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.COOKING_GUILD);
-		swap("remove", targetSwap("skills necklace"), "woodcutting guild", () ->
-				config.getSkillsNecklace() & config.getSkillsNecklaceMode() == SkillsNecklaceMode.WOODCUTTING_GUILD);
+		//swap("remove", targetSwap("skills necklace"), "woodcutting guild", () -> config.getSkillsNecklace() & config.getSkillsNecklaceMode() == SkillsNecklaceMode.WOODCUTTING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "crafting guild", () ->
 				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.CRAFTING_GUILD);
 
@@ -775,8 +773,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_INFERNO);
 		swap("remove", targetSwap("talisman"), "xeric's heart", () ->
 				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HEART);
-		swap("remove", targetSwap("talisman"), "xeric's honour", () ->
-				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
+		//swap("remove", targetSwap("talisman"), "xeric's honour", () -> config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
 
 		swap("wear", targetSwap("crafting cape"), "teleport", () ->
 				config.getCraftingCapeMode() == CraftingCapeMode.INVENTORY || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
@@ -801,14 +798,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.WARRIORS_GUILD);
 		swap("remove", targetSwap("max cape"), "fishing teleports", () ->
 				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FISHING_TELEPORTS);
-		swap("remove", targetSwap("max cape"), "poh portals", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.POH_PORTRALS);
-		swap("remove", targetSwap("max cape"), "other teleports", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.OTHER_TELEPORTS);
-		swap("remove", targetSwap("max cape"), "spellbook", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.SPELLBOOK);
-		swap("remove", targetSwap("max cape"), "features", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FEATURES);
+		//swap("remove", targetSwap("max cape"), "poh portals", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.POH_PORTRALS);
+		//swap("remove", targetSwap("max cape"), "other teleports", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.OTHER_TELEPORTS);
+		//swap("remove", targetSwap("max cape"), "spellbook", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.SPELLBOOK);
+		//swap("remove", targetSwap("max cape"), "features", () -> config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FEATURES);
 	}
 
 	private void loadSwaps()
