@@ -37,13 +37,16 @@ import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletM
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CraftingCapeMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.DiaryCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.FarmCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.QuestCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
@@ -452,10 +455,46 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	}
 
 	@ConfigItem(
+				keyName = "swapDiaryCape",
+				name = "Diary Cape",
+				description = "Swap the left click option with 'teleport' on a Diary Cape.",
+				position = 23,
+				section = teleportationSection
+		)
+	default DiaryCapeMode getDiaryCapeMode()
+		{
+			return DiaryCapeMode.OFF;
+	}
+
+	@ConfigItem(
+			keyName = "swapFarmingCape",
+			name = "Farming Cape",
+			description = "Swap the left click option with 'teleport' on a Farming Cape.",
+			position = 24,
+			section = teleportationSection
+	)
+	default FarmCapeMode getFarmingCapeMode()
+	{
+		return FarmCapeMode.OFF;
+	}
+
+	@ConfigItem(
+			keyName = "swapQuestCape",
+			name = "Quest Cape",
+			description = "Swap the left click option with 'teleport' on a Quest Cape.",
+			position = 25,
+			section = teleportationSection
+	)
+	default QuestCapeMode getQuestCapeMode() 
+	{
+		return QuestCapeMode.OFF;
+	}
+
+	@ConfigItem(
 			keyName = "magicCapeMode",
 			name = "Magic Cape",
 			description = "Swap the left click option with 'spellbook' on a Magic Cape.",
-			position = 23,
+			position = 26,
 			section = teleportationSection
 	)
 	default MagicCapeMode getMagicCapeMode()
@@ -467,7 +506,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 			keyName = "swapMaxCapeEquipped",
 			name = "Max Cape",
 			description = "Swap the left click 'remove' option with another on a worn Max Cape.",
-			position = 24,
+			position = 27,
 			section = teleportationSection
 	)
 	default MaxCapeEquippedMode getMaxCapeEquippedMode()
