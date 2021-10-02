@@ -57,6 +57,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
@@ -222,6 +223,22 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		eventBus.register(customswaps);
 		keyManager.registerKeyListener(customswaps);
+
+		if (client.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+		loadSwaps();
+	}
+
+	@Subscribe
+	private void onGameStateChanged(GameStateChanged event)
+	{
+		if (event.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+		loadSwaps();
 	}
 
 	@Override
