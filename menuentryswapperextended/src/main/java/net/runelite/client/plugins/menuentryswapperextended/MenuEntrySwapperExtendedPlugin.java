@@ -87,13 +87,16 @@ import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletM
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CraftingCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CustomSwaps;
+import net.runelite.client.plugins.menuentryswapperextended.util.DiaryCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DigsitePendantMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.DuelingRingMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.FarmCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GamesNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.GloryMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MagicCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquippedMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.QuestCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
@@ -830,7 +833,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		swap("wear", targetSwap("achievement diary cape"), "teleport", () ->
 				config.getDiaryCapeMode() == DiaryCapeMode.INVENTORY || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
 		swap("remove", targetSwap("achievement diary cape"), "teleport", () ->
-				config.getDiaryCapeMode()== DiaryCapeMode.EQUIPPED || config.getDiaryCapeMode()== DiaryCapeMode.ALWAYS);
+				config.getDiaryCapeMode() == DiaryCapeMode.EQUIPPED || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
 
 		swap("wear", targetSwap("farming cape"), "teleport", () ->
 				config.getFarmingCapeMode() == FarmCapeMode.INVENTORY || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
