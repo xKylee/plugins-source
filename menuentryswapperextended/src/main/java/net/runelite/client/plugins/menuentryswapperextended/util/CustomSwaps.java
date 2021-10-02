@@ -215,7 +215,7 @@ public class CustomSwaps implements KeyListener
 		{
 			switch (event.getKey())
 			{
-				case "customSwapsStr":
+				case "customSwaps":
 					customSwaps.clear();
 					parseConfigToList(config.customSwapsString(), customSwaps);
 					break;
