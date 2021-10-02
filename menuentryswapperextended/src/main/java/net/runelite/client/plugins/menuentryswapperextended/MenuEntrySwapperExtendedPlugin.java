@@ -848,8 +848,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		addSwaps();
 		loadConstructionItems();
-		hideAttackIgnoredNPCs = Text.fromCSV(config.hideAttackIgnoredNPCs());
-		hideCastIgnoredSpells = Text.fromCSV(config.hideCastIgnoredSpells());
+		hideAttackIgnoredNPCs = Text.fromCSV(config.hideAttackIgnoredNPCs().toLowerCase().trim());
+		hideCastIgnoredSpells = Text.fromCSV(config.hideCastIgnoredSpells().toLowerCase().trim());
 	}
 
 	private void loadConstructionItems()
@@ -1022,7 +1022,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.hideCastRaids() && (client.getVar(Varbits.IN_RAID) == 1 || client.getVar(Varbits.THEATRE_OF_BLOOD) == 2))
 		{
-			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(client.getSelectedSpellName()) && entry.getType() == MenuAction.SPELL_CAST_ON_PLAYER.getId())
+			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(Text.standardize(client.getSelectedSpellName())) && entry.getType() == MenuAction.SPELL_CAST_ON_PLAYER.getId())
 			{
 				return false;
 			}
