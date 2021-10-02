@@ -822,6 +822,21 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		swap("remove", targetSwap("construct."), "tele to poh", () ->
 				config.getConstructionCapeMode() == ConstructionCapeMode.EQUIPPED || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
 
+		swap("wear", targetSwap("quest point cape"), "teleport", () ->
+				config.getQuestCapeMode() == QuestCapeMode.INVENTORY || config.getQuestCapeMode() == QuestCapeMode.ALWAYS);
+		swap("remove", targetSwap("quest point cape"), "teleport", () ->
+				config.getQuestCapeMode() == QuestCapeMode.EQUIPPED || config.getQuestCapeMode() == QuestCapeMode.ALWAYS);
+
+		swap("wear", targetSwap("achievement diary cape"), "teleport", () ->
+				config.getDiaryCapeMode() == DiaryCapeMode.INVENTORY || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
+		swap("remove", targetSwap("achievement diary cape"), "teleport", () ->
+				config.getDiaryCapeMode()== DiaryCapeMode.EQUIPPED || config.getDiaryCapeMode()== DiaryCapeMode.ALWAYS);
+
+		swap("wear", targetSwap("farming cape"), "teleport", () ->
+				config.getFarmingCapeMode() == FarmCapeMode.INVENTORY || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
+		swap("remove", targetSwap("farming cape"), "teleport", () ->
+				config.getFarmingCapeMode() == FarmCapeMode.EQUIPPED || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
+				
 		swap("wear", targetSwap("magic cape"), "spellbook", () ->
 				config.getMagicCapeMode() == MagicCapeMode.INVENTORY || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
 		swap("remove", targetSwap("magic cape"), "spellbook", () ->
