@@ -247,6 +247,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Override
 	public void shutDown()
 	{
+		eventBus.unregister(customSwaps);
 		swaps.clear();
 	}
 
