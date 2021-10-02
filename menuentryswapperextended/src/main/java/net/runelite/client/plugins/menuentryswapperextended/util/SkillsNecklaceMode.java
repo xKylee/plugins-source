@@ -32,8 +32,8 @@ public enum SkillsNecklaceMode
 	MINING_GUILD("Mining Guild"),
 	CRAFTING_GUILD("Crafting Guild"),
 	COOKING_GUILD("Cooking Guild"),
-	WOODCUTTING_GUILD("Woodcutting Guild"),
-	FARMING_GUILD("Farming Guild");
+	//WOODCUTTING_GUILD("Woodcutting Guild"),
+	//FARMING_GUILD("Farming Guild");
 
 	private final String name;
 

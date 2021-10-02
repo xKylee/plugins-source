@@ -32,7 +32,7 @@ public enum XericsTalismanMode
 	XERICS_GLADE("Xeric's Glade"),
 	XERICS_INFERNO("Xeric's Inferno"),
 	XERICS_HEART("Xeric's Heart"),
-	XERICS_HONOUR("Xeric's Honour");
+	//XERICS_HONOUR("Xeric's Honour");
 
 	private final String name;
 
