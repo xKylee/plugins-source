@@ -410,6 +410,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 
 		menuEntries = client.getMenuEntries();
+		if ((client.getVarbitValue(2176) != 1)
+		&& menuEntryAdded.getOpcode() != MenuAction.GAME_OBJECT_FIFTH_OPTION.getId())
+		{
+			return;
+		}
 		swapConstructionMenu(menuEntries);
 
 		if (!config.getEasyConstruction())
@@ -417,11 +422,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			return;
 		}
 
-		if ((client.getVarbitValue(2176) != 1)
-				&& menuEntryAdded.getOpcode() != MenuAction.GAME_OBJECT_FIFTH_OPTION.getId())
-		{
-			return;
-		}
 	}
 
 	@Subscribe
