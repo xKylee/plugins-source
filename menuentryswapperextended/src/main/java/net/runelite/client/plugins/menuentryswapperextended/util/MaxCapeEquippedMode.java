@@ -6,11 +6,11 @@ public enum MaxCapeEquippedMode
 	TELE_TO_POH("Tele to POH"),
 	CRAFTING_GUILD("Crafting Guild"),
 	FISHING_TELEPORTS("Fishing Tele"),
-	WARRIORS_GUILD("Warriors' Guild");
-	//POH_PORTRALS("POH Portals"),
-	//OTHER_TELEPORTS("Other Teleports"),
-	//SPELLBOOK("Spellbook"),
-	//FEATURES("Features");
+	WARRIORS_GUILD("Warriors' Guild"),
+	POH_PORTRALS("POH Portals"),
+	OTHER_TELEPORTS("Other Teleports"),
+	SPELLBOOK("Spellbook"),
+	FEATURES("Features");
 
 	private final String name;
 
