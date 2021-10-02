@@ -55,6 +55,7 @@ import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
+import net.runelite.api.VarClientInt;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
@@ -64,6 +65,7 @@ import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.PostItemComposition;
 import net.runelite.api.events.WidgetMenuOptionClicked;
 import net.runelite.api.util.Text;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -606,34 +608,64 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		return -1;
 	}
 
-	private void swap(ArrayListMultimap<String, Integer> optionIndexes, MenuEntry[] entries,
-			int index1, int index2)
+	private void swap(ArrayListMultimap<String, Integer> optionIndexes, MenuEntry[] entries, int index1, int index2)
 	{
-		MenuEntry entry1 = entries[index1],
-				entry2 = entries[index2];
+		Widget inv = client.getWidget(WidgetInfo.INVENTORY);
+		Widget eq = client.getWidget(WidgetInfo.EQUIPMENT);
+		if (client.getVar(VarClientInt.INVENTORY_TAB) == 3 && inv != null)
+		{
+			MenuEntry[] clonedEntries = new MenuEntry[entries.length];
+			System.arraycopy(entries, 0, clonedEntries, 0, entries.length);
 
-		int temp = entry1.getType();
-		entry1.setType(entry2.getType());
-		entry2.setType(temp);
+			MenuEntry entry1 = entries[index1];
+			MenuEntry entry2 = entries[index2];
 
-		entries[index1] = entry2;
-		entries[index2] = entry1;
+			clonedEntries[index1] = entry2;
+			clonedEntries[index2] = entry1;
 
-		client.setMenuEntries(entries);
+			client.setMenuEntries(clonedEntries);
 
-		// Update optionIndexes
-		String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
-				option2 = Text.removeTags(entry2.getOption()).toLowerCase();
+			String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
+					option2 = Text.removeTags(entry2.getOption()).toLowerCase();
 
-		List<Integer> list1 = optionIndexes.get(option1),
-				list2 = optionIndexes.get(option2);
+			List<Integer> list1 = optionIndexes.get(option1),
+					list2 = optionIndexes.get(option2);
 
-		// call remove(Object) instead of remove(int)
-		list1.remove((Integer) index1);
-		list2.remove((Integer) index2);
+			list1.remove((Integer) index1);
+			list2.remove((Integer) index2);
 
-		sortedInsert(list1, index2);
-		sortedInsert(list2, index1);
+			sortedInsert(list1, index2);
+			sortedInsert(list2, index1);
+		}
+		else if (client.getVar(VarClientInt.INVENTORY_TAB) == 4 && eq != null)
+		{
+			MenuEntry[] clonedEntries = new MenuEntry[entries.length];
+			System.arraycopy(entries, 0, clonedEntries, 0, entries.length);
+
+			MenuEntry entry1 = entries[index1];
+			MenuEntry entry2 = entries[index2];
+
+			int temp = entry1.getType();
+			entry1.setType(entry2.getType());
+			entry2.setType(temp);
+
+			clonedEntries[index1] = entry2;
+			clonedEntries[index2] = entry1;
+
+			client.setMenuEntries(clonedEntries);
+
+			String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
+					option2 = Text.removeTags(entry2.getOption()).toLowerCase();
+
+			List<Integer> list1 = optionIndexes.get(option1),
+					list2 = optionIndexes.get(option2);
+
+			list1.remove((Integer) index1);
+			list2.remove((Integer) index2);
+
+			sortedInsert(list1, index2);
+			sortedInsert(list2, index1);
+		}
 	}
 
 	private void removeShiftClickCustomizationMenus()

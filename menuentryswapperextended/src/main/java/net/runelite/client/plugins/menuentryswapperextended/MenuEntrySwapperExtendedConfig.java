@@ -268,7 +268,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	)
 	default SkillsNecklaceMode getSkillsNecklaceMode()
 	{
-		return SkillsNecklaceMode.FARMING_GUILD;
+		return SkillsNecklaceMode.CRAFTING_GUILD;
 	}
 
 	@ConfigItem(
