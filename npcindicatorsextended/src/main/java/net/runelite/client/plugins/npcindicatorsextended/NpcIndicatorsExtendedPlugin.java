@@ -14,6 +14,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.util.Text;
 import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -25,6 +26,7 @@ import net.runelite.client.plugins.npchighlight.NpcIndicatorsPlugin;
 import net.runelite.client.plugins.npchighlight.NpcIndicatorsConfig;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.events.PluginChanged;
 import net.runelite.client.util.WildcardMatcher;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -66,15 +68,9 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 	@Inject
 	private ClientThread clientThread;
 
-	/**
-	 * NPCs to highlight
-	 */
 	@Getter(AccessLevel.PACKAGE)
 	private final Set<NPC> highlightedNpcs = new HashSet<>();
 
-	/**
-	 * Highlight strings from the configuration
-	 */
 	private List<String> highlights = new ArrayList<>();
 
 	@Provides
@@ -111,7 +107,6 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 			return;
 		}
 
-		highlights = getHighlights();
 		rebuildAllNpcs();
 	}
 
@@ -134,13 +129,29 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 				event.getGameState() == GameState.HOPPING)
 		{
 			highlightedNpcs.clear();
+			return;
 		}
+		if (client.getGameState() != GameState.LOGGED_IN &&
+				client.getGameState() != GameState.LOADING)
+		{
+			return;
+		}
+
+		rebuildAllNpcs();
 	}
+
 	@Subscribe
 	private void onNpcDespawned(NpcDespawned npcDespawned)
 	{
 		final NPC npc = npcDespawned.getNpc();
 		highlightedNpcs.remove(npc);
+	}
+
+	@Subscribe
+	private void onNpcSpawned(NpcSpawned npcSpawned)
+	{
+		final NPC npc = npcSpawned.getNpc();
+		highlightNpcIfMatch(npc);
 	}
 
 	private void highlightNpcIfMatch(final NPC npc)
@@ -161,6 +172,14 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 		highlightedNpcs.remove(npc);
 	}
 
+	@Subscribe
+	public void onPluginChanged(final PluginChanged event)
+	{
+		if (event.getPlugin() == NpcIndicatorsPlugin)
+		{
+			rebuildAllNpcs();
+		}
+	}
 
 	private void rebuildAllNpcs()
 	{
@@ -173,6 +192,13 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 			// but we don't want to highlight those.
 			return;
 		}
+
+		if (!pluginManager.isPluginEnabled(NpcIndicatorsPlugin))
+		{
+			return;
+		}
+
+		highlights = getHighlights();
 
 		for (NPC npc : client.getNpcs())
 		{
