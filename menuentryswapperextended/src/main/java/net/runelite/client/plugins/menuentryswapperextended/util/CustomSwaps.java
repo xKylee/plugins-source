@@ -194,14 +194,15 @@ public class CustomSwaps implements KeyListener
 				parseConfigToList(config.customSwapsString(), customSwaps);
 				shiftCustomSwaps.clear();
 				parseConfigToList(config.shiftCustomSwapsString(), shiftCustomSwaps);
+				keyCustomSwaps.clear();
+				parseConfigToList(config.keyCustomSwapsString(), keyCustomSwaps);
 				removeOptions.clear();
 				parseConfigToList(config.removeOptionsString(), removeOptions);
 				bankCustomSwaps.clear();
 				parseConfigToList(config.bankCustomSwapsString(), bankCustomSwaps);
 				shiftBankCustomSwaps.clear();
 				parseConfigToList(config.bankShiftCustomSwapsString(), shiftBankCustomSwaps);
-				parseConfigToList(config.keyCustomSwapsString(), keyCustomSwaps);
-				removeOptions.clear();
+				keyBankCustomSwaps.clear();
 				parseConfigToList(config.bankKeyCustomSwapsString(), keyBankCustomSwaps);
 				hasLoaded = true;
 			}
