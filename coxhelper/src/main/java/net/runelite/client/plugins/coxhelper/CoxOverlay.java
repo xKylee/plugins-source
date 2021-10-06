@@ -26,7 +26,6 @@
 package net.runelite.client.plugins.coxhelper;
 
 import com.google.common.collect.ImmutableSet;
-import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,6 +50,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 public class CoxOverlay extends Overlay
@@ -305,7 +305,7 @@ public class CoxOverlay extends Overlay
 						}
 						if (color != null)
 						{
-							outliner.drawOutline(head, 2, color);
+							outliner.drawOutline(head, 2, color, 0);
 						}
 					}
 				}
