@@ -27,7 +27,6 @@
 
 package net.runelite.client.plugins.grotesqueguardians.overlay;
 
-import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -53,6 +52,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 public class SceneOverlay extends Overlay
 {
@@ -217,7 +217,7 @@ public class SceneOverlay extends Overlay
 
 	private void renderInvulnerabilityOutline(final NPC npc)
 	{
-		modelOutlineRenderer.drawOutline(npc, config.gargoyleInvulnOutlineWidth(), config.gargoyleInvulnOutlineColor(), TRANSPARENT);
+		modelOutlineRenderer.drawOutline(npc, config.gargoyleInvulnOutlineWidth(), config.gargoyleInvulnOutlineColor(), 0);
 	}
 
 	private void renderFlashOnDanger(final Graphics2D graphics2D)

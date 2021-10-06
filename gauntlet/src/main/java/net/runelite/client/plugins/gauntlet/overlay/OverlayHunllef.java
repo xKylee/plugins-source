@@ -27,7 +27,6 @@
 
 package net.runelite.client.plugins.gauntlet.overlay;
 
-import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -57,6 +56,7 @@ import net.runelite.client.plugins.gauntlet.entity.Tornado;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 public class OverlayHunllef extends Overlay
@@ -74,8 +74,6 @@ public class OverlayHunllef extends Overlay
 		Color.DARK_GRAY,
 		Color.LIGHT_GRAY
 	};
-
-	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
 	private static final int COLOR_DURATION = 10;
 
@@ -258,7 +256,7 @@ public class OverlayHunllef extends Overlay
 		}
 
 		modelOutlineRenderer.drawOutline(hunllef.getNpc(), config.hunllefWrongPrayerOutlineWidth(), phase.getColor(),
-			TRANSPARENT);
+			0);
 	}
 
 	private void renderHunllefAttackCounter(final Graphics2D graphics2D)
@@ -397,7 +395,7 @@ public class OverlayHunllef extends Overlay
 			idx = idx >= COLORS.length - 1 ? 0 : idx + 1;
 		}
 
-		modelOutlineRenderer.drawOutline(hunllef.getNpc(), 12, COLORS[idx], TRANSPARENT);
+		modelOutlineRenderer.drawOutline(hunllef.getNpc(), 12, COLORS[idx], 0);
 	}
 
 	private static Polygon getProjectilePolygon(final Client client, final Projectile projectile)

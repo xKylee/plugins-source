@@ -25,7 +25,6 @@
  */
 package net.runelite.client.plugins.alchemicalhydra.overlay;
 
-import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -57,13 +56,12 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 public class SceneOverlay extends Overlay
 {
 	private static final int LIGHTNING_ID = 1666;
-
-	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
 	private static final Area POISON_AREA = new Area();
 
@@ -217,7 +215,7 @@ public class SceneOverlay extends Overlay
 							stroke++;
 						}
 
-						modelOutlineRenderer.drawOutline(npc, stroke, hydra.getPhase().getPhaseColor(), TRANSPARENT);
+						modelOutlineRenderer.drawOutline(npc, stroke, hydra.getPhase().getPhaseColor(), 0);
 						return;
 					}
 				}
@@ -225,7 +223,7 @@ public class SceneOverlay extends Overlay
 
 		}
 
-		modelOutlineRenderer.drawOutline(npc, HYDRA_HULL_OUTLINE_STROKE_SIZE, hydra.getPhase().getPhaseColor(), TRANSPARENT);
+		modelOutlineRenderer.drawOutline(npc, HYDRA_HULL_OUTLINE_STROKE_SIZE, hydra.getPhase().getPhaseColor(), 0);
 	}
 
 	private void renderFountainOutline(final Graphics2D graphics2D)

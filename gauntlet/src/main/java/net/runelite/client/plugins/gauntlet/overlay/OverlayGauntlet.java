@@ -24,8 +24,6 @@
 
 package net.runelite.client.plugins.gauntlet.overlay;
 
-import com.openosrs.client.graphics.ModelOutlineRenderer;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -46,11 +44,11 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 @Singleton
 public class OverlayGauntlet extends Overlay
 {
-	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
 	private final Client client;
 	private final GauntletPlugin plugin;
@@ -144,7 +142,7 @@ public class OverlayGauntlet extends Overlay
 				}
 
 				modelOutlineRenderer.drawOutline(gameObject, config.resourceOutlineWidth(),
-					config.resourceOutlineColor(), TRANSPARENT);
+					config.resourceOutlineColor(), 0);
 			}
 		}
 	}
@@ -173,7 +171,7 @@ public class OverlayGauntlet extends Overlay
 			}
 
 			modelOutlineRenderer.drawOutline(gameObject, config.utilitiesOutlineWidth(),
-				config.utilitiesOutlineColor(), TRANSPARENT);
+				config.utilitiesOutlineColor(), 0);
 		}
 	}
 
@@ -198,7 +196,7 @@ public class OverlayGauntlet extends Overlay
 			}
 
 			modelOutlineRenderer.drawOutline(npc, config.demibossOutlineWidth(),
-				demiboss.getType().getOutlineColor(), TRANSPARENT);
+				demiboss.getType().getOutlineColor(), 0);
 		}
 	}
 
@@ -221,7 +219,7 @@ public class OverlayGauntlet extends Overlay
 			}
 
 			modelOutlineRenderer.drawOutline(npc, config.strongNpcOutlineWidth(), config.strongNpcOutlineColor(),
-				TRANSPARENT);
+				0);
 		}
 	}
 
@@ -244,7 +242,7 @@ public class OverlayGauntlet extends Overlay
 			}
 
 			modelOutlineRenderer.drawOutline(npc, config.weakNpcOutlineWidth(), config.weakNpcOutlineColor(),
-				TRANSPARENT);
+				0);
 		}
 	}
 

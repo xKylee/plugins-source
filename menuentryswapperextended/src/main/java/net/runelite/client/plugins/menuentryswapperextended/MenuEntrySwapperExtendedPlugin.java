@@ -293,7 +293,6 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void resetItemCompositionCache()
 	{
-		itemManager.invalidateItemCompositionCache();
 		client.getItemCompositionCache().reset();
 	}
 
