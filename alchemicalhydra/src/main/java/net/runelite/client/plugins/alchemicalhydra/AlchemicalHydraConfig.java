@@ -92,11 +92,105 @@ public interface AlchemicalHydraConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "fountainTicks",
+		name = "Fountain Ticks",
+		description = "Overlay fountains with the ticks until the fountain activates.",
+		position = 2,
+		section = general
+	)
+	default boolean fountainTicks()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		name = "Font style",
+		description = "Fountain ticks Font style can be bold, plain, or italicized.",
+		position = 3,
+		keyName = "fountainTicksFontStyle",
+		section = general,
+		enumClass = FontStyle.class,
+		hidden = true,
+		unhide = "fountainTicks"
+	)
+	default FontStyle fountainTicksFontStyle()
+	{
+		return FontStyle.BOLD;
+	}
+
+	@ConfigItem(
+		name = "Font shadow",
+		description = "Toggle fountain ticks font shadow.",
+		position = 4,
+		keyName = "fountainTicksFontShadow",
+		section = general,
+		hidden = true,
+		unhide = "fountainTicks"
+	)
+	default boolean fountainTicksFontShadow()
+	{
+		return true;
+	}
+
+	@Range(
+		min = 12,
+		max = 64
+	)
+	@ConfigItem(
+		name = "Font size",
+		description = "Adjust fountain ticks font size.",
+		position = 5,
+		keyName = "fountainTicksFontSize",
+		section = general,
+		hidden = true,
+		unhide = "fountainTicks"
+	)
+	@Units(Units.POINTS)
+	default int fountainTicksFontSize()
+	{
+		return 16;
+	}
+
+	@Alpha
+	@ConfigItem(
+		name = "Font color",
+		description = "Adjust fountain ticks font color.",
+		position = 6,
+		keyName = "fountainTicksFontColor",
+		section = general,
+		hidden = true,
+		unhide = "fountainTicks"
+	)
+	default Color fountainTicksFontColor()
+	{
+		return new Color(255, 255, 255, 255);
+	}
+
+	@Range(
+		min = -100,
+		max = 100
+	)
+	@ConfigItem(
+		name = "Font zOffset",
+		description = "Adjust the fountain ticks  Z coordinate offset.",
+		position = 7,
+		keyName = "fountainTicksFontZOffset",
+		section = general,
+		hidden = true,
+		unhide = "fountainTicks"
+	)
+	@Units(Units.POINTS)
+	default int fountainTicksFontZOffset()
+	{
+		return 0;
+	}
+
+	@ConfigItem(
 		keyName = "hidePrayerOnSpecial",
 		name = "Hide prayer on special attack",
 		description = "Hide prayer overlay during special attacks."
 			+ "<br>This can help indicate when to save prayer points.",
-		position = 2,
+		position = 8,
 		section = general
 	)
 	default boolean hidePrayerOnSpecial()
@@ -108,7 +202,7 @@ public interface AlchemicalHydraConfig extends Config
 		keyName = "showHpUntilPhaseChange",
 		name = "Show HP until phase change",
 		description = "Overlay hydra with hp remaining until next phase change.",
-		position = 3,
+		position = 9,
 		section = general
 	)
 	default boolean showHpUntilPhaseChange()
@@ -119,7 +213,7 @@ public interface AlchemicalHydraConfig extends Config
 	@ConfigItem(
 		name = "Font style",
 		description = "Font style can be bold, plain, or italicized.",
-		position = 4,
+		position = 10,
 		keyName = "fontStyle",
 		section = general,
 		enumClass = FontStyle.class,
@@ -134,7 +228,7 @@ public interface AlchemicalHydraConfig extends Config
 	@ConfigItem(
 		name = "Font shadow",
 		description = "Toggle font shadow.",
-		position = 5,
+		position = 11,
 		keyName = "fontShadow",
 		section = general,
 		hidden = true,
@@ -152,7 +246,7 @@ public interface AlchemicalHydraConfig extends Config
 	@ConfigItem(
 		name = "Font size",
 		description = "Adjust font size.",
-		position = 6,
+		position = 12,
 		keyName = "fontSize",
 		section = general,
 		hidden = true,
@@ -168,7 +262,7 @@ public interface AlchemicalHydraConfig extends Config
 	@ConfigItem(
 		name = "Font color",
 		description = "Adjust font color.",
-		position = 7,
+		position = 13,
 		keyName = "fontColor",
 		section = general,
 		hidden = true,
@@ -186,7 +280,7 @@ public interface AlchemicalHydraConfig extends Config
 	@ConfigItem(
 		name = "Font zOffset",
 		description = "Adjust the Z coordinate offset.",
-		position = 8,
+		position = 14,
 		keyName = "fontZOffset",
 		section = general,
 		hidden = true,

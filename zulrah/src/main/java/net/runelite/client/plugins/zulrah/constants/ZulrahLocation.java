@@ -12,31 +12,26 @@ public enum ZulrahLocation
 	private final int localX;
 	private final int localY;
 
-	ZulrahLocation(int localX, int localY)
+	public LocalPoint toLocalPoint()
 	{
-		this.localX = localX;
-		this.localY = localY;
+		return new LocalPoint(this.localX, this.localY);
 	}
 
-	public static ZulrahLocation valueOf(LocalPoint localPoint)
+	public static ZulrahLocation valueOf(final LocalPoint localPoint)
 	{
-		ZulrahLocation[] var1 = values();
-		int var2 = var1.length;
-
-		for (int var3 = 0; var3 < var2; ++var3)
+		for (final ZulrahLocation loc : values())
 		{
-			ZulrahLocation loc = var1[var3];
 			if (loc.toLocalPoint().equals(localPoint))
 			{
 				return loc;
 			}
 		}
-
 		return null;
 	}
 
-	public LocalPoint toLocalPoint()
+	private ZulrahLocation(final int localX, final int localY)
 	{
-		return new LocalPoint(this.localX, this.localY);
+		this.localX = localX;
+		this.localY = localY;
 	}
 }

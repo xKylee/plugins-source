@@ -27,20 +27,27 @@ package net.runelite.client.plugins.alchemicalhydra;
 import com.google.inject.Provides;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.DynamicObject;
+import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
+import net.runelite.api.ObjectID;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameObjectDespawned;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcSpawned;
@@ -105,9 +112,16 @@ public class AlchemicalHydraPlugin extends Plugin
 	public static final int HYDRA_4_2 = 8258;
 
 	@Getter
+	int fountainTicks = -1;
+	int lastFountainAnim = -1;
+
+	@Getter
 	private final Map<LocalPoint, Projectile> poisonProjectiles = new HashMap<>();
 
 	private int lastAttackTick = -1;
+
+	@Getter
+	private final Set<GameObject> vents = new HashSet<>();
 
 	@Provides
 	AlchemicalHydraConfig provideConfig(final ConfigManager configManager)
@@ -146,6 +160,9 @@ public class AlchemicalHydraPlugin extends Plugin
 		hydra = null;
 		poisonProjectiles.clear();
 		lastAttackTick = -1;
+		fountainTicks = -1;
+		vents.clear();
+		lastFountainAnim = -1;
 	}
 
 	@Subscribe
@@ -183,9 +200,66 @@ public class AlchemicalHydraPlugin extends Plugin
 	}
 
 	@Subscribe
+	private void onGameObjectSpawned(GameObjectSpawned event)
+	{
+		if (!isInHydraRegion())
+		{
+			return;
+		}
+		GameObject gameobject = event.getGameObject();
+		int id = gameobject.getId();
+		if (id == ObjectID.CHEMICAL_VENT_RED || id == ObjectID.CHEMICAL_VENT_GREEN || id == ObjectID.CHEMICAL_VENT_BLUE)
+		{
+			vents.add(gameobject);
+		}
+	}
+
+	@Subscribe
+	private void onGameObjectDespawned(GameObjectDespawned event)
+	{
+		GameObject gameobject = event.getGameObject();
+		vents.remove(gameobject);
+	}
+
+
+	@Subscribe
 	private void onGameTick(final GameTick event)
 	{
 		attackOverlay.decrementStunTicks();
+		updateVentTicks();
+	}
+
+	private void updateVentTicks()
+	{
+		if (fountainTicks > 0)
+		{
+			fountainTicks--;
+			if (fountainTicks == 0)
+			{
+				fountainTicks = 8;
+			}
+		}
+
+		if (!vents.isEmpty())
+		{
+			for (final GameObject vent : vents)
+			{
+				int animation = getAnimation(vent);
+				if (animation == 8279 && lastFountainAnim == 8280)
+				{
+					fountainTicks = 2;
+				}
+				lastFountainAnim = animation;
+				break; // all vents trigger at same time so dont bother going through them all
+			}
+		}
+
+	}
+
+	int getAnimation(GameObject gameObject)
+	{
+		final DynamicObject dynamicObject = (DynamicObject) gameObject.getRenderable();
+		return dynamicObject.getAnimationID();
 	}
 
 	@Subscribe
@@ -196,6 +270,10 @@ public class AlchemicalHydraPlugin extends Plugin
 		if (npc.getId() == NpcID.ALCHEMICAL_HYDRA)
 		{
 			hydra = new Hydra(npc);
+			if (client.isInInstancedRegion() && fountainTicks == -1) //handles the initial hydra spawn when your in the lobby but havent gone through the main doors
+			{
+				fountainTicks = 11;
+			}
 		}
 	}
 
@@ -250,6 +328,7 @@ public class AlchemicalHydraPlugin extends Plugin
 			poisonProjectiles.values().removeIf(p -> p.getEndCycle() < client.getGameCycle());
 		}
 	}
+
 
 	@Subscribe
 	private void onProjectileMoved(final ProjectileMoved event)

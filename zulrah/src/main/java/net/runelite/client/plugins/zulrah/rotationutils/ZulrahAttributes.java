@@ -140,7 +140,7 @@ public final class ZulrahAttributes
 
 	public String toString()
 	{
-		StandLocation var10000 = getStandLocation();
-		return "ZulrahAttributes(standLocation=" + var10000 + ", stallLocation=" + getStallLocation() + ", prayer=" + getPrayer() + ", phaseTicks=" + getPhaseTicks() + ")";
+		StandLocation standLocation = getStandLocation();
+		return "ZulrahAttributes(standLocation=" + standLocation + ", stallLocation=" + getStallLocation() + ", prayer=" + getPrayer() + ", phaseTicks=" + getPhaseTicks() + ")";
 	}
 }

@@ -49,25 +49,25 @@ public class SceneOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.skillIconManager = skillIconManager;
-		this.setPriority(OverlayPriority.HIGH);
-		this.setPosition(OverlayPosition.DYNAMIC);
-		this.setLayer(OverlayLayer.ABOVE_SCENE);
+		setPriority(OverlayPriority.HIGH);
+		setPosition(OverlayPosition.DYNAMIC);
+		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
 		Font prevFont = graphics.getFont();
-		graphics.setFont(this.config.fontType().getFont());
-		if (this.plugin.getZulrahNpc() != null && !this.plugin.getZulrahNpc().isDead())
+		graphics.setFont(config.fontType().getFont());
+		if (plugin.getZulrahNpc() != null && !plugin.getZulrahNpc().isDead())
 		{
-			this.renderZulrahPhaseTiles(graphics);
-			this.renderStandAndStallTiles(graphics);
-			this.renderPrayerConservation(graphics);
-			this.renderZulrahTicks(graphics);
-			this.renderZulrahTile(graphics);
-			this.renderProjectiles(graphics);
-			this.renderToxicClouds(graphics);
+			renderZulrahPhaseTiles(graphics);
+			renderStandAndStallTiles(graphics);
+			renderPrayerConservation(graphics);
+			renderZulrahTicks(graphics);
+			renderZulrahTile(graphics);
+			renderProjectiles(graphics);
+			renderToxicClouds(graphics);
 		}
 
 		graphics.setFont(prevFont);
@@ -76,11 +76,11 @@ public class SceneOverlay extends Overlay
 
 	private void renderZulrahPhaseTiles(Graphics2D graphics)
 	{
-		if (this.config.phaseDisplayType() != ZulrahConfig.DisplayType.OFF && this.config.phaseDisplayType() != ZulrahConfig.DisplayType.OVERLAY)
+		if (config.phaseDisplayType() != ZulrahConfig.DisplayType.OFF && config.phaseDisplayType() != ZulrahConfig.DisplayType.OVERLAY)
 		{
 			SetMultimap<ZulrahLocation, MutablePair<String, ZulrahNpc>> zulrahLocationsGrouped = LinkedHashMultimap.create();
-			this.plugin.getZulrahData().forEach((data) -> {
-				switch (this.config.phaseDisplayMode())
+			plugin.getZulrahData().forEach((data) -> {
+				switch (config.phaseDisplayMode())
 				{
 					case CURRENT:
 						data.getCurrentZulrahNpc().ifPresent((npc) -> {
@@ -89,7 +89,7 @@ public class SceneOverlay extends Overlay
 						break;
 					case NEXT:
 						data.getNextZulrahNpc().ifPresent((npc) -> {
-							zulrahLocationsGrouped.put(npc.getZulrahLocation(), new MutablePair<>(this.getZulrahNextString(), npc));
+							zulrahLocationsGrouped.put(npc.getZulrahLocation(), new MutablePair<>(getZulrahNextString(), npc));
 						});
 						break;
 					case BOTH:
@@ -97,7 +97,7 @@ public class SceneOverlay extends Overlay
 							zulrahLocationsGrouped.put(npc.getZulrahLocation(), new MutablePair<>("Current", npc));
 						});
 						data.getNextZulrahNpc().ifPresent((npc) -> {
-							zulrahLocationsGrouped.put(npc.getZulrahLocation(), new MutablePair<>(this.getZulrahNextString(), npc));
+							zulrahLocationsGrouped.put(npc.getZulrahLocation(), new MutablePair<>(getZulrahNextString(), npc));
 						});
 						break;
 					default:
@@ -105,26 +105,25 @@ public class SceneOverlay extends Overlay
 				}
 
 			});
-			Iterator var3 = zulrahLocationsGrouped.keys().iterator();
+			Iterator location = zulrahLocationsGrouped.keys().iterator();
 
-			while (var3.hasNext())
+			while (location.hasNext())
 			{
-				ZulrahLocation zulrahLocation = (ZulrahLocation) var3.next();
+				ZulrahLocation zulrahLocation = (ZulrahLocation) location.next();
 				int offset = 0;
 
-				for (Iterator var6 = zulrahLocationsGrouped.get(zulrahLocation).iterator(); var6.hasNext(); offset += graphics.getFontMetrics().getHeight())
+				for (Iterator groupedLocation = zulrahLocationsGrouped.get(zulrahLocation).iterator(); groupedLocation.hasNext(); offset += graphics.getFontMetrics().getHeight())
 				{
-					Pair pair = (Pair) var6.next();
-					this.drawZulrahTile(graphics, (ZulrahNpc) pair.getRight(), (String) pair.getLeft(), offset);
+					Pair pair = (Pair) groupedLocation.next();
+					drawZulrahTile(graphics, (ZulrahNpc) pair.getRight(), (String) pair.getLeft(), offset);
 				}
 			}
-
 		}
 	}
 
 	private String getZulrahNextString()
 	{
-		return this.plugin.getCurrentRotation() != null ? "Next" : "P. Next";
+		return plugin.getCurrentRotation() != null ? "Next" : "P. Next";
 	}
 
 	private void drawZulrahTile(Graphics2D graphics, ZulrahNpc zulrahNpc, String addonText, int offset)
@@ -132,23 +131,24 @@ public class SceneOverlay extends Overlay
 		if (zulrahNpc != null)
 		{
 			LocalPoint localPoint = zulrahNpc.getZulrahLocation().toLocalPoint();
-			Polygon tileAreaPoly = Perspective.getCanvasTileAreaPoly(this.client, localPoint, 5);
-			OverlayUtils.renderPolygon(graphics, tileAreaPoly, zulrahNpc.getType().getColor(), this.config.outlineWidth(), this.config.fillAlpha());
-			Point basePoint = Perspective.localToCanvas(this.client, localPoint, this.client.getPlane(), 0);
+			Polygon tileAreaPoly = Perspective.getCanvasTileAreaPoly(client, localPoint, 5);
+			OverlayUtils.renderPolygon(graphics, tileAreaPoly, zulrahNpc.getType().getColor(), config.outlineWidth(), config.fillAlpha());
+			Point basePoint = Perspective.localToCanvas(client, localPoint, client.getPlane(), 0);
 			if (basePoint != null)
 			{
 				int bx = basePoint.getX();
 				int by = basePoint.getY();
-				String text = this.getZulrahPhaseString(zulrahNpc, addonText);
+				String text = getZulrahPhaseString(zulrahNpc, addonText);
 				Rectangle2D textBounds = graphics.getFontMetrics().getStringBounds(text, graphics);
 				Point textLocation = new Point(bx - (int) textBounds.getWidth() / 2, by - offset);
-				Color var10003 = zulrahNpc.getType().getColor();
-				ZulrahConfig var10004 = this.config;
-				Objects.requireNonNull(var10004);
-				OverlayUtils.renderTextLocation(graphics, textLocation, text, var10003, var10004::textOutline);
+				Color color = zulrahNpc.getType().getColor();
+				ZulrahConfig config = this.config;
+				Objects.requireNonNull(config);
+				OverlayUtils.renderTextLocation(graphics, textLocation, text, color, config::textOutline);
 				if (this.config.phaseHats())
 				{
-					BufferedImage icon = this.skillIconManager.getSkillImage(zulrahNpc.getType().getSkill(), this.config.fontType() != FontType.BOLD);
+					BufferedImage icon = skillIconManager.getSkillImage(zulrahNpc.getType().getSkill(), this.config
+							.fontType() != FontType.BOLD);
 					int imgPX = bx - icon.getWidth() / 2;
 					int imgPY = by - icon.getHeight() / 2 - offset;
 					Point imgPoint = new Point(imgPX, imgPY);
@@ -163,7 +163,7 @@ public class SceneOverlay extends Overlay
 
 	private String getZulrahPhaseString(ZulrahNpc npc, String addonText)
 	{
-		boolean strip = !this.config.phaseTags() || Strings.isNullOrEmpty(addonText);
+		boolean strip = !config.phaseTags() || Strings.isNullOrEmpty(addonText);
 		if (npc.isJad())
 		{
 			return strip ? "Jad" : "[" + addonText + "] Jad";
@@ -176,48 +176,48 @@ public class SceneOverlay extends Overlay
 
 	private void renderStandAndStallTiles(Graphics2D graphics)
 	{
-		if (this.config.standLocations() || this.config.stallLocations())
+		if (config.standLocations() || config.stallLocations())
 		{
 			SetMultimap standLocationsGrouped = HashMultimap.create();
-			this.plugin.getZulrahData().forEach((data) -> {
-				if (this.config.standLocations())
+			plugin.getZulrahData().forEach((data) -> {
+				if (config.standLocations())
 				{
 					if (data.standLocationsMatch())
 					{
 						data.getCurrentDynamicStandLocation().ifPresent((loc) -> {
-							standLocationsGrouped.put(loc, new MutablePair("Stand / Next", this.config.standAndNextTileColor()));
+							standLocationsGrouped.put(loc, new MutablePair("Stand / Next", config.standAndNextTileColor()));
 						});
 					}
 					else
 					{
 						data.getCurrentDynamicStandLocation().ifPresent((loc) -> {
-							standLocationsGrouped.put(loc, new MutablePair("Stand", this.config.standTileColor()));
+							standLocationsGrouped.put(loc, new MutablePair("Stand", config.standTileColor()));
 						});
 						data.getNextStandLocation().ifPresent((loc) -> {
-							standLocationsGrouped.put(loc, new MutablePair("Next", this.config.nextTileColor()));
+							standLocationsGrouped.put(loc, new MutablePair("Next", config.nextTileColor()));
 						});
 					}
 				}
 
-				if (this.config.stallLocations())
+				if (config.stallLocations())
 				{
 					data.getCurrentStallLocation().ifPresent((loc) -> {
-						standLocationsGrouped.put(loc, new MutablePair("Stall", this.config.stallTileColor()));
+						standLocationsGrouped.put(loc, new MutablePair("Stall", config.stallTileColor()));
 					});
 				}
 
 			});
-			Iterator var3 = standLocationsGrouped.keys().iterator();
+			Iterator location = standLocationsGrouped.keys().iterator();
 
-			while (var3.hasNext())
+			while (location.hasNext())
 			{
-				StandLocation standLocation = (StandLocation) var3.next();
+				StandLocation standLocation = (StandLocation) location.next();
 				int offset = 0;
 
-				for (Iterator var6 = standLocationsGrouped.get(standLocation).iterator(); var6.hasNext(); offset += graphics.getFontMetrics().getHeight())
+				for (Iterator locationGrouped = standLocationsGrouped.get(standLocation).iterator(); locationGrouped.hasNext(); offset += graphics.getFontMetrics().getHeight())
 				{
-					Pair pair = (Pair) var6.next();
-					this.drawTile(graphics, standLocation.toLocalPoint(), (String) pair.getLeft(), (Color) pair.getRight(), offset);
+					Pair pair = (Pair) locationGrouped.next();
+					drawTile(graphics, standLocation.toLocalPoint(), (String) pair.getLeft(), (Color) pair.getRight(), offset);
 				}
 			}
 
@@ -228,30 +228,30 @@ public class SceneOverlay extends Overlay
 	{
 		if (localPoint != null && !Strings.isNullOrEmpty(text))
 		{
-			Point textLocation = Perspective.getCanvasTextLocation(this.client, graphics, localPoint, text, 0);
-			Point var10001 = new Point(textLocation.getX(), textLocation.getY() - offset);
-			Color var10003 = new Color(color.getRed(), color.getGreen(), color.getBlue());
-			ZulrahConfig var10004 = this.config;
-			Objects.requireNonNull(var10004);
-			OverlayUtils.renderTextLocation(graphics, var10001, text, var10003, var10004::textOutline);
-			Polygon tilePoly = Perspective.getCanvasTilePoly(this.client, localPoint);
+			Point textLocation = Perspective.getCanvasTextLocation(client, graphics, localPoint, text, 0);
+			Point txtLoc = new Point(textLocation.getX(), textLocation.getY() - offset);
+			Color color2 = new Color(color.getRed(), color.getGreen(), color.getBlue());
+			ZulrahConfig config = this.config;
+			Objects.requireNonNull(config);
+			OverlayUtils.renderTextLocation(graphics, txtLoc, text, color2, config::textOutline);
+			Polygon tilePoly = Perspective.getCanvasTilePoly(client, localPoint);
 			OverlayUtils.renderPolygon(graphics, tilePoly, color, this.config.outlineWidth(), this.config.fillAlpha());
 		}
 	}
 
 	private void renderPrayerConservation(Graphics2D graphics)
 	{
-		if (this.config.prayerConservation())
+		if (config.prayerConservation())
 		{
-			Player player = this.client.getLocalPlayer();
-			if (player != null && (this.plugin.getZulrahNpc().getInteracting() == null || this.plugin.getZulrahNpc().getInteracting() != this.client.getLocalPlayer()) && player.getOverheadIcon() != null)
+			Player player = client.getLocalPlayer();
+			if (player != null && (plugin.getZulrahNpc().getInteracting() == null || plugin.getZulrahNpc().getInteracting() != client.getLocalPlayer()) && player.getOverheadIcon() != null)
 			{
 				String conserveStr = "Turn off overheads to conserve prayer!";
 				Point textLocation = player.getCanvasTextLocation(graphics, "Turn off overheads to conserve prayer!", player.getLogicalHeight() - 22);
-				Color var10003 = Color.RED;
-				ZulrahConfig var10004 = this.config;
-				Objects.requireNonNull(var10004);
-				OverlayUtils.renderTextLocation(graphics, textLocation, "Turn off overheads to conserve prayer!", var10003, var10004::textOutline);
+				Color color = Color.RED;
+				ZulrahConfig config = this.config;
+				Objects.requireNonNull(config);
+				OverlayUtils.renderTextLocation(graphics, textLocation, "Turn off overheads to conserve prayer!", color, config::textOutline);
 			}
 
 		}
@@ -259,63 +259,62 @@ public class SceneOverlay extends Overlay
 
 	private void renderZulrahTicks(Graphics2D graphics)
 	{
-		if (this.config.phaseTickCounter() || this.config.attackTickCounter())
+		if (config.phaseTickCounter() || config.attackTickCounter())
 		{
 			StringBuilder sb = new StringBuilder();
-			sb = sb.append(this.config.phaseTickCounter() && this.plugin.getPhaseTicks() >= 0 ? this.plugin.getPhaseTicks() : "").append(this.config.phaseTickCounter() && this.config.attackTickCounter() && this.plugin.getPhaseTicks() >= 0 && this.plugin.getAttackTicks() >= 0 ? " : " : "").append(this.config.attackTickCounter() && this.plugin.getAttackTicks() >= 0 ? this.plugin.getAttackTicks() : "");
+			sb = sb.append(config.phaseTickCounter() && plugin.getPhaseTicks() >= 0 ? plugin.getPhaseTicks() : "").append(config.phaseTickCounter() && config.attackTickCounter() && plugin.getPhaseTicks() >= 0 && plugin.getAttackTicks() >= 0 ? " : " : "").append(config.attackTickCounter() && plugin.getAttackTicks() >= 0 ? plugin.getAttackTicks() : "");
 			if (!Strings.isNullOrEmpty(sb.toString()))
 			{
-				Point textLocation = this.plugin.getZulrahNpc().getCanvasTextLocation(graphics, sb.toString(), this.plugin.getZulrahNpc().getLogicalHeight() - 130);
-				String var10002 = sb.toString();
-				Color var10003 = this.config.tickCounterColors();
-				ZulrahConfig var10004 = this.config;
-				Objects.requireNonNull(var10004);
-				OverlayUtils.renderTextLocation(graphics, textLocation, var10002, var10003, var10004::textOutline);
+				Point textLocation = plugin.getZulrahNpc().getCanvasTextLocation(graphics, sb.toString(), plugin.getZulrahNpc().getLogicalHeight() - 130);
+				String string = sb.toString();
+				Color tickCounterColors = config.tickCounterColors();
+				ZulrahConfig config = this.config;
+				Objects.requireNonNull(config);
+				OverlayUtils.renderTextLocation(graphics, textLocation, string, tickCounterColors, config::textOutline);
 			}
 		}
 	}
 
 	private void renderZulrahTile(Graphics2D graphics)
 	{
-		if (this.config.displayZulrahTile())
+		if (config.displayZulrahTile())
 		{
-			Polygon tileAreaPoly = Perspective.getCanvasTileAreaPoly(this.client, this.plugin.getZulrahNpc().getLocalLocation(), 5);
-			OverlayUtils.renderPolygon(graphics, tileAreaPoly, this.config.zulrahTileColor(), this.config.outlineWidth(), this.config.fillAlpha());
+			Polygon tileAreaPoly = Perspective.getCanvasTileAreaPoly(client, plugin.getZulrahNpc().getLocalLocation(), 5);
+			OverlayUtils.renderPolygon(graphics, tileAreaPoly, config.zulrahTileColor(), config.outlineWidth(), config.fillAlpha());
 		}
 	}
 
 	private void renderProjectiles(Graphics2D graphics)
 	{
-		if (this.config.displayProjectiles() && this.plugin.getProjectilesMap().size() > 0)
+		if (config.displayProjectiles() && plugin.getProjectilesMap().size() > 0)
 		{
-			this.plugin.getProjectilesMap().forEach((localPoint, ticks) -> {
-				Point textLocation = Perspective.getCanvasTextLocation(this.client, graphics, localPoint, "#", 0);
-				String var10002 = Integer.toString(ticks);
-				Color var10003 = ticks > 0 ? Color.WHITE : Color.RED;
-				ZulrahConfig var10004 = this.config;
-				Objects.requireNonNull(var10004);
-				OverlayUtils.renderTextLocation(graphics, textLocation, var10002, var10003, var10004::textOutline);
-				Polygon tilePoly = Perspective.getCanvasTilePoly(this.client, localPoint);
-				OverlayUtils.renderPolygon(graphics, tilePoly, this.config.projectilesColor(), this.config.outlineWidth(), this.config.fillAlpha());
+			plugin.getProjectilesMap().forEach((localPoint, ticks) -> {
+				Point textLocation = Perspective.getCanvasTextLocation(client, graphics, localPoint, "#", 0);
+				String string = Integer.toString(ticks);
+				Color color = ticks > 0 ? Color.WHITE : Color.RED;
+				ZulrahConfig config = this.config;
+				Objects.requireNonNull(config);
+				OverlayUtils.renderTextLocation(graphics, textLocation, string, color, config::textOutline);
+				Polygon tilePoly = Perspective.getCanvasTilePoly(client, localPoint);
+				OverlayUtils.renderPolygon(graphics, tilePoly, this.config.projectilesColor(), this.config.outlineWidth(), this.config
+						.fillAlpha());
 			});
 		}
 	}
 
 	private void renderToxicClouds(Graphics2D graphics)
 	{
-		if (this.config.displayToxicClouds() && this.plugin.getToxicCloudsMap().size() > 0)
+		if (!config.displayToxicClouds() || plugin.getToxicCloudsMap().size() <= 0)
 		{
-			this.plugin.getToxicCloudsMap().forEach((obj, ticks) -> {
-				LocalPoint localPoint = obj.getLocalLocation();
-				Polygon tileAreaPoly = Perspective.getCanvasTileAreaPoly(this.client, localPoint, 3);
-				OverlayUtils.renderPolygon(graphics, tileAreaPoly, this.config.toxicCloudsColor(), this.config.outlineWidth(), this.config.fillAlpha());
-				String ticksString = Integer.toString(ticks);
-				Point textLocation = Perspective.getCanvasTextLocation(this.client, graphics, localPoint, ticksString, 0);
-				Color var10003 = ticks > 0 ? Color.RED : Color.GREEN;
-				ZulrahConfig var10004 = this.config;
-				Objects.requireNonNull(var10004);
-				OverlayUtils.renderTextLocation(graphics, textLocation, ticksString, var10003, var10004::textOutline);
-			});
+			return;
 		}
+		plugin.getToxicCloudsMap().forEach((obj, ticks) -> {
+			LocalPoint localPoint = obj.getLocalLocation();
+			Polygon tileAreaPoly = Perspective.getCanvasTileAreaPoly(client, localPoint, 3);
+			OverlayUtils.renderPolygon(graphics, tileAreaPoly, config.toxicCloudsColor(), config.outlineWidth(), config.fillAlpha());
+			String ticksString = Integer.toString(ticks);
+			Point textLocation = Perspective.getCanvasTextLocation(client, graphics, localPoint, ticksString, 0);
+			OverlayUtils.renderTextLocation(graphics, textLocation, ticksString, ticks > 0 ? Color.RED : Color.GREEN, config::textOutline);
+		});
 	}
 }

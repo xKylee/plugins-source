@@ -28,11 +28,11 @@ package net.runelite.client.plugins.menuentryswapperextended.util;
 public enum XericsTalismanMode
 {
 	OFF("Off"),
-	XERICS_LOOKOUT("Xeric's Look-out"),
+	XERICS_LOOKOUT("Xeric's Lookout"),
 	XERICS_GLADE("Xeric's Glade"),
 	XERICS_INFERNO("Xeric's Inferno"),
-	XERICS_HEART("Xeric's Heart");
-//	XERICS_HONOUR("Xeric's Honour");
+	XERICS_HEART("Xeric's Heart"),
+	XERICS_HONOUR("Xeric's Honour");
 
 	private final String name;
 
