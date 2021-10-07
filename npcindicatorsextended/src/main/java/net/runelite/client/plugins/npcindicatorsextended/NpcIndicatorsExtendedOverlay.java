@@ -63,9 +63,9 @@ public class NpcIndicatorsExtendedOverlay extends Overlay
 	{
 		this.client = client;
 		this.plugin = plugin;
-		this.basePlugin = plugin.getBasePlugin();
+		this.basePlugin = plugin.getNpcIndicatorsPlugin();
 		this.config = config;
-		this.baseConfig = plugin.getBaseConfig();
+		this.baseConfig = plugin.getNpcIndicatorsConfig();
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_SCENE);
 	}
