@@ -36,7 +36,8 @@ import org.pf4j.Extension;
 @PluginDescriptor(
 	name = "NPC Indicators Extended",
 	description = "Highlights the true tiles of NPCs that are highlyted by the NPC Indicators-plugin",
-	tags = {"highlight", "minimap", "npcs", "overlay", "respawn", "tags", "true", "tile"}
+	tags = {"highlight", "minimap", "npcs", "overlay", "respawn", "tags", "true", "tile"},
+	enabledByDefault = false
 )
 
 @Slf4j
@@ -54,9 +55,11 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 	private NpcIndicatorsExtendedConfig config;
 
 	@Inject
+	@Getter(AccessLevel.PACKAGE)
 	private NpcIndicatorsPlugin NpcIndicatorsPlugin;
 
 	@Inject
+	@Getter(AccessLevel.PACKAGE)
 	private NpcIndicatorsConfig NpcIndicatorsConfig;
 
 	@Inject
@@ -204,15 +207,5 @@ public class NpcIndicatorsExtendedPlugin extends Plugin
 		{
 			highlightNpcIfMatch(npc);
 		}
-	}
-
-	public NpcIndicatorsPlugin getBasePlugin()
-	{
-		return NpcIndicatorsPlugin;
-	}
-
-	public NpcIndicatorsConfig getBaseConfig()
-	{
-		return NpcIndicatorsConfig;
 	}
 }
