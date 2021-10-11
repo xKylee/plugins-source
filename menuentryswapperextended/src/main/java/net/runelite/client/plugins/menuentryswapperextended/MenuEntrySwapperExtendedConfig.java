@@ -33,6 +33,7 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Keybind;
 import net.runelite.client.plugins.menuentryswapperextended.util.BurningAmuletMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.BuyMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.CombatBraceletMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.ConstructionMode;
@@ -48,6 +49,7 @@ import net.runelite.client.plugins.menuentryswapperextended.util.MaxCapeEquipped
 import net.runelite.client.plugins.menuentryswapperextended.util.NecklaceOfPassageMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.QuestCapeMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.RingOfWealthMode;
+import net.runelite.client.plugins.menuentryswapperextended.util.SellMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.SkillsNecklaceMode;
 import net.runelite.client.plugins.menuentryswapperextended.util.XericsTalismanMode;
 
@@ -578,6 +580,30 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+			keyName = "shopBuy",
+			name = "Shop Buy",
+			description = "Swaps the Buy options with Value on items in shops.",
+			position = 5,
+			section = rightClickOptionsSection
+	)
+	default BuyMode shopBuy()
+	{
+		return BuyMode.OFF;
+	}
+
+	@ConfigItem(
+			keyName = "shopSell",
+			name = "Shop Sell",
+			description = "Swaps the Sell options with Value on items in your inventory when selling to shops.",
+			position = 6,
+			section = rightClickOptionsSection
+	)
+	default SellMode shopSell()
+	{
+		return SellMode.OFF;
+	}
+
 	//------------------------------------------------------------//
 	// PVM
 	//------------------------------------------------------------//
@@ -644,6 +670,18 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	default boolean hideCastThralls()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+			keyName = "swapTobBuys",
+			name = "Swap ToB Chest 'Buy-1'",
+			description = "Swaps the 'Value' option with 'Buy-1' on items in the ToB chest.",
+			position = 5,
+			section = pvmSection
+	)
+	default boolean swapTobBuys()
+	{
+		return false;
 	}
 
 	//------------------------------------------------------------//
