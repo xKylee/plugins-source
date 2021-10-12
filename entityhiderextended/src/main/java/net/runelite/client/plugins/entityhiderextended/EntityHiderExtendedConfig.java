@@ -56,7 +56,7 @@ public interface EntityHiderExtendedConfig extends Config
 		position = 0,
 		keyName = "hideNPCsName",
 		name = "Hide NPCs (Name)",
-		description = "Configures whether or not certain NPCs are hidden",
+		description = "Configures which NPCs by Name are hidden",
 		section = npcsSection
 	)
 	default String hideNPCsName()
@@ -68,7 +68,7 @@ public interface EntityHiderExtendedConfig extends Config
 		position = 1,
 		keyName = "hideNPCsID",
 		name = "Hide NPCs (ID)",
-		description = "Configures whether or not certain NPCs are hidden",
+		description = "Configures which NPCs by ID are hidden",
 		section = npcsSection
 	)
 	default String hideNPCsID()
