@@ -71,9 +71,11 @@ public class EntityHiderExtendedPlugin extends Plugin
 
 	private ArrayList<Integer> hiddenIndices;
 	private ArrayList<Integer> animationHiddenIndices;
+	private Set<String> hideNPCsName;
+	private Set<Integer> hideNPCsID;
+	private Set<Integer> hideNPCsOnAnimationID;
 	private Set<String> hideNPCsOnDeathName;
 	private Set<Integer> hideNPCsOnDeathID;
-	private Set<Integer> hideNPCsOnAnimationID;
 	private Set<String> blacklistName;
 	private Set<Integer> blacklistID;
 
@@ -117,7 +119,9 @@ public class EntityHiderExtendedPlugin extends Plugin
 				continue;
 			}
 
-			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
+			if ((npc.getName() != null && matchWildCards(hideNPCsName, Text.standardize(npc.getName())))
+			|| (hideNPCsID.contains(npc.getId()))
+			|| (config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
 			|| (npc.getHealthRatio() == 0 && npc.getName() != null && matchWildCards(hideNPCsOnDeathName, Text.standardize(npc.getName())))
 			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId()))
 			|| (hideNPCsOnAnimationID.contains(npc.getAnimation())))
@@ -160,12 +164,29 @@ public class EntityHiderExtendedPlugin extends Plugin
 
 	private void updateConfig()
 	{
+		hideNPCsName = new HashSet<>();
+		hideNPCsID = new HashSet<>();
 		hideNPCsOnDeathName = new HashSet<>();
 		hideNPCsOnDeathID = new HashSet<>();
 		hideNPCsOnAnimationID = new HashSet<>();
 		blacklistID = new HashSet<>();
 		blacklistName = new HashSet<>();
 
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsName().toLowerCase()))
+		{
+			hideNPCsName.add(s);
+		}
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsID()))
+		{
+			try
+			{
+				hideNPCsID.add(Integer.parseInt(s));
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+
+		}
 		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathName().toLowerCase()))
 		{
 			hideNPCsOnDeathName.add(s);
