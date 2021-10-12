@@ -71,9 +71,11 @@ public class EntityHiderExtendedPlugin extends Plugin
 
 	private ArrayList<Integer> hiddenIndices;
 	private ArrayList<Integer> animationHiddenIndices;
+	private Set<String> hideNPCsName;
+	private Set<Integer> hideNPCsID;
+	private Set<Integer> hideNPCsOnAnimationID;
 	private Set<String> hideNPCsOnDeathName;
 	private Set<Integer> hideNPCsOnDeathID;
-	private Set<Integer> hideNPCsOnAnimationID;
 	private Set<String> blacklistName;
 	private Set<Integer> blacklistID;
 
@@ -117,10 +119,12 @@ public class EntityHiderExtendedPlugin extends Plugin
 				continue;
 			}
 
-			if ((config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
+			if ((npc.getName() != null && matchWildCards(hideNPCsName, Text.standardize(npc.getName())))
+			|| (hideNPCsID.contains(npc.getId()))
+			|| (hideNPCsOnAnimationID.contains(npc.getAnimation()))
+			|| (config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
 			|| (npc.getHealthRatio() == 0 && npc.getName() != null && matchWildCards(hideNPCsOnDeathName, Text.standardize(npc.getName())))
-			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId()))
-			|| (hideNPCsOnAnimationID.contains(npc.getAnimation())))
+			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId())))
 			{
 				if (!hiddenIndices.contains(npc.getIndex()))
 				{
@@ -160,21 +164,23 @@ public class EntityHiderExtendedPlugin extends Plugin
 
 	private void updateConfig()
 	{
+		hideNPCsName = new HashSet<>();
+		hideNPCsID = new HashSet<>();
+		hideNPCsOnAnimationID = new HashSet<>();
 		hideNPCsOnDeathName = new HashSet<>();
 		hideNPCsOnDeathID = new HashSet<>();
-		hideNPCsOnAnimationID = new HashSet<>();
 		blacklistID = new HashSet<>();
 		blacklistName = new HashSet<>();
 
-		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathName().toLowerCase()))
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsName().toLowerCase()))
 		{
-			hideNPCsOnDeathName.add(s);
+			hideNPCsName.add(s);
 		}
-		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathID()))
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsID()))
 		{
 			try
 			{
-				hideNPCsOnDeathID.add(Integer.parseInt(s));
+				hideNPCsID.add(Integer.parseInt(s));
 			}
 			catch (NumberFormatException ignored)
 			{
@@ -186,6 +192,21 @@ public class EntityHiderExtendedPlugin extends Plugin
 			try
 			{
 				hideNPCsOnAnimationID.add(Integer.parseInt(s));
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+
+		}
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathName().toLowerCase()))
+		{
+			hideNPCsOnDeathName.add(s);
+		}
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathID()))
+		{
+			try
+			{
+				hideNPCsOnDeathID.add(Integer.parseInt(s));
 			}
 			catch (NumberFormatException ignored)
 			{

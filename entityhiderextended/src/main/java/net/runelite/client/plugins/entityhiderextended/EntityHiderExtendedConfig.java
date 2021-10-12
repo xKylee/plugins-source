@@ -29,16 +29,72 @@ package net.runelite.client.plugins.entityhiderextended;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("entityhiderextended")
 public interface EntityHiderExtendedConfig extends Config
 {
+	//Config Sections
+	@ConfigSection(
+		name = "NPCs",
+		description = "NPCs",
+		position = 0,
+		keyName = "npcsSection"
+	)
+	String npcsSection = "NPCs";
 
+	@ConfigSection(
+		name = "Dead NPCs",
+		description = "Dead NPCs",
+		position = 1,
+		keyName = "deadNPCsSection"
+	)
+	String deadNPCsSection = "Dead NPCs";
+
+	// NPCs Section
+	@ConfigItem(
+		position = 0,
+		keyName = "hideNPCsName",
+		name = "Hide NPCs (Name)",
+		description = "Configures which NPCs by Name are hidden",
+		section = npcsSection
+	)
+	default String hideNPCsName()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "hideNPCsID",
+		name = "Hide NPCs (ID)",
+		description = "Configures which NPCs by ID are hidden",
+		section = npcsSection
+	)
+	default String hideNPCsID()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "hideNPCsOnAnimationID",
+		name = "Hide NPCs On Animation (ID)",
+		description = "Configures which NPCs by Animation ID to hide",
+		section = npcsSection
+	)
+	default String hideNPCsOnAnimationID()
+	{
+		return "";
+	}
+
+	// DeadNPCs Section
 	@ConfigItem(
 		position = 0,
 		keyName = "hideDeadNPCs",
 		name = "Hide ALL Dead NPCs",
-		description = "Configures whether or not NPCs that just died are hidden"
+		description = "Configures whether or not NPCs that just died are hidden",
+		section = deadNPCsSection
 	)
 	default boolean hideDeadNPCs()
 	{
@@ -49,7 +105,8 @@ public interface EntityHiderExtendedConfig extends Config
 		position = 1,
 		keyName = "hideNPCsOnDeathName",
 		name = "Hide NPCs On Death (Name)",
-		description = "Configures which NPCs by Name to hide when they die"
+		description = "Configures which NPCs by Name to hide when they die",
+		section = deadNPCsSection
 	)
 	default String hideNPCsOnDeathName()
 	{
@@ -60,7 +117,8 @@ public interface EntityHiderExtendedConfig extends Config
 		position = 2,
 		keyName = "hideNPCsOnDeathID",
 		name = "Hide NPCs On Death (ID)",
-		description = "Configures which NPCs by ID to hide when they die"
+		description = "Configures which NPCs by ID to hide when they die",
+		section = deadNPCsSection
 	)
 	default String hideNPCsOnDeathID()
 	{
@@ -69,20 +127,10 @@ public interface EntityHiderExtendedConfig extends Config
 
 	@ConfigItem(
 		position = 3,
-		keyName = "hideNPCsOnAnimationID",
-		name = "Hide NPCs On Animation (ID)",
-		description = "Configures which NPCs by Animation ID to hide"
-	)
-	default String hideNPCsOnAnimationID()
-	{
-		return "";
-	}
-
-	@ConfigItem(
-		position = 4,
 		keyName = "blacklistDeadNpcsName",
 		name = "Hide ALL Dead Blacklist (Name)",
-		description = "Configures which NPCs by Name NOT to hide when they die"
+		description = "Configures which NPCs by Name NOT to hide when they die",
+		section = deadNPCsSection
 	)
 	default String blacklistDeadNpcsName()
 	{
@@ -90,10 +138,11 @@ public interface EntityHiderExtendedConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 4,
 		keyName = "blacklistDeadNpcsID",
 		name = "Hide ALL Dead Blacklist (ID)",
-		description = "Configures which NPCs by ID NOT to hide when they die"
+		description = "Configures which NPCs by ID NOT to hide when they die",
+		section = deadNPCsSection
 	)
 	default String blacklistDeadNpcsID()
 	{
