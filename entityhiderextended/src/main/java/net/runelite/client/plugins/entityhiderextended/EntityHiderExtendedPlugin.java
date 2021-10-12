@@ -121,10 +121,10 @@ public class EntityHiderExtendedPlugin extends Plugin
 
 			if ((npc.getName() != null && matchWildCards(hideNPCsName, Text.standardize(npc.getName())))
 			|| (hideNPCsID.contains(npc.getId()))
+			|| (hideNPCsOnAnimationID.contains(npc.getAnimation()))
 			|| (config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
 			|| (npc.getHealthRatio() == 0 && npc.getName() != null && matchWildCards(hideNPCsOnDeathName, Text.standardize(npc.getName())))
-			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId()))
-			|| (hideNPCsOnAnimationID.contains(npc.getAnimation())))
+			|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId())))
 			{
 				if (!hiddenIndices.contains(npc.getIndex()))
 				{
@@ -166,9 +166,9 @@ public class EntityHiderExtendedPlugin extends Plugin
 	{
 		hideNPCsName = new HashSet<>();
 		hideNPCsID = new HashSet<>();
+		hideNPCsOnAnimationID = new HashSet<>();
 		hideNPCsOnDeathName = new HashSet<>();
 		hideNPCsOnDeathID = new HashSet<>();
-		hideNPCsOnAnimationID = new HashSet<>();
 		blacklistID = new HashSet<>();
 		blacklistName = new HashSet<>();
 
@@ -187,6 +187,17 @@ public class EntityHiderExtendedPlugin extends Plugin
 			}
 
 		}
+		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnAnimationID()))
+		{
+			try
+			{
+				hideNPCsOnAnimationID.add(Integer.parseInt(s));
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
+
+		}
 		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnDeathName().toLowerCase()))
 		{
 			hideNPCsOnDeathName.add(s);
@@ -196,17 +207,6 @@ public class EntityHiderExtendedPlugin extends Plugin
 			try
 			{
 				hideNPCsOnDeathID.add(Integer.parseInt(s));
-			}
-			catch (NumberFormatException ignored)
-			{
-			}
-
-		}
-		for (String s : Text.COMMA_SPLITTER.split(config.hideNPCsOnAnimationID()))
-		{
-			try
-			{
-				hideNPCsOnAnimationID.add(Integer.parseInt(s));
 			}
 			catch (NumberFormatException ignored)
 			{
