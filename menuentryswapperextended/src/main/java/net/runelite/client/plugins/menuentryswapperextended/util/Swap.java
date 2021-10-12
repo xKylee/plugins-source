@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2020, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,38 +22,19 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.runelite.client.plugins.menuentryswapperextended.util;
 
-version = "5.2.2"
+import lombok.Value;
 
-project.extra["PluginName"] = "Menu Entry Swapper Extended"
-project.extra["PluginDescription"] = "Change the default option that is displayed when hovering over objects"
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
-
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
-
-    compileOnly(Libraries.apacheCommonsText)
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.gson)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
-	compileOnly(group = "net.sf.jopt-simple", name = "jopt-simple", version = "5.0.4")
-}
-
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+@Value
+public class Swap
+{
+	private Predicate<String> optionPredicate;
+	private Predicate<String> targetPredicate;
+	private String swappedOption;
+	private Supplier<Boolean> enabled;
+	private boolean strict;
 }
