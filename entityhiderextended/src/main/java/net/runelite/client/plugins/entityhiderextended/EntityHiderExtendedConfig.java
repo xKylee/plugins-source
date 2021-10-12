@@ -103,7 +103,7 @@ public interface EntityHiderExtendedConfig extends Config
 
 	@ConfigItem(
 		position = 1,
-		keyName = "hideNPCsOnDeath",
+		keyName = "hideNPCsOnDeathName",
 		name = "Hide NPCs On Death (Name)",
 		description = "Configures which NPCs by Name to hide when they die",
 		section = deadNPCsSection
