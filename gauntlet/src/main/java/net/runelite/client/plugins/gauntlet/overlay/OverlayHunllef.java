@@ -395,7 +395,7 @@ public class OverlayHunllef extends Overlay
 			idx = idx >= COLORS.length - 1 ? 0 : idx + 1;
 		}
 
-		modelOutlineRenderer.drawOutline(hunllef.getNpc(), 12, COLORS[idx], 0);
+		modelOutlineRenderer.drawOutline(hunllef.getNpc(), 6, COLORS[idx], 4);
 	}
 
 	private static Polygon getProjectilePolygon(final Client client, final Projectile projectile)
