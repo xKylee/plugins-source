@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.blackjack;
+package net.runelite.client.plugins.leftclickblackjack;
 
 import com.google.inject.Provides;
 import net.runelite.api.ChatMessageType;
@@ -46,12 +46,12 @@ import javax.inject.Inject;
 
 @Extension
 @PluginDescriptor(
-	name = "Blackjack",
+	name = "Left Click Blackjack",
 	enabledByDefault = false,
 	description = "Allows for one-click blackjacking, both knocking out and pickpocketing",
 	tags = {"blackjack", "thieving"}
 )
-public class BlackjackPlugin extends Plugin
+public class LeftClickBlackjackPlugin extends Plugin
 {
 	private static final int POLLNIVNEACH_REGION = 13358;
 
@@ -67,7 +67,7 @@ public class BlackjackPlugin extends Plugin
 	private Client client;
 
 	@Inject
-	private BlackjackConfig config;
+	private LeftClickBlackjackConfig config;
 
 	@Inject
 	private EventBus eventBus;
@@ -79,9 +79,9 @@ public class BlackjackPlugin extends Plugin
 	private boolean knockout = true;
 
 	@Provides
-	BlackjackConfig getConfig(ConfigManager configManager)
+	LeftClickBlackjackConfig getConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(BlackjackConfig.class);
+		return configManager.getConfig(LeftClickBlackjackConfig.class);
 	}
 
 	@Subscribe

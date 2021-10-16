@@ -1,7 +1,5 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2019, gazivodag <https://github.com/gazivodag>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +10,6 @@ import ProjectVersions.rlVersion
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,35 +22,35 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.4"
+package net.runelite.client.plugins.leftclickblackjack;
 
-project.extra["PluginName"] = "Blackjack"
-project.extra["PluginDescription"] = "Allows for one-click blackjacking, both knocking out and pickpocketing"
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+@ConfigGroup("blackjack")
+public interface LeftClickBlackjackConfig extends Config
+{
+	@ConfigItem(
+		keyName = "pickpocketOnAggro",
+		name = "Pickpocket when aggro'd",
+		description = "Switches to \"Pickpocket\" when bandit is aggro'd. Saves food at the cost of slight xp/h.",
+		position = 0
+	)
+	default boolean pickpocketOnAggro()
+	{
+		return false;
+	}
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
-
-    compileOnly(Libraries.apacheCommonsText)
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
-}
-
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	@ConfigItem(
+		keyName = "random",
+		name = "Randomly Miss 1 Pickpocket",
+		description = "If enabled, this will randomly miss 1 pickpocket every so often." +
+			"<br> Not sure why'd you want to do that, but you can.",
+		position = 1
+	)
+	default boolean random()
+	{
+		return false;
+	}
 }
