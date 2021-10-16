@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.gauntlet.overlay;
+package net.runelite.client.plugins.gauntletextended.overlay;
 
 import com.google.common.base.Strings;
 import java.awt.Color;

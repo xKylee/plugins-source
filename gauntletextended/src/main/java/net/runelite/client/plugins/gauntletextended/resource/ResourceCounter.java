@@ -22,10 +22,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.resource;
+package net.runelite.client.plugins.gauntletextended.resource;
 
 import java.awt.image.BufferedImage;
-import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedPlugin;
 import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
 
@@ -36,7 +36,7 @@ class ResourceCounter extends Counter
 	private int count;
 	private String text;
 
-	ResourceCounter(final GauntletPlugin plugin, final Resource resource, final BufferedImage bufferedImage, final int count)
+	ResourceCounter(final GauntletExtendedPlugin plugin, final Resource resource, final BufferedImage bufferedImage, final int count)
 	{
 		super(bufferedImage, plugin, count);
 

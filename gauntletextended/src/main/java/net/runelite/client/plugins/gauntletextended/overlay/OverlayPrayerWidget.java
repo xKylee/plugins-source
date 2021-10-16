@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.overlay;
+package net.runelite.client.plugins.gauntletextended.overlay;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,10 +37,10 @@ import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.Point;
 import net.runelite.api.Prayer;
-import net.runelite.client.plugins.gauntlet.GauntletConfig;
-import static net.runelite.client.plugins.gauntlet.GauntletConfig.PrayerHighlightMode;
-import net.runelite.client.plugins.gauntlet.GauntletPlugin;
-import net.runelite.client.plugins.gauntlet.entity.Hunllef;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig;
+import static net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig.PrayerHighlightMode;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedPlugin;
+import net.runelite.client.plugins.gauntletextended.entity.Hunllef;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -49,11 +49,11 @@ import net.runelite.client.ui.overlay.OverlayPriority;
 public class OverlayPrayerWidget extends Overlay
 {
 	private final Client client;
-	private final GauntletPlugin plugin;
-	private final GauntletConfig config;
+	private final GauntletExtendedPlugin plugin;
+	private final GauntletExtendedConfig config;
 
 	@Inject
-	OverlayPrayerWidget(final Client client, final GauntletPlugin plugin, final GauntletConfig config)
+	OverlayPrayerWidget(final Client client, final GauntletExtendedPlugin plugin, final GauntletExtendedConfig config)
 	{
 		super(plugin);
 

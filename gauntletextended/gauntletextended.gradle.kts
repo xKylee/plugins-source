@@ -1,5 +1,7 @@
+import ProjectVersions.rlVersion
+
 /*
- * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
+ * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,6 +12,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,37 +25,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.overlay;
+version = "5.0.4"
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Stroke;
-import net.runelite.client.plugins.Plugin;
+project.extra["PluginName"] = "Gauntlet Extended"
+project.extra["PluginDescription"] = "All-in-one plugin for the Gauntlet"
 
-public abstract class Overlay extends net.runelite.client.ui.overlay.Overlay
-{
-	Overlay(final Plugin plugin)
-	{
-		super(plugin);
-	}
+dependencies {
+    annotationProcessor(Libraries.lombok)
+    annotationProcessor(Libraries.pf4j)
 
-	public abstract void determineLayer();
+    compileOnly("com.openosrs:runelite-api:$rlVersion")
+    compileOnly("com.openosrs:runelite-client:$rlVersion")
 
-	static void drawOutlineAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
-	{
-		final Color originalColor = graphics2D.getColor();
-		final Stroke originalStroke = graphics2D.getStroke();
+    compileOnly(Libraries.guice)
+    compileOnly(Libraries.lombok)
+    compileOnly(Libraries.pf4j)
+    compileOnly(Libraries.rxjava)
+}
 
-		graphics2D.setStroke(new BasicStroke(strokeWidth));
-		graphics2D.setColor(outlineColor);
-		graphics2D.draw(shape);
-
-		graphics2D.setColor(fillColor);
-		graphics2D.fill(shape);
-
-		graphics2D.setColor(originalColor);
-		graphics2D.setStroke(originalStroke);
-	}
+tasks {
+    jar {
+        manifest {
+            attributes(mapOf(
+                    "Plugin-Version" to project.version,
+                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+                    "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Description" to project.extra["PluginDescription"],
+                    "Plugin-License" to project.extra["PluginLicense"]
+            ))
+        }
+    }
 }

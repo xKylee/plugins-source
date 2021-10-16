@@ -1,7 +1,6 @@
-import ProjectVersions.rlVersion
-
 /*
- * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
+ * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
+ * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +11,6 @@ import ProjectVersions.rlVersion
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,34 +23,28 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.4"
+package net.runelite.client.plugins.gauntletextended.entity;
 
-project.extra["PluginName"] = "Gauntlet"
-project.extra["PluginDescription"] = "All-in-one plugin for the Gauntlet"
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.runelite.api.NPC;
 
-dependencies {
-    annotationProcessor(Libraries.lombok)
-    annotationProcessor(Libraries.pf4j)
+@RequiredArgsConstructor
+public class Tornado
+{
+	private static final int TICK_DURATION = 21;
 
-    compileOnly("com.openosrs:runelite-api:$rlVersion")
-    compileOnly("com.openosrs:runelite-client:$rlVersion")
+	@Getter
+	private int timeLeft = TICK_DURATION;
 
-    compileOnly(Libraries.guice)
-    compileOnly(Libraries.lombok)
-    compileOnly(Libraries.pf4j)
-    compileOnly(Libraries.rxjava)
-}
+	@Getter
+	private final NPC npc;
 
-tasks {
-    jar {
-        manifest {
-            attributes(mapOf(
-                    "Plugin-Version" to project.version,
-                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
-                    "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Description" to project.extra["PluginDescription"],
-                    "Plugin-License" to project.extra["PluginLicense"]
-            ))
-        }
-    }
+	public void updateTimeLeft()
+	{
+		if (timeLeft >= 0)
+		{
+			timeLeft--;
+		}
+	}
 }

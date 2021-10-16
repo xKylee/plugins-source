@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.resource;
+package net.runelite.client.plugins.gauntletextended.resource;
 
 import java.util.Collections;
 import java.util.Map;

@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.entity;
+package net.runelite.client.plugins.gauntletextended.entity;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

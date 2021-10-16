@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
- * Copyright (c) 2019, ganom <https://github.com/Ganom>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,28 +22,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.entity;
+package net.runelite.client.plugins.gauntletextended.overlay;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.runelite.api.NPC;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.Stroke;
+import net.runelite.client.plugins.Plugin;
 
-@RequiredArgsConstructor
-public class Tornado
+public abstract class Overlay extends net.runelite.client.ui.overlay.Overlay
 {
-	private static final int TICK_DURATION = 21;
-
-	@Getter
-	private int timeLeft = TICK_DURATION;
-
-	@Getter
-	private final NPC npc;
-
-	public void updateTimeLeft()
+	Overlay(final Plugin plugin)
 	{
-		if (timeLeft >= 0)
-		{
-			timeLeft--;
-		}
+		super(plugin);
+	}
+
+	public abstract void determineLayer();
+
+	static void drawOutlineAndFill(final Graphics2D graphics2D, final Color outlineColor, final Color fillColor, final float strokeWidth, final Shape shape)
+	{
+		final Color originalColor = graphics2D.getColor();
+		final Stroke originalStroke = graphics2D.getStroke();
+
+		graphics2D.setStroke(new BasicStroke(strokeWidth));
+		graphics2D.setColor(outlineColor);
+		graphics2D.draw(shape);
+
+		graphics2D.setColor(fillColor);
+		graphics2D.fill(shape);
+
+		graphics2D.setColor(originalColor);
+		graphics2D.setStroke(originalStroke);
 	}
 }

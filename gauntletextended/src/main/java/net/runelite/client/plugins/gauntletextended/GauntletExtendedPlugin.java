@@ -2,7 +2,7 @@
  * Copyright (c) 2020, dutta64 <https://github.com/dutta64>
  * Copyright (c) 2019, kThisIsCvpv <https://github.com/kThisIsCvpv>
  * Copyright (c) 2019, ganom <https://github.com/Ganom>
- * Copyright (c) 2019, kyle <https://github.com/Kyleeld>
+ * Copyright (c) 2019, kyle <https://github.com/xKylee>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntletextended;
 
 import com.google.inject.Provides;
 import java.util.Arrays;
@@ -71,30 +71,30 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.gauntlet.entity.Demiboss;
-import net.runelite.client.plugins.gauntlet.entity.Hunllef;
-import net.runelite.client.plugins.gauntlet.entity.Missile;
-import net.runelite.client.plugins.gauntlet.entity.Resource;
-import net.runelite.client.plugins.gauntlet.entity.Tornado;
-import net.runelite.client.plugins.gauntlet.overlay.Overlay;
-import net.runelite.client.plugins.gauntlet.overlay.OverlayGauntlet;
-import net.runelite.client.plugins.gauntlet.overlay.OverlayHunllef;
-import net.runelite.client.plugins.gauntlet.overlay.OverlayPrayerBox;
-import net.runelite.client.plugins.gauntlet.overlay.OverlayPrayerWidget;
-import net.runelite.client.plugins.gauntlet.overlay.OverlayTimer;
-import net.runelite.client.plugins.gauntlet.resource.ResourceManager;
+import net.runelite.client.plugins.gauntletextended.entity.Demiboss;
+import net.runelite.client.plugins.gauntletextended.entity.Hunllef;
+import net.runelite.client.plugins.gauntletextended.entity.Missile;
+import net.runelite.client.plugins.gauntletextended.entity.Resource;
+import net.runelite.client.plugins.gauntletextended.entity.Tornado;
+import net.runelite.client.plugins.gauntletextended.overlay.Overlay;
+import net.runelite.client.plugins.gauntletextended.overlay.OverlayGauntlet;
+import net.runelite.client.plugins.gauntletextended.overlay.OverlayHunllef;
+import net.runelite.client.plugins.gauntletextended.overlay.OverlayPrayerBox;
+import net.runelite.client.plugins.gauntletextended.overlay.OverlayPrayerWidget;
+import net.runelite.client.plugins.gauntletextended.overlay.OverlayTimer;
+import net.runelite.client.plugins.gauntletextended.resource.ResourceManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Gauntlet",
+	name = "Gauntlet Extended",
 	enabledByDefault = false,
 	description = "All-in-one plugin for the Gauntlet.",
 	tags = {"gauntlet"}
 )
 @Singleton
-public class GauntletPlugin extends Plugin
+public class GauntletExtendedPlugin extends Plugin
 {
 	public static final int ONEHAND_SLASH_AXE_ANIMATION = 395;
 	public static final int ONEHAND_CRUSH_PICKAXE_ANIMATION = 400;
@@ -195,7 +195,7 @@ public class GauntletPlugin extends Plugin
 	private ClientThread clientThread;
 
 	@Inject
-	private GauntletConfig config;
+	private GauntletExtendedConfig config;
 
 	@Inject
 	private ResourceManager resourceManager;
@@ -261,9 +261,9 @@ public class GauntletPlugin extends Plugin
 	private boolean inHunllef;
 
 	@Provides
-	GauntletConfig getConfig(final ConfigManager configManager)
+	GauntletExtendedConfig getConfig(final ConfigManager configManager)
 	{
-		return configManager.getConfig(GauntletConfig.class);
+		return configManager.getConfig(GauntletExtendedConfig.class);
 	}
 
 	@Override

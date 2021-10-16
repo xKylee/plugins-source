@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet;
+package net.runelite.client.plugins.gauntletextended;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -40,7 +40,7 @@ import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
 
 @ConfigGroup("gauntlet")
-public interface GauntletConfig extends Config
+public interface GauntletExtendedConfig extends Config
 {
 	// Sections
 	@ConfigSection(

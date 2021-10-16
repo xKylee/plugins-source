@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.resource;
+package net.runelite.client.plugins.gauntletextended.resource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +35,9 @@ import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.api.util.Text;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.plugins.gauntlet.GauntletConfig;
-import net.runelite.client.plugins.gauntlet.GauntletConfig.ResourceFilter;
-import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig.ResourceFilter;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedPlugin;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
 @Singleton
@@ -54,10 +54,10 @@ public class ResourceManager
 	private Client client;
 
 	@Inject
-	private GauntletPlugin plugin;
+	private GauntletExtendedPlugin plugin;
 
 	@Inject
-	private GauntletConfig config;
+	private GauntletExtendedConfig config;
 
 	@Inject
 	private ItemManager itemManager;

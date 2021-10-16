@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.overlay;
+package net.runelite.client.plugins.gauntletextended.overlay;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,10 +39,10 @@ import net.runelite.api.NPC;
 import net.runelite.api.Prayer;
 import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
-import net.runelite.client.plugins.gauntlet.GauntletConfig;
-import net.runelite.client.plugins.gauntlet.GauntletConfig.PrayerHighlightMode;
-import net.runelite.client.plugins.gauntlet.GauntletPlugin;
-import net.runelite.client.plugins.gauntlet.entity.Hunllef;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig.PrayerHighlightMode;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedPlugin;
+import net.runelite.client.plugins.gauntletextended.entity.Hunllef;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -57,8 +57,8 @@ public class OverlayPrayerBox extends Overlay
 
 	private final Client client;
 
-	private final GauntletPlugin plugin;
-	private final GauntletConfig config;
+	private final GauntletExtendedPlugin plugin;
+	private final GauntletExtendedConfig config;
 
 	private final SpriteManager spriteManager;
 
@@ -69,7 +69,7 @@ public class OverlayPrayerBox extends Overlay
 	private BufferedImage spriteProtectFromRange;
 
 	@Inject
-	OverlayPrayerBox(final Client client, final GauntletPlugin plugin, final GauntletConfig config, final SpriteManager spriteManager)
+	OverlayPrayerBox(final Client client, final GauntletExtendedPlugin plugin, final GauntletExtendedConfig config, final SpriteManager spriteManager)
 	{
 		super(plugin);
 

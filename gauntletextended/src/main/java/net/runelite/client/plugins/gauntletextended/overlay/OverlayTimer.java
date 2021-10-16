@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.overlay;
+package net.runelite.client.plugins.gauntletextended.overlay;
 
 import com.openosrs.client.ui.overlay.components.table.TableAlignment;
 import com.openosrs.client.ui.overlay.components.table.TableComponent;
@@ -42,8 +42,8 @@ import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
-import net.runelite.client.plugins.gauntlet.GauntletConfig;
-import net.runelite.client.plugins.gauntlet.GauntletPlugin;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedPlugin;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -53,7 +53,7 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 @Singleton
 public class OverlayTimer extends Overlay
 {
-	private final GauntletConfig config;
+	private final GauntletExtendedConfig config;
 	private final ChatMessageManager chatMessageManager;
 
 	private final PanelComponent panelComponent;
@@ -66,7 +66,7 @@ public class OverlayTimer extends Overlay
 	private long timeHunllefStart;
 
 	@Inject
-	public OverlayTimer(final GauntletPlugin plugin, final GauntletConfig config, final ChatMessageManager chatMessageManager)
+	public OverlayTimer(final GauntletExtendedPlugin plugin, final GauntletExtendedConfig config, final ChatMessageManager chatMessageManager)
 	{
 		super(plugin);
 

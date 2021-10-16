@@ -22,7 +22,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.gauntlet.overlay;
+package net.runelite.client.plugins.gauntletextended.overlay;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -36,10 +36,10 @@ import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.client.plugins.gauntlet.GauntletConfig;
-import net.runelite.client.plugins.gauntlet.GauntletPlugin;
-import net.runelite.client.plugins.gauntlet.entity.Demiboss;
-import net.runelite.client.plugins.gauntlet.entity.Resource;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedConfig;
+import net.runelite.client.plugins.gauntletextended.GauntletExtendedPlugin;
+import net.runelite.client.plugins.gauntletextended.entity.Demiboss;
+import net.runelite.client.plugins.gauntletextended.entity.Resource;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
@@ -51,14 +51,14 @@ public class OverlayGauntlet extends Overlay
 {
 
 	private final Client client;
-	private final GauntletPlugin plugin;
-	private final GauntletConfig config;
+	private final GauntletExtendedPlugin plugin;
+	private final GauntletExtendedConfig config;
 	private final ModelOutlineRenderer modelOutlineRenderer;
 
 	private Player player;
 
 	@Inject
-	private OverlayGauntlet(final Client client, final GauntletPlugin plugin, final GauntletConfig config, final ModelOutlineRenderer modelOutlineRenderer)
+	private OverlayGauntlet(final Client client, final GauntletExtendedPlugin plugin, final GauntletExtendedConfig config, final ModelOutlineRenderer modelOutlineRenderer)
 	{
 		super(plugin);
 
