@@ -279,7 +279,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
+	@Subscribe (priority = -1)
 	public void onClientTick(ClientTick clientTick)
 	{
 		// The menu is not rebuilt when it is open, so don't swap or else it will

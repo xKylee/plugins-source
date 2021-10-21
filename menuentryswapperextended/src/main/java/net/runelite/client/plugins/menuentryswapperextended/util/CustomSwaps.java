@@ -331,7 +331,7 @@ public class CustomSwaps implements KeyListener
 		return filtered.toArray(new MenuEntry[0]);
 	}
 
-	@Subscribe
+	@Subscribe (priority = -1)
 	public void onClientTick(ClientTick event)
 	{
 		if (client.getGameState() != GameState.LOGGED_IN || client.isMenuOpen()
