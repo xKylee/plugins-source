@@ -140,7 +140,7 @@ public class NpcIndicatorsExtendedOverlay extends Overlay
 		Polygon poly = new Polygon();
 		List<Polygon> linePolyList = Perspective.getLinePolyList(client, point, new WorldPoint(point.getX() + size - 1, point.getY() + size - 1, point.getPlane()));
 		int listSize = linePolyList.size();
-		if (listSize < 0)
+		if (listSize <= 0)
 		{
 			return null;
 		}
