@@ -31,13 +31,14 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCComposition;
 import net.runelite.api.Perspective;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -45,6 +46,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.plugins.npchighlight.NpcIndicatorsPlugin;
 import net.runelite.client.plugins.npchighlight.NpcIndicatorsConfig;
 
+@Slf4j
 public class NpcIndicatorsExtendedOverlay extends Overlay
 {
 	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
@@ -100,15 +102,10 @@ public class NpcIndicatorsExtendedOverlay extends Overlay
 		final WorldPoint wp = actor.getWorldLocation();
 		final Color squareColor = color;
 
-		getSquare(wp, size).forEach(square -> drawTile(graphics, square, squareColor, 1, 255, 50));
+		drawTile(graphics, wp, size, squareColor, 1, 255, 50);
 	}
 
-	private List<WorldPoint> getSquare(WorldPoint npcLoc, int npcSize)
-	{
-		return new WorldArea(npcLoc.getX(), npcLoc.getY(), npcSize, npcSize, npcLoc.getPlane()).toWorldPointList();
-	}
-
-	private void drawTile(Graphics2D graphics, WorldPoint point, Color color, int strokeWidth, int outlineAlpha, int fillAlpha)
+	private void drawTile(Graphics2D graphics, WorldPoint point, int size, Color color, int strokeWidth, int outlineAlpha, int fillAlpha)
 	{
 		WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
 
@@ -124,7 +121,7 @@ public class NpcIndicatorsExtendedOverlay extends Overlay
 			return;
 		}
 
-		Polygon poly = Perspective.getCanvasTilePoly(client, lp);
+		final Polygon poly = getPolygon(point, size);
 
 		if (poly == null)
 		{
@@ -137,4 +134,51 @@ public class NpcIndicatorsExtendedOverlay extends Overlay
 		graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), fillAlpha));
 		graphics.fill(poly);
 	}
+
+	private Polygon getPolygon(WorldPoint point, int size)
+	{
+		Polygon poly = new Polygon();
+		List<Polygon> linePolyList = Perspective.getLinePolyList(client, point, new WorldPoint(point.getX() + size - 1, point.getY() + size - 1, point.getPlane()));
+		int listSize = linePolyList.size();
+		if (listSize <= 0)
+		{
+			return null;
+		}
+		int x = linePolyList.get(listSize - 1).xpoints[0];
+		int y = linePolyList.get(listSize - 1).ypoints[0];
+		poly.addPoint(x, y);
+
+		x = linePolyList.get(listSize - 1).xpoints[1];
+		y = linePolyList.get(listSize - 1).ypoints[1];
+		poly.addPoint(x, y);
+		linePolyList.remove(listSize - 1);
+
+
+		while (linePolyList.size() > 0)
+		{
+			int finalX = x;
+			int finalY = y;
+			Optional<Polygon> linePolyOpt = linePolyList.stream().filter(p -> (p.xpoints[0] == finalX && p.ypoints[0] == finalY) || (p.xpoints[1] == finalX && p.ypoints[1] == finalY)).findFirst();
+			if (linePolyOpt.isEmpty())
+			{
+				return null;
+			}
+
+			final Polygon linePoly = linePolyOpt.get();
+			if (linePoly.xpoints[0] == finalX && linePoly.ypoints[0] == finalY)
+			{
+				x = linePoly.xpoints[1];
+				y = linePoly.ypoints[1];
+			}
+			else
+			{
+				x = linePoly.xpoints[0];
+				y = linePoly.ypoints[0];
+			}
+			poly.addPoint(x, y);
+			linePolyList.remove(linePoly);
+		}
+		return poly;
+	}
+
 }
