@@ -946,6 +946,10 @@ public class InfernoPlugin extends Plugin
 				|| (amountInArea == bestAmountInArea && distanceToPlayer < bestDistanceToPlayer))
 			{
 				bestNibbler = infernoNPC;
+
+				// update tracked values
+				bestAmountInArea = amountInArea;
+				bestDistanceToPlayer = distanceToPlayer;
 			}
 		}
 

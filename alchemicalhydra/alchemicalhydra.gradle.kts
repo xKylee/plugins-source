@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.2"
+version = "5.0.5"
 
 project.extra["PluginName"] = "Alchemical Hydra"
 project.extra["PluginDescription"] = "A plugin for the Alchemical Hydra boss."

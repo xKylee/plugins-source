@@ -1,7 +1,6 @@
 package net.runelite.client.plugins.hallowedsepulchre;
 
 import com.google.common.base.Strings;
-import com.openosrs.client.graphics.ModelOutlineRenderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,6 +23,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 public class HallowedSepulchreOverlay extends Overlay
 {
@@ -130,7 +130,7 @@ public class HallowedSepulchreOverlay extends Overlay
 		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.OUTLINE)
 			|| highlightMode.equals(HallowedSepulchreConfig.HighlightMode.BOTH))
 		{
-			modelOutlineRenderer.drawOutline(npc, 1, outlineColor);
+			modelOutlineRenderer.drawOutline(npc, 1, outlineColor, 0);
 		}
 
 		if (highlightMode.equals(HallowedSepulchreConfig.HighlightMode.TILE)
