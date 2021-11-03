@@ -160,8 +160,7 @@ public class BetterEquipmentInspectorPlugin extends Plugin
 
 		for (KitType kitType : KitType.values())
 		{
-			if (kitType == KitType.RING || kitType == KitType.AMMUNITION ||
-				player.getPlayer().getPlayerComposition() == null)
+			if (player.getPlayer().getPlayerComposition() == null)
 			{
 				continue;
 			}

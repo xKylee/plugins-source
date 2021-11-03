@@ -405,10 +405,6 @@ public class DynamicMaxHit extends Plugin
 
 		for (KitType kitType : KitType.values())
 		{
-			if (kitType == KitType.RING || kitType == KitType.AMMUNITION)
-			{
-				continue;
-			}
 
 			final int id = player.getPlayer().getPlayerComposition().getEquipmentId(kitType);
 
