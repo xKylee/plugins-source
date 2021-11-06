@@ -94,7 +94,7 @@ public class EffectTimersOverlay extends Overlay
 		int offset = 0;
 		for (TimerType timerType : TimerType.values())
 		{
-			if (timerType.shouldRender(configManager))
+			if (timerType.shouldRender(configManager) && !actor.isDead())
 			{
 				if (timerManager.isTimerValid(actor, timerType) && timerManager.hasTimerActive(actor, timerType))
 				{
