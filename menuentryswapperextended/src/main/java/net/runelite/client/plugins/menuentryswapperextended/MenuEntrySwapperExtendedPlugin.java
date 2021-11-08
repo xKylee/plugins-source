@@ -365,34 +365,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void swap(ArrayListMultimap<String, Integer> optionIndexes, MenuEntry[] entries, int index1, int index2)
 	{
-		Widget inv = client.getWidget(WidgetInfo.INVENTORY);
 		Widget eq = client.getWidget(WidgetInfo.EQUIPMENT);
-		if (client.getVar(VarClientInt.INVENTORY_TAB) == 3 && inv != null)
-		{
-			MenuEntry[] clonedEntries = new MenuEntry[entries.length];
-			System.arraycopy(entries, 0, clonedEntries, 0, entries.length);
-
-			MenuEntry entry1 = entries[index1];
-			MenuEntry entry2 = entries[index2];
-
-			clonedEntries[index1] = entry2;
-			clonedEntries[index2] = entry1;
-
-			client.setMenuEntries(clonedEntries);
-
-			String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
-					option2 = Text.removeTags(entry2.getOption()).toLowerCase();
-
-			List<Integer> list1 = optionIndexes.get(option1),
-					list2 = optionIndexes.get(option2);
-
-			list1.remove((Integer) index1);
-			list2.remove((Integer) index2);
-
-			sortedInsert(list1, index2);
-			sortedInsert(list2, index1);
-		}
-		else if (client.getVar(VarClientInt.INVENTORY_TAB) == 4 && eq != null)
+		if (client.getVar(VarClientInt.INVENTORY_TAB) == 4 && eq != null)
 		{
 			MenuEntry[] clonedEntries = new MenuEntry[entries.length];
 			System.arraycopy(entries, 0, clonedEntries, 0, entries.length);
@@ -415,6 +389,30 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			List<Integer> list1 = optionIndexes.get(option1),
 					list2 = optionIndexes.get(option2);
 
+			list1.remove((Integer) index1);
+			list2.remove((Integer) index2);
+
+			sortedInsert(list1, index2);
+			sortedInsert(list2, index1);
+		}
+		else
+		{
+			MenuEntry entry1 = entries[index1],
+					entry2 = entries[index2];
+
+			entries[index1] = entry2;
+			entries[index2] = entry1;
+
+			client.setMenuEntries(entries);
+
+			// Update optionIndexes
+			String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
+					option2 = Text.removeTags(entry2.getOption()).toLowerCase();
+
+			List<Integer> list1 = optionIndexes.get(option1),
+					list2 = optionIndexes.get(option2);
+
+			// call remove(Object) instead of remove(int)
 			list1.remove((Integer) index1);
 			list2.remove((Integer) index2);
 
