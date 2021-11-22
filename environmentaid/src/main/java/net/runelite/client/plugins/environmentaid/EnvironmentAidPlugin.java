@@ -206,10 +206,14 @@ public class EnvironmentAidPlugin extends Plugin
 		if (isInWaterRegion())
 		{
 			if (client.getWidget(169, 0) != null)
+			{
 				client.getWidget(169, 0).setHidden(config.waterEffect());
+			}
 
 			if (client.getWidget(170, 0) != null)
+			{
 				client.getWidget(170, 0).setHidden(config.waterEffect());
+			}
 		}
 		if (client.getVarbitValue(4606) == 1 && client.getWidget(404, 0) != null)
 		{
