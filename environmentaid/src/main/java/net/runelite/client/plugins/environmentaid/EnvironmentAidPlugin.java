@@ -342,11 +342,13 @@ public class EnvironmentAidPlugin extends Plugin
 
 	private boolean isInWaterRegion()
 	{
-		return UNDERWATER_REGION.contains(client.getMapRegions()[0]);
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer != null && UNDERWATER_REGION.contains(localPlayer.getWorldLocation().getRegionID());
 	}
 
 	private boolean isInSnowRegions()
 	{
-		return SNOW_REGIONS.contains(client.getMapRegions()[0]);
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer != null && SNOW_REGIONS.contains(localPlayer.getWorldLocation().getRegionID());
 	}
 }
