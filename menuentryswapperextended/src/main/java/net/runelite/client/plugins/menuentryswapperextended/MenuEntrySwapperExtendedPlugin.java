@@ -666,7 +666,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 					&& !entry.getTarget().contains("Saradomin brew") && !entry.getTarget()
 					.contains("Super restore")
 					&& !entry.getTarget().contains("Zamorak brew") && !entry.getTarget()
-					.contains("Guthix rest");
+					.contains("Guthix rest")
+					&& !entry.getTarget().contains("Sanfew serum");
 		}
 
 		if (config.hideDestroy() && option.contains("destroy") && target.contains("rune pouch"))
