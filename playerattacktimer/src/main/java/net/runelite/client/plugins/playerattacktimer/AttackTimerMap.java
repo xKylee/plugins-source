@@ -9,10 +9,10 @@ final class AttackTimerMap
 	{
 	}
 
-	static final Map<Integer, Integer> ATTACK_TIMER_MAP = new HashMap<>();
+	static final Map<Integer, AnimationTickMapEntry> ATTACK_TIMER_MAP = new HashMap<>();
 
 	static
 	{
-		ATTACK_TIMER_MAP.put(1658, 4); // Abyssal whip
+		ATTACK_TIMER_MAP.put(1658, new AnimationTickMapEntry(4, null)); // Abyssal whip
 	}
 }
