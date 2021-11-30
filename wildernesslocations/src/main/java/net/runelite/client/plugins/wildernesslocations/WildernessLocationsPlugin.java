@@ -176,7 +176,7 @@ public class WildernessLocationsPlugin extends Plugin
 		{
 			String cached = oldChat;
 			client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, text);
-			client.runScript(ScriptID.CHATBOX_INPUT, finalMode, text);
+			client.runScript(ScriptID.CHAT_SEND, finalMode, text);
 			oldChat = cached;
 			client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, oldChat);
 		};
