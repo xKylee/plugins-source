@@ -26,80 +26,41 @@
 package net.runelite.client.plugins.playerattacktimer;
 
 import com.google.common.base.Splitter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
-
+import java.util.Map;
 
 public final class ConfigParser
 {
 	private ConfigParser()
 	{
-
 	}
 
-	public static boolean parse_config(final String value)
-	{
-		return parse(value).isPresent();
-	}
-
-	public static Optional<HashMap<Integer, AnimationTickMapEntry>> parse(final String value)
+	public static boolean parse(final String value)
 	{
 		if (value.isEmpty() || value.isBlank())
 		{
-			return Optional.empty();
+			return true;
 		}
 
-		final Splitter NEWLINE_SPLITTER = Splitter
-			.on("\n")
-			.omitEmptyStrings()
-			.trimResults();
-
-		HashMap<Integer, AnimationTickMapEntry> tickMap = new HashMap<>();
-
-		for (String line : NEWLINE_SPLITTER.split(value))
+		try
 		{
-			String[] segments = line.split(":");
+			final Splitter NEWLINE_SPLITTER = Splitter
+				.on("\n")
+				.omitEmptyStrings()
+				.trimResults();
 
-			try
+			final Map<String, String> tmp = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(value);
+
+			for (final Map.Entry<String, String> entry : tmp.entrySet())
 			{
-				int animation = Integer.parseInt(segments[0]);
-				int delay = Integer.parseInt(segments[1]);
-
-				AttackPrayer prayer_choice = null;
-				if (segments.length > 2)
-				{
-					if (Arrays.stream(valid_prayers).noneMatch(prayer -> prayer.equals(segments[2].toLowerCase())))
-					{
-						return Optional.empty();
-					}
-
-					switch (segments[2].toLowerCase())
-					{
-						case "r":
-							prayer_choice = AttackPrayer.Rigour;
-							break;
-						case "a":
-							prayer_choice = AttackPrayer.Augury;
-							break;
-						case "p":
-							prayer_choice = AttackPrayer.Piety;
-							break;
-					}
-				}
-
-				tickMap.put(animation, new AnimationTickMapEntry(delay, prayer_choice));
-
-
+				Integer.parseInt(entry.getKey());
+				Integer.parseInt(entry.getValue());
 			}
-			catch (Exception e)
-			{
-				return Optional.empty();
-			}
+
+			return true;
 		}
-
-		return Optional.of(tickMap);
+		catch (final Exception ex)
+		{
+			return false;
+		}
 	}
-
-	private static final String[] valid_prayers = {"r", "a", "p"};
 }

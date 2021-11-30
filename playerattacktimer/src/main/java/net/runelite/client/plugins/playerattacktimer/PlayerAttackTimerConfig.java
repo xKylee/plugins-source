@@ -58,14 +58,6 @@ public interface PlayerAttackTimerConfig extends Config
 	)
 	String fontSettings = "Font Settings";
 
-	@ConfigSection(
-		name = "Prayer Settings",
-		description = "configure whether to draw tick counters in the prayer tab",
-		position = 2,
-		keyName = "prayerSettings"
-	)
-	String prayerSettings = "Prayer Settings";
-
 	//------------------------------------------------------------//
 	// Settings
 	//------------------------------------------------------------//
@@ -88,8 +80,6 @@ public interface PlayerAttackTimerConfig extends Config
 		name = "Custom animations (one per line)",
 		description = "Syntax AnimationID:TickDelay"
 			+ "<br>e.g. Abyssal whip would be 1658:4"
-			+ "<br>optionally include one of (r, a, p) to draw prayer helpers."
-			+ "<br>e.g. Abyssal whip with piety would be 1658:4:p"
 			+ "<br>Animation Ids can be obtained by enabling the above debug setting."
 			+ "<br>Weapon tick delays can be found on the wiki.",
 		position = 1,
@@ -97,7 +87,7 @@ public interface PlayerAttackTimerConfig extends Config
 		section = settings,
 		parse = true,
 		clazz = ConfigParser.class,
-		method = "parse_config"
+		method = "parse"
 	)
 	default String customAnimations()
 	{
@@ -200,49 +190,5 @@ public interface PlayerAttackTimerConfig extends Config
 		{
 			return name;
 		}
-	}
-
-	//------------------------------------------------------------//
-	// Prayer Settings
-	//------------------------------------------------------------//
-
-	@ConfigItem(
-		name = "Draw prayer helper",
-		description = "Draws ticks on attack prayers. Must be configured in animations by appending a :a.",
-		position = 0,
-		keyName = "drawPrayerHelper",
-		section = prayerSettings
-	)
-	default boolean drawPrayerHelper()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		name = "Draw bounding box",
-		description = "",
-		position = 1,
-		keyName = "drawBoundingBox",
-		section = prayerSettings,
-		unhide = "drawPrayerHelper",
-		hidden = true
-	)
-	default boolean drawBoundingBox()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		name = "Always show",
-		description = "Ignores what inventory tab you have selected",
-		position = 2,
-		keyName = "alwaysShow",
-		section = prayerSettings,
-		unhide = "drawPrayerHelper",
-		hidden = true
-	)
-	default boolean alwaysShow()
-	{
-		return false;
 	}
 }
