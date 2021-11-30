@@ -57,7 +57,7 @@ import org.pf4j.Extension;
 )
 public class PlayerAttackTimerPlugin extends Plugin
 {
-	private final Map<Integer, Integer> customAnimationTickMap = new HashMap<>();
+	private final Map<Integer, AnimationTickMapEntry> customAnimationTickMap = new HashMap<>();
 
 	private static final Splitter NEWLINE_SPLITTER = Splitter
 		.on("\n")
@@ -76,8 +76,14 @@ public class PlayerAttackTimerPlugin extends Plugin
 	@Inject
 	private PlayerOverlay playerOverlay;
 
+	@Inject
+	private PrayerOverlay prayerOverlay;
+
 	@Getter(AccessLevel.PACKAGE)
 	private int ticksUntilNextAnimation;
+
+	@Getter(AccessLevel.PACKAGE)
+	private AttackPrayer currentPrayer;
 
 	@Provides
 	PlayerAttackTimerConfig getConfig(final ConfigManager configManager)
@@ -89,6 +95,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 	protected void startUp()
 	{
 		overlayManager.add(playerOverlay);
+		overlayManager.add(prayerOverlay);
 
 		parseCustomAnimationConfig(config.customAnimations());
 	}
@@ -97,6 +104,7 @@ public class PlayerAttackTimerPlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(playerOverlay);
+		overlayManager.remove(prayerOverlay);
 
 		customAnimationTickMap.clear();
 	}
@@ -136,33 +144,19 @@ public class PlayerAttackTimerPlugin extends Plugin
 
 		final int animationId = player.getAnimation();
 
-		final Integer delay = customAnimationTickMap.getOrDefault(animationId, ATTACK_TIMER_MAP.get(animationId));
-
-		if (delay != null)
+		var entry = customAnimationTickMap.getOrDefault(animationId, ATTACK_TIMER_MAP.get(animationId));
+		if (entry != null)
 		{
-			ticksUntilNextAnimation = delay;
+			ticksUntilNextAnimation = entry.delay;
+			currentPrayer = entry.prayer;
 		}
 	}
 
 	private void parseCustomAnimationConfig(final String config)
 	{
-		if (!ConfigParser.parse(config))
-		{
-			return;
-		}
-
-		customAnimationTickMap.clear();
-
-		final Map<String, String> split = NEWLINE_SPLITTER.withKeyValueSeparator(':').split(config);
-
-		if (split.isEmpty())
-		{
-			return;
-		}
-
-		for (final Map.Entry<String, String> entry : split.entrySet())
-		{
-			customAnimationTickMap.put(Integer.valueOf(entry.getKey()), Integer.valueOf(entry.getValue()));
-		}
+		ConfigParser.parse(config).ifPresent(map -> {
+			customAnimationTickMap.clear();
+			customAnimationTickMap.putAll(map);
+		});
 	}
 }
