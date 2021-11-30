@@ -98,8 +98,12 @@ class PrayerOverlay extends Overlay
 			return;
 		}
 
-		Widget prayerWidget = client.getWidget(plugin.getCurrentPrayer().getWidgetInfo());
+		var currentPrayer = plugin.getCurrentPrayer();
+		if (currentPrayer == null) {
+			return;
+		}
 
+		Widget prayerWidget = client.getWidget(currentPrayer.getWidgetInfo());
 		if (prayerWidget == null)
 		{
 			return;
