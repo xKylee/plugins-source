@@ -206,10 +206,14 @@ public class EnvironmentAidPlugin extends Plugin
 		if (isInWaterRegion())
 		{
 			if (client.getWidget(169, 0) != null)
+			{
 				client.getWidget(169, 0).setHidden(config.waterEffect());
+			}
 
 			if (client.getWidget(170, 0) != null)
+			{
 				client.getWidget(170, 0).setHidden(config.waterEffect());
+			}
 		}
 		if (client.getVarbitValue(4606) == 1 && client.getWidget(404, 0) != null)
 		{
@@ -342,11 +346,13 @@ public class EnvironmentAidPlugin extends Plugin
 
 	private boolean isInWaterRegion()
 	{
-		return UNDERWATER_REGION.contains(client.getMapRegions()[0]);
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer != null && UNDERWATER_REGION.contains(localPlayer.getWorldLocation().getRegionID());
 	}
 
 	private boolean isInSnowRegions()
 	{
-		return SNOW_REGIONS.contains(client.getMapRegions()[0]);
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer != null && SNOW_REGIONS.contains(localPlayer.getWorldLocation().getRegionID());
 	}
 }
