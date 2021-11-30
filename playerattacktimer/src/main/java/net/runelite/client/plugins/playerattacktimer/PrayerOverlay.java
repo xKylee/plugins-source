@@ -99,7 +99,8 @@ class PrayerOverlay extends Overlay
 		}
 
 		var currentPrayer = plugin.getCurrentPrayer();
-		if (currentPrayer == null) {
+		if (currentPrayer == null)
+		{
 			return;
 		}
 
