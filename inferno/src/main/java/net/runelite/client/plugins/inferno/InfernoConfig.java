@@ -562,7 +562,10 @@ public interface InfernoConfig extends Config
 		position = 2,
 		keyName = "ticksOnNpcMeleerDig",
 		name = "Dig Timer",
-		description = "Draws the amount of ticks before the melee will begin the dig animation",
+		description = "Draws the amount of ticks before the melee will begin the dig animation.\n" +
+			"The amount of time is currently unknown. Plugin will count up to 50 \n" +
+			"then count up with the danger overlay. This should give a general idea of the time. \n" +
+			"Once more data can be collected this can be improved",
 		section = MeleersSection
 	)
 	default boolean ticksOnNpcMeleerDig()
@@ -577,7 +580,7 @@ public interface InfernoConfig extends Config
 	@ConfigItem(
 		position = 3,
 		keyName = "digTimerThreshold",
-		name = "Tick Threshold",
+		name = "Tick Draw Threshold",
 		description = "Number at which the dig timer should be drawn",
 		section = MeleersSection,
 		hidden = true,
@@ -585,12 +588,74 @@ public interface InfernoConfig extends Config
 	)
 	default int digTimerThreshold()
 	{
+		return 20;
+	}
+
+	@Range(
+		min = 30,
+		max = 70
+	)
+	@ConfigItem(
+		position = 4,
+		keyName = "digTimerDangerThreshold",
+		name = "Tick Danger Threshold",
+		description = "Number at which the dig timer should be dangerous",
+		section = MeleersSection,
+		hidden = true,
+		unhide = "ticksOnNpcMeleerDig"
+	)
+	default int digTimerDangerThreshold()
+	{
 		return 50;
 	}
 
 
 	@ConfigItem(
-		position = 4,
+		position = 5,
+		keyName = "getMeleeDigSafeColor",
+		name = "Dig Safe Color",
+		description = "Color for melee when can not dig",
+		hidden = true,
+		unhide = "ticksOnNpcMeleerDig",
+		section = MeleersSection
+	)
+	default Color getMeleeDigSafeColor()
+	{
+		return Color.LIGHT_GRAY;
+	}
+
+	@ConfigItem(
+		position = 6,
+		keyName = "getMeleeDigDangerColor",
+		name = "Dig Danger Color",
+		description = "Color for melee when it can dig",
+		hidden = true,
+		unhide = "ticksOnNpcMeleerDig",
+		section = MeleersSection
+	)
+	default Color getMeleeDigDangerColor()
+	{
+		return Color.ORANGE;
+	}
+
+	@Range(min = 10,
+		max = 48)
+	@ConfigItem(
+		position = 7,
+		keyName = "getMeleeDigFontSize",
+		name = "Font size",
+		description = "Font size to use under the melee",
+		hidden = true,
+		unhide = "ticksOnNpcMeleerDig",
+		section = MeleersSection
+	)
+	default int getMeleeDigFontSize()
+	{
+		return 11;
+	}
+
+	@ConfigItem(
+		position = 8,
 		keyName = "safespotsMeleer",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
@@ -602,7 +667,7 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 5,
+		position = 9,
 		keyName = "indicateNpcPositionMeleer",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
