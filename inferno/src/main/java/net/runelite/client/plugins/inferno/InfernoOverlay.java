@@ -403,6 +403,9 @@ public class InfernoOverlay extends Overlay
 		final Color color = (infernoNPC.getTicksTillNextAttack() == 1
 			|| (infernoNPC.getType() == InfernoNPC.Type.BLOB && infernoNPC.getTicksTillNextAttack() == 4))
 			? infernoNPC.getNextAttack().getCriticalColor() : infernoNPC.getNextAttack().getNormalColor();
+
+		graphics.setFont(new Font("Arial",  plugin.getFontStyle().getFont(), plugin.getTextSize()));
+
 		final Point canvasPoint = renderOnNPC.getCanvasTextLocation(
 			graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()), 0);
 		renderTextLocation(graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()),
