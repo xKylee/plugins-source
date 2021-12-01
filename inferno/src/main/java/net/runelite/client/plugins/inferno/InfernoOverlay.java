@@ -641,11 +641,4 @@ public class InfernoOverlay extends Overlay
 			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
 		}
 	}
-
-	private Point centerPoint(Rectangle rect)
-	{
-		int x = (int) (rect.getX() + rect.getWidth() / 2);
-		int y = (int) (rect.getY() + rect.getHeight() / 2);
-		return new Point(x, y);
-	}
 }
