@@ -65,6 +65,8 @@ class InfernoNPC
 	@Getter(AccessLevel.PACKAGE)
 	@Setter(AccessLevel.PACKAGE)
 	private int ticksTillNextAttack;
+	@Getter(AccessLevel.PACKAGE)
+	private int idleTicks;
 	private int lastAnimation;
 	private boolean lastCanAttack;
 	//0 = not in LOS, 1 = in LOS after move, 2 = in LOS
@@ -78,11 +80,13 @@ class InfernoNPC
 		this.ticksTillNextAttack = 0;
 		this.lastAnimation = -1;
 		this.lastCanAttack = false;
+		this.idleTicks = 0;
 		this.safeSpotCache = new HashMap<>();
 	}
 
 	void updateNextAttack(Attack nextAttack, int ticksTillNextAttack)
 	{
+		this.idleTicks = 0;
 		this.nextAttack = nextAttack;
 		this.ticksTillNextAttack = ticksTillNextAttack;
 	}
@@ -189,6 +193,7 @@ class InfernoNPC
 	void gameTick(Client client, WorldPoint lastPlayerLocation, boolean finalPhase, int ticksSinceFinalPhase)
 	{
 		safeSpotCache.clear();
+		this.idleTicks += 1;
 
 		if (ticksTillNextAttack > 0)
 		{

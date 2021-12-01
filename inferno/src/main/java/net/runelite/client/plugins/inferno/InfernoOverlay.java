@@ -73,6 +73,11 @@ public class InfernoOverlay extends Overlay
 			renderIndividualTilesSafespots(graphics);
 		}
 
+		if (config.indicateBlobDeathLocation())
+		{
+			renderBlobDeathPoly(graphics);
+		}
+
 		for (InfernoNPC infernoNPC : plugin.getInfernoNpcs())
 		{
 			if (infernoNPC.getNpc().getConvexHull() != null)
@@ -126,6 +131,14 @@ public class InfernoOverlay extends Overlay
 			if (config.ticksOnNpcZukShield() && infernoNPC.getType() == InfernoNPC.Type.ZUK && plugin.getZukShield() != null && infernoNPC.getTicksTillNextAttack() > 0)
 			{
 				renderTicksOnNpc(graphics, infernoNPC, plugin.getZukShield());
+			}
+
+			if (config.ticksOnNpcMeleerDig()
+				&& infernoNPC.getType() == InfernoNPC.Type.MELEE
+				&& infernoNPC.getIdleTicks() >= config.digTimerThreshold()
+				&& infernoNPC.getTicksTillNextAttack() == 0) // don't clobber the attack timer
+			{
+				renderDigTimer(graphics, infernoNPC);
 			}
 		}
 
@@ -306,6 +319,64 @@ public class InfernoOverlay extends Overlay
 		}
 	}
 
+	private void renderDigTimer(Graphics2D g, InfernoNPC npc)
+	{
+		String tickString = Integer.toString(npc.getIdleTicks());
+		g.setFont(new Font("Arial", plugin.getFontStyle().getFont(), config.getMeleeDigFontSize()));
+		Point canvasLocation = npc.getNpc().getCanvasTextLocation(g, tickString, 0);
+
+		if (canvasLocation == null)
+		{
+			return;
+		}
+
+		// NEEDS TO BE WORKED ON WITH SOME STATS
+		// MELEE DIG IS UNKNOWN AT THIS TIME
+		// COLLECTING DATA
+		Color digColor;
+		if (npc.getIdleTicks() < config.digTimerDangerThreshold())
+		{
+			digColor = config.getMeleeDigSafeColor();
+		}
+		else
+		{
+			digColor = config.getMeleeDigDangerColor();
+		}
+
+		renderTextLocation(g, tickString, config.getMeleeDigFontSize(), plugin.getFontStyle().getFont(), digColor, canvasLocation, false, 0);
+	}
+
+
+	private void renderBlobDeathPoly(Graphics2D graphics)
+	{
+		graphics.setColor(config.getBlobDeathLocationColor());
+
+		plugin.getBlobDeathSpots().forEach(blobDeathSpot -> {
+			Polygon area = Perspective.getCanvasTileAreaPoly(client, blobDeathSpot.getLocation(), 3);
+
+
+			Color color = config.getBlobDeathLocationColor();
+			if (config.blobDeathLocationFade())
+			{
+				color = new Color(color.getRed(), color.getGreen(), color.getBlue(), blobDeathSpot.fillAlpha());
+			}
+
+			renderOutlinePolygon(graphics, area, color);
+
+			graphics.setFont(new Font("Arial", Font.BOLD, plugin.getTextSize()));
+			String ticks = String.valueOf(blobDeathSpot.getTicksUntilDone());
+
+			renderTextLocation(graphics,
+				ticks,
+				plugin.getTextSize(),
+				plugin.getFontStyle().getFont(),
+				config.getBlobDeathLocationColor(),
+				Perspective.getCanvasTextLocation(client, graphics, blobDeathSpot.getLocation(), ticks, 0),
+				false,
+				0);
+		});
+	}
+
 	private void renderIndividualTilesSafespots(Graphics2D graphics)
 	{
 		for (WorldPoint worldPoint : plugin.getSafeSpotMap().keySet())
@@ -368,6 +439,9 @@ public class InfernoOverlay extends Overlay
 		final Color color = (infernoNPC.getTicksTillNextAttack() == 1
 			|| (infernoNPC.getType() == InfernoNPC.Type.BLOB && infernoNPC.getTicksTillNextAttack() == 4))
 			? infernoNPC.getNextAttack().getCriticalColor() : infernoNPC.getNextAttack().getNormalColor();
+
+		graphics.setFont(new Font("Arial", plugin.getFontStyle().getFont(), plugin.getTextSize()));
+
 		final Point canvasPoint = renderOnNPC.getCanvasTextLocation(
 			graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()), 0);
 		renderTextLocation(graphics, String.valueOf(infernoNPC.getTicksTillNextAttack()),
