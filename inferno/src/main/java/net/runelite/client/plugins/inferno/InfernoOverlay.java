@@ -73,6 +73,11 @@ public class InfernoOverlay extends Overlay
 			renderIndividualTilesSafespots(graphics);
 		}
 
+		if (config.indicateBlobDeathLocation())
+		{
+			renderBlobDeathPoly(graphics);
+		}
+
 		for (InfernoNPC infernoNPC : plugin.getInfernoNpcs())
 		{
 			if (infernoNPC.getNpc().getConvexHull() != null)
@@ -304,6 +309,36 @@ public class InfernoOverlay extends Overlay
 			}
 
 		}
+	}
+
+	private void renderBlobDeathPoly(Graphics2D graphics)
+	{
+		graphics.setColor(config.getBlobDeathLocationColor());
+
+		plugin.getBlobDeathSpots().forEach(blobDeathSpot -> {
+			Polygon area = Perspective.getCanvasTileAreaPoly(client, blobDeathSpot.getLocation(), 3);
+
+
+			Color color = config.getBlobDeathLocationColor();
+			if (config.blobDeathLocationFade())
+			{
+				color = new Color(color.getRed(), color.getGreen(), color.getBlue(), blobDeathSpot.fillAlpha());
+			}
+
+			renderOutlinePolygon(graphics, area, color);
+
+			graphics.setFont(new Font("Arial", Font.BOLD, plugin.getTextSize()));
+			String ticks = String.valueOf(blobDeathSpot.getTicksUntilDone());
+
+			renderTextLocation(graphics,
+				ticks,
+				plugin.getTextSize(),
+				plugin.getFontStyle().getFont(),
+				config.getBlobDeathLocationColor(),
+				Perspective.getCanvasTextLocation(client, graphics, blobDeathSpot.getLocation(), ticks, 0),
+				false,
+				0);
+		});
 	}
 
 	private void renderIndividualTilesSafespots(Graphics2D graphics)
@@ -566,5 +601,12 @@ public class InfernoOverlay extends Overlay
 			}
 			renderTextLocation(graphics, canvasCenterPoint, txtString, fontColor);
 		}
+	}
+
+	private Point centerPoint(Rectangle rect)
+	{
+		int x = (int) (rect.getX() + rect.getWidth() / 2);
+		int y = (int) (rect.getY() + rect.getHeight() / 2);
+		return new Point(x, y);
 	}
 }

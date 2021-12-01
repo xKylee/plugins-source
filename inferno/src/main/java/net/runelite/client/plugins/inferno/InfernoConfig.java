@@ -32,6 +32,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Range;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoNamingDisplayMode;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoPrayerDisplayMode;
 import net.runelite.client.plugins.inferno.displaymodes.InfernoSafespotDisplayMode;
@@ -457,6 +458,47 @@ public interface InfernoConfig extends Config
 
 	@ConfigItem(
 		position = 2,
+		keyName = "indicateBlobDeathLocation",
+		name = "Indicate Blob Death Location",
+		description = "Highlight the death tiles with a tick countdown until mini-blobs spawn",
+		section = BlobsSection
+	)
+	default boolean indicateBlobDeathLocation()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "getBlobDeathLocationColor",
+		name = "Blob Death Color",
+		description = "Color for blob death location outline",
+		hidden = true,
+		unhide = "indicateBlobDeathLocation",
+		section = BlobsSection
+	)
+	default Color getBlobDeathLocationColor()
+	{
+		return Color.ORANGE;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "blobDeathLocationFade",
+		name = "Fade Tile",
+		description = "Fades the death tile for a smoother transition.",
+		hidden = true,
+		unhide = "indicateBlobDeathLocation",
+		section = BlobsSection
+	)
+	default boolean blobDeathLocationFade()
+	{
+		return true;
+	}
+
+
+	@ConfigItem(
+		position = 5,
 		keyName = "ticksOnNpcBlob",
 		name = "Ticks on NPC",
 		description = "Draws the amount of ticks before an NPC is going to attack on the NPC",
@@ -468,7 +510,7 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 6,
 		keyName = "safespotsBlob",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
@@ -480,7 +522,7 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
+		position = 7,
 		keyName = "indicateNpcPositionBlob",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
@@ -490,6 +532,7 @@ public interface InfernoConfig extends Config
 	{
 		return false;
 	}
+
 
 	@ConfigItem(
 		position = 0,
@@ -517,6 +560,37 @@ public interface InfernoConfig extends Config
 
 	@ConfigItem(
 		position = 2,
+		keyName = "ticksOnNpcMeleerDig",
+		name = "Dig Timer",
+		description = "Draws the amount of ticks before the melee will begin the dig animation",
+		section = MeleersSection
+	)
+	default boolean ticksOnNpcMeleerDig()
+	{
+		return false;
+	}
+
+	@Range(
+		min = 1,
+		max = 50
+	)
+	@ConfigItem(
+		position = 3,
+		keyName = "digTimerThreshold",
+		name = "Tick Threshold",
+		description = "Number at which the dig timer should be drawn",
+		section = MeleersSection,
+		hidden = true,
+		unhide = "ticksOnNpcMeleerDig"
+	)
+	default int digTimerThreshold()
+	{
+		return 50;
+	}
+
+
+	@ConfigItem(
+		position = 4,
 		keyName = "safespotsMeleer",
 		name = "Safespots",
 		description = "Enable or disable safespot calculation for this specific NPC. 'Tile Safespots' in the 'Safespots' category needs to be turned on for this to take effect.",
@@ -528,7 +602,7 @@ public interface InfernoConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 5,
 		keyName = "indicateNpcPositionMeleer",
 		name = "Indicate Main Tile",
 		description = "Indicate the main tile for multi-tile NPC's. This tile is used for pathfinding.",
