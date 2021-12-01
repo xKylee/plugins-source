@@ -43,7 +43,7 @@ public interface InfernoConfig extends Config
 {
 	@ConfigSection(
 		name = "Prayer",
-		description = "Configuration options forPprayer",
+		description = "Configuration options for prayer",
 		position = 0,
 		keyName = "PrayerSection"
 	)
@@ -139,7 +139,7 @@ public interface InfernoConfig extends Config
 
 	@ConfigSection(
 		name = "Zuk",
-		description = "Configuration options for  Zuk",
+		description = "Configuration options for Zuk",
 		position = 12,
 		keyName = "ZukSection"
 	)
@@ -362,7 +362,7 @@ public interface InfernoConfig extends Config
 		position = 0,
 		keyName = "indicateNibblers",
 		name = "Indicate Nibblers",
-		description = "Indicate's nibblers that are alive",
+		description = "Indicates nibblers that are alive",
 		section = NibblersSection
 	)
 	default boolean indicateNibblers()
@@ -446,7 +446,7 @@ public interface InfernoConfig extends Config
 	@ConfigItem(
 		position = 1,
 		keyName = "indicateBlobDetectionTick",
-		name = "Indicate Blob Dection Tick",
+		name = "Indicate Blob Detection Tick",
 		description = "Show a prayer indicator (default: magic) for the tick on which the blob will detect prayer",
 		section = BlobsSection
 	)
