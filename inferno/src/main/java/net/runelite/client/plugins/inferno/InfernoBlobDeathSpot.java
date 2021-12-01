@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.coords.LocalPoint;
 
-class BlobDeathSpot
+class InfernoBlobDeathSpot
 {
 
 	static final int BLOB_DEATH_TICKS = 3;
@@ -22,7 +22,7 @@ class BlobDeathSpot
 	@Getter(AccessLevel.PACKAGE)
 	private final long deathTime;
 
-	public BlobDeathSpot(LocalPoint location)
+	public InfernoBlobDeathSpot(LocalPoint location)
 	{
 		this.location = location;
 		this.ticksUntilDone = BLOB_DEATH_TICKS;

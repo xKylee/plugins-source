@@ -159,7 +159,7 @@ public class InfernoPlugin extends Plugin
 	private final Map<Integer, List<WorldPoint>> safeSpotAreas = new HashMap<>();
 
 	@Getter(AccessLevel.PACKAGE)
-	List<BlobDeathSpot> blobDeathSpots = new ArrayList<>();
+	List<InfernoBlobDeathSpot> blobDeathSpots = new ArrayList<>();
 
 	@Getter(AccessLevel.PACKAGE)
 	private long lastTick;
@@ -416,12 +416,12 @@ public class InfernoPlugin extends Plugin
 			}
 
 
-			if (config.indicateBlobDeathLocation() && InfernoNPC.Type.typeFromId(npc.getId()) == InfernoNPC.Type.BLOB && npc.getAnimation() == BlobDeathSpot.BLOB_DEATH_ANIMATION)
+			if (config.indicateBlobDeathLocation() && InfernoNPC.Type.typeFromId(npc.getId()) == InfernoNPC.Type.BLOB && npc.getAnimation() == InfernoBlobDeathSpot.BLOB_DEATH_ANIMATION)
 			{
 				// Remove from list so the ticks overlay doesn't compete
 				// with the tile overlay.
 				infernoNpcs.removeIf(infernoNPC -> infernoNPC.getNpc() == npc);
-				blobDeathSpots.add(new BlobDeathSpot(npc.getLocalLocation()));
+				blobDeathSpots.add(new InfernoBlobDeathSpot(npc.getLocalLocation()));
 			}
 
 		}
@@ -932,8 +932,8 @@ public class InfernoPlugin extends Plugin
 
 	private void manageBlobDeathLocations()
 	{
-		blobDeathSpots.forEach(BlobDeathSpot::decrementTick);
-		blobDeathSpots.removeIf(BlobDeathSpot::isDone);
+		blobDeathSpots.forEach(InfernoBlobDeathSpot::decrementTick);
+		blobDeathSpots.removeIf(InfernoBlobDeathSpot::isDone);
 	}
 
 	private void calculateCentralNibbler()
