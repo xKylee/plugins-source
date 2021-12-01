@@ -932,8 +932,11 @@ public class InfernoPlugin extends Plugin
 
 	private void manageBlobDeathLocations()
 	{
-		blobDeathSpots.forEach(InfernoBlobDeathSpot::decrementTick);
-		blobDeathSpots.removeIf(InfernoBlobDeathSpot::isDone);
+		if (config.indicateBlobDeathLocation())
+		{
+			blobDeathSpots.forEach(InfernoBlobDeathSpot::decrementTick);
+			blobDeathSpots.removeIf(InfernoBlobDeathSpot::isDone);
+		}
 	}
 
 	private void calculateCentralNibbler()
