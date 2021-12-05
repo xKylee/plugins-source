@@ -712,7 +712,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 						{
 							invItemNames.add(client.getItemDefinition((i.getId())).getName());
 						}
-						if (invItemNames.contains("Clue scroll (beginner)") || bankItemNames.contains("Clue scroll (beginner)"))
+						if (invItemNames.contains("Clue scroll (beginner)") || bankItemNames.contains("Clue scroll (beginner)")
+							|| (invItemNames.contains("Clue scroll (easy)") || bankItemNames.contains("Clue scroll (easy)")))
 						{
 							return false;
 						}
