@@ -6,7 +6,12 @@ public enum AttackPrayer
 {
 	Rigour,
 	Augury,
-	Piety;
+	Piety,
+	MysticMight,
+	EagleEye,
+	Chivalry;
+
+	static final String[] prayerLetters = {"r", "a", "p", "m", "e", "c"};
 
 	public WidgetInfo getWidgetInfo()
 	{
@@ -18,8 +23,15 @@ public enum AttackPrayer
 				return WidgetInfo.PRAYER_PIETY;
 			case Rigour:
 				return WidgetInfo.PRAYER_RIGOUR;
+			case MysticMight:
+				return WidgetInfo.PRAYER_MYSTIC_MIGHT;
+			case EagleEye:
+				return WidgetInfo.PRAYER_EAGLE_EYE;
+			case Chivalry:
+				return WidgetInfo.PRAYER_CHIVALRY;
 		}
 		return null;
 	}
+
 }
 
