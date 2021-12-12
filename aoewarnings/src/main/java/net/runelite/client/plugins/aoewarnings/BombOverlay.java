@@ -32,7 +32,9 @@ import java.awt.Polygon;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -96,6 +98,7 @@ public class BombOverlay extends Overlay
 	private void drawDangerZone(Graphics2D graphics)
 	{
 		final WorldPoint loc = client.getLocalPlayer().getWorldLocation();
+		Map<WorldPoint, Integer> aoeTiles = new HashMap<>();
 		plugin.getBombs().forEach(bomb ->
 		{
 			final LocalPoint localLoc = LocalPoint.fromWorld(client, bomb.getWorldLocation());
@@ -130,6 +133,34 @@ public class BombOverlay extends Overlay
 			final LocalPoint CenterPoint = new LocalPoint(localLoc.getX(), localLoc.getY());
 			final Polygon poly = Perspective.getCanvasTileAreaPoly(client, CenterPoint, BOMB_AOE);
 
+			if (config.bombHeatmap())
+			{
+				for (int x = -3; x < 4; x++)
+				{
+					for (int y = -3; y < 4; y++)
+					{
+						WorldPoint aoeTile = new WorldPoint(worldLoc.getX() + x, worldLoc.getY() + y, loc.getPlane());
+
+						int severity = 1;
+
+						int abs_x = Math.abs(x);
+						int abs_y = Math.abs(y);
+
+						if (abs_x < 1 && abs_y < 1)
+							severity = 4;
+						else if (abs_x < 2 && abs_y < 2)
+							severity = 3;
+						else if (abs_x < 3 && abs_y < 3)
+							severity = 2;
+
+						if (!aoeTiles.containsKey(aoeTile))
+							aoeTiles.put(aoeTile, severity);
+						else
+							aoeTiles.put(aoeTile, aoeTiles.get(aoeTile) + severity);
+					}
+				}
+			}
+
 			if (poly != null)
 			{
 				graphics.setColor(color_code);
@@ -154,6 +185,28 @@ public class BombOverlay extends Overlay
 				Point canvasCenterPoint = new Point(canvasPoint.getX() - textWidth / 2, canvasPoint.getY() + textHeight / 2);
 				OverlayUtil.renderTextLocation(graphics, canvasCenterPoint, bombTimerString, color_code);
 			}
+		});
+
+		aoeTiles.forEach((tile, count) ->
+		{
+			LocalPoint localPoint = LocalPoint.fromWorld(client, tile);
+
+			if (localPoint == null)
+				return;
+
+			Color color = Color.decode(SAFE);
+
+			if (count == 2)
+				color = Color.decode(CAUTION);
+			if (count == 3)
+				color = Color.decode(WARNING);
+			if (count == 4)
+				color = Color.decode(DANGER);
+			if (count >= 5)
+				color = Color.decode(LETHAL);
+
+			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), config.bombHeatmapOpacity()));
+			graphics.fill(Perspective.getCanvasTilePoly(client, localPoint));
 		});
 	}
 }
