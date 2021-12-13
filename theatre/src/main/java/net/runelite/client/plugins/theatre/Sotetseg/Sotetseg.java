@@ -6,9 +6,13 @@
 
 package net.runelite.client.plugins.theatre.Sotetseg;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import javax.inject.Inject;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
@@ -16,9 +20,12 @@ import net.runelite.api.Client;
 import net.runelite.api.GroundObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
+import net.runelite.api.Perspective;
 import net.runelite.api.Point;
+import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.Tile;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
@@ -29,6 +36,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
+import net.runelite.client.plugins.theatre.prayer.TheatrePrayerUtil;
+import net.runelite.client.plugins.theatre.prayer.TheatreUpcomingAttack;
 
 @Slf4j
 public class Sotetseg extends Room
@@ -41,6 +50,9 @@ public class Sotetseg extends Room
 
 	@Inject
 	private SotetsegOverlay sotetsegOverlay;
+
+	@Inject
+	private SotetsegPrayerOverlay sotetsegPrayerOverlay;
 
 	@Inject
 	protected Sotetseg(TheatrePlugin plugin, TheatreConfig config)
@@ -84,16 +96,24 @@ public class Sotetseg extends Room
 	private static final int GROUNDOBJECT_ID_REDMAZE = 33035;
 	private int overWorldRegionID = -1;
 
+	@Getter(AccessLevel.PACKAGE)
+	private long lastTick;
+
+	@Getter(AccessLevel.PACKAGE)
+	Queue<TheatreUpcomingAttack> upcomingAttackQueue = new PriorityQueue<>();
+
 	@Override
 	public void load()
 	{
 		overlayManager.add(sotetsegOverlay);
+		overlayManager.add(sotetsegPrayerOverlay);
 	}
 
 	@Override
 	public void unload()
 	{
 		overlayManager.remove(sotetsegOverlay);
+		overlayManager.remove(sotetsegPrayerOverlay);
 	}
 
 	@Subscribe
@@ -150,9 +170,30 @@ public class Sotetseg extends Room
 					case 8139:
 					{
 						sotetsegTickCount = 6;
+						upcomingAttackQueue.add(new TheatreUpcomingAttack(
+							sotetsegTickCount,
+							Prayer.PROTECT_FROM_MELEE,
+							1
+						));
 					}
 				}
 			}
+		}
+	}
+
+	@Subscribe
+	public void onProjectileSpawn(Projectile p)
+	{
+		if (p == null){
+			return;
+		}
+
+		if ((p.getInteracting() == client.getLocalPlayer()) && (p.getId() == Sotetseg.SOTETSEG_MAGE_ORB || p.getId() == Sotetseg.SOTETSEG_RANGE_ORB))
+		{
+			upcomingAttackQueue.add(new TheatreUpcomingAttack(
+				(p.getRemainingCycles() / 30),
+				(p.getId() == Sotetseg.SOTETSEG_MAGE_ORB ? Prayer.PROTECT_FROM_MAGIC: Prayer.PROTECT_FROM_MISSILES)
+			));
 		}
 	}
 
@@ -161,6 +202,9 @@ public class Sotetseg extends Room
 	{
 		if (sotetsegActive)
 		{
+			lastTick = System.currentTimeMillis();
+			TheatrePrayerUtil.updateNextPrayerQueue(getUpcomingAttackQueue());
+
 			if (sotetsegNPC != null && (sotetsegNPC.getId() == NpcID.SOTETSEG_8388 || sotetsegNPC.getId() == 10865 || sotetsegNPC.getId() == 10868))
 			{
 				if (sotetsegTickCount >= 0)
