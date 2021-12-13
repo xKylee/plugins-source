@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.2"
+version = "5.0.3"
 
 project.extra["PluginName"] = "Zulrah"
 project.extra["PluginDescription"] = "Shows tiles on where to stand during the phases and what prayer to use"
