@@ -17,6 +17,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicsObjectCreated;
@@ -283,6 +284,11 @@ public class TheatrePlugin extends Plugin
 	public void onProjectileSpawned(ProjectileSpawned event)
 	{
 		sotetseg.onProjectileSpawn(event);
+	}
+
+	@Subscribe
+	public void onGameObjectSpawn(GameObjectSpawned gameObject) {
+		verzik.onGameObjectSpawn(gameObject);
 	}
 }
 

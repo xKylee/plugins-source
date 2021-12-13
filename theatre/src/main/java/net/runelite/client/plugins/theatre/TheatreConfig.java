@@ -1218,6 +1218,33 @@ public interface TheatreConfig extends Config
 		return Color.RED;
 	}
 
+	@ConfigItem(
+		position = 724,
+		keyName = "verzikPoisonTileHighlight",
+		name = "Verzik Poison Tile Highlight",
+		description = "Highlight tile with disappearing poison",
+		section = verzikSection
+	)
+	default boolean verzikPoisonTileHighlight()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 725,
+		keyName = "verzikPoisonTileHighlightColor",
+		name = "Verzik Poison Tile Highlight Color",
+		description = "Select a color for the Verzik poison tiles.",
+		section = verzikSection,
+		hidden = true,
+		unhide = "verzikPoisonTileHighlight"
+	)
+	default Color verzikPoisonTileHighlightColor()
+	{
+		return new Color(184, 246, 196, 152);
+	}
+
 
 	/*====== Misc Section ======*/
 

@@ -6,13 +6,6 @@
 
 package net.runelite.client.plugins.theatre.Verzik;
 
-/*
-TODO:
-  [x] prayers for p3 attacks
-  [ ] hmt poison countdown
-  [x] hmt yellow fix
- */
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +33,7 @@ import net.runelite.api.PlayerComposition;
 import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcDespawned;
@@ -146,6 +140,9 @@ public class Verzik extends Room
 	@Getter(AccessLevel.PACKAGE)
 	Queue<TheatreUpcomingAttack> upcomingAttackQueue = new PriorityQueue<>();
 
+	@Getter(AccessLevel.PACKAGE)
+	Set<VerzikPoisonTile> verzikPoisonTiles = new HashSet<>();
+
 	@Getter
 	private boolean verzikEnraged = false;
 
@@ -161,11 +158,12 @@ public class Verzik extends Room
 	private static final int VERZIK_P1_MAGIC = 8109;
 	private static final int VERZIK_P2_REG = 8114;
 	private static final int VERZIK_P2_BOUNCE = 8116;
+	private static final int VERZIK_P2_POISON = 8116;
 	private static final int VERZIK_BEGIN_REDS = 8117;
 	private static final int VERZIK_P3_MAGE = 8124;
 	private static final int VERZIK_P3_RANGE = 8125;
 
-	private static final int VERZIK_P3_ATTACK_TICKS = 4;
+	private static final int VERZIK_P3_ATTACK_TICKS = 3;
 
 	private static final int P3_CRAB_ATTACK_COUNT = 5;
 	private static final int P3_WEB_ATTACK_COUNT = 10;
@@ -175,6 +173,7 @@ public class Verzik extends Room
 	private Set<Integer> WEAPON_SET;
 	private static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
+	@Getter
 	private boolean isHM;
 	private static final Set<Integer> VERZIK_HM_ID = ImmutableSet.of(10847, 10848, 10849, 10850, 10851, 10852, 10853);
 
@@ -301,6 +300,15 @@ public class Verzik extends Room
 			case 10853:
 				verzikSpawn(npc);
 				break;
+		}
+	}
+
+	@Subscribe
+	public void onGameObjectSpawn(GameObjectSpawned gameObject)
+	{
+		if (verzikActive && verzikPhase == Phase.PHASE2)
+		{
+			verzikPoisonTiles.add(new VerzikPoisonTile(WorldPoint.fromLocal(client, gameObject.getTile().getLocalLocation())));
 		}
 	}
 
@@ -438,6 +446,10 @@ public class Verzik extends Room
 						}
 					}
 				}
+
+				if (isHM) {
+					VerzikPoisonTile.updateTiles(verzikPoisonTiles);
+				}
 			}
 
 			if (verzikPhase == Phase.PHASE3 && !verzikTornadoes.isEmpty())
@@ -495,7 +507,7 @@ public class Verzik extends Room
 						{
 							if (isHM && verzikHardmodeYellowCount != 0)
 							{
-								verzikYellows = 3;
+								verzikYellows = 2;
 							}
 							else
 							{
@@ -728,6 +740,7 @@ public class Verzik extends Room
 		verzikAggros.clear();
 		verzikReds.clear();
 		verzikTornadoes.clear();
+		verzikPoisonTiles.clear();
 		verzikLocalTornado = null;
 		verzikEnraged = false;
 		verzikFirstEnraged = false;
