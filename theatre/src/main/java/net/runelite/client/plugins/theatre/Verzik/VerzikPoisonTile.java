@@ -21,13 +21,16 @@ public class VerzikPoisonTile
 		this.ticksRemaining = VERZIK_P2_POISON_TICKS;
 	}
 
-	public void decrement() {
-		if (ticksRemaining > 0) {
+	public void decrement()
+	{
+		if (ticksRemaining > 0)
+		{
 			ticksRemaining -= 1;
 		}
 	}
 
-	public boolean isDead() {
+	public boolean isDead()
+	{
 		return ticksRemaining == 0;
 	}
 
@@ -52,7 +55,8 @@ public class VerzikPoisonTile
 		return Objects.hash(tile);
 	}
 
-	static void updateTiles(Set<VerzikPoisonTile> tileSet) {
+	static void updateTiles(Set<VerzikPoisonTile> tileSet)
+	{
 		tileSet.forEach(VerzikPoisonTile::decrement);
 		tileSet.removeIf(VerzikPoisonTile::isDead);
 	}

@@ -206,7 +206,7 @@ public class VerzikOverlay extends RoomOverlay
 						.stream()
 						.filter(tile -> tile.ticksRemaining == 1)
 						.forEach(tile -> {
-							drawTile(graphics, tile.getTile(), config.verzikProjectilesColor(), 1, 255, 20);
+							drawTile(graphics, tile.getTile(), config.verzikPoisonTileHighlightColor(), 1, 255, 20);
 						});
 				}
 			}

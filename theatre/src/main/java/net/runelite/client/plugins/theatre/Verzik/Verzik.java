@@ -447,7 +447,8 @@ public class Verzik extends Room
 					}
 				}
 
-				if (isHM) {
+				if (isHM)
+				{
 					VerzikPoisonTile.updateTiles(verzikPoisonTiles);
 				}
 			}

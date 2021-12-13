@@ -108,7 +108,7 @@ public class TheatrePlugin extends Plugin
 	{
 		if (rooms == null)
 		{
-			rooms = new Room[]{ maiden, bloat, nylocas, sotetseg, xarpus, verzik};
+			rooms = new Room[]{maiden, bloat, nylocas, sotetseg, xarpus, verzik};
 
 			for (Room room : rooms)
 			{
@@ -287,7 +287,8 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onGameObjectSpawn(GameObjectSpawned gameObject) {
+	public void onGameObjectSpawn(GameObjectSpawned gameObject)
+	{
 		verzik.onGameObjectSpawn(gameObject);
 	}
 }
