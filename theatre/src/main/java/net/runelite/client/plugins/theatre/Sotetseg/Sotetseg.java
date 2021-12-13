@@ -6,7 +6,6 @@
 
 package net.runelite.client.plugins.theatre.Sotetseg;
 
-import java.awt.Color;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.PriorityQueue;
@@ -20,18 +19,17 @@ import net.runelite.api.Client;
 import net.runelite.api.GroundObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
-import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.Tile;
-import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
@@ -182,9 +180,11 @@ public class Sotetseg extends Room
 	}
 
 	@Subscribe
-	public void onProjectileSpawn(Projectile p)
+	public void onProjectileSpawn(ProjectileSpawned projectileSpawned)
 	{
-		if (p == null){
+		var p = projectileSpawned.getProjectile();
+		if (p == null)
+		{
 			return;
 		}
 
@@ -192,7 +192,7 @@ public class Sotetseg extends Room
 		{
 			upcomingAttackQueue.add(new TheatreUpcomingAttack(
 				(p.getRemainingCycles() / 30),
-				(p.getId() == Sotetseg.SOTETSEG_MAGE_ORB ? Prayer.PROTECT_FROM_MAGIC: Prayer.PROTECT_FROM_MISSILES)
+				(p.getId() == Sotetseg.SOTETSEG_MAGE_ORB ? Prayer.PROTECT_FROM_MAGIC : Prayer.PROTECT_FROM_MISSILES)
 			));
 		}
 	}

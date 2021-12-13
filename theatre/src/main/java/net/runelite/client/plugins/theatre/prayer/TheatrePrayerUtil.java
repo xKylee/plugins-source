@@ -18,7 +18,8 @@ public class TheatrePrayerUtil
 
 		queue.forEach(attack -> {
 			map.putIfAbsent(attack.getTicksUntil(), attack.getPriority());
-			if (map.get(attack.getTicksUntil()) < attack.getPriority()) {
+			if (map.get(attack.getTicksUntil()) < attack.getPriority())
+			{
 				map.put(attack.getTicksUntil(), attack.getPriority());
 			}
 		});

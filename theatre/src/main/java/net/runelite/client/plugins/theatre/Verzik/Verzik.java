@@ -596,10 +596,10 @@ public class Verzik extends Room
 					switch (animationID)
 					{
 						case VERZIK_P3_MAGE:
-							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS,  Prayer.PROTECT_FROM_MAGIC));
+							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS, Prayer.PROTECT_FROM_MAGIC));
 							break;
 						case VERZIK_P3_RANGE:
-							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS,  Prayer.PROTECT_FROM_MISSILES));
+							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS, Prayer.PROTECT_FROM_MISSILES));
 							break;
 					}
 				}

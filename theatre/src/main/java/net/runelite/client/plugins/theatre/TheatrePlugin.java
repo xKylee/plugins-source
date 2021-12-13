@@ -10,9 +10,10 @@ package net.runelite.client.plugins.theatre;
 import com.google.common.base.Strings;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
+import java.util.ArrayList;
+import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.Projectile;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ClientTick;
@@ -28,6 +29,7 @@ import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
+import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -41,8 +43,6 @@ import net.runelite.client.plugins.theatre.Sotetseg.Sotetseg;
 import net.runelite.client.plugins.theatre.Verzik.Verzik;
 import net.runelite.client.plugins.theatre.Xarpus.Xarpus;
 import net.runelite.client.util.Text;
-import javax.inject.Inject;
-import java.util.ArrayList;
 import org.pf4j.Extension;
 
 @Extension
@@ -226,8 +226,8 @@ public class TheatrePlugin extends Plugin
 	public void onMenuOptionClicked(MenuOptionClicked option)
 	{
 		nylocas.onMenuOptionClicked(option);
-
 	}
+
 	@Subscribe
 	public void onMenuOpened(MenuOpened menu)
 	{
@@ -280,7 +280,7 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onProjectileSpawned(Projectile event)
+	public void onProjectileSpawned(ProjectileSpawned event)
 	{
 		sotetseg.onProjectileSpawn(event);
 	}

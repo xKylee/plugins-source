@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import javax.inject.Inject;
 import lombok.AccessLevel;
@@ -42,7 +40,9 @@ public abstract class TheatrePrayerOverlay extends Overlay
 	}
 
 	protected abstract Queue<TheatreUpcomingAttack> getAttackQueue();
+
 	protected abstract long getLastTick();
+
 	protected abstract boolean isEnabled();
 
 	@Override
@@ -97,10 +97,13 @@ public abstract class TheatrePrayerOverlay extends Overlay
 			final Rectangle boxRectangle = new Rectangle(BOX_WIDTH, BOX_HEIGHT);
 			boxRectangle.translate(baseX, baseY);
 
-			if (attack.getPriority() == tickPriorityMap.get(attack.getTicksUntil())) {
+			if (attack.getPriority() == tickPriorityMap.get(attack.getTicksUntil()))
+			{
 				OverlayUtil.renderPolygon(graphics, boxRectangle, color, color, new BasicStroke(2));
-			} else if (config.indicateNonPriorityDescendingBoxes()){
-				OverlayUtil.renderPolygon(graphics, boxRectangle, color, new Color(0,0,0,0), new BasicStroke(2));
+			}
+			else if (config.indicateNonPriorityDescendingBoxes())
+			{
+				OverlayUtil.renderPolygon(graphics, boxRectangle, color, new Color(0, 0, 0, 0), new BasicStroke(2));
 			}
 		});
 	}
