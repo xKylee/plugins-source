@@ -1075,6 +1075,76 @@ public interface TheatreConfig extends Config
 		return Color.RED;
 	}
 
+	@ConfigItem(
+		position = 23,
+		keyName = "verzikPrayerHelper",
+		name = "Verzik Prayer Helper",
+		description = "Display prayer indicator in the prayer tab or in the bottom right corner of the screen",
+		section = verzikSection
+	)
+	default boolean verzikPrayerHelper()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 24,
+		keyName = "verzikDescendingBoxes",
+		name = "Descending Boxes",
+		description = "Draws timing boxes above the prayer icons, as if you were playing Guitar Hero",
+		hidden = true,
+		unhide = "verzikPrayerHelper",
+		section = verzikSection
+	)
+	default boolean verzikDescendingBoxes()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 25,
+		keyName = "verzikAlwaysShowPrayerHelper",
+		name = "Always Show Prayer Helper",
+		description = "Render prayer helper at all time, even when other inventory tabs are open.",
+		hidden = true,
+		unhide = "verzikPrayerHelper",
+		section = verzikSection
+	)
+	default boolean verzikAlwaysShowPrayerHelper()
+	{
+		return false;
+	}
+
+
+	@ConfigItem(
+		position = 26,
+		keyName = "verzikPrayerColor",
+		name = "Box Color",
+		description = "Color for descending box normal",
+		hidden = true,
+		unhide = "verzikDescendingBoxes",
+		section = verzikSection
+	)
+	default Color verzikPrayerColor()
+	{
+		return Color.ORANGE;
+	}
+
+	@ConfigItem(
+		position = 27,
+		keyName = "verzikPrayerColorDanger",
+		name = "Box Color Danger",
+		description = "Color for descending box one tick before damage",
+		hidden = true,
+		unhide = "verzikDescendingBoxes",
+		section = verzikSection
+	)
+	default Color verzikPrayerColorDanger()
+	{
+		return Color.RED;
+	}
+
+
 	//Miscellaneous Configuration Items
 	@ConfigItem(
 		keyName = "highlightMelee",

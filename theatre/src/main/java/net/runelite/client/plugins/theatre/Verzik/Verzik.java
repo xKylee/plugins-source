@@ -13,11 +13,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.inject.Inject;
 import com.google.common.collect.ImmutableSet;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicsObject;
@@ -27,6 +30,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Player;
 import net.runelite.api.PlayerComposition;
+import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
@@ -51,6 +55,9 @@ public class Verzik extends Room
 
 	@Inject
 	private VerzikOverlay verzikOverlay;
+
+	@Inject
+	private VerzikPrayerOverlay verzikPrayerOverlay;
 
 	@Inject
 	private Verzik(TheatrePlugin plugin, TheatreConfig config)
@@ -124,6 +131,12 @@ public class Verzik extends Room
 	@Getter
 	private int verzikAttackCount;
 
+	@Getter(AccessLevel.PACKAGE)
+	private long lastTick;
+
+	@Getter(AccessLevel.PACKAGE)
+	Queue<VerzikUpcomingAttack> verzikUpcomingAttackQueue = new PriorityQueue<>();
+
 	@Getter
 	private boolean verzikEnraged = false;
 
@@ -140,6 +153,8 @@ public class Verzik extends Room
 	private static final int VERZIK_P2_REG = 8114;
 	private static final int VERZIK_P2_BOUNCE = 8116;
 	private static final int VERZIK_BEGIN_REDS = 8117;
+	private static final int VERZIK_P3_MAGE = 8124;
+	private static final int VERZIK_P3_RANGE = 8125;
 
 	private static final int P3_CRAB_ATTACK_COUNT = 5;
 	private static final int P3_WEB_ATTACK_COUNT = 10;
@@ -160,12 +175,14 @@ public class Verzik extends Room
 	{
 		updateConfig();
 		overlayManager.add(verzikOverlay);
+		overlayManager.add(verzikPrayerOverlay);
 	}
 
 	@Override
 	public void unload()
 	{
 		overlayManager.remove(verzikOverlay);
+		overlayManager.remove(verzikPrayerOverlay);
 		verzikCleanup();
 	}
 
@@ -386,6 +403,9 @@ public class Verzik extends Room
 	{
 		if (verzikActive)
 		{
+			lastTick = System.currentTimeMillis();
+			updateNextPrayerQueue();
+
 			if (verzikPhase == Phase.PHASE2)
 			{
 				if (verzikNPC.getId() == NpcID.VERZIK_VITUR_8372 || verzikNPC.getId() == 10833 || verzikNPC.getId() == 10850)
@@ -560,6 +580,18 @@ public class Verzik extends Room
 					}
 				}
 
+				if (animationID > -1 && verzikPhase == Phase.PHASE3 && animationID != verzikLastAnimation)
+				{
+					switch (animationID)
+					{
+						case VERZIK_P3_MAGE:
+							addNextPrayer(4, Prayer.PROTECT_FROM_MAGIC);
+							break;
+						case VERZIK_P3_RANGE:
+							addNextPrayer(4, Prayer.PROTECT_FROM_MISSILES);
+					}
+				}
+
 				verzikLastAnimation = animationID;
 
 				if (verzikPhase == Phase.PHASE3)
@@ -626,6 +658,17 @@ public class Verzik extends Room
 				}
 			}
 		}
+	}
+
+	private void addNextPrayer(int ticksUntil, Prayer prayer)
+	{
+		verzikUpcomingAttackQueue.add(new VerzikUpcomingAttack(ticksUntil, prayer));
+	}
+
+	private void updateNextPrayerQueue()
+	{
+		verzikUpcomingAttackQueue.forEach(VerzikUpcomingAttack::decrementTicks);
+		verzikUpcomingAttackQueue.removeIf(VerzikUpcomingAttack::shouldRemove);
 	}
 
 	Color verzikSpecialWarningColor()
@@ -696,5 +739,6 @@ public class Verzik extends Room
 		verzikHardmodeYellowCount = 0;
 		verzikRangedAttacks.clear();
 		verzikLightningAttacks = 4;
+		verzikUpcomingAttackQueue.clear();
 	}
 }
