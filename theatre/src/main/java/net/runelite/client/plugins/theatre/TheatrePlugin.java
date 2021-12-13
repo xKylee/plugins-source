@@ -12,6 +12,7 @@ import com.google.inject.Binder;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.Projectile;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ClientTick;
@@ -276,6 +277,12 @@ public class TheatrePlugin extends Plugin
 	public void onProjectileMoved(ProjectileMoved event)
 	{
 		verzik.onProjectileMoved(event);
+	}
+
+	@Subscribe
+	public void onProjectileSpawned(Projectile event)
+	{
+		sotetseg.onProjectileSpawn(event);
 	}
 }
 

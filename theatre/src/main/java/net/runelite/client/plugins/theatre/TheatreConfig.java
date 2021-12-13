@@ -29,54 +29,71 @@ public interface TheatreConfig extends Config
 		keyName = "generalSection"
 	)
 	String generalSection = "General";
-	
+
+	//Config Sections
+	@ConfigSection(
+		name = "Prayer",
+		description = "Prayer Configuration",
+		position = 1,
+		keyName = "prayerSection"
+	)
+	String prayerSection = "Prayer";
+
 	@ConfigSection(
 		name = "Maiden",
 		description = "Maiden's Configuration",
-		position = 1,
+		position = 2,
 		keyName = "maidenSection"
 	)
 	String maidenSection = "Maiden";
-	
+
 	@ConfigSection(
 		name = "Bloat",
 		description = "Bloat's Configuration",
-		position = 2,
+		position = 3,
 		keyName = "bloatSection"
 	)
 	String bloatSection = "Bloat";
-	
+
 	@ConfigSection(
 		name = "Nylocas",
 		description = "Nylocas' Configuration",
-		position = 3,
+		position = 4,
 		keyName = "nylocasSection"
 	)
 	String nylocasSection = "Nylocas";
-	
+
 	@ConfigSection(
 		name = "Sotetseg",
 		description = "Sotetseg's Configuration",
-		position = 4,
+		position = 5,
 		keyName = "sotetsegSection"
 	)
 	String sotetsegSection = "Sotetseg";
-	
+
 	@ConfigSection(
 		name = "Xarpus",
 		description = "Xarpus's Configuration",
-		position = 5,
+		position = 6,
 		keyName = "xarpusSection"
 	)
 	String xarpusSection = "Xarpus";
-	
+
 	@ConfigSection(
 		name = "Verzik",
 		description = "Verzik's Configuration",
-		position = 6,
+		position = 7,
 		keyName = "verzikSection"
 	)
 	String verzikSection = "Verzik";
+
+	@ConfigSection(
+		name = "Misc",
+		description = "Misc Configuration",
+		position = 8,
+		keyName = "verzikSection"
+	)
+	String miscSection = "Misc";
 
 	//General Section
 	@Range(max = 20)
@@ -102,6 +119,121 @@ public interface TheatreConfig extends Config
 	default FontStyle fontStyle()
 	{
 		return FontStyle.BOLD;
+	}
+
+	// Prayer section
+
+	@ConfigItem(
+		position = 0,
+		keyName = "prayerHelper",
+		name = "Prayer Helper",
+		description = "Display prayer indicator in the prayer tab or in the bottom right corner of the screen",
+		section = prayerSection
+	)
+	default boolean prayerHelper()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "descendingBoxes",
+		name = "Prayer Descending Boxes",
+		description = "Draws timing boxes above the prayer icons, as if you were playing Guitar Hero",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default boolean descendingBoxes()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "indicateNonPriorityDescendingBoxes",
+		name = "Indicate Non-Priority Boxes",
+		description = "Render descending boxes for prayers that are not the priority prayer for that tick",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default boolean indicateNonPriorityDescendingBoxes()
+	{
+		return true;
+	}
+
+
+	@ConfigItem(
+		position = 3,
+		keyName = "alwaysShowPrayerHelper",
+		name = "Always Show Prayer Helper",
+		description = "Render prayer helper at all time, even when other inventory tabs are open.",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default boolean alwaysShowPrayerHelper()
+	{
+		return false;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 4,
+		keyName = "prayerColor",
+		name = "Box Color",
+		description = "Color for descending box normal",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default Color prayerColor()
+	{
+		return Color.ORANGE;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 5,
+		keyName = "prayerColorDanger",
+		name = "Box Color Danger",
+		description = "Color for descending box one tick before damage",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default Color prayerColorDanger()
+	{
+		return Color.RED;
+	}
+
+	@ConfigItem(
+		position = 6,
+		keyName = "verzikPrayerHelper",
+		name = "Verzik",
+		description = "Render prayers during the verzik fight",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default boolean verzikPrayerHelper()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 7,
+		keyName = "sotetsegPrayerHelper",
+		name = "Sotetseg",
+		description = "Render prayers during the sotetseg fight",
+		hidden = true,
+		unhide = "prayerHelper",
+		section = prayerSection
+	)
+	default boolean sotetsegPrayerHelper()
+	{
+		return true;
 	}
 
 	//Maiden Section
@@ -241,7 +373,7 @@ public interface TheatreConfig extends Config
 	{
 		return true;
 	}
-	
+
 	@ConfigItem(
 		position = 6,
 		keyName = "BloatTickCountStyle",
@@ -1080,7 +1212,8 @@ public interface TheatreConfig extends Config
 		keyName = "highlightMelee",
 		name = "",
 		description = "",
-		hidden = true
+		hidden = true,
+		section = miscSection
 	)
 	default boolean getHighlightMeleeNylo()
 	{
@@ -1091,7 +1224,8 @@ public interface TheatreConfig extends Config
 		keyName = "highlightMelee",
 		name = "",
 		description = "",
-		hidden = true
+		hidden = true,
+		section = miscSection
 	)
 	void setHighlightMeleeNylo(boolean set);
 
@@ -1099,7 +1233,8 @@ public interface TheatreConfig extends Config
 		keyName = "highlightMage",
 		name = "",
 		description = "",
-		hidden = true
+		hidden = true,
+		section = miscSection
 	)
 	default boolean getHighlightMageNylo()
 	{
@@ -1110,7 +1245,8 @@ public interface TheatreConfig extends Config
 		keyName = "highlightMage",
 		name = "",
 		description = "",
-		hidden = true
+		hidden = true,
+		section = miscSection
 	)
 	void setHighlightMageNylo(boolean set);
 
@@ -1118,7 +1254,8 @@ public interface TheatreConfig extends Config
 		keyName = "highlightRange",
 		name = "",
 		description = "",
-		hidden = true
+		hidden = true,
+		section = miscSection
 	)
 	default boolean getHighlightRangeNylo()
 	{
@@ -1129,7 +1266,8 @@ public interface TheatreConfig extends Config
 		keyName = "highlightRange",
 		name = "",
 		description = "",
-		hidden = true
+		hidden = true,
+		section = miscSection
 	)
 	void setHighlightRangeNylo(boolean set);
 
@@ -1150,7 +1288,7 @@ public interface TheatreConfig extends Config
 			return getName();
 		}
 	}
-	
+
 	enum BLOATTIMEDOWN
 	{
 		COUNTUP,

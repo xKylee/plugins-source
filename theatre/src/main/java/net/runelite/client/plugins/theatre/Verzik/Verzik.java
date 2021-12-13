@@ -6,6 +6,13 @@
 
 package net.runelite.client.plugins.theatre.Verzik;
 
+/*
+TODO:
+  [x] prayers for p3 attacks
+  [ ] hmt poison countdown
+  [x] hmt yellow fix
+ */
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +52,8 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
+import net.runelite.client.plugins.theatre.prayer.TheatrePrayerUtil;
+import net.runelite.client.plugins.theatre.prayer.TheatreUpcomingAttack;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -135,7 +144,7 @@ public class Verzik extends Room
 	private long lastTick;
 
 	@Getter(AccessLevel.PACKAGE)
-	Queue<VerzikUpcomingAttack> verzikUpcomingAttackQueue = new PriorityQueue<>();
+	Queue<TheatreUpcomingAttack> upcomingAttackQueue = new PriorityQueue<>();
 
 	@Getter
 	private boolean verzikEnraged = false;
@@ -155,6 +164,8 @@ public class Verzik extends Room
 	private static final int VERZIK_BEGIN_REDS = 8117;
 	private static final int VERZIK_P3_MAGE = 8124;
 	private static final int VERZIK_P3_RANGE = 8125;
+
+	private static final int VERZIK_P3_ATTACK_TICKS = 4;
 
 	private static final int P3_CRAB_ATTACK_COUNT = 5;
 	private static final int P3_WEB_ATTACK_COUNT = 10;
@@ -404,7 +415,7 @@ public class Verzik extends Room
 		if (verzikActive)
 		{
 			lastTick = System.currentTimeMillis();
-			updateNextPrayerQueue();
+			TheatrePrayerUtil.updateNextPrayerQueue(getUpcomingAttackQueue());
 
 			if (verzikPhase == Phase.PHASE2)
 			{
@@ -585,10 +596,11 @@ public class Verzik extends Room
 					switch (animationID)
 					{
 						case VERZIK_P3_MAGE:
-							addNextPrayer(4, Prayer.PROTECT_FROM_MAGIC);
+							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS,  Prayer.PROTECT_FROM_MAGIC));
 							break;
 						case VERZIK_P3_RANGE:
-							addNextPrayer(4, Prayer.PROTECT_FROM_MISSILES);
+							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS,  Prayer.PROTECT_FROM_MISSILES));
+							break;
 					}
 				}
 
@@ -660,17 +672,6 @@ public class Verzik extends Room
 		}
 	}
 
-	private void addNextPrayer(int ticksUntil, Prayer prayer)
-	{
-		verzikUpcomingAttackQueue.add(new VerzikUpcomingAttack(ticksUntil, prayer));
-	}
-
-	private void updateNextPrayerQueue()
-	{
-		verzikUpcomingAttackQueue.forEach(VerzikUpcomingAttack::decrementTicks);
-		verzikUpcomingAttackQueue.removeIf(VerzikUpcomingAttack::shouldRemove);
-	}
-
 	Color verzikSpecialWarningColor()
 	{
 		Color col = Color.WHITE;
@@ -739,6 +740,6 @@ public class Verzik extends Room
 		verzikHardmodeYellowCount = 0;
 		verzikRangedAttacks.clear();
 		verzikLightningAttacks = 4;
-		verzikUpcomingAttackQueue.clear();
+		upcomingAttackQueue.clear();
 	}
 }
