@@ -510,7 +510,8 @@ public class Verzik extends Room
 						}
 					}
 
-					if (!foundYellow) {
+					if (!foundYellow)
+					{
 						verzikHardmodeSeenYellows = false;
 					}
 				}

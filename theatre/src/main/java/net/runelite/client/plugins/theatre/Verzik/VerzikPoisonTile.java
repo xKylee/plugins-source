@@ -49,7 +49,8 @@ public class VerzikPoisonTile
 		return tile.equals(that.tile);
 	}
 
-	public boolean shouldHighlight() {
+	public boolean shouldHighlight()
+	{
 		return ticksRemaining < 4;
 	}
 

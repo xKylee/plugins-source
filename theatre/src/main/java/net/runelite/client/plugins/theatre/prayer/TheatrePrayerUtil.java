@@ -19,7 +19,8 @@ public class TheatrePrayerUtil
 		Map<Integer, TheatreUpcomingAttack> map = new HashMap<>();
 
 		queue.forEach(attack -> {
-			if (!map.containsKey(attack.getTicksUntil())) {
+			if (!map.containsKey(attack.getTicksUntil()))
+			{
 				map.put(attack.getTicksUntil(), attack);
 			}
 
