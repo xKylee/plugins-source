@@ -744,6 +744,18 @@ public interface TheatreConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		position = 426,
+		keyName = "removeNyloBossEntries",
+		name = "Nylocas Boss Remove Attack Options",
+		description = "Removes the attack options for Nylocas Boss when immune to your current attack style.",
+		section = nylocasSection
+	)
+	default boolean removeNyloBossEntries()
+	{
+		return true;
+	}
+
 	/*====== Sotetseg Section ======*/
 
 	@ConfigSection(
