@@ -97,7 +97,7 @@ public abstract class TheatrePrayerOverlay extends Overlay
 			final Rectangle boxRectangle = new Rectangle(BOX_WIDTH, BOX_HEIGHT);
 			boxRectangle.translate(baseX, baseY);
 
-			if (attack.getPriority() == tickPriorityMap.get(attack.getTicksUntil()))
+			if (attack.getPrayer().equals(tickPriorityMap.get(attack.getTicksUntil()).getPrayer()))
 			{
 				OverlayUtil.renderPolygon(graphics, boxRectangle, color, color, new BasicStroke(2));
 			}

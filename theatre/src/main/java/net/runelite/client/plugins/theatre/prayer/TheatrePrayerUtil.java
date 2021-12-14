@@ -3,6 +3,7 @@ package net.runelite.client.plugins.theatre.prayer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import net.runelite.api.Prayer;
 
 public class TheatrePrayerUtil
 {
@@ -12,15 +13,19 @@ public class TheatrePrayerUtil
 		queue.removeIf(TheatreUpcomingAttack::shouldRemove);
 	}
 
-	public static Map<Integer, Integer> getTickPriorityMap(Queue<TheatreUpcomingAttack> queue)
+	// Map ticks until to prayer
+	public static Map<Integer, TheatreUpcomingAttack> getTickPriorityMap(Queue<TheatreUpcomingAttack> queue)
 	{
-		Map<Integer, Integer> map = new HashMap<>();
+		Map<Integer, TheatreUpcomingAttack> map = new HashMap<>();
 
 		queue.forEach(attack -> {
-			map.putIfAbsent(attack.getTicksUntil(), attack.getPriority());
-			if (map.get(attack.getTicksUntil()) < attack.getPriority())
+			if (!map.containsKey(attack.getTicksUntil())) {
+				map.put(attack.getTicksUntil(), attack);
+			}
+
+			if (attack.getPriority() < map.get(attack.getTicksUntil()).getPriority())
 			{
-				map.put(attack.getTicksUntil(), attack.getPriority());
+				map.put(attack.getTicksUntil(), attack);
 			}
 		});
 
