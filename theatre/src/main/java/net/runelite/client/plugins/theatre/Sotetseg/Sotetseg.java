@@ -148,6 +148,7 @@ public class Sotetseg extends Room
 				{
 					sotetsegActive = false;
 					sotetsegNPC = null;
+					upcomingAttackQueue.clear();
 				}
 				break;
 		}
