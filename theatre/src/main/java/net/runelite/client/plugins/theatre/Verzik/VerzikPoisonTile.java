@@ -7,7 +7,7 @@ import net.runelite.api.coords.WorldPoint;
 
 public class VerzikPoisonTile
 {
-	private static final int VERZIK_P2_POISON_TICKS = 18;
+	private static final int VERZIK_P2_POISON_TICKS = 14;
 
 	@Getter
 	WorldPoint tile;
@@ -47,6 +47,10 @@ public class VerzikPoisonTile
 		}
 		VerzikPoisonTile that = (VerzikPoisonTile) o;
 		return tile.equals(that.tile);
+	}
+
+	public boolean shouldHighlight() {
+		return ticksRemaining < 4;
 	}
 
 	@Override
