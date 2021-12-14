@@ -176,7 +176,7 @@ public interface TheatreConfig extends Config
 	)
 	default boolean sotetsegPrayerHelper()
 	{
-		return true;
+		return false;
 	}
 
 
@@ -825,6 +825,34 @@ public interface TheatreConfig extends Config
 		section = sotetsegSection
 	)
 	default Color sotetsegBigOrbTileColor()
+	{
+		return new Color(188, 74, 74, 255);
+	}
+
+	@ConfigItem(
+		position = 507,
+		keyName = "sotetsegDrawHmMazePath",
+		name = "Sotetseg HMT Maze",
+		description = "Draw the path your team takes in HMT",
+		section = sotetsegSection
+	)
+	default boolean sotetsegDrawHmMazePath()
+	{
+		return true;
+	}
+
+
+	@Alpha
+	@ConfigItem(
+		position = 508,
+		keyName = "sotetsegDrawHmMazePathColor",
+		name = "Sotetseg HMT Maze Color",
+		description = "Select a color for the Sotetseg HMT Maze",
+		section = sotetsegSection,
+		hidden = true,
+		unhide = "sotetsegDrawHmMazePath"
+	)
+	default Color sotetsegDrawHmMazePathColor()
 	{
 		return new Color(188, 74, 74, 255);
 	}
