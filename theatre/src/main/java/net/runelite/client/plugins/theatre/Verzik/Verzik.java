@@ -177,8 +177,7 @@ public class Verzik extends Room
 	private boolean isHM;
 	private static final Set<Integer> VERZIK_HM_ID = ImmutableSet.of(10847, 10848, 10849, 10850, 10851, 10852, 10853);
 
-	private static final int VERZIK_HARDMODE_YELLOW_MAX = 3;
-	private int verzikHardmodeYellowCount;
+	private boolean verzikHardmodeSeenYellows = false;
 
 	@Override
 	public void load()
@@ -498,25 +497,21 @@ public class Verzik extends Room
 			{
 				if (verzikYellows == 0)
 				{
-					if (isHM && verzikHardmodeYellowCount == VERZIK_HARDMODE_YELLOW_MAX)
-					{
-						verzikHardmodeYellowCount = 0;
-					}
+					boolean foundYellow = false;
+
 					for (GraphicsObject object : client.getGraphicsObjects())
 					{
 						if (object.getId() == 1595)
 						{
-							if (isHM && verzikHardmodeYellowCount != 0)
-							{
-								verzikYellows = 2;
-							}
-							else
-							{
-								verzikYellows = 14;
-							}
-							verzikHardmodeYellowCount += 1;
+							verzikYellows = verzikHardmodeSeenYellows ? 2 : 14;
+							verzikHardmodeSeenYellows = true;
+							foundYellow = true;
 							break;
 						}
+					}
+
+					if (!foundYellow) {
+						verzikHardmodeSeenYellows = false;
 					}
 				}
 				else
@@ -728,7 +723,7 @@ public class Verzik extends Room
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
 		verzikYellows = 0;
-		verzikHardmodeYellowCount = 0;
+		verzikHardmodeSeenYellows = false;
 		verzikLightningAttacks = 4;
 	}
 
@@ -751,7 +746,7 @@ public class Verzik extends Room
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
 		verzikYellows = 0;
-		verzikHardmodeYellowCount = 0;
+		verzikHardmodeSeenYellows = false;
 		verzikRangedAttacks.clear();
 		verzikLightningAttacks = 4;
 		upcomingAttackQueue.clear();
