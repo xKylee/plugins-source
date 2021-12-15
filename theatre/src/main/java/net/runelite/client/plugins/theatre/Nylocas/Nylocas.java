@@ -789,6 +789,39 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
+		if (nyloActive || nyloBossAlive)
+		{
+			if (config.removeNyloBossEntries() && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION && weaponStyle != null)
+			{
+				NPC npc = client.getCachedNPCs()[entry.getIdentifier()];
+				if (npc != null)
+				{
+					int id = npc.getId();
+					switch (weaponStyle)
+					{
+						case MAGIC:
+							if (NYLO_BOSS_MELEE.contains(id) || NYLO_BOSS_RANGE.contains(id))
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							break;
+						case MELEE:
+							if (NYLO_BOSS_RANGE.contains(id) || NYLO_BOSS_MAGE.contains(id))
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							break;
+						case RANGE:
+							if (NYLO_BOSS_MELEE.contains(id) || NYLO_BOSS_MAGE.contains(id))
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							break;
+					}
+				}
+			}
+		}
+
 		if (!nyloActive)
 		{
 			return;
@@ -818,36 +851,6 @@ public class Nylocas extends Room
 						client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 					}
 					break;
-			}
-		}
-//
-		if (config.removeNyloBossEntries() && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION && weaponStyle != null)
-		{
-			NPC npc = client.getCachedNPCs()[entry.getIdentifier()];
-			if (npc != null)
-			{
-				int id = npc.getId();
-				switch (weaponStyle)
-				{
-					case MAGIC:
-						if (NYLO_BOSS_MELEE.contains(id) || NYLO_BOSS_RANGE.contains(id))
-						{
-							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
-						}
-						break;
-					case MELEE:
-						if (NYLO_BOSS_RANGE.contains(id) || NYLO_BOSS_MAGE.contains(id))
-						{
-							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
-						}
-						break;
-					case RANGE:
-						if (NYLO_BOSS_MELEE.contains(id) || NYLO_BOSS_MAGE.contains(id))
-						{
-							client.setMenuOptionCount(client.getMenuOptionCount() - 1);
-						}
-						break;
-				}
 			}
 		}
 
