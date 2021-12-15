@@ -6,6 +6,7 @@
 
 package net.runelite.client.plugins.theatre.Verzik;
 
+import com.google.common.collect.ImmutableSet;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.inject.Inject;
-import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Client;
@@ -39,6 +39,7 @@ import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
+import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.eventbus.Subscribe;
@@ -161,7 +162,9 @@ public class Verzik extends Room
 	private static final int VERZIK_P2_POISON = 8116;
 	private static final int VERZIK_BEGIN_REDS = 8117;
 	private static final int VERZIK_P3_MAGE = 8124;
+	private static final int VERZIK_P3_MAGE_PROJECTILE = 1594;
 	private static final int VERZIK_P3_RANGE = 8125;
+	private static final int VERZIK_P3_RANGE_PROJECTILE = 1593;
 
 	private static final int VERZIK_P3_ATTACK_TICKS = 3;
 
@@ -393,6 +396,29 @@ public class Verzik extends Room
 		}
 	}
 
+	@Subscribe
+	public void onProjectileSpawned(ProjectileSpawned projectileSpawned)
+	{
+		if (!verzikActive || verzikPhase != Phase.PHASE3)
+		{
+			return;
+		}
+
+		var p = projectileSpawned.getProjectile();
+		if (p == null)
+		{
+			return;
+		}
+
+		if ((p.getInteracting() == client.getLocalPlayer()) && (p.getId() == VERZIK_P3_RANGE_PROJECTILE || p.getId() == VERZIK_P3_MAGE_PROJECTILE))
+		{
+			upcomingAttackQueue.add(new TheatreUpcomingAttack(
+				(p.getRemainingCycles() / 30),
+				(p.getId() == VERZIK_P3_MAGE_PROJECTILE ? Prayer.PROTECT_FROM_MAGIC : Prayer.PROTECT_FROM_MISSILES)
+			));
+		}
+	}
+
 	private void handleVerzikAttacks(Projectile p)
 	{
 		int id = p.getId();
@@ -596,19 +622,6 @@ public class Verzik extends Room
 							verzikRedPhase = true;
 							verzikAttackCount = 0;
 							verzikTicksUntilAttack = 12;
-							break;
-					}
-				}
-
-				if (animationID > -1 && verzikPhase == Phase.PHASE3 && animationID != verzikLastAnimation)
-				{
-					switch (animationID)
-					{
-						case VERZIK_P3_MAGE:
-							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS, Prayer.PROTECT_FROM_MAGIC));
-							break;
-						case VERZIK_P3_RANGE:
-							upcomingAttackQueue.add(new TheatreUpcomingAttack(VERZIK_P3_ATTACK_TICKS, Prayer.PROTECT_FROM_MISSILES));
 							break;
 					}
 				}

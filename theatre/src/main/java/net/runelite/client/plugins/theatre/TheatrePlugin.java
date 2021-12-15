@@ -284,6 +284,7 @@ public class TheatrePlugin extends Plugin
 	public void onProjectileSpawned(ProjectileSpawned event)
 	{
 		sotetseg.onProjectileSpawn(event);
+		verzik.onProjectileSpawned(event);
 	}
 
 	@Subscribe
