@@ -24,7 +24,7 @@ import ProjectVersions.rlVersion
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-version = "5.0.3"
+version = "5.0.4"
 
 project.extra["PluginName"] = "Spec Orb"
 project.extra["PluginDescription"] = "Make the special attack orb work everywhere with all weapons"

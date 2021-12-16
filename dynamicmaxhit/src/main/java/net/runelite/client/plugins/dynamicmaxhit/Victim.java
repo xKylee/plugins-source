@@ -32,8 +32,8 @@ import lombok.ToString;
 import net.runelite.api.Player;
 import net.runelite.api.Prayer;
 import net.runelite.api.util.Text;
+import net.runelite.client.hiscore.HiscoreResult;
 import static net.runelite.client.plugins.dynamicmaxhit.Utils.iconToPrayer;
-import net.runelite.http.api.hiscore.HiscoreResult;
 
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
