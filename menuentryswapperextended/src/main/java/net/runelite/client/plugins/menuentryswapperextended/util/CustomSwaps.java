@@ -276,7 +276,7 @@ public class CustomSwaps implements KeyListener
 	{
 		for (int i = entries.length - 1; i >= 0; i--)
 		{
-			int type = entries[i].getType();
+			int type = entries[i].getType().getId();
 			if (!EXAMINE_TYPES.contains(MenuAction.of(type)))
 			{
 				return i;
@@ -387,17 +387,17 @@ public class CustomSwaps implements KeyListener
 		}
 		MenuEntry target = menuEntries[entryIndex];
 		int targetId = target.getIdentifier();
-		int targetType = target.getType();
+		int targetType = target.getType().getId();
 		for (MenuEntry menuEntry : menuEntries)
 		{
-			if (menuEntry.getType() < target.getType())
+			if (menuEntry.getType().getId() < target.getType().getId())
 			{
-				menuEntry.setType(menuEntry.getType() + 2000);
+				menuEntry.setType(MenuAction.of(menuEntry.getType().getId() + 2000));
 			}
 		}
 		if (targetId >= 6 && targetId <= 9 && targetType == MenuAction.CC_OP_LOW_PRIORITY.getId())
 		{
-			target.setType(MenuAction.CC_OP.getId());
+			target.setType(MenuAction.CC_OP);
 		}
 		MenuEntry first = menuEntries[menuEntries.length - 1];
 		menuEntries[menuEntries.length - 1] = menuEntries[entryIndex];
@@ -469,9 +469,9 @@ public class CustomSwaps implements KeyListener
 		for (int i = menuEntries.length - 1; i >= 0; i--)
 		{
 			MenuEntry entry = menuEntries[i];
-			if (entry.getType() == actionId && entry.getIdentifier() == opId)
+			if (entry.getType().getId() == actionId && entry.getIdentifier() == opId)
 			{
-				entry.setType(MenuAction.CC_OP.getId());
+				entry.setType(MenuAction.CC_OP);
 				menuEntries[i] = menuEntries[menuEntries.length - 1];
 				menuEntries[menuEntries.length - 1] = entry;
 				client.setMenuEntries(menuEntries);

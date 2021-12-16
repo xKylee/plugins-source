@@ -275,15 +275,15 @@ public class SpellbookPlugin extends Plugin
 
 		if (config.canDrag())
 		{
-			menuManager.addManagedCustomMenu(FIXED_MAGIC_TAB_LOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_MAGIC_TAB_LOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_MAGIC_TAB_LOCK);
+			menuManager.addManagedCustomMenu(FIXED_MAGIC_TAB_LOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_MAGIC_TAB_LOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_MAGIC_TAB_LOCK, null);
 		}
 		else
 		{
-			menuManager.addManagedCustomMenu(FIXED_MAGIC_TAB_UNLOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_MAGIC_TAB_UNLOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_MAGIC_TAB_UNLOCK);
+			menuManager.addManagedCustomMenu(FIXED_MAGIC_TAB_UNLOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_MAGIC_TAB_UNLOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_MAGIC_TAB_UNLOCK, null);
 		}
 	}
 

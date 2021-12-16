@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "5.1.1"
 
 project.extra["PluginName"] = "Hotkey To Walk"
 project.extra["PluginDescription"] = "Use Hotkey to toggle the Walk Here menu option. While pressed you will Walk rather than interact with objects."

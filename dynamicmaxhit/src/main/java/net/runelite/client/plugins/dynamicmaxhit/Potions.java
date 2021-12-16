@@ -26,7 +26,7 @@ package net.runelite.client.plugins.dynamicmaxhit;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.runelite.http.api.hiscore.HiscoreSkill;
+import net.runelite.client.hiscore.HiscoreSkill;
 
 @Getter(AccessLevel.PACKAGE)
 @AllArgsConstructor
