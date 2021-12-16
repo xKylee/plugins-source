@@ -239,7 +239,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private void swapMenuEntry(int index, MenuEntry menuEntry)
 	{
 		final int eventId = menuEntry.getIdentifier();
-		final MenuAction menuAction = MenuAction.of(menuEntry.getType());
+		final MenuAction menuAction = menuEntry.getType();
 		final String option = Text.removeTags(menuEntry.getOption()).toLowerCase();
 		final String target = Text.removeTags(menuEntry.getTarget()).toLowerCase();
 		final NPC hintArrowNpc = client.getHintArrowNpc();
@@ -374,9 +374,9 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			MenuEntry entry1 = entries[index1];
 			MenuEntry entry2 = entries[index2];
 
-			int temp = entry1.getType();
+			int temp = entry1.getType().getId();
 			entry1.setType(entry2.getType());
-			entry2.setType(temp);
+			entry2.setType(MenuAction.of(temp));
 
 			clonedEntries[index1] = entry2;
 			clonedEntries[index2] = entry1;
@@ -764,7 +764,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			}
 		}
 
-		if (config.hideAttack() && entry.getType() == MenuAction.NPC_SECOND_OPTION.getId())
+		if (config.hideAttack() && entry.getType().getId() == MenuAction.NPC_SECOND_OPTION.getId())
 		{
 			NPC npc = client.getCachedNPCs()[entry.getIdentifier()];
 			if (npc != null && npc.getName() != null && npc.getHealthRatio() == 0 && !hideAttackIgnoredNPCs.contains(Text.standardize(npc.getName())))
@@ -775,13 +775,13 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.hideCastRaids() && (client.getVar(Varbits.IN_RAID) == 1 || client.getVar(Varbits.THEATRE_OF_BLOOD) == 2))
 		{
-			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(Text.standardize(client.getSelectedSpellName())) && entry.getType() == MenuAction.SPELL_CAST_ON_PLAYER.getId())
+			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(Text.standardize(client.getSelectedSpellName())) && entry.getType().getId() == MenuAction.SPELL_CAST_ON_PLAYER.getId())
 			{
 				return false;
 			}
 		}
 
-		if (config.hideCastThralls() && target.contains("thrall") && entry.getType() == MenuAction.SPELL_CAST_ON_NPC.getId())
+		if (config.hideCastThralls() && target.contains("thrall") && entry.getType().getId() == MenuAction.SPELL_CAST_ON_NPC.getId())
 		{
 			return false;
 		}
