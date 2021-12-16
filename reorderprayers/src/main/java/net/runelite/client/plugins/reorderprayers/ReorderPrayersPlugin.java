@@ -328,15 +328,15 @@ public class ReorderPrayersPlugin extends Plugin
 		clearPrayerTabMenus();
 		if (config.unlockPrayerReordering())
 		{
-			menuManager.addManagedCustomMenu(FIXED_PRAYER_TAB_LOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_PRAYER_TAB_LOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_LOCK);
+			menuManager.addManagedCustomMenu(FIXED_PRAYER_TAB_LOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_PRAYER_TAB_LOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_LOCK, null);
 		}
 		else
 		{
-			menuManager.addManagedCustomMenu(FIXED_PRAYER_TAB_UNLOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_PRAYER_TAB_UNLOCK);
-			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_UNLOCK);
+			menuManager.addManagedCustomMenu(FIXED_PRAYER_TAB_UNLOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_PRAYER_TAB_UNLOCK, null);
+			menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_UNLOCK, null);
 		}
 	}
 

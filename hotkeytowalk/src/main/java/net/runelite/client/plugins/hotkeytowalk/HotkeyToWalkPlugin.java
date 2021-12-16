@@ -93,7 +93,7 @@ public class HotkeyToWalkPlugin extends Plugin
 			for (int i = 0; i < entries.length; i++)
 			{
 				MenuEntry entry = entries[i];
-				int opId = entry.getType();
+				int opId = entry.getType().getId();
 				if (opId >= 2000)
 				{
 					opId -= 2000;
@@ -109,9 +109,9 @@ public class HotkeyToWalkPlugin extends Plugin
 			}
 			for (MenuEntry menuEntry : entries)
 			{
-				if (menuEntry.getType() < MenuAction.WALK.getId())
+				if (menuEntry.getType().getId() < MenuAction.WALK.getId())
 				{
-					menuEntry.setType(menuEntry.getType() + MENU_ACTION_DEPRIORITIZE_OFFSET);
+					menuEntry.setType(MenuAction.of(menuEntry.getType().getId() + MENU_ACTION_DEPRIORITIZE_OFFSET));
 				}
 			}
 			MenuEntry first = entries[entries.length - 1];
@@ -129,7 +129,7 @@ public class HotkeyToWalkPlugin extends Plugin
 			boolean hasWalkHere = false;
 			for (MenuEntry menuEntry : client.getMenuEntries())
 			{
-				int opId = menuEntry.getType();
+				int opId = menuEntry.getType().getId();
 				if (opId >= 2000)
 				{
 					opId -= 2000;
@@ -155,10 +155,10 @@ public class HotkeyToWalkPlugin extends Plugin
 		{
 			MenuEntry entry = menuEntries[i];
 
-			if (entry.getType() == op_id && entry.getIdentifier() == id)
+			if (entry.getType().getId() == op_id && entry.getIdentifier() == id)
 			{
 				// Raise the priority of the op so it doesn't get sorted later
-				entry.setType(op_id + MENU_ACTION_DEPRIORITIZE_OFFSET);
+				entry.setType(MenuAction.of(op_id + MENU_ACTION_DEPRIORITIZE_OFFSET));
 				menuEntries[i] = menuEntries[menuEntries.length - 1];
 				menuEntries[menuEntries.length - 1] = entry;
 
