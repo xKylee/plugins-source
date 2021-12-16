@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.3"
+version = "0.0.4"
 
 project.extra["PluginName"] = "NPC Indicators Extended" // This is the name that is used in the external plugin manager panel
 project.extra["PluginDescription"] = "Highlights the true tiles of NPCs" // This is the description that is used in the external plugin manager panel
