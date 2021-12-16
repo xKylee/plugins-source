@@ -88,8 +88,8 @@ public interface PlayerAttackTimerConfig extends Config
 		name = "Custom animations (one per line)",
 		description = "Syntax AnimationID:TickDelay"
 			+ "<br>e.g. Abyssal whip would be 1658:4"
-			+ "<br>optionally include one of (r, a, p, e, m, c) to draw prayer helpers."
-			+ "<br> supported prayers: Rigour, Augury, Piety, Eagle Eye, Mystic Might, Chivalry"
+			+ "<br>optionally include one of (r, a, p, e, m, c, h) to draw prayer helpers."
+			+ "<br> supported prayers: Rigour, Augury, Piety, Eagle Eye, Mystic Might, Chivalry, Hawk Eye"
 			+ "<br>e.g. Abyssal whip with piety would be 1658:4:p"
 			+ "<br>Animation Ids can be obtained by enabling the above debug setting."
 			+ "<br>Weapon tick delays can be found on the wiki.",
