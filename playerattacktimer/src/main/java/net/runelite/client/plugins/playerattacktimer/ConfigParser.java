@@ -94,6 +94,9 @@ public final class ConfigParser
 						case "c":
 							prayer_choice = AttackPrayer.Chivalry;
 							break;
+						case "h":
+							prayer_choice = AttackPrayer.HawkEye;
+							break;
 					}
 				}
 

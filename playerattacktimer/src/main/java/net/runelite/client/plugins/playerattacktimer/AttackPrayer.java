@@ -9,9 +9,10 @@ public enum AttackPrayer
 	Piety,
 	MysticMight,
 	EagleEye,
-	Chivalry;
+	Chivalry,
+	HawkEye;
 
-	static final String[] prayerLetters = {"r", "a", "p", "m", "e", "c"};
+	static final String[] prayerLetters = {"r", "a", "p", "m", "e", "c", "h"};
 
 	public WidgetInfo getWidgetInfo()
 	{
@@ -29,6 +30,8 @@ public enum AttackPrayer
 				return WidgetInfo.PRAYER_EAGLE_EYE;
 			case Chivalry:
 				return WidgetInfo.PRAYER_CHIVALRY;
+			case HawkEye:
+				return WidgetInfo.PRAYER_HAWK_EYE;
 		}
 		return null;
 	}
