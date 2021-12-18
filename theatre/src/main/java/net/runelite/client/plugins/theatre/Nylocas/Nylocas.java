@@ -160,9 +160,9 @@ public class Nylocas extends Room
 	private static final String RANGE_NYLO = "Nylocas Toxobolos";
 	private static final String MELEE_NYLO = "Nylocas Ischyros";
 
-	private static final Set<Integer> NYLO_BOSS_MELEE = Set.of(NpcID.NYLOCAS_VASILIAS_10808, NpcID.NYLOCAS_PRINKIPAS_10804);
-	private static final Set<Integer> NYLO_BOSS_MAGE = Set.of(NpcID.NYLOCAS_VASILIAS_10809, NpcID.NYLOCAS_PRINKIPAS_10805);
-	private static final Set<Integer> NYLO_BOSS_RANGE = Set.of(NpcID.NYLOCAS_VASILIAS_10810, NpcID.NYLOCAS_PRINKIPAS_10806);
+	private static final Set<Integer> NYLO_BOSS_MELEE = Set.of(NpcID.NYLOCAS_VASILIAS_10808, NpcID.NYLOCAS_PRINKIPAS_10804, NpcID.NYLOCAS_VASILIAS_8355);
+	private static final Set<Integer> NYLO_BOSS_MAGE = Set.of(NpcID.NYLOCAS_VASILIAS_10809, NpcID.NYLOCAS_PRINKIPAS_10805, NpcID.NYLOCAS_VASILIAS_8356);
+	private static final Set<Integer> NYLO_BOSS_RANGE = Set.of(NpcID.NYLOCAS_VASILIAS_10810, NpcID.NYLOCAS_PRINKIPAS_10806, NpcID.NYLOCAS_VASILIAS_8357);
 
 	@Override
 	public void init()
@@ -880,7 +880,7 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onMenuOpened(MenuOpened menu)
 	{
-		if (!config.nyloRecolorMenu() || !nyloActive || nyloBossAlive)
+		if (!config.nyloRecolorMenu() || !nyloActive || !nyloBossAlive)
 		{
 			return;
 		}

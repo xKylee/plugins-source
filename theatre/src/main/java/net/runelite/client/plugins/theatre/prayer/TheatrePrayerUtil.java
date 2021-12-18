@@ -3,7 +3,6 @@ package net.runelite.client.plugins.theatre.prayer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import net.runelite.api.Prayer;
 
 public class TheatrePrayerUtil
 {
