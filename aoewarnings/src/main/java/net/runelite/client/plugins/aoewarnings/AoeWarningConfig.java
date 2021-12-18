@@ -28,7 +28,7 @@ package net.runelite.client.plugins.aoewarnings;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.EnumSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -399,16 +399,15 @@ public interface AoeWarningConfig extends Config
 	String vorkathTitle = "Vorkath";
 
 	@ConfigItem(
-		keyName = "vorkath",
+		keyName = "vorkathModes",
 		name = "Vorkath",
 		description = "Configure what AoE projectiles you should be warned for at Vorkath",
 		section = vorkathTitle,
-		position = 28,
-		enumClass = VorkathMode.class
+		position = 28
 	)
-	default EnumSet<VorkathMode> vorkathModes()
+	default Set<VorkathMode> vorkathModes()
 	{
-		return EnumSet.allOf(VorkathMode.class);
+		return Set.of(VorkathMode.BOMBS, VorkathMode.FIRES, VorkathMode.POOLS, VorkathMode.SPAWN);
 	}
 
 	@ConfigItem(
