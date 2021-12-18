@@ -392,7 +392,7 @@ public class CustomSwaps implements KeyListener
 		{
 			if (menuEntry.getType().getId() < target.getType().getId())
 			{
-				menuEntry.setType(MenuAction.of(menuEntry.getType().getId() + 2000));
+				menuEntry.setDeprioritized(true);
 			}
 		}
 		if (targetId >= 6 && targetId <= 9 && targetType == MenuAction.CC_OP_LOW_PRIORITY.getId())
