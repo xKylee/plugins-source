@@ -90,7 +90,7 @@ public interface TheatreConfig extends Config
 	)
 	default boolean descendingBoxes()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(
@@ -99,7 +99,7 @@ public interface TheatreConfig extends Config
 		name = "Indicate Non-Priority Boxes",
 		description = "Render descending boxes for prayers that are not the priority prayer for that tick",
 		hidden = true,
-		unhide = "prayerHelper",
+		unhide = "descendingBoxes",
 		section = prayerSection
 	)
 	default boolean indicateNonPriorityDescendingBoxes()
@@ -118,7 +118,7 @@ public interface TheatreConfig extends Config
 	)
 	default boolean alwaysShowPrayerHelper()
 	{
-		return false;
+		return true;
 	}
 
 	@Alpha
@@ -128,7 +128,7 @@ public interface TheatreConfig extends Config
 		name = "Box Color",
 		description = "Color for descending box normal",
 		hidden = true,
-		unhide = "prayerHelper",
+		unhide = "descendingBoxes",
 		section = prayerSection
 	)
 	default Color prayerColor()
@@ -143,7 +143,7 @@ public interface TheatreConfig extends Config
 		name = "Box Color Danger",
 		description = "Color for descending box one tick before damage",
 		hidden = true,
-		unhide = "prayerHelper",
+		unhide = "descendingBoxes",
 		section = prayerSection
 	)
 	default Color prayerColorDanger()
