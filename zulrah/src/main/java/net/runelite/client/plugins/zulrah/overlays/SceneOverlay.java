@@ -204,6 +204,9 @@ public class SceneOverlay extends Overlay
 					data.getCurrentStallLocation().ifPresent((loc) -> {
 						standLocationsGrouped.put(loc, new MutablePair("Stall", config.stallTileColor()));
 					});
+					data.getNextStallLocation().ifPresent((loc) -> {
+						standLocationsGrouped.put(loc, new MutablePair("Stall / next", config.nextTileColor()));
+					});
 				}
 
 			});

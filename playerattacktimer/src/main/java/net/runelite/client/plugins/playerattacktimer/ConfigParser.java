@@ -69,7 +69,7 @@ public final class ConfigParser
 				AttackPrayer prayer_choice = null;
 				if (segments.length > 2)
 				{
-					if (Arrays.stream(valid_prayers).noneMatch(prayer -> prayer.equals(segments[2].toLowerCase())))
+					if (Arrays.stream(AttackPrayer.prayerLetters).noneMatch(prayer -> prayer.equals(segments[2].toLowerCase())))
 					{
 						return Optional.empty();
 					}
@@ -84,6 +84,18 @@ public final class ConfigParser
 							break;
 						case "p":
 							prayer_choice = AttackPrayer.Piety;
+							break;
+						case "e":
+							prayer_choice = AttackPrayer.EagleEye;
+							break;
+						case "m":
+							prayer_choice = AttackPrayer.MysticMight;
+							break;
+						case "c":
+							prayer_choice = AttackPrayer.Chivalry;
+							break;
+						case "h":
+							prayer_choice = AttackPrayer.HawkEye;
 							break;
 					}
 				}
@@ -100,6 +112,4 @@ public final class ConfigParser
 
 		return Optional.of(tickMap);
 	}
-
-	private static final String[] valid_prayers = {"r", "a", "p"};
 }
