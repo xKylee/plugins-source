@@ -199,6 +199,16 @@ public class VerzikOverlay extends RoomOverlay
 
 					});
 				}
+
+				if (verzik.isHM() && config.verzikPoisonTileHighlight())
+				{
+					verzik.getVerzikPoisonTiles()
+						.stream()
+						.filter(VerzikPoisonTile::shouldHighlight)
+						.forEach(tile -> {
+							drawTile(graphics, tile.getTile(), config.verzikPoisonTileHighlightColor(), 1, 255, 20);
+						});
+				}
 			}
 
 			if (verzik.getVerzikPhase() == Verzik.Phase.PHASE3)
