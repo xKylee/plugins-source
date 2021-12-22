@@ -160,6 +160,10 @@ public class Nylocas extends Room
 	private static final String RANGE_NYLO = "Nylocas Toxobolos";
 	private static final String MELEE_NYLO = "Nylocas Ischyros";
 
+	private static final Set<Integer> NYLO_BOSS_MELEE = Set.of(NpcID.NYLOCAS_VASILIAS_10808, NpcID.NYLOCAS_PRINKIPAS_10804, NpcID.NYLOCAS_VASILIAS_8355);
+	private static final Set<Integer> NYLO_BOSS_MAGE = Set.of(NpcID.NYLOCAS_VASILIAS_10809, NpcID.NYLOCAS_PRINKIPAS_10805, NpcID.NYLOCAS_VASILIAS_8356);
+	private static final Set<Integer> NYLO_BOSS_RANGE = Set.of(NpcID.NYLOCAS_VASILIAS_10810, NpcID.NYLOCAS_PRINKIPAS_10806, NpcID.NYLOCAS_VASILIAS_8357);
+
 	@Override
 	public void init()
 	{
@@ -580,7 +584,7 @@ public class Nylocas extends Room
 		}
 		if (!bigNylos.isEmpty() && event.getActor() instanceof NPC)
 		{
-			NPC npc = (NPC)event.getActor();
+			NPC npc = (NPC) event.getActor();
 			if (bigNylos.contains(npc))
 			{
 				int anim = npc.getAnimation();
@@ -785,6 +789,39 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded entry)
 	{
+		if (nyloActive || nyloBossAlive)
+		{
+			if (config.removeNyloBossEntries() && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION && weaponStyle != null)
+			{
+				NPC npc = client.getCachedNPCs()[entry.getIdentifier()];
+				if (npc != null)
+				{
+					int id = npc.getId();
+					switch (weaponStyle)
+					{
+						case MAGIC:
+							if (NYLO_BOSS_MELEE.contains(id) || NYLO_BOSS_RANGE.contains(id))
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							break;
+						case MELEE:
+							if (NYLO_BOSS_RANGE.contains(id) || NYLO_BOSS_MAGE.contains(id))
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							break;
+						case RANGE:
+							if (NYLO_BOSS_MELEE.contains(id) || NYLO_BOSS_MAGE.contains(id))
+							{
+								client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+							}
+							break;
+					}
+				}
+			}
+		}
+
 		if (!nyloActive)
 		{
 			return;
@@ -843,7 +880,7 @@ public class Nylocas extends Room
 	@Subscribe
 	public void onMenuOpened(MenuOpened menu)
 	{
-		if (!config.nyloRecolorMenu() || !nyloActive || nyloBossAlive)
+		if (!config.nyloRecolorMenu() || !nyloActive || !nyloBossAlive)
 		{
 			return;
 		}

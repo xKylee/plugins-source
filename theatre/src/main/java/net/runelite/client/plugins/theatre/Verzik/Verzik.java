@@ -6,6 +6,7 @@
 
 package net.runelite.client.plugins.theatre.Verzik;
 
+import com.google.common.collect.ImmutableSet;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +14,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.inject.Inject;
-import com.google.common.collect.ImmutableSet;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GraphicsObject;
@@ -27,13 +30,16 @@ import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.Player;
 import net.runelite.api.PlayerComposition;
+import net.runelite.api.Prayer;
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
+import net.runelite.api.events.ProjectileSpawned;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.util.Text;
 import net.runelite.client.eventbus.Subscribe;
@@ -41,6 +47,8 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
+import net.runelite.client.plugins.theatre.prayer.TheatrePrayerUtil;
+import net.runelite.client.plugins.theatre.prayer.TheatreUpcomingAttack;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -51,6 +59,9 @@ public class Verzik extends Room
 
 	@Inject
 	private VerzikOverlay verzikOverlay;
+
+	@Inject
+	private VerzikPrayerOverlay verzikPrayerOverlay;
 
 	@Inject
 	private Verzik(TheatrePlugin plugin, TheatreConfig config)
@@ -124,6 +135,15 @@ public class Verzik extends Room
 	@Getter
 	private int verzikAttackCount;
 
+	@Getter(AccessLevel.PACKAGE)
+	private long lastTick;
+
+	@Getter(AccessLevel.PACKAGE)
+	Queue<TheatreUpcomingAttack> upcomingAttackQueue = new PriorityQueue<>();
+
+	@Getter(AccessLevel.PACKAGE)
+	Set<VerzikPoisonTile> verzikPoisonTiles = new HashSet<>();
+
 	@Getter
 	private boolean verzikEnraged = false;
 
@@ -139,7 +159,14 @@ public class Verzik extends Room
 	private static final int VERZIK_P1_MAGIC = 8109;
 	private static final int VERZIK_P2_REG = 8114;
 	private static final int VERZIK_P2_BOUNCE = 8116;
+	private static final int VERZIK_P2_POISON = 8116;
 	private static final int VERZIK_BEGIN_REDS = 8117;
+	private static final int VERZIK_P3_MAGE = 8124;
+	private static final int VERZIK_P3_MAGE_PROJECTILE = 1594;
+	private static final int VERZIK_P3_RANGE = 8125;
+	private static final int VERZIK_P3_RANGE_PROJECTILE = 1593;
+
+	private static final int VERZIK_P3_ATTACK_TICKS = 3;
 
 	private static final int P3_CRAB_ATTACK_COUNT = 5;
 	private static final int P3_WEB_ATTACK_COUNT = 10;
@@ -149,20 +176,25 @@ public class Verzik extends Room
 	private Set<Integer> WEAPON_SET;
 	private static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
+	@Getter
 	private boolean isHM;
 	private static final Set<Integer> VERZIK_HM_ID = ImmutableSet.of(10847, 10848, 10849, 10850, 10851, 10852, 10853);
+
+	private boolean verzikHardmodeSeenYellows = false;
 
 	@Override
 	public void load()
 	{
 		updateConfig();
 		overlayManager.add(verzikOverlay);
+		overlayManager.add(verzikPrayerOverlay);
 	}
 
 	@Override
 	public void unload()
 	{
 		overlayManager.remove(verzikOverlay);
+		overlayManager.remove(verzikPrayerOverlay);
 		verzikCleanup();
 	}
 
@@ -274,6 +306,15 @@ public class Verzik extends Room
 	}
 
 	@Subscribe
+	public void onGameObjectSpawn(GameObjectSpawned gameObject)
+	{
+		if (verzikActive && verzikPhase == Phase.PHASE2)
+		{
+			verzikPoisonTiles.add(new VerzikPoisonTile(WorldPoint.fromLocal(client, gameObject.getTile().getLocalLocation())));
+		}
+	}
+
+	@Subscribe
 	public void onNpcDespawned(NpcDespawned npcDespawned)
 	{
 		NPC npc = npcDespawned.getNpc();
@@ -355,6 +396,29 @@ public class Verzik extends Room
 		}
 	}
 
+	@Subscribe
+	public void onProjectileSpawned(ProjectileSpawned projectileSpawned)
+	{
+		if (!verzikActive || verzikPhase != Phase.PHASE3)
+		{
+			return;
+		}
+
+		var p = projectileSpawned.getProjectile();
+		if (p == null)
+		{
+			return;
+		}
+
+		if ((p.getInteracting() == client.getLocalPlayer()) && (p.getId() == VERZIK_P3_RANGE_PROJECTILE || p.getId() == VERZIK_P3_MAGE_PROJECTILE))
+		{
+			upcomingAttackQueue.add(new TheatreUpcomingAttack(
+				(p.getRemainingCycles() / 30),
+				(p.getId() == VERZIK_P3_MAGE_PROJECTILE ? Prayer.PROTECT_FROM_MAGIC : Prayer.PROTECT_FROM_MISSILES)
+			));
+		}
+	}
+
 	private void handleVerzikAttacks(Projectile p)
 	{
 		int id = p.getId();
@@ -383,6 +447,9 @@ public class Verzik extends Room
 	{
 		if (verzikActive)
 		{
+			lastTick = System.currentTimeMillis();
+			TheatrePrayerUtil.updateNextPrayerQueue(getUpcomingAttackQueue());
+
 			if (verzikPhase == Phase.PHASE2)
 			{
 				if (verzikNPC.getId() == NpcID.VERZIK_VITUR_8372 || verzikNPC.getId() == 10833 || verzikNPC.getId() == 10850)
@@ -403,6 +470,11 @@ public class Verzik extends Room
 							iterator.remove();
 						}
 					}
+				}
+
+				if (isHM)
+				{
+					VerzikPoisonTile.updateTiles(verzikPoisonTiles);
 				}
 			}
 
@@ -451,13 +523,22 @@ public class Verzik extends Room
 			{
 				if (verzikYellows == 0)
 				{
+					boolean foundYellow = false;
+
 					for (GraphicsObject object : client.getGraphicsObjects())
 					{
 						if (object.getId() == 1595)
 						{
-							verzikYellows = 14;
+							verzikYellows = verzikHardmodeSeenYellows ? 2 : 14;
+							verzikHardmodeSeenYellows = true;
+							foundYellow = true;
 							break;
 						}
+					}
+
+					if (!foundYellow)
+					{
+						verzikHardmodeSeenYellows = false;
 					}
 				}
 				else
@@ -656,6 +737,7 @@ public class Verzik extends Room
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
 		verzikYellows = 0;
+		verzikHardmodeSeenYellows = false;
 		verzikLightningAttacks = 4;
 	}
 
@@ -668,6 +750,7 @@ public class Verzik extends Room
 		verzikAggros.clear();
 		verzikReds.clear();
 		verzikTornadoes.clear();
+		verzikPoisonTiles.clear();
 		verzikLocalTornado = null;
 		verzikEnraged = false;
 		verzikFirstEnraged = false;
@@ -677,7 +760,9 @@ public class Verzik extends Room
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
 		verzikYellows = 0;
+		verzikHardmodeSeenYellows = false;
 		verzikRangedAttacks.clear();
 		verzikLightningAttacks = 4;
+		upcomingAttackQueue.clear();
 	}
 }

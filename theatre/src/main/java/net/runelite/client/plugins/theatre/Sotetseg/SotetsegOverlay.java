@@ -55,7 +55,7 @@ public class SotetsegOverlay extends RoomOverlay
 				{
 					int id = p.getId();
 
-					Point point = Perspective.localToCanvas(client, new LocalPoint((int)p.getX(), (int)p.getY()), 0, Perspective.getTileHeight(client, new LocalPoint((int)p.getX(), (int)p.getY()), p.getFloor()) - (int)p.getZ());
+					Point point = Perspective.localToCanvas(client, new LocalPoint((int) p.getX(), (int) p.getY()), 0, Perspective.getTileHeight(client, new LocalPoint((int) p.getX(), (int) p.getY()), p.getFloor()) - (int) p.getZ());
 
 					if (point == null)
 					{
