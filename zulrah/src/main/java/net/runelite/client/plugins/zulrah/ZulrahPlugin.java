@@ -316,7 +316,7 @@ public class ZulrahPlugin extends Plugin implements KeyListener
 			case 5069:
 			{
 				attackTicks = 4;
-				if (currentRotation == null || !getCurrentPhase(currentRotation).getZulrahNpc().isJad() || zulrahNpc.getInteracting() != client.getLocalPlayer()) break;
+				if (currentRotation == null || !getCurrentPhase(currentRotation).getZulrahNpc().isJad()) break;
 				flipPhasePrayer = !flipPhasePrayer;
 				break;
 			}
