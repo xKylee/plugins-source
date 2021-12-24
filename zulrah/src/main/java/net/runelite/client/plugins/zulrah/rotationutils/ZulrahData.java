@@ -89,7 +89,7 @@ public class ZulrahData
 		{
 			Prayer phasePrayer = current.getAttributes().getPrayer();
 			Prayer invertedPhasePrayer = phasePrayer == Prayer.PROTECT_FROM_MAGIC ? Prayer.PROTECT_FROM_MISSILES : Prayer.PROTECT_FROM_MAGIC;
-			return isJad() ? (ZulrahPlugin.isFlipPhasePrayer() ? Optional.of(phasePrayer) : Optional.of(invertedPhasePrayer)) : Optional.of(phasePrayer);
+			return isJad() ? (ZulrahPlugin.isFlipPhasePrayer() ? Optional.of(invertedPhasePrayer) : Optional.of(phasePrayer)) : Optional.of(phasePrayer);
 		}
 		else
 		{
