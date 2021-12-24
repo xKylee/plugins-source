@@ -52,6 +52,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.ProjectileMoved;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -82,6 +83,10 @@ public class AlchemicalHydraPlugin extends Plugin
 
 	@Inject
 	private Client client;
+	
+	@Getter
+	@Inject
+	private ClientThread clientThread;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -374,7 +379,10 @@ public class AlchemicalHydraPlugin extends Plugin
 
 		if (message.equals(MESSAGE_NEUTRALIZE))
 		{
-			hydra.setImmunity(false);
+			clientThread.invokeLater(() ->
+			{
+				hydra.setImmunity(false);
+			});
 		}
 		else if (message.equals(MESSAGE_STUN))
 		{
