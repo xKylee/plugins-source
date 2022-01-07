@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nex;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -153,6 +154,22 @@ class NexOverlay extends Overlay
 			drawMinionHP(graphics);
 		}
 
+		if (config.indicateTank())
+		{
+			if (plugin.getNex().getInteracting() != null)
+			{
+				var interacting = plugin.getNex().getInteracting();
+				var tilePoly = interacting.getCanvasTilePoly();
+
+				if (tilePoly != null)
+				{
+					OverlayUtil.renderPolygon(graphics,
+						tilePoly,
+						interacting == client.getLocalPlayer() ? config.tankOtherColorMe() : config.tankOtherColor(),
+						new BasicStroke(2));
+				}
+			}
+		}
 
 		if (plugin.isFlash() && config.flash())
 		{

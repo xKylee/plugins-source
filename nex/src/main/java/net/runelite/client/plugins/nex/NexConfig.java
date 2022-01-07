@@ -251,6 +251,46 @@ public interface NexConfig extends Config
 		return 12;
 	}
 
+	@ConfigItem(
+		position = 116,
+		keyName = "indicateTank",
+		name = "Indicate Tank",
+		description = "Highlight the tile of the current tank",
+		section = generalSection
+	)
+	default boolean indicateTank()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 117,
+		keyName = "tankOtherColor",
+		name = "Tank Color",
+		description = "Color for tank tile when it is not you",
+		section = generalSection
+	)
+	default Color tankOtherColor()
+	{
+		return Color.LIGHT_GRAY;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 118,
+		keyName = "tankOtherColorMe",
+		name = "Tank Color Personal",
+		description = "Color for tank tile when it is you",
+		section = generalSection
+	)
+	default Color tankOtherColorMe()
+	{
+		return new Color(48, 164, 255);
+	}
+
+
+
 	@ConfigSection(
 		name = "Smoke Settings",
 		description = "Configure settings for the virus",
