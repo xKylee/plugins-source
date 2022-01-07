@@ -125,11 +125,8 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateNexVulnerability().showVulnerable() && !plugin.nexDisable())
 		{
-			// let's not show the obnoxious outline while she's dancing at the start
-			if (NexPhase.getMinionId(plugin.getCurrentPhase()) != -1)
-			{
-				outliner.drawOutline(plugin.getNex(), config.vulnerableWidth(), config.vulnerableColor(), 0);
-			}
+			// TODO: Handle late join showing vulnerable while startup
+			outliner.drawOutline(plugin.getNex(), config.vulnerableWidth(), config.vulnerableColor(), 0);
 		}
 
 		if (config.indicateMinionVulnerability().showInvulnerable() && !plugin.nexDisable())
