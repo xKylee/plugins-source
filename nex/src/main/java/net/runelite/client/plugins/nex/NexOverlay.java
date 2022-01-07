@@ -65,6 +65,11 @@ class NexOverlay extends Overlay
 			return null;
 		}
 
+		if (plugin.getNex().isDead())
+		{
+			return null;
+		}
+
 		if (config.shadowsIndicator())
 		{
 			String count = Integer.toString(plugin.getShadowsTicks());
