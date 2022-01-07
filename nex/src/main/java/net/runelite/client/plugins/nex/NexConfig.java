@@ -269,11 +269,13 @@ public interface NexConfig extends Config
 		keyName = "tankOtherColor",
 		name = "Tank Color",
 		description = "Color for tank tile when it is not you",
+		hidden = true,
+		unhide = "indicateTank",
 		section = generalSection
 	)
 	default Color tankOtherColor()
 	{
-		return Color.LIGHT_GRAY;
+		return new Color(192, 192, 192, 200);
 	}
 
 	@Alpha
@@ -282,14 +284,14 @@ public interface NexConfig extends Config
 		keyName = "tankOtherColorMe",
 		name = "Tank Color Personal",
 		description = "Color for tank tile when it is you",
+		hidden = true,
+		unhide = "indicateTank",
 		section = generalSection
 	)
 	default Color tankOtherColorMe()
 	{
-		return new Color(48, 164, 255);
+		return new Color(48, 164, 255, 200);
 	}
-
-
 
 	@ConfigSection(
 		name = "Smoke Settings",
@@ -360,28 +362,15 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		keyName = "coughBorderColour",
-		name = "Cough border colour",
-		description = "Colour the edges of the area highlighted by sickness",
+		keyName = "coughColourBase",
+		name = "Shadows colour",
+		description = "Colour for sickness highlight",
 		position = 205,
 		section = smokeSection
 	)
-	default Color coughBorderColour()
+	default Color coughColourBase()
 	{
 		return new Color(255, 0, 98, 100);
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "coughColour",
-		name = "Shadows colour",
-		description = "Colour for sickness highlight",
-		position = 206,
-		section = smokeSection
-	)
-	default Color coughColour()
-	{
-		return new Color(255, 0, 98, 51);
 	}
 
 	@ConfigSection(
@@ -436,30 +425,51 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		keyName = "shadowsBorderColour",
-		name = "Shadows border colour",
-		description = "Colour the edges of the area highlighted by shadows",
+		keyName = "shadowsColourBase",
+		name = "Shadows colour",
+		description = "Colour the area highlighted by shadows",
 		position = 304,
 		section = shadowSection
 	)
-	default Color shadowsBorderColour()
+	default Color shadowsColourBase()
 	{
 		return new Color(0, 255, 255, 100);
 	}
 
-	@Alpha
-	@ConfigItem(
-		keyName = "shadowsColour",
-		name = "Shadows colour",
-		description = "Colour for shadows highlight",
-		position = 305,
-		section = shadowSection
+	@ConfigSection(
+		name = "Zaros Phase",
+		description = "Configure Zaros Phase settings.",
+		position = 600,
+		keyName = "zarosSection"
 	)
-	default Color shadowsColour()
+	String zarosSection = "Zaros Phase";
+
+	@ConfigItem(
+		position = 601,
+		keyName = "indicateDeathAOE",
+		name = "Indicate Death AOE",
+		description = "Highlight the tiles where you gunna get smacked",
+		section = zarosSection
+	)
+	default boolean indicateDeathAOE()
 	{
-		return new Color(0, 255, 255, 50);
+		return true;
 	}
 
+	@Alpha
+	@ConfigItem(
+		position = 602,
+		keyName = "indicateDeathAOEColor",
+		name = "Death AOE Color",
+		description = "Stop reading these",
+		hidden = true,
+		unhide = "indicateDeathAOE",
+		section = zarosSection
+	)
+	default Color indicateDeathAOEColor()
+	{
+		return new Color(255, 0, 98, 100);
+	}
 
 	enum PrayerDisplay
 	{

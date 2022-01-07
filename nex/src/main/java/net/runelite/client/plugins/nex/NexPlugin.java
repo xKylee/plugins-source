@@ -21,6 +21,7 @@ import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectSpawned;
@@ -33,16 +34,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
-
-
-/*
-Todo:
-- mesx for when you shouldn't attack boss
-	(meta is not solid so figured I don't want to remove free will. Also maybe bugs)
-- boss danger zones
-- ice trap timers
-- charge special
- */
 
 @Extension
 @PluginDescriptor(
@@ -84,6 +75,7 @@ public class NexPlugin extends Plugin
 	private static final int NEX_PHASE_DELAY = 6;
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
+	private static final int NEX_WRATH_TICK_DELAY = 5;
 
 	@Getter
 	private boolean inFight;
@@ -118,6 +110,12 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private NexSpecial currentSpecial;
+
+	@Getter
+	private LocalPoint nexDeathTile;
+
+	@Getter
+	private int nexDeathTileTicks;
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -195,9 +193,19 @@ public class NexPlugin extends Plugin
 		{
 			nexTicksUntilClick--;
 		}
+
 		if (nexPhaseMinionCoolDown > 0)
 		{
 			nexPhaseMinionCoolDown--;
+		}
+
+		if (nexDeathTileTicks > 0)
+		{
+			nexDeathTileTicks--;
+			if (nexDeathTileTicks == 0)
+			{
+				nexDeathTile = null;
+			}
 		}
 
 		if (shadowsTicks > 0)
@@ -278,6 +286,7 @@ public class NexPlugin extends Plugin
 		{
 			reset();
 			inFight = false;
+			client.setIsHidingEntities(false);
 		}
 	}
 
@@ -294,6 +303,10 @@ public class NexPlugin extends Plugin
 		{
 			if (currentPhase == NexPhase.NONE)
 			{
+				// TASTE MY WRATH!
+				// before resetting nex lets grab the tile for death AOE
+				nexDeathTile = nex.getLocalLocation();
+				nexDeathTileTicks = NEX_WRATH_TICK_DELAY;
 				reset();
 			}
 			else if (currentPhase == NexPhase.STARTING)
