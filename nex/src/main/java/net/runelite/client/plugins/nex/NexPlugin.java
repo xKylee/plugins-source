@@ -78,10 +78,12 @@ public class NexPlugin extends Plugin
 	private NexPrayerInfoBox prayerInfoBox;
 
 	private static final int SHADOW_ID = 42942;
+	private static final int COUGH_GRAPHIC_ID = 1103;
+
 	private static final int SHADOW_TICK_LEN = 5;
 	private static final int NEX_PHASE_DELAY = 6;
+	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
-	private static final int COUGH_GRAPHIC_ID = 1103;
 
 	@Getter
 	private boolean inFight;
@@ -99,7 +101,7 @@ public class NexPlugin extends Plugin
 	@Getter
 	private int nexTicksUntilClick = 0;
 	// used to not show next minion as vulnerable
-	private int nexPhaseCoolDown = 0;
+	private int nexPhaseMinionCoolDown = 0;
 
 	@Getter
 	private NexPhase currentPhase = NexPhase.NONE;
@@ -193,9 +195,9 @@ public class NexPlugin extends Plugin
 		{
 			nexTicksUntilClick--;
 		}
-		if (nexPhaseCoolDown > 0)
+		if (nexPhaseMinionCoolDown > 0)
 		{
-			nexPhaseCoolDown--;
+			nexPhaseMinionCoolDown--;
 		}
 
 		if (shadowsTicks > 0)
@@ -296,7 +298,6 @@ public class NexPlugin extends Plugin
 			}
 			else if (currentPhase == NexPhase.STARTING)
 			{
-				System.out.println("Starting!");
 				nex = null; // Just need to grab nex from the new spawn
 				nexTicksUntilClick = NEX_STARTUP_DELAY;
 			}
@@ -305,7 +306,7 @@ public class NexPlugin extends Plugin
 				minionActive = false;
 				lastActive = null;
 				nexTicksUntilClick = NEX_PHASE_DELAY;
-				nexPhaseCoolDown = nexTicksUntilClick;
+				nexPhaseMinionCoolDown = NEX_PHASE_MINION_DELAY;
 			}
 			return;
 		}
@@ -360,11 +361,6 @@ public class NexPlugin extends Plugin
 
 	public NPC getCurrentActiveMinion()
 	{
-		if (nexPhaseCoolDown > 0)
-		{
-			return null;
-		}
-
 		if (lastActive == null)
 		{
 			var currentMinionId = NexPhase.getMinionId(getCurrentPhase());
@@ -379,5 +375,10 @@ public class NexPlugin extends Plugin
 	public boolean nexDisable()
 	{
 		return nexTicksUntilClick > 0 || minionActive;
+	}
+
+	public boolean minionCoolDownExpired()
+	{
+		return nexPhaseMinionCoolDown <= 0;
 	}
 }

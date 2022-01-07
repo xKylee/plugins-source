@@ -135,7 +135,7 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateMinionVulnerability().showVulnerable() && plugin.nexDisable())
 		{
-			drawMinion(graphics, true);
+			drawMinion(graphics, plugin.minionCoolDownExpired());
 		}
 
 		if (config.drawNexHp())
