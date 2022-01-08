@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.nex;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -65,42 +66,23 @@ class NexOverlay extends Overlay
 			return null;
 		}
 
+		// handle render death blob before we break because dead
+
+
+		if (config.indicateDeathAOE() && plugin.getNexDeathTile() != null)
+		{
+			drawNexDeathTile(graphics);
+		}
+
+
+		if (plugin.getNex().isDead())
+		{
+			return null;
+		}
+
 		if (config.shadowsIndicator())
 		{
-			String count = Integer.toString(plugin.getShadowsTicks());
-			graphics.setFont(new Font("Arial", Font.BOLD, 12));
-
-			for (GameObject graphicsObject : plugin.getShadows())
-			{
-				LocalPoint lp = graphicsObject.getLocalLocation();
-				Polygon poly = Perspective.getCanvasTilePoly(client, lp);
-				Player localPlayer = client.getLocalPlayer();
-
-
-				if (poly != null && localPlayer != null)
-				{
-					WorldPoint playerWorldPoint = localPlayer.getWorldLocation();
-					WorldPoint shadowsWorldPoint = WorldPoint.fromLocal(client, lp);
-
-					if (playerWorldPoint.distanceTo(shadowsWorldPoint) <= config.shadowsRenderDistance())
-					{
-						graphics.setPaintMode();
-						graphics.setColor(config.shadowsBorderColour());
-						graphics.draw(poly);
-						graphics.setColor(config.shadowsColour());
-						graphics.fill(poly);
-
-						if (config.shadowsTickCounter())
-						{
-							Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
-							if (point != null)
-							{
-								OverlayUtil.renderTextLocation(graphics, point, count, Color.WHITE);
-							}
-						}
-					}
-				}
-			}
+			drawShadows(graphics);
 		}
 
 		if (config.coughTileIndicator() && !plugin.getCoughingPlayers().isEmpty())
@@ -135,7 +117,7 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateMinionVulnerability().showVulnerable() && plugin.nexDisable())
 		{
-			drawMinion(graphics, true);
+			drawMinion(graphics, plugin.minionCoolDownExpired());
 		}
 
 		if (config.drawNexHp())
@@ -148,6 +130,10 @@ class NexOverlay extends Overlay
 			drawMinionHP(graphics);
 		}
 
+		if (config.indicateTank())
+		{
+			drawTank(graphics);
+		}
 
 		if (plugin.isFlash() && config.flash())
 		{
@@ -166,6 +152,62 @@ class NexOverlay extends Overlay
 		return null;
 	}
 
+	private void drawShadows(Graphics2D graphics)
+	{
+		String count = Integer.toString(plugin.getShadowsTicks());
+		graphics.setFont(new Font("Arial", Font.BOLD, 12));
+
+		for (GameObject graphicsObject : plugin.getShadows())
+		{
+			LocalPoint lp = graphicsObject.getLocalLocation();
+			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
+			Player localPlayer = client.getLocalPlayer();
+
+
+			if (poly != null && localPlayer != null)
+			{
+				WorldPoint playerWorldPoint = localPlayer.getWorldLocation();
+				WorldPoint shadowsWorldPoint = WorldPoint.fromLocal(client, lp);
+
+				if (playerWorldPoint.distanceTo(shadowsWorldPoint) <= config.shadowsRenderDistance())
+				{
+					graphics.setPaintMode();
+					graphics.setColor(config.shadowsColourBase());
+					graphics.draw(poly);
+					graphics.setColor(getFillColor(config.shadowsColourBase()));
+					graphics.fill(poly);
+
+					if (config.shadowsTickCounter())
+					{
+						Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
+						if (point != null)
+						{
+							OverlayUtil.renderTextLocation(graphics, point, count, Color.WHITE);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void drawTank(Graphics2D graphics)
+	{
+		if (plugin.getNex().getInteracting() != null)
+		{
+			var interacting = plugin.getNex().getInteracting();
+			var tilePoly = interacting.getCanvasTilePoly();
+
+			if (tilePoly != null)
+			{
+				var baseColor = interacting == client.getLocalPlayer() ? config.tankOtherColorMe() : config.tankOtherColor();
+				OverlayUtil.renderPolygon(graphics,
+					tilePoly,
+					baseColor,
+					getFillColor(baseColor, 3),
+					new BasicStroke(2));
+			}
+		}
+	}
 
 	private void drawMinion(Graphics2D graphics, boolean vulnerable)
 	{
@@ -208,10 +250,41 @@ class NexOverlay extends Overlay
 			});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.coughBorderColour());
+		graphics.setColor(config.coughColourBase());
 		graphics.draw(infecetedTiles);
-		graphics.setColor(config.coughColour());
+		graphics.setColor(getFillColor(config.coughColourBase()));
 		graphics.fill(infecetedTiles);
+	}
+
+	private void drawNexDeathTile(Graphics2D graphics)
+	{
+
+		var tile = plugin.getNexDeathTile();
+
+		if (tile == null)
+		{
+			return;
+		}
+
+		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, 6);
+
+		OverlayUtil.renderPolygon(
+			graphics,
+			area,
+			config.indicateDeathAOEColor(),
+			getFillColor(config.indicateDeathAOEColor()),
+			new BasicStroke(2)
+		);
+
+		graphics.setFont(new Font("Arial", Font.BOLD, 16));
+		String ticks = String.valueOf(plugin.getNexDeathTileTicks());
+
+		OverlayUtil.renderTextLocation(
+			graphics,
+			Perspective.getCanvasTextLocation(client, graphics, tile, ticks, 0),
+			ticks,
+			Color.WHITE
+		);
 	}
 
 	private void drawNexHpOverlay(Graphics2D graphics)
@@ -270,5 +343,15 @@ class NexOverlay extends Overlay
 		double gMod = 235.0D * percentage / 100.0D;
 		double bMod = 125.0D * percentage / 100.0D;
 		return new Color((int) Math.min(255.0D, 255.0D - rMod), Math.min(255, (int) (20.0D + gMod)), Math.min(255, (int) (0.0D + bMod)));
+	}
+
+	private Color getFillColor(Color color, int decimator)
+	{
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() / decimator);
+	}
+
+	private Color getFillColor(Color color)
+	{
+		return getFillColor(color, 2);
 	}
 }
