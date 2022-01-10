@@ -40,7 +40,7 @@ class NexPrayerOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!plugin.isInFight() || plugin.getNex() == null)
+		if (!plugin.isInFight() || plugin.getNex() == null || client.getLocalPlayer() == null)
 		{
 			return null;
 		}
@@ -50,21 +50,25 @@ class NexPrayerOverlay extends Overlay
 			return null;
 		}
 
-		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase());
+		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase(), client.getLocalPlayer(), plugin.getNex());
 
 		if (prayer == null)
 		{
 			return null;
 		}
 
+		final Widget meleePrayerWidget = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MELEE);
 		final Widget rangePrayerWidget = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MISSILES);
 		final Widget magicPrayerWidget = client.getWidget(WidgetInfo.PRAYER_PROTECT_FROM_MAGIC);
 
 
-		var prayerWidgetHidden = rangePrayerWidget == null
+		var prayerWidgetHidden = meleePrayerWidget == null
+			|| rangePrayerWidget == null
 			|| magicPrayerWidget == null
+			|| meleePrayerWidget.isHidden()
 			|| rangePrayerWidget.isHidden()
 			|| magicPrayerWidget.isHidden();
+
 
 		if (!prayerWidgetHidden || config.alwaysShowPrayerHelper())
 		{

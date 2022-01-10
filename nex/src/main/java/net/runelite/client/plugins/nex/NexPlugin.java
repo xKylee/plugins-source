@@ -243,7 +243,8 @@ public class NexPlugin extends Plugin
 		var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
 		coughingPlayers.removeIf(nexCoughingPlayer -> nexCoughingPlayer.shouldRemove(client.getGameCycle()));
 
-		if (selfCoughingPlayer != null && selfCoughingPlayer.shouldRemove(client.getGameCycle())) {
+		if (selfCoughingPlayer != null && selfCoughingPlayer.shouldRemove(client.getGameCycle()))
+		{
 			selfCoughingPlayer = null;
 		}
 
@@ -259,7 +260,8 @@ public class NexPlugin extends Plugin
 		}
 
 		// update healthy locations if we are sick
-		if (selfCoughingPlayer != null) {
+		if (selfCoughingPlayer != null)
+		{
 			healthyPlayersLocations = players
 				.stream()
 				.filter(player -> healthyPlayers.contains(player.getName()))
