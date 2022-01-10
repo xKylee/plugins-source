@@ -7,6 +7,7 @@ package net.runelite.client.plugins.nex;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +25,10 @@ import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldArea;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -35,6 +38,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.nex.timer.TickTimer;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -72,15 +76,16 @@ public class NexPlugin extends Plugin
 	private NexPrayerInfoBox prayerInfoBox;
 
 	private static final int SHADOW_ID = 42942;
+	private static final int ICE_TRAP_ID = 42944;
 	private static final int COUGH_GRAPHIC_ID = 1103;
 
 	private static final int SHADOW_TICK_LEN = 5;
+	private static final int ICE_TRAP_TICK_LEN = 8;
 	private static final int NEX_PHASE_DELAY = 6;
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
 	private static final int NEX_WRATH_TICK_DELAY = 5;
-	public static final int NEX_SIPHON_DELAY = 9;
-
+	private static final int NEX_SIPHON_DELAY = 9;
 
 	@Getter
 	private boolean inFight;
@@ -93,14 +98,6 @@ public class NexPlugin extends Plugin
 	private NPC nex;
 
 	@Getter
-	private int shadowsTicks;
-
-	@Getter
-	private int nexTicksUntilClick = 0;
-	// used to not show next minion as vulnerable
-	private int nexPhaseMinionCoolDown = 0;
-
-	@Getter
 	private NexPhase currentPhase = NexPhase.NONE;
 
 	@Getter
@@ -111,10 +108,13 @@ public class NexPlugin extends Plugin
 	private final Set<GameObject> shadows = new HashSet<>();
 
 	@Getter
-	private Set<NexCoughingPlayer> coughingPlayers = new HashSet<>();
+	private final Set<NexCoughingPlayer> coughingPlayers = new HashSet<>();
 
 	@Getter
-	private Set<String> healthyPlayers = new HashSet<>();
+	private final Set<String> healthyPlayers = new HashSet<>();
+
+	@Getter
+	private final Set<GameObject> iceTraps = new HashSet<>();
 
 	@Getter
 	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
@@ -123,18 +123,41 @@ public class NexPlugin extends Plugin
 	private NexSpecial currentSpecial;
 
 	@Getter
-	private LocalPoint nexDeathTile;
+	private LocalPoint nexDeathTile = null;
 
 	@Getter
-	private int nexDeathTileTicks;
+	private boolean isTrappedInIce;
 
 	@Getter
 	private NexCoughingPlayer selfCoughingPlayer = null;
 
-	private boolean coughingPlayersChanged = false;
 	private int teamSize;
+	private boolean coughingPlayersChanged = false;
 	private boolean hasDisabledEntityHiderRecently = false;
 	private boolean hasEnabledEntityHiderRecently = false;
+
+	// Tick timers
+
+	@Getter
+	private final TickTimer shadowsTicks = new TickTimer(shadows::clear);
+
+	@Getter
+	private final TickTimer nexTicksUntilClick = new TickTimer();
+
+	// used to not show next minion as vulnerable
+	private final TickTimer nexPhaseMinionCoolDown = new TickTimer();
+
+	@Getter
+	private final TickTimer iceTrapTicks = new TickTimer(this::clearIceTrap);
+
+	private void clearIceTrap()
+	{
+		iceTraps.clear();
+		isTrappedInIce = false;
+	}
+
+	@Getter
+	private final TickTimer nexDeathTileTicks = new TickTimer(() -> nexDeathTile = null);
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -184,8 +207,11 @@ public class NexPlugin extends Plugin
 		healthyPlayersLocations.clear();
 		nex = null;
 		lastActive = null;
+		isTrappedInIce = false;
 		coughingPlayers.clear();
-		nexTicksUntilClick = 0;
+		nexTicksUntilClick.reset();
+		iceTraps.clear();
+		iceTrapTicks.reset();
 		teamSize = 0;
 		coughingPlayersChanged = false;
 		hasDisabledEntityHiderRecently = false;
@@ -211,7 +237,7 @@ public class NexPlugin extends Plugin
 			// first discover nex, oh wow, fun boss.
 			// Handle edge case where because we arent in fight yet
 			// we wont see her spawning text
-			nexTicksUntilClick = NEX_STARTUP_DELAY;
+			nexTicksUntilClick.setTicks(NEX_STARTUP_DELAY);
 		}
 	}
 
@@ -225,37 +251,38 @@ public class NexPlugin extends Plugin
 
 		handleCoughers();
 		handleTimers();
+		updateTrappedStatus();
 	}
 
 	private void handleTimers()
 	{
-		if (nexTicksUntilClick > 0)
+		nexTicksUntilClick.tick();
+		nexPhaseMinionCoolDown.tick();
+		nexDeathTileTicks.tick();
+		shadowsTicks.tick();
+		iceTrapTicks.tick();
+	}
+
+
+	private void updateTrappedStatus()
+	{
+		if (currentPhase != NexPhase.ICE)
 		{
-			nexTicksUntilClick--;
+			return;
 		}
 
-		if (nexPhaseMinionCoolDown > 0)
-		{
-			nexPhaseMinionCoolDown--;
+		if (iceTraps.isEmpty()) {
+			isTrappedInIce = false;
+			return;
 		}
 
-		if (nexDeathTileTicks > 0)
-		{
-			nexDeathTileTicks--;
-			if (nexDeathTileTicks == 0)
-			{
-				nexDeathTile = null;
-			}
+		var player = client.getLocalPlayer();
+
+		if (player == null) {
+			return;
 		}
 
-		if (shadowsTicks > 0)
-		{
-			shadowsTicks--;
-			if (shadowsTicks == 0)
-			{
-				shadows.clear();
-			}
-		}
+		isTrappedInIce = iceTraps.stream().filter(trap -> trap.getWorldLocation().distanceTo(player.getWorldLocation()) == 1).count() == iceTraps.size();
 	}
 
 
@@ -295,7 +322,8 @@ public class NexPlugin extends Plugin
 
 			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
 			var coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
-			healthyPlayers = Sets.difference(team, coughers);
+			healthyPlayers.clear();
+			healthyPlayers.addAll(Sets.difference(team, coughers));
 		}
 
 		// HAS booleans prevent excess calls to client
@@ -346,7 +374,28 @@ public class NexPlugin extends Plugin
 		if (object.getId() == SHADOW_ID)
 		{
 			shadows.add(object);
-			shadowsTicks = SHADOW_TICK_LEN;
+			shadowsTicks.setTicks(SHADOW_TICK_LEN);
+		}
+		else if (object.getId() == ICE_TRAP_ID)
+		{
+			iceTraps.add(object);
+			iceTrapTicks.setTicks(ICE_TRAP_TICK_LEN);
+		}
+	}
+
+	@Subscribe
+	public void onGameObjectSpawned(GameObjectDespawned event)
+	{
+		if (!inFight)
+		{
+			return;
+		}
+
+		GameObject object = event.getGameObject();
+
+		if (object.getId() == ICE_TRAP_ID)
+		{
+			clearIceTrap();
 		}
 	}
 
@@ -409,20 +458,20 @@ public class NexPlugin extends Plugin
 				// TASTE MY WRATH!
 				// before resetting nex lets grab the tile for death AOE
 				nexDeathTile = nex.getLocalLocation();
-				nexDeathTileTicks = NEX_WRATH_TICK_DELAY;
+				nexDeathTileTicks.setTicks(NEX_WRATH_TICK_DELAY);
 				reset();
 			}
 			else if (currentPhase == NexPhase.STARTING)
 			{
 				nex = null; // Just need to grab nex from the new spawn
-				nexTicksUntilClick = NEX_STARTUP_DELAY;
+				nexTicksUntilClick.setTicks(NEX_STARTUP_DELAY);
 			}
 			else
 			{
 				minionActive = false;
 				lastActive = null;
-				nexTicksUntilClick = NEX_PHASE_DELAY;
-				nexPhaseMinionCoolDown = NEX_PHASE_MINION_DELAY;
+				nexTicksUntilClick.setTicks(NEX_PHASE_DELAY);
+				nexPhaseMinionCoolDown.setTicks(NEX_PHASE_MINION_DELAY);
 			}
 			return;
 		}
@@ -437,7 +486,7 @@ public class NexPlugin extends Plugin
 		{
 			if (currentSpecial == NexSpecial.BLOOD_SIPHON)
 			{
-				nexTicksUntilClick = NEX_SIPHON_DELAY;
+				nexTicksUntilClick.setTicks(NEX_SIPHON_DELAY);
 			}
 			return;
 		}
@@ -490,12 +539,12 @@ public class NexPlugin extends Plugin
 
 	public boolean nexDisable()
 	{
-		return nexTicksUntilClick > 0 || minionActive;
+		return nexTicksUntilClick.isActive() || minionActive;
 	}
 
 	public boolean minionCoolDownExpired()
 	{
-		return nexPhaseMinionCoolDown <= 0;
+		return nexPhaseMinionCoolDown.isExpired();
 	}
 
 	private void clearHiddenEntities()

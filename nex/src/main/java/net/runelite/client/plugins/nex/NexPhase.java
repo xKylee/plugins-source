@@ -46,11 +46,15 @@ public enum NexPhase
 		return phaseMap.getOrDefault(message, null);
 	}
 
-	public static Prayer phasePrayer(NexPhase phase, Player player, NPC nex)
+	public static Prayer phasePrayer(NexPhase phase, Player player, NPC nex, boolean trappedInIce)
 	{
 		if (phase == ZAROS && nex.getInteracting() == player && nex.getWorldArea().isInMeleeDistance(player.getWorldLocation()))
 		{
 			return Prayer.PROTECT_FROM_MELEE;
+		}
+		else if (phase == ICE && trappedInIce)
+		{
+			return Prayer.PROTECT_FROM_MISSILES;
 		}
 		else
 		{

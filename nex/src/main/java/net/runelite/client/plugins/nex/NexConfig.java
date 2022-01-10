@@ -481,6 +481,51 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigSection(
+		name = "Ice Phase",
+		description = "Configure Ice Phase settings.",
+		position = 500,
+		keyName = "iceSection"
+	)
+	String iceSection = "Ice Phase";
+
+	@ConfigItem(
+		keyName = "drawIceTraps",
+		name = "Ice Trap Highlight",
+		description = "Draw ice trap",
+		position = 501,
+		section = iceSection
+	)
+	default boolean drawIceTraps()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "drawTicksOnIceTrap",
+		name = "Ice Trap Ticks",
+		description = "Draw ticks on ice trap",
+		position = 502,
+		section = iceSection
+	)
+	default boolean drawTicksOnIceTrap()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "iceCoulourBase",
+		name = "Ice colour",
+		description = "Colour the area highlighted by ice",
+		position = 503,
+		section = iceSection
+	)
+	default Color iceCoulourBase()
+	{
+		return new Color(255, 0, 98, 100);
+	}
+
+	@ConfigSection(
 		name = "Zaros Phase",
 		description = "Configure Zaros Phase settings.",
 		position = 600,
