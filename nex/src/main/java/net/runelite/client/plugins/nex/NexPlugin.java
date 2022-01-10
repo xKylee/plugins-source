@@ -32,8 +32,10 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.entityhider.EntityHiderConfig;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -158,7 +160,19 @@ public class NexPlugin extends Plugin
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(prayerInfoBox);
 		client.setIsHidingEntities(false);
-		reset();
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged e)
+	{
+		if (e.getGroup().equals(NexConfig.GROUP))
+		{
+			// if you disable entity hider you will clobber this plugin,
+			// so we should have this to have a way to easily get it back
+			if (config.hideHealthyPlayers()) {
+				client.setIsHidingEntities(true);
+			}
+		}
 	}
 
 	private void reset()
