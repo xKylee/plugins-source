@@ -37,8 +37,8 @@ class NexOverlay extends Overlay
 	private final ModelOutlineRenderer outliner;
 	private int timeout;
 
-	private final int TIMEOUT_MAX = 50;
-	private final int TIMEOUT_FLASH_START = 70;
+	private final int TIMEOUT_MAX = 100;
+	private final int TIMEOUT_FLASH_START = 50;
 	private final int TIMEOUT_FLASH_FINISH = 10;
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.0");
