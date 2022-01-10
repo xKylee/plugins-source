@@ -31,7 +31,6 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
-import net.runelite.client.plugins.entityhider.EntityHiderConfig;
 
 @ConfigGroup(NexConfig.GROUP)
 public interface NexConfig extends Config

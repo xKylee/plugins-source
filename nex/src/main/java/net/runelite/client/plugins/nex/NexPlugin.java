@@ -35,7 +35,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.entityhider.EntityHiderConfig;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 
@@ -169,7 +168,8 @@ public class NexPlugin extends Plugin
 		{
 			// if you disable entity hider you will clobber this plugin,
 			// so we should have this to have a way to easily get it back
-			if (config.hideHealthyPlayers()) {
+			if (config.hideHealthyPlayers())
+			{
 				client.setIsHidingEntities(true);
 			}
 		}
@@ -259,7 +259,6 @@ public class NexPlugin extends Plugin
 	}
 
 
-
 	/**
 	 * This method has some jank around it with the coughingPlayersChanged & hasEnabled/DisabledEntityHiderRecently.
 	 * I was experiencing some performance issues so spent time preventing wasted cpu cycles at the
@@ -302,7 +301,8 @@ public class NexPlugin extends Plugin
 		// HAS booleans prevent excess calls to client
 		if (config.hideHealthyPlayers() && players.size() >= config.hideAboveNumber())
 		{
-			if (!hasEnabledEntityHiderRecently) {
+			if (!hasEnabledEntityHiderRecently)
+			{
 				client.setHideSpecificPlayers(new ArrayList<>(healthyPlayers));
 				// prevent us from running again right away
 				hasEnabledEntityHiderRecently = true;
