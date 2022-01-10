@@ -89,6 +89,11 @@ class NexOverlay extends Overlay
 			drawInfectionArea(graphics);
 		}
 
+		if (config.healthyTileIndicator() && plugin.getSelfCoughingPlayer() != null)
+		{
+			drawHealthyPlayers(graphics);
+		}
+
 		if (config.indicateNexVulnerability().showInvulnerable() && plugin.nexDisable())
 		{
 			outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
@@ -233,6 +238,7 @@ class NexOverlay extends Overlay
 
 		WorldPoint localWorldLocation = local.getWorldLocation();
 
+		// Draw sick people squares. ew gross
 		plugin
 			.getCoughingPlayers()
 			.stream()
@@ -254,6 +260,44 @@ class NexOverlay extends Overlay
 		graphics.setColor(getFillColor(config.coughColourBase()));
 		graphics.fill(infecetedTiles);
 	}
+
+
+	private void drawHealthyPlayers(Graphics2D graphics)
+	{
+		Area infecetedTiles = new Area();
+
+		var local = client.getLocalPlayer();
+		if (local == null)
+		{
+			return;
+		}
+
+		WorldPoint localWorldLocation = local.getWorldLocation();
+
+
+		// Draw sick people squares. ew gross
+		plugin
+			.getHealthyPlayersLocations()
+			.stream()
+			.filter(healthyLocation -> {
+				var players_loc = WorldPoint.fromLocal(client, healthyLocation);
+				return players_loc.distanceTo(localWorldLocation) <= config.healthyTileRenderDistance();
+			})
+			.forEach(healthyLocation -> {
+				Polygon poly = getCanvasTileAreaPoly(client, healthyLocation, 3);
+				if (poly != null)
+				{
+					infecetedTiles.add(new Area(poly));
+				}
+			});
+
+		graphics.setPaintMode();
+		graphics.setColor(config.healthColourBase());
+		graphics.draw(infecetedTiles);
+		graphics.setColor(getFillColor(config.healthColourBase()));
+		graphics.fill(infecetedTiles);
+	}
+
 
 	private void drawNexDeathTile(Graphics2D graphics)
 	{

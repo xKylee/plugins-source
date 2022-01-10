@@ -113,6 +113,13 @@ public class NexPlugin extends Plugin
 	private Set<NexCoughingPlayer> coughingPlayers = new HashSet<>();
 
 	@Getter
+	private Set<String> healthyPlayers = new HashSet<>();
+
+	@Getter
+	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
+
+
+	@Getter
 	private NexSpecial currentSpecial;
 
 	@Getter
@@ -120,6 +127,9 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private int nexDeathTileTicks;
+
+	@Getter
+	private NexCoughingPlayer selfCoughingPlayer = null;
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -151,6 +161,9 @@ public class NexPlugin extends Plugin
 	{
 		minionActive = false;
 		currentPhase = NexPhase.NONE;
+		selfCoughingPlayer = null;
+		healthyPlayers.clear();
+		healthyPlayersLocations.clear();
 		nex = null;
 		lastActive = null;
 		coughingPlayers.clear();
@@ -225,17 +238,33 @@ public class NexPlugin extends Plugin
 
 	private void handleCoughers()
 	{
-		var team = client.getPlayers().stream().map(Actor::getName).collect(Collectors.toSet());
+		var players = client.getPlayers();
+
+		var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
 		coughingPlayers.removeIf(nexCoughingPlayer -> nexCoughingPlayer.shouldRemove(client.getGameCycle()));
+
+		if (selfCoughingPlayer != null && selfCoughingPlayer.shouldRemove(client.getGameCycle())) {
+			selfCoughingPlayer = null;
+		}
 
 		if (config.hideHealthyPlayers() && team.size() >= config.hideAboveNumber())
 		{
 			Set<String> coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
-			client.setHideSpecificPlayers(Sets.difference(team, coughers).immutableCopy().asList());
+			healthyPlayers = Sets.difference(team, coughers);
+			client.setHideSpecificPlayers(new ArrayList<>(healthyPlayers));
 		}
 		else
 		{
 			clearHiddenEntities();
+		}
+
+		// update healthy locations if we are sick
+		if (selfCoughingPlayer != null) {
+			healthyPlayersLocations = players
+				.stream()
+				.filter(player -> healthyPlayers.contains(player.getName()))
+				.map(Actor::getLocalLocation)
+				.collect(Collectors.toList());
 		}
 	}
 
@@ -271,6 +300,10 @@ public class NexPlugin extends Plugin
 
 		if (actor == client.getLocalPlayer())
 		{
+			if (actor.getGraphic() == COUGH_GRAPHIC_ID)
+			{
+				selfCoughingPlayer = new NexCoughingPlayer(actor.getName(), client.getGameCycle(), (Player) actor);
+			}
 			return;
 		}
 
