@@ -6,7 +6,9 @@ package net.runelite.client.plugins.nex;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -131,6 +133,7 @@ public class NexPlugin extends Plugin
 		overlayManager.add(overlay);
 		overlayManager.add(prayerOverlay);
 		overlayManager.add(prayerInfoBox);
+		client.setIsHidingEntities(true);
 		reset();
 	}
 
@@ -138,9 +141,9 @@ public class NexPlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(overlay);
-		client.setIsHidingEntities(false);
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(prayerInfoBox);
+		client.setIsHidingEntities(false);
 		reset();
 	}
 
@@ -227,13 +230,12 @@ public class NexPlugin extends Plugin
 
 		if (config.hideHealthyPlayers() && team.size() >= config.hideAboveNumber())
 		{
-			client.setIsHidingEntities(true);
 			Set<String> coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
 			client.setHideSpecificPlayers(Sets.difference(team, coughers).immutableCopy().asList());
 		}
 		else
 		{
-			client.setIsHidingEntities(false);
+			clearHiddenEntities();
 		}
 	}
 
@@ -288,7 +290,7 @@ public class NexPlugin extends Plugin
 		{
 			reset();
 			inFight = false;
-			client.setIsHidingEntities(false);
+			clearHiddenEntities();
 		}
 	}
 
@@ -395,5 +397,10 @@ public class NexPlugin extends Plugin
 	public boolean minionCoolDownExpired()
 	{
 		return nexPhaseMinionCoolDown <= 0;
+	}
+
+	private void clearHiddenEntities()
+	{
+		client.setHideSpecificPlayers(List.of());
 	}
 }
