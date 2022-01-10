@@ -31,10 +31,13 @@ import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
+import net.runelite.client.plugins.entityhider.EntityHiderConfig;
 
-@ConfigGroup("nex")
+@ConfigGroup(NexConfig.GROUP)
 public interface NexConfig extends Config
 {
+	String GROUP = "nextended";
+
 	@ConfigSection(
 		name = "General",
 		description = "Configure general settings.",
