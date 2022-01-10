@@ -89,7 +89,7 @@ class NexOverlay extends Overlay
 			);
 		}
 
-		if (config.drawTicksOnIceTrap())
+		if (config.drawIceTraps())
 		{
 			drawObjectTickable(
 				graphics,
