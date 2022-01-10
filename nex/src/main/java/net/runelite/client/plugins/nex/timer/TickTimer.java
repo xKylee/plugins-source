@@ -2,7 +2,6 @@ package net.runelite.client.plugins.nex.timer;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
 @EqualsAndHashCode
 public class TickTimer
