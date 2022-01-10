@@ -131,6 +131,7 @@ public class NexPlugin extends Plugin
 	private NexCoughingPlayer selfCoughingPlayer = null;
 
 	private boolean coughingPlayersChanged = false;
+	private int teamSize;
 	private boolean hasDisabledEntityHiderRecently = false;
 	private boolean hasEnabledEntityHiderRecently = false;
 
@@ -171,6 +172,7 @@ public class NexPlugin extends Plugin
 		lastActive = null;
 		coughingPlayers.clear();
 		nexTicksUntilClick = 0;
+		teamSize = 0;
 		coughingPlayersChanged = false;
 		hasDisabledEntityHiderRecently = false;
 		hasEnabledEntityHiderRecently = false;
@@ -251,7 +253,6 @@ public class NexPlugin extends Plugin
 	 */
 	private void handleCoughers()
 	{
-
 		// update self
 		if (selfCoughingPlayer != null && selfCoughingPlayer.shouldRemove(client.getGameCycle()))
 		{
@@ -274,9 +275,10 @@ public class NexPlugin extends Plugin
 		var players = client.getPlayers();
 
 		// Sick players have changed, update list of healthy players
-		if (coughingPlayersChanged)
+		if (coughingPlayersChanged || teamSize != players.size())
 		{
 			coughingPlayersChanged = false;
+			teamSize = players.size();
 
 			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
 			var coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
