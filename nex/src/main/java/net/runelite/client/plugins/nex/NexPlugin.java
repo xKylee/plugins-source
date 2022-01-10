@@ -76,6 +76,8 @@ public class NexPlugin extends Plugin
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
 	private static final int NEX_WRATH_TICK_DELAY = 5;
+	public static final int NEX_SIPHON_DELAY = 9;
+
 
 	@Getter
 	private boolean inFight;
@@ -334,7 +336,7 @@ public class NexPlugin extends Plugin
 		{
 			if (currentSpecial == NexSpecial.BLOOD_SIPHON)
 			{
-				nexTicksUntilClick = 8;
+				nexTicksUntilClick = NEX_SIPHON_DELAY;
 			}
 			return;
 		}
