@@ -183,6 +183,7 @@ class NexOverlay extends Overlay
 		{
 			return;
 		}
+
 		String count = Integer.toString(ticks);
 		graphics.setFont(new Font("Arial", Font.BOLD, 12));
 

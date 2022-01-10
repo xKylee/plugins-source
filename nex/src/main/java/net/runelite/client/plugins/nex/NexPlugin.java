@@ -7,7 +7,6 @@ package net.runelite.client.plugins.nex;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,6 @@ import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldArea;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
@@ -271,14 +269,16 @@ public class NexPlugin extends Plugin
 			return;
 		}
 
-		if (iceTraps.isEmpty()) {
+		if (iceTraps.isEmpty())
+		{
 			isTrappedInIce = false;
 			return;
 		}
 
 		var player = client.getLocalPlayer();
 
-		if (player == null) {
+		if (player == null)
+		{
 			return;
 		}
 
