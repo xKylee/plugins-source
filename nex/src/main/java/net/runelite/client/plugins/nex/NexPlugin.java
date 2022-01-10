@@ -118,7 +118,6 @@ public class NexPlugin extends Plugin
 	@Getter
 	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
 
-
 	@Getter
 	private NexSpecial currentSpecial;
 
@@ -130,6 +129,10 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private NexCoughingPlayer selfCoughingPlayer = null;
+
+	private boolean coughingPlayersChanged = false;
+	private boolean hasDisabledEntityHiderRecently = false;
+	private boolean hasEnabledEntityHiderRecently = false;
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -168,6 +171,9 @@ public class NexPlugin extends Plugin
 		lastActive = null;
 		coughingPlayers.clear();
 		nexTicksUntilClick = 0;
+		coughingPlayersChanged = false;
+		hasDisabledEntityHiderRecently = false;
+		hasEnabledEntityHiderRecently = false;
 	}
 
 	@Subscribe
@@ -236,27 +242,68 @@ public class NexPlugin extends Plugin
 		}
 	}
 
+
+
+	/**
+	 * This method has some jank around it with the coughingPlayersChanged & hasEnabled/DisabledEntityHiderRecently.
+	 * I was experiencing some performance issues so spent time preventing wasted cpu cycles at the
+	 * cost of readable code.
+	 */
 	private void handleCoughers()
 	{
-		var players = client.getPlayers();
 
-		var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
-		coughingPlayers.removeIf(nexCoughingPlayer -> nexCoughingPlayer.shouldRemove(client.getGameCycle()));
-
+		// update self
 		if (selfCoughingPlayer != null && selfCoughingPlayer.shouldRemove(client.getGameCycle()))
 		{
 			selfCoughingPlayer = null;
 		}
 
-		if (config.hideHealthyPlayers() && team.size() >= config.hideAboveNumber())
+		// update others and catch if we remove anyone
+		coughingPlayers.removeIf(nexCoughingPlayer -> {
+			var shouldRemove = nexCoughingPlayer.shouldRemove(client.getGameCycle());
+
+			if (shouldRemove)
+			{
+				// we should now change hidden entities
+				coughingPlayersChanged = true;
+			}
+
+			return shouldRemove;
+		});
+
+		var players = client.getPlayers();
+
+		// Sick players have changed, update list of healthy players
+		if (coughingPlayersChanged)
 		{
-			Set<String> coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
+			coughingPlayersChanged = false;
+
+			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
+			var coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
 			healthyPlayers = Sets.difference(team, coughers);
-			client.setHideSpecificPlayers(new ArrayList<>(healthyPlayers));
+		}
+
+		// HAS booleans prevent excess calls to client
+		if (config.hideHealthyPlayers() && players.size() >= config.hideAboveNumber())
+		{
+			if (!hasEnabledEntityHiderRecently) {
+				client.setHideSpecificPlayers(new ArrayList<>(healthyPlayers));
+				// prevent us from running again right away
+				hasEnabledEntityHiderRecently = true;
+				// ensure disable will run if toggled again
+				hasDisabledEntityHiderRecently = false;
+			}
 		}
 		else
 		{
-			clearHiddenEntities();
+			if (!hasDisabledEntityHiderRecently)
+			{
+				clearHiddenEntities();
+				// prevent us from running again right away
+				hasDisabledEntityHiderRecently = true;
+				// ensure enabled will run if toggled again
+				hasEnabledEntityHiderRecently = false;
+			}
 		}
 
 		// update healthy locations if we are sick
@@ -312,6 +359,7 @@ public class NexPlugin extends Plugin
 		if (actor.getGraphic() == COUGH_GRAPHIC_ID)
 		{
 			coughingPlayers.add(new NexCoughingPlayer(actor.getName(), client.getGameCycle(), (Player) actor));
+			coughingPlayersChanged = true;
 		}
 	}
 
@@ -436,6 +484,6 @@ public class NexPlugin extends Plugin
 
 	private void clearHiddenEntities()
 	{
-		client.setHideSpecificPlayers(List.of());
+		client.setHideSpecificPlayers(new ArrayList<>());
 	}
 }
