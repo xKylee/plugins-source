@@ -60,20 +60,17 @@ class NexOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-
 		if (!plugin.isInFight() || plugin.getNex() == null)
 		{
 			return null;
 		}
 
 		// handle render death blob before we break because dead
-
 		if (config.indicateDeathAOE() && plugin.getNexDeathTile() != null)
 		{
 			drawNexDeathTile(graphics);
 		}
-
-
+		
 		if (plugin.getNex().isDead())
 		{
 			return null;
