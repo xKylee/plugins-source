@@ -68,7 +68,6 @@ class NexOverlay extends Overlay
 
 		// handle render death blob before we break because dead
 
-
 		if (config.indicateDeathAOE() && plugin.getNexDeathTile() != null)
 		{
 			drawNexDeathTile(graphics);
@@ -117,7 +116,7 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateMinionVulnerability().showVulnerable() && plugin.nexDisable())
 		{
-			drawMinion(graphics, plugin.minionCoolDownExpired());
+			drawMinion(graphics, plugin.minionCoolDownExpired() && plugin.isMinionActive());
 		}
 
 		if (config.drawNexHp())
