@@ -70,7 +70,7 @@ class NexOverlay extends Overlay
 		{
 			drawNexDeathTile(graphics);
 		}
-		
+
 		if (plugin.getNex().isDead())
 		{
 			return null;
