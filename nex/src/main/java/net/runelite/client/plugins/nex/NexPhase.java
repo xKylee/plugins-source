@@ -2,10 +2,12 @@ package net.runelite.client.plugins.nex;
 
 import java.util.Map;
 import java.util.Optional;
+import net.runelite.api.NPC;
 import static net.runelite.api.NpcID.CRUOR;
 import static net.runelite.api.NpcID.FUMUS;
 import static net.runelite.api.NpcID.GLACIES;
 import static net.runelite.api.NpcID.UMBRA;
+import net.runelite.api.Player;
 import net.runelite.api.Prayer;
 
 public enum NexPhase
@@ -44,9 +46,16 @@ public enum NexPhase
 		return phaseMap.getOrDefault(message, null);
 	}
 
-	public static Prayer phasePrayer(NexPhase phase)
+	public static Prayer phasePrayer(NexPhase phase, Player player, NPC nex)
 	{
-		return prayerPhase.getOrDefault(phase, Optional.empty()).orElse(null);
+		if (phase == ZAROS && nex.getInteracting() == player && nex.getWorldArea().isInMeleeDistance(player.getWorldLocation()))
+		{
+			return Prayer.PROTECT_FROM_MELEE;
+		}
+		else
+		{
+			return prayerPhase.getOrDefault(phase, Optional.empty()).orElse(null);
+		}
 	}
 
 	public static int getMinionId(NexPhase phase)
