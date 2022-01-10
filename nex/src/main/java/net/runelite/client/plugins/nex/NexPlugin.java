@@ -6,7 +6,9 @@ package net.runelite.client.plugins.nex;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -76,6 +79,8 @@ public class NexPlugin extends Plugin
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
 	private static final int NEX_WRATH_TICK_DELAY = 5;
+	public static final int NEX_SIPHON_DELAY = 9;
+
 
 	@Getter
 	private boolean inFight;
@@ -109,6 +114,12 @@ public class NexPlugin extends Plugin
 	private Set<NexCoughingPlayer> coughingPlayers = new HashSet<>();
 
 	@Getter
+	private Set<String> healthyPlayers = new HashSet<>();
+
+	@Getter
+	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
+
+	@Getter
 	private NexSpecial currentSpecial;
 
 	@Getter
@@ -116,6 +127,14 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private int nexDeathTileTicks;
+
+	@Getter
+	private NexCoughingPlayer selfCoughingPlayer = null;
+
+	private boolean coughingPlayersChanged = false;
+	private int teamSize;
+	private boolean hasDisabledEntityHiderRecently = false;
+	private boolean hasEnabledEntityHiderRecently = false;
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -129,6 +148,7 @@ public class NexPlugin extends Plugin
 		overlayManager.add(overlay);
 		overlayManager.add(prayerOverlay);
 		overlayManager.add(prayerInfoBox);
+		client.setIsHidingEntities(true);
 		reset();
 	}
 
@@ -136,20 +156,40 @@ public class NexPlugin extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(overlay);
-		client.setIsHidingEntities(false);
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(prayerInfoBox);
-		reset();
+		client.setIsHidingEntities(false);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged e)
+	{
+		if (e.getGroup().equals(NexConfig.GROUP))
+		{
+			// if you disable entity hider you will clobber this plugin,
+			// so we should have this to have a way to easily get it back
+			if (config.hideHealthyPlayers())
+			{
+				client.setIsHidingEntities(true);
+			}
+		}
 	}
 
 	private void reset()
 	{
 		minionActive = false;
 		currentPhase = NexPhase.NONE;
+		selfCoughingPlayer = null;
+		healthyPlayers.clear();
+		healthyPlayersLocations.clear();
 		nex = null;
 		lastActive = null;
 		coughingPlayers.clear();
 		nexTicksUntilClick = 0;
+		teamSize = 0;
+		coughingPlayersChanged = false;
+		hasDisabledEntityHiderRecently = false;
+		hasEnabledEntityHiderRecently = false;
 	}
 
 	@Subscribe
@@ -218,20 +258,78 @@ public class NexPlugin extends Plugin
 		}
 	}
 
+
+	/**
+	 * This method has some jank around it with the coughingPlayersChanged & hasEnabled/DisabledEntityHiderRecently.
+	 * I was experiencing some performance issues so spent time preventing wasted cpu cycles at the
+	 * cost of readable code.
+	 */
 	private void handleCoughers()
 	{
-		var team = client.getPlayers().stream().map(Actor::getName).collect(Collectors.toSet());
-		coughingPlayers.removeIf(nexCoughingPlayer -> nexCoughingPlayer.shouldRemove(client.getGameCycle()));
-
-		if (config.hideHealthyPlayers() && team.size() >= config.hideAboveNumber())
+		// update self
+		if (selfCoughingPlayer != null && selfCoughingPlayer.shouldRemove(client.getGameCycle()))
 		{
-			client.setIsHidingEntities(true);
-			Set<String> coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
-			client.setHideSpecificPlayers(Sets.difference(team, coughers).immutableCopy().asList());
+			selfCoughingPlayer = null;
+		}
+
+		// update others and catch if we remove anyone
+		coughingPlayers.removeIf(nexCoughingPlayer -> {
+			var shouldRemove = nexCoughingPlayer.shouldRemove(client.getGameCycle());
+
+			if (shouldRemove)
+			{
+				// we should now change hidden entities
+				coughingPlayersChanged = true;
+			}
+
+			return shouldRemove;
+		});
+
+		var players = client.getPlayers();
+
+		// Sick players have changed, update list of healthy players
+		if (coughingPlayersChanged || teamSize != players.size())
+		{
+			coughingPlayersChanged = false;
+			teamSize = players.size();
+
+			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
+			var coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
+			healthyPlayers = Sets.difference(team, coughers);
+		}
+
+		// HAS booleans prevent excess calls to client
+		if (config.hideHealthyPlayers() && players.size() >= config.hideAboveNumber())
+		{
+			if (!hasEnabledEntityHiderRecently)
+			{
+				client.setHideSpecificPlayers(new ArrayList<>(healthyPlayers));
+				// prevent us from running again right away
+				hasEnabledEntityHiderRecently = true;
+				// ensure disable will run if toggled again
+				hasDisabledEntityHiderRecently = false;
+			}
 		}
 		else
 		{
-			client.setIsHidingEntities(false);
+			if (!hasDisabledEntityHiderRecently)
+			{
+				clearHiddenEntities();
+				// prevent us from running again right away
+				hasDisabledEntityHiderRecently = true;
+				// ensure enabled will run if toggled again
+				hasEnabledEntityHiderRecently = false;
+			}
+		}
+
+		// update healthy locations if we are sick
+		if (selfCoughingPlayer != null)
+		{
+			healthyPlayersLocations = players
+				.stream()
+				.filter(player -> healthyPlayers.contains(player.getName()))
+				.map(Actor::getLocalLocation)
+				.collect(Collectors.toList());
 		}
 	}
 
@@ -267,12 +365,17 @@ public class NexPlugin extends Plugin
 
 		if (actor == client.getLocalPlayer())
 		{
+			if (actor.getGraphic() == COUGH_GRAPHIC_ID)
+			{
+				selfCoughingPlayer = new NexCoughingPlayer(actor.getName(), client.getGameCycle(), (Player) actor);
+			}
 			return;
 		}
 
 		if (actor.getGraphic() == COUGH_GRAPHIC_ID)
 		{
 			coughingPlayers.add(new NexCoughingPlayer(actor.getName(), client.getGameCycle(), (Player) actor));
+			coughingPlayersChanged = true;
 		}
 	}
 
@@ -286,7 +389,7 @@ public class NexPlugin extends Plugin
 		{
 			reset();
 			inFight = false;
-			client.setIsHidingEntities(false);
+			clearHiddenEntities();
 		}
 	}
 
@@ -334,7 +437,7 @@ public class NexPlugin extends Plugin
 		{
 			if (currentSpecial == NexSpecial.BLOOD_SIPHON)
 			{
-				nexTicksUntilClick = 8;
+				nexTicksUntilClick = NEX_SIPHON_DELAY;
 			}
 			return;
 		}
@@ -393,5 +496,10 @@ public class NexPlugin extends Plugin
 	public boolean minionCoolDownExpired()
 	{
 		return nexPhaseMinionCoolDown <= 0;
+	}
+
+	private void clearHiddenEntities()
+	{
+		client.setHideSpecificPlayers(new ArrayList<>());
 	}
 }

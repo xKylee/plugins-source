@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.Prayer;
+import net.runelite.api.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -44,7 +45,7 @@ public class NexPrayerInfoBox extends Overlay
 	{
 		imagePanelComponent.getChildren().clear();
 
-		if (!plugin.isInFight() || plugin.getNex() == null)
+		if (!plugin.isInFight() || plugin.getNex() == null || client.getLocalPlayer() == null)
 		{
 			return null;
 		}
@@ -54,7 +55,7 @@ public class NexPrayerInfoBox extends Overlay
 			return null;
 		}
 
-		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase());
+		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase(), client.getLocalPlayer(), plugin.getNex());
 
 		if (prayer == null)
 		{
@@ -71,6 +72,24 @@ public class NexPrayerInfoBox extends Overlay
 
 	private BufferedImage getPrayerImage(Prayer attack)
 	{
-		return spriteManager.getSprite(attack == Prayer.PROTECT_FROM_MAGIC ? 127 : 128, 0);
+
+		var spriteId = 0;
+
+		switch (attack)
+		{
+			case PROTECT_FROM_MAGIC:
+				spriteId = SpriteID.PRAYER_PROTECT_FROM_MAGIC;
+				break;
+			case PROTECT_FROM_MISSILES:
+				spriteId = SpriteID.PRAYER_PROTECT_FROM_MISSILES;
+				break;
+			case PROTECT_FROM_MELEE:
+				spriteId = SpriteID.PRAYER_PROTECT_FROM_MELEE;
+				break;
+			default:
+				spriteId = SpriteID.GE_CANCEL_OFFER_BUTTON;
+		}
+
+		return spriteManager.getSprite(spriteId, 0);
 	}
 }

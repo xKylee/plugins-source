@@ -37,8 +37,8 @@ class NexOverlay extends Overlay
 	private final ModelOutlineRenderer outliner;
 	private int timeout;
 
-	private final int TIMEOUT_MAX = 50;
-	private final int TIMEOUT_FLASH_START = 70;
+	private final int TIMEOUT_MAX = 100;
+	private final int TIMEOUT_FLASH_START = 50;
 	private final int TIMEOUT_FLASH_FINISH = 10;
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.0");
@@ -60,20 +60,16 @@ class NexOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-
 		if (!plugin.isInFight() || plugin.getNex() == null)
 		{
 			return null;
 		}
 
 		// handle render death blob before we break because dead
-
-
 		if (config.indicateDeathAOE() && plugin.getNexDeathTile() != null)
 		{
 			drawNexDeathTile(graphics);
 		}
-
 
 		if (plugin.getNex().isDead())
 		{
@@ -88,6 +84,11 @@ class NexOverlay extends Overlay
 		if (config.coughTileIndicator() && !plugin.getCoughingPlayers().isEmpty())
 		{
 			drawInfectionArea(graphics);
+		}
+
+		if (config.healthyTileIndicator() && plugin.getSelfCoughingPlayer() != null)
+		{
+			drawHealthyPlayers(graphics);
 		}
 
 		if (config.indicateNexVulnerability().showInvulnerable() && plugin.nexDisable())
@@ -117,7 +118,7 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateMinionVulnerability().showVulnerable() && plugin.nexDisable())
 		{
-			drawMinion(graphics, plugin.minionCoolDownExpired());
+			drawMinion(graphics, plugin.minionCoolDownExpired() && plugin.isMinionActive());
 		}
 
 		if (config.drawNexHp())
@@ -234,6 +235,7 @@ class NexOverlay extends Overlay
 
 		WorldPoint localWorldLocation = local.getWorldLocation();
 
+		// Draw sick people squares. ew gross
 		plugin
 			.getCoughingPlayers()
 			.stream()
@@ -255,6 +257,44 @@ class NexOverlay extends Overlay
 		graphics.setColor(getFillColor(config.coughColourBase()));
 		graphics.fill(infecetedTiles);
 	}
+
+
+	private void drawHealthyPlayers(Graphics2D graphics)
+	{
+		Area infecetedTiles = new Area();
+
+		var local = client.getLocalPlayer();
+		if (local == null)
+		{
+			return;
+		}
+
+		WorldPoint localWorldLocation = local.getWorldLocation();
+
+
+		// Draw sick people squares. ew gross
+		plugin
+			.getHealthyPlayersLocations()
+			.stream()
+			.filter(healthyLocation -> {
+				var players_loc = WorldPoint.fromLocal(client, healthyLocation);
+				return players_loc.distanceTo(localWorldLocation) <= config.healthyTileRenderDistance();
+			})
+			.forEach(healthyLocation -> {
+				Polygon poly = getCanvasTileAreaPoly(client, healthyLocation, 3);
+				if (poly != null)
+				{
+					infecetedTiles.add(new Area(poly));
+				}
+			});
+
+		graphics.setPaintMode();
+		graphics.setColor(config.healthColourBase());
+		graphics.draw(infecetedTiles);
+		graphics.setColor(getFillColor(config.healthColourBase()));
+		graphics.fill(infecetedTiles);
+	}
+
 
 	private void drawNexDeathTile(Graphics2D graphics)
 	{

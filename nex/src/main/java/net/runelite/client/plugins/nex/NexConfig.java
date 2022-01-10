@@ -32,9 +32,11 @@ import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
 
-@ConfigGroup("nex")
+@ConfigGroup(NexConfig.GROUP)
 public interface NexConfig extends Config
 {
+	String GROUP = "nextended";
+
 	@ConfigSection(
 		name = "General",
 		description = "Configure general settings.",
@@ -363,7 +365,7 @@ public interface NexConfig extends Config
 	@Alpha
 	@ConfigItem(
 		keyName = "coughColourBase",
-		name = "Shadows colour",
+		name = "Cough colour",
 		description = "Colour for sickness highlight",
 		position = 205,
 		section = smokeSection
@@ -371,6 +373,48 @@ public interface NexConfig extends Config
 	default Color coughColourBase()
 	{
 		return new Color(255, 0, 98, 100);
+	}
+
+	@ConfigItem(
+		keyName = "healthyTileIndicator",
+		name = "Healthy tiles highlight",
+		description = "Shows the tiles that will spread the sick when you have it",
+		position = 206,
+		section = smokeSection
+	)
+	default boolean healthyTileIndicator()
+	{
+		return true;
+	}
+
+	@Range(
+		max = 20,
+		min = 1
+	)
+	@ConfigItem(
+		keyName = "healthyTileRenderDistance",
+		name = "Render Distance",
+		description = "Render healthy distance in tiles from your player",
+		position = 207,
+		section = smokeSection
+	)
+	@Units("tiles")
+	default int healthyTileRenderDistance()
+	{
+		return 8;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "healthColourBase",
+		name = "Health colour",
+		description = "Colour for healthy highlight",
+		position = 208,
+		section = smokeSection
+	)
+	default Color healthColourBase()
+	{
+		return new Color(0, 255, 255, 100);
 	}
 
 	@ConfigSection(
