@@ -184,8 +184,6 @@ public interface NexConfig extends Config
 		keyName = "indicateInvulnerableNexTicks",
 		name = "Invulnerable Nex Ticks",
 		description = "if we know how many ticks before shes clickable",
-		hidden = true,
-		unhide = "indicateInvulnerableNexTicks",
 		section = generalSection
 	)
 	default boolean indicateInvulnerableNexTicks()
