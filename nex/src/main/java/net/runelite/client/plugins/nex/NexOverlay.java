@@ -333,7 +333,6 @@ class NexOverlay extends Overlay
 
 	private void drawNexDeathTile(Graphics2D graphics)
 	{
-
 		var tile = plugin.getNexDeathTile();
 
 		if (tile == null)
