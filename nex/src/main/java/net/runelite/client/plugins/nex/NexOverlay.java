@@ -84,7 +84,7 @@ class NexOverlay extends Overlay
 				plugin.getShadowsTicks().getTicks(),
 				plugin.getShadows(),
 				config.shadowsRenderDistance(),
-				config.shadowsColourBase(),
+				config.shadowsColorBase(),
 				config.shadowsTickCounter()
 			);
 		}
@@ -96,7 +96,7 @@ class NexOverlay extends Overlay
 				plugin.getIceTrapTicks().getTicks(),
 				plugin.getIceTraps(),
 				10000,
-				config.iceCoulourBase(),
+				config.iceColorBase(),
 				config.drawTicksOnIceTrap()
 			);
 		}
@@ -287,9 +287,9 @@ class NexOverlay extends Overlay
 			});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.coughColourBase());
+		graphics.setColor(config.coughColorBase());
 		graphics.draw(infecetedTiles);
-		graphics.setColor(getFillColor(config.coughColourBase()));
+		graphics.setColor(getFillColor(config.coughColorBase()));
 		graphics.fill(infecetedTiles);
 	}
 
@@ -324,9 +324,9 @@ class NexOverlay extends Overlay
 			});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.healthColourBase());
+		graphics.setColor(config.healthColorBase());
 		graphics.draw(infecetedTiles);
-		graphics.setColor(getFillColor(config.healthColourBase()));
+		graphics.setColor(getFillColor(config.healthColorBase()));
 		graphics.fill(infecetedTiles);
 	}
 

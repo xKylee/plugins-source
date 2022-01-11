@@ -364,13 +364,13 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		keyName = "coughColourBase",
-		name = "Cough colour",
-		description = "Colour for sickness highlight",
+		keyName = "coughColorBase",
+		name = "Cough Color",
+		description = "Color for sickness highlight",
 		position = 205,
 		section = smokeSection
 	)
-	default Color coughColourBase()
+	default Color coughColorBase()
 	{
 		return new Color(255, 0, 98, 100);
 	}
@@ -406,13 +406,13 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		keyName = "healthColourBase",
-		name = "Health colour",
-		description = "Colour for healthy highlight",
+		keyName = "healthColorBase",
+		name = "Health Color",
+		description = "Color for healthy highlight",
 		position = 208,
 		section = smokeSection
 	)
-	default Color healthColourBase()
+	default Color healthColorBase()
 	{
 		return new Color(0, 255, 255, 100);
 	}
@@ -469,13 +469,13 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		keyName = "shadowsColourBase",
-		name = "Shadows colour",
-		description = "Colour the area highlighted by shadows",
+		keyName = "shadowsColorBase",
+		name = "Shadows Color",
+		description = "Color the area highlighted by shadows",
 		position = 304,
 		section = shadowSection
 	)
-	default Color shadowsColourBase()
+	default Color shadowsColorBase()
 	{
 		return new Color(0, 255, 255, 100);
 	}
@@ -514,13 +514,13 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		keyName = "iceCoulourBase",
-		name = "Ice colour",
-		description = "Colour the area highlighted by ice",
+		keyName = "iceColorBase",
+		name = "Ice Color",
+		description = "Color the area highlighted by ice",
 		position = 503,
 		section = iceSection
 	)
-	default Color iceCoulourBase()
+	default Color iceColorBase()
 	{
 		return new Color(255, 0, 98, 100);
 	}
