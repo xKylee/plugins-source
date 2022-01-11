@@ -344,7 +344,7 @@ class NexOverlay extends Overlay
 			return;
 		}
 
-		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, 6);
+		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, 7);
 
 		OverlayUtil.renderPolygon(
 			graphics,

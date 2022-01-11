@@ -478,6 +478,19 @@ public interface NexConfig extends Config
 		return new Color(0, 255, 255, 100);
 	}
 
+
+	@ConfigItem(
+		keyName = "shadowStandingFlash",
+		name = "Flash if danger",
+		description = "will flash with shadow color if they spawn and you are in danger",
+		position = 305,
+		section = shadowSection
+	)
+	default boolean shadowStandingFlash()
+	{
+		return false;
+	}
+
 	@ConfigSection(
 		name = "Ice Phase",
 		description = "Configure Ice Phase settings.",
