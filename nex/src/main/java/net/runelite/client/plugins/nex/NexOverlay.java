@@ -111,9 +111,13 @@ class NexOverlay extends Overlay
 			drawHealthyPlayers(graphics);
 		}
 
-		if (config.indicateNexVulnerability().showInvulnerable() && plugin.nexDisable())
+		if (plugin.nexDisable())
 		{
-			outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
+			if (config.indicateNexVulnerability().showInvulnerable())
+			{
+				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
+			}
+
 			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
 			{
 				graphics.setFont(new Font("Arial", Font.BOLD, config.indicateInvulnerableNexTicksFontSize()));
@@ -333,7 +337,6 @@ class NexOverlay extends Overlay
 
 	private void drawNexDeathTile(Graphics2D graphics)
 	{
-
 		var tile = plugin.getNexDeathTile();
 
 		if (tile == null)
