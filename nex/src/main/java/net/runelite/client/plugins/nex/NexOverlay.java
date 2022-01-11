@@ -9,6 +9,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.text.DecimalFormat;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +79,26 @@ class NexOverlay extends Overlay
 
 		if (config.shadowsIndicator())
 		{
-			drawShadows(graphics);
+			drawObjectTickable(
+				graphics,
+				plugin.getShadowsTicks().getTicks(),
+				plugin.getShadows(),
+				config.shadowsRenderDistance(),
+				config.shadowsColorBase(),
+				config.shadowsTickCounter()
+			);
+		}
+
+		if (config.drawIceTraps())
+		{
+			drawObjectTickable(
+				graphics,
+				plugin.getIceTrapTicks().getTicks(),
+				plugin.getIceTraps(),
+				10000,
+				config.iceColorBase(),
+				config.drawTicksOnIceTrap()
+			);
 		}
 
 		if (config.coughTileIndicator() && !plugin.getCoughingPlayers().isEmpty())
@@ -94,11 +114,11 @@ class NexOverlay extends Overlay
 		if (config.indicateNexVulnerability().showInvulnerable() && plugin.nexDisable())
 		{
 			outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
-			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick() > 0)
+			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
 			{
 				graphics.setFont(new Font("Arial", Font.BOLD, config.indicateInvulnerableNexTicksFontSize()));
 				var text = String.valueOf(plugin.getNexTicksUntilClick());
-				var color = plugin.getNexTicksUntilClick() == 1 ? Color.WHITE : Color.LIGHT_GRAY;
+				var color = plugin.getNexTicksUntilClick().getTicks() == 1 ? Color.WHITE : Color.LIGHT_GRAY;
 
 				final Point canvasPoint = plugin.getNex().getCanvasTextLocation(
 					graphics, text, 0);
@@ -153,32 +173,47 @@ class NexOverlay extends Overlay
 		return null;
 	}
 
-	private void drawShadows(Graphics2D graphics)
+	private void drawObjectTickable(Graphics2D graphics,
+									int ticks, Set<GameObject> gameObjectSet,
+									int renderDistance,
+									Color baseColor,
+									boolean renderTicks)
 	{
-		String count = Integer.toString(plugin.getShadowsTicks());
+		if (gameObjectSet.isEmpty())
+		{
+			return;
+		}
+
+		String count = Integer.toString(ticks);
 		graphics.setFont(new Font("Arial", Font.BOLD, 12));
 
-		for (GameObject graphicsObject : plugin.getShadows())
+		Player localPlayer = client.getLocalPlayer();
+
+		if (localPlayer == null)
 		{
-			LocalPoint lp = graphicsObject.getLocalLocation();
+			return;
+		}
+
+		for (GameObject gameObject : gameObjectSet)
+		{
+			LocalPoint lp = gameObject.getLocalLocation();
 			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
-			Player localPlayer = client.getLocalPlayer();
 
 
-			if (poly != null && localPlayer != null)
+			if (poly != null)
 			{
 				WorldPoint playerWorldPoint = localPlayer.getWorldLocation();
 				WorldPoint shadowsWorldPoint = WorldPoint.fromLocal(client, lp);
 
-				if (playerWorldPoint.distanceTo(shadowsWorldPoint) <= config.shadowsRenderDistance())
+				if (playerWorldPoint.distanceTo(shadowsWorldPoint) <= renderDistance)
 				{
 					graphics.setPaintMode();
-					graphics.setColor(config.shadowsColourBase());
+					graphics.setColor(baseColor);
 					graphics.draw(poly);
-					graphics.setColor(getFillColor(config.shadowsColourBase()));
+					graphics.setColor(getFillColor(baseColor));
 					graphics.fill(poly);
 
-					if (config.shadowsTickCounter())
+					if (renderTicks)
 					{
 						Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
 						if (point != null)
@@ -252,9 +287,9 @@ class NexOverlay extends Overlay
 			});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.coughColourBase());
+		graphics.setColor(config.coughColorBase());
 		graphics.draw(infecetedTiles);
-		graphics.setColor(getFillColor(config.coughColourBase()));
+		graphics.setColor(getFillColor(config.coughColorBase()));
 		graphics.fill(infecetedTiles);
 	}
 
@@ -289,9 +324,9 @@ class NexOverlay extends Overlay
 			});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.healthColourBase());
+		graphics.setColor(config.healthColorBase());
 		graphics.draw(infecetedTiles);
-		graphics.setColor(getFillColor(config.healthColourBase()));
+		graphics.setColor(getFillColor(config.healthColorBase()));
 		graphics.fill(infecetedTiles);
 	}
 
@@ -329,7 +364,7 @@ class NexOverlay extends Overlay
 
 	private void drawNexHpOverlay(Graphics2D graphics)
 	{
-		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick() > 0)
+		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
 		{
 			return;
 		}
