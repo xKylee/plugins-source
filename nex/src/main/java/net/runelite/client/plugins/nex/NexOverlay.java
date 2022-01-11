@@ -28,6 +28,7 @@ import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
+
 @Singleton
 @Slf4j
 class NexOverlay extends Overlay
@@ -160,21 +161,30 @@ class NexOverlay extends Overlay
 			drawTank(graphics);
 		}
 
-		if (plugin.isFlash() && config.flash())
+		if (config.flash() && plugin.isFlash())
 		{
-			final Color flash = graphics.getColor();
-			graphics.setColor(new Color(255, 0, 0, TIMEOUT_FLASH_START - Math.min(TIMEOUT_FLASH_START, ((TIMEOUT_FLASH_START - TIMEOUT_FLASH_FINISH) * timeout / TIMEOUT_MAX))));
-			graphics.fill(new Rectangle(client.getCanvas().getSize()));
-			graphics.setColor(flash);
-			timeout++;
-			if (timeout >= TIMEOUT_MAX)
-			{
-				timeout = 0;
-				plugin.setFlash(false);
-			}
+			drawFlash(graphics, Color.RED, plugin::setFlash);
+		}
+
+		if (config.shadowStandingFlash() && plugin.isShadowFlash()) {
+			drawFlash(graphics, config.shadowsColorBase(), plugin::setShadowFlash);
 		}
 
 		return null;
+	}
+
+	private void drawFlash(Graphics2D graphics, Color color, NexOverlayAction setter)
+	{
+		final Color flash = graphics.getColor();
+		graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), TIMEOUT_FLASH_START - Math.min(TIMEOUT_FLASH_START, ((TIMEOUT_FLASH_START - TIMEOUT_FLASH_FINISH) * timeout / TIMEOUT_MAX))));
+		graphics.fill(new Rectangle(client.getCanvas().getSize()));
+		graphics.setColor(flash);
+		timeout++;
+		if (timeout >= TIMEOUT_MAX)
+		{
+			timeout = 0;
+			setter.method(false);
+		}
 	}
 
 	private void drawObjectTickable(Graphics2D graphics,
