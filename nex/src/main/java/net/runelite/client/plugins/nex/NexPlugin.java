@@ -355,7 +355,7 @@ public class NexPlugin extends Plugin
 		{
 			healthyPlayersLocations = players
 				.stream()
-				.filter(player -> healthyPlayers.contains(player.getName()))
+				.filter(player -> client.getLocalPlayer() != player && healthyPlayers.contains(player.getName()))
 				.map(Actor::getLocalLocation)
 				.collect(Collectors.toList());
 		}
