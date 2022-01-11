@@ -261,7 +261,6 @@ public class NexPlugin extends Plugin
 		iceTrapTicks.tick();
 	}
 
-
 	private void updateTrappedStatus()
 	{
 		if (currentPhase != NexPhase.ICE)
@@ -284,7 +283,6 @@ public class NexPlugin extends Plugin
 
 		isTrappedInIce = iceTraps.stream().filter(trap -> trap.getWorldLocation().distanceTo(player.getWorldLocation()) == 1).count() == iceTraps.size();
 	}
-
 
 	/**
 	 * This method has some jank around it with the coughingPlayersChanged & hasEnabled/DisabledEntityHiderRecently.
