@@ -318,6 +318,9 @@ public class NexPlugin extends Plugin
 		if (coughingPlayersChanged || teamSize != players.size())
 		{
 			coughingPlayersChanged = false;
+
+			// trigger a reload of the hidden players
+			resetEntityHiderCache();
 			teamSize = players.size();
 
 			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
@@ -373,13 +376,17 @@ public class NexPlugin extends Plugin
 
 		if (object.getId() == SHADOW_ID)
 		{
-			shadows.add(object);
-			shadowsTicks.setTicks(SHADOW_TICK_LEN);
+			if (shadows.add(object))
+			{
+				shadowsTicks.setTicks(SHADOW_TICK_LEN);
+			}
 		}
 		else if (object.getId() == ICE_TRAP_ID)
 		{
-			iceTraps.add(object);
-			iceTrapTicks.setTicks(ICE_TRAP_TICK_LEN);
+			if (iceTraps.add(object))
+			{
+				iceTrapTicks.setTicks(ICE_TRAP_TICK_LEN);
+			}
 		}
 	}
 
@@ -465,6 +472,7 @@ public class NexPlugin extends Plugin
 			{
 				nex = null; // Just need to grab nex from the new spawn
 				nexTicksUntilClick.setTicks(NEX_STARTUP_DELAY);
+				resetEntityHiderCache();
 			}
 			else
 			{
@@ -545,6 +553,12 @@ public class NexPlugin extends Plugin
 	public boolean minionCoolDownExpired()
 	{
 		return nexPhaseMinionCoolDown.isExpired();
+	}
+
+	private void resetEntityHiderCache()
+	{
+		hasEnabledEntityHiderRecently = false;
+		hasDisabledEntityHiderRecently = false;
 	}
 
 	private void clearHiddenEntities()
