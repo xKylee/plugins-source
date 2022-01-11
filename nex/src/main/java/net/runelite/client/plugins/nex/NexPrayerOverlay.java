@@ -50,7 +50,7 @@ class NexPrayerOverlay extends Overlay
 			return null;
 		}
 
-		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase(), client.getLocalPlayer(), plugin.getNex());
+		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase(), client.getLocalPlayer(), plugin.getNex(), plugin.isTrappedInIce());
 
 		if (prayer == null)
 		{
