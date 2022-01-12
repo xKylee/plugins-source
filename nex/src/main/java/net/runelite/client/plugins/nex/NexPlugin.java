@@ -93,6 +93,10 @@ public class NexPlugin extends Plugin
 	private boolean isFlash;
 
 	@Getter
+	@Setter
+	private boolean isShadowFlash;
+
+	@Getter
 	private NPC nex;
 
 	@Getter
@@ -281,7 +285,10 @@ public class NexPlugin extends Plugin
 			return;
 		}
 
-		isTrappedInIce = iceTraps.stream().filter(trap -> trap.getWorldLocation().distanceTo(player.getWorldLocation()) == 1).count() == iceTraps.size();
+		var nearbyIceTraps = iceTraps.stream().filter(trap -> trap.getWorldLocation().distanceTo(player.getWorldLocation()) == 1).count();
+		var possibleIceTraps = iceTraps.size();
+
+		isTrappedInIce = nearbyIceTraps == possibleIceTraps;
 	}
 
 	/**
@@ -376,14 +383,19 @@ public class NexPlugin extends Plugin
 		{
 			if (shadows.add(object))
 			{
-				shadowsTicks.setTicks(SHADOW_TICK_LEN);
+				if (client.getLocalPlayer() != null && object.getWorldLocation().equals(client.getLocalPlayer().getWorldLocation()))
+				{
+					setShadowFlash(true);
+				}
+
+				shadowsTicks.setTicksIfExpired(SHADOW_TICK_LEN);
 			}
 		}
 		else if (object.getId() == ICE_TRAP_ID)
 		{
 			if (iceTraps.add(object))
 			{
-				iceTrapTicks.setTicks(ICE_TRAP_TICK_LEN);
+				iceTrapTicks.setTicksIfExpired(ICE_TRAP_TICK_LEN);
 			}
 		}
 	}
@@ -398,7 +410,7 @@ public class NexPlugin extends Plugin
 
 		GameObject object = event.getGameObject();
 
-		if (object.getId() == ICE_TRAP_ID)
+		if (object.getId() == ICE_TRAP_ID && !iceTraps.isEmpty())
 		{
 			clearIceTrap();
 		}
