@@ -70,12 +70,29 @@ class NexOverlay extends Overlay
 		// handle render death blob before we break because dead
 		if (config.indicateDeathAOE() && plugin.getNexDeathTile() != null)
 		{
-			drawNexDeathTile(graphics);
+			drawTileAOE(
+				graphics,
+				plugin.getNexDeathTile(),
+				7,
+				config.indicateDeathAOEColor(),
+				plugin.getNexDeathTileTicks().getTicks()
+			);
 		}
 
 		if (plugin.getNex().isDead())
 		{
 			return null;
+		}
+
+		if (config.indicateContainAOE())
+		{
+			drawTileAOE(
+				graphics,
+				plugin.getNex().getLocalLocation(),
+				5,
+				config.indicateContainAOEColor(),
+				plugin.getContainTrapTicks().getTicks()
+			);
 		}
 
 		if (config.shadowsIndicator())
@@ -166,7 +183,8 @@ class NexOverlay extends Overlay
 			drawFlash(graphics, Color.RED, plugin::setFlash);
 		}
 
-		if (config.shadowStandingFlash() && plugin.isShadowFlash()) {
+		if (config.shadowStandingFlash() && plugin.isShadowFlash())
+		{
 			drawFlash(graphics, config.shadowsColorBase(), plugin::setShadowFlash);
 		}
 
@@ -345,27 +363,25 @@ class NexOverlay extends Overlay
 	}
 
 
-	private void drawNexDeathTile(Graphics2D graphics)
+	private void drawTileAOE(Graphics2D graphics, LocalPoint tile, int size, Color color, int ticksRemaining)
 	{
-		var tile = plugin.getNexDeathTile();
-
 		if (tile == null)
 		{
 			return;
 		}
 
-		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, 7);
+		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, size);
 
 		OverlayUtil.renderPolygon(
 			graphics,
 			area,
-			config.indicateDeathAOEColor(),
-			getFillColor(config.indicateDeathAOEColor()),
+			color,
+			getFillColor(color),
 			new BasicStroke(2)
 		);
 
 		graphics.setFont(new Font("Arial", Font.BOLD, 16));
-		String ticks = String.valueOf(plugin.getNexDeathTileTicks());
+		String ticks = String.valueOf(ticksRemaining);
 
 		OverlayUtil.renderTextLocation(
 			graphics,

@@ -523,6 +523,34 @@ public interface NexConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+		position = 503,
+		keyName = "indicateContainAOE",
+		name = "Indicate Contain This!",
+		description = "Highlight the tiles where you gunna get smacked",
+		section = iceSection
+	)
+	default boolean indicateContainAOE()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 504,
+		keyName = "indicateContainAOEColor",
+		name = "Contain AOE Color",
+		description = "Stop reading these",
+		hidden = true,
+		unhide = "indicateContainAOE",
+		section = iceSection
+	)
+	default Color indicateContainAOEColor()
+	{
+		return new Color(255, 0, 98, 100);
+	}
+
+
 	@Alpha
 	@ConfigItem(
 		keyName = "iceColorBase",

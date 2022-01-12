@@ -79,6 +79,7 @@ public class NexPlugin extends Plugin
 
 	private static final int SHADOW_TICK_LEN = 5;
 	private static final int ICE_TRAP_TICK_LEN = 9;
+	private static final int CONTAIN_THIS_TICK_LEN = 6;
 	private static final int NEX_PHASE_DELAY = 6;
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
@@ -151,6 +152,9 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private final TickTimer iceTrapTicks = new TickTimer(this::clearIceTrap);
+
+	@Getter
+	private final TickTimer containTrapTicks = new TickTimer();
 
 	private void clearIceTrap()
 	{
@@ -505,6 +509,8 @@ public class NexPlugin extends Plugin
 			if (currentSpecial == NexSpecial.BLOOD_SIPHON)
 			{
 				nexTicksUntilClick.setTicks(NEX_SIPHON_DELAY);
+			} else if (currentSpecial == NexSpecial.CONTAIN) {
+				containTrapTicks.setTicksIfExpired(CONTAIN_THIS_TICK_LEN);
 			}
 			return;
 		}
