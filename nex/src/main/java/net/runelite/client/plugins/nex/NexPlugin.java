@@ -78,6 +78,8 @@ public class NexPlugin extends Plugin
 	private static final int COUGH_GRAPHIC_ID = 1103;
 
 	private static final int SHADOW_TICK_LEN = 5;
+	private static final int BLOOD_SACRIFICE_LEN = 7;
+	private static final int BLOOD_SACRIFICE_DISTANCE = 7;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
 	private static final int NEX_PHASE_DELAY = 6;
@@ -123,6 +125,9 @@ public class NexPlugin extends Plugin
 	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
 
 	@Getter
+	private List<LocalPoint> bloodSacrificeDangerTiles = new ArrayList<>();
+
+	@Getter
 	private NexSpecial currentSpecial;
 
 	@Getter
@@ -143,6 +148,9 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private final TickTimer shadowsTicks = new TickTimer(shadows::clear);
+
+	@Getter
+	private final TickTimer bloodSacrificeTicks = new TickTimer(() -> bloodSacrificeDangerTiles.clear());
 
 	@Getter
 	private final TickTimer nexTicksUntilClick = new TickTimer();
@@ -267,6 +275,8 @@ public class NexPlugin extends Plugin
 		nexDeathTileTicks.tick();
 		shadowsTicks.tick();
 		iceTrapTicks.tick();
+		bloodSacrificeTicks.tick();
+		containTrapTicks.tick();
 	}
 
 	private void updateTrappedStatus()
@@ -511,6 +521,9 @@ public class NexPlugin extends Plugin
 				nexTicksUntilClick.setTicks(NEX_SIPHON_DELAY);
 			} else if (currentSpecial == NexSpecial.CONTAIN) {
 				containTrapTicks.setTicksIfExpired(CONTAIN_THIS_TICK_LEN);
+			} else if (currentSpecial == NexSpecial.BLOOD_SACRIFICE_PERSONAL) {
+				updateRadiusTiles();
+				bloodSacrificeTicks.setTicksIfExpired(BLOOD_SACRIFICE_LEN);
 			}
 			return;
 		}
@@ -569,6 +582,22 @@ public class NexPlugin extends Plugin
 	public boolean minionCoolDownExpired()
 	{
 		return nexPhaseMinionCoolDown.isExpired();
+	}
+
+	private void updateRadiusTiles() {
+		if (nex != null)
+		{
+			for (int x = -10; x <= 10; x++)
+			{
+				for (int y = -10; y <= 10; y++)
+				{
+					var loc =  nex.getWorldLocation().dx(x).dy(y);
+					if (loc.distanceTo(nex.getWorldLocation()) <= BLOOD_SACRIFICE_DISTANCE) {
+						bloodSacrificeDangerTiles.add(LocalPoint.fromWorld(client, loc));
+					}
+				}
+			}
+		}
 	}
 
 	private void resetEntityHiderCache()

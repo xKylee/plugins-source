@@ -492,6 +492,41 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigSection(
+		name = "Blood Phase",
+		description = "Configure Blood Phase settings.",
+		position = 400,
+		keyName = "iceSection"
+	)
+	String bloodSection = "Blood Phase";
+
+	@ConfigItem(
+		position = 401,
+		keyName = "indicateSacrificeAOE",
+		name = "Indicate Sacrifice Danger Area",
+		description = "Highlight the tiles where you gunna get smacked",
+		section = bloodSection
+	)
+	default boolean indicateSacrificeAOE()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 402,
+		keyName = "indicateSacrificeAOEColor",
+		name = "Danger Color",
+		description = "Area where sacrafice will heal nex",
+		hidden = true,
+		unhide = "indicateSacrificeAOE",
+		section = bloodSection
+	)
+	default Color indicateSacrificeAOEColor()
+	{
+		return new Color(255, 0, 98, 100);
+	}
+
+	@ConfigSection(
 		name = "Ice Phase",
 		description = "Configure Ice Phase settings.",
 		position = 500,
@@ -549,7 +584,6 @@ public interface NexConfig extends Config
 	{
 		return new Color(255, 0, 98, 100);
 	}
-
 
 	@Alpha
 	@ConfigItem(

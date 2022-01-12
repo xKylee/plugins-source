@@ -16,8 +16,7 @@ public class NexText
 	static final String NEX_SPECIAL_BLOOD_SACRIFICE = "i demand a blood sacrifice!";
 	static final String NEX_SPECIAL_CONTAIN = "contain this!";
 	static final String NEX_SPECIAL_ICE_PRISON = "die now, in a prison of ice!";
-	// TODO smoke bullet attack
-
+	static final String NEX_SPECIAL_BLOOD_SACRIFICE_PERSONAL = "nex has marked you for a blood sacrifice! run!";
 
 	// Spawns first minion
 	static final String CAN_ATTACK_FUMUS = "fumus, don't fail me!";

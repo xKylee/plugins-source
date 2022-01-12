@@ -75,7 +75,8 @@ class NexOverlay extends Overlay
 				plugin.getNexDeathTile(),
 				7,
 				config.indicateDeathAOEColor(),
-				plugin.getNexDeathTileTicks().getTicks()
+				plugin.getNexDeathTileTicks().getTicks(),
+				true
 			);
 		}
 
@@ -84,14 +85,15 @@ class NexOverlay extends Overlay
 			return null;
 		}
 
-		if (config.indicateContainAOE())
+		if (config.indicateContainAOE() && plugin.getContainTrapTicks().isActive())
 		{
 			drawTileAOE(
 				graphics,
 				plugin.getNex().getLocalLocation(),
 				5,
 				config.indicateContainAOEColor(),
-				plugin.getContainTrapTicks().getTicks()
+				plugin.getContainTrapTicks().getTicks(),
+				false
 			);
 		}
 
@@ -129,6 +131,11 @@ class NexOverlay extends Overlay
 			drawHealthyPlayers(graphics);
 		}
 
+		if (config.indicateSacrificeAOE() && plugin.getBloodSacrificeTicks().isActive())
+		{
+			drawBloodSacrificeDangerZone(graphics);
+		}
+
 		if (plugin.nexDisable())
 		{
 			if (config.indicateNexVulnerability().showInvulnerable())
@@ -136,7 +143,7 @@ class NexOverlay extends Overlay
 				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
 			}
 
-			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
+			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
 			{
 				graphics.setFont(new Font("Arial", Font.BOLD, config.indicateInvulnerableNexTicksFontSize()));
 				var text = String.valueOf(plugin.getNexTicksUntilClick());
@@ -362,8 +369,37 @@ class NexOverlay extends Overlay
 		graphics.fill(infecetedTiles);
 	}
 
+	private void drawBloodSacrificeDangerZone(Graphics2D graphics)
+	{
+		Area dangerTiles = new Area();
 
-	private void drawTileAOE(Graphics2D graphics, LocalPoint tile, int size, Color color, int ticksRemaining)
+		var local = client.getLocalPlayer();
+		if (local == null)
+		{
+			return;
+		}
+
+		WorldPoint localWorldLocation = local.getWorldLocation();
+
+		plugin
+			.getBloodSacrificeDangerTiles()
+			.forEach(p -> {
+				Polygon poly = getCanvasTileAreaPoly(client, p, 1);
+				if (poly != null)
+				{
+					dangerTiles.add(new Area(poly));
+				}
+			});
+
+		graphics.setPaintMode();
+		graphics.setColor(config.indicateSacrificeAOEColor());
+		graphics.draw(dangerTiles);
+		graphics.setColor(getFillColor(config.indicateSacrificeAOEColor()));
+		graphics.fill(dangerTiles);
+	}
+
+
+	private void drawTileAOE(Graphics2D graphics, LocalPoint tile, int size, Color color, int ticksRemaining, boolean drawTicks)
 	{
 		if (tile == null)
 		{
@@ -380,20 +416,23 @@ class NexOverlay extends Overlay
 			new BasicStroke(2)
 		);
 
-		graphics.setFont(new Font("Arial", Font.BOLD, 16));
-		String ticks = String.valueOf(ticksRemaining);
+		if (drawTicks)
+		{
+			graphics.setFont(new Font("Arial", Font.BOLD, 16));
+			String ticks = String.valueOf(ticksRemaining);
 
-		OverlayUtil.renderTextLocation(
-			graphics,
-			Perspective.getCanvasTextLocation(client, graphics, tile, ticks, 0),
-			ticks,
-			Color.WHITE
-		);
+			OverlayUtil.renderTextLocation(
+				graphics,
+				Perspective.getCanvasTextLocation(client, graphics, tile, ticks, 0),
+				ticks,
+				Color.WHITE
+			);
+		}
 	}
 
 	private void drawNexHpOverlay(Graphics2D graphics)
 	{
-		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
+		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
 		{
 			return;
 		}
