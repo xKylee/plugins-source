@@ -9,6 +9,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -87,13 +88,13 @@ class NexOverlay extends Overlay
 
 		if (config.indicateContainAOE() && plugin.getContainTrapTicks().isActive())
 		{
-			drawTileAOE(
+			drawObjectTickable(
 				graphics,
-				plugin.getNex().getLocalLocation(),
-				5,
-				config.indicateContainAOEColor(),
 				plugin.getContainTrapTicks().getTicks(),
-				false
+				plugin.getContainThisSpawns(),
+				10000,
+				config.indicateContainAOEColor(),
+				config.drawTicksOnContain()
 			);
 		}
 
@@ -213,7 +214,8 @@ class NexOverlay extends Overlay
 	}
 
 	private void drawObjectTickable(Graphics2D graphics,
-									int ticks, Set<GameObject> gameObjectSet,
+									int ticks,
+									List<LocalPoint> gameObjectSet,
 									int renderDistance,
 									Color baseColor,
 									boolean renderTicks)
@@ -233,9 +235,8 @@ class NexOverlay extends Overlay
 			return;
 		}
 
-		for (GameObject gameObject : gameObjectSet)
+		for (LocalPoint lp : gameObjectSet)
 		{
-			LocalPoint lp = gameObject.getLocalLocation();
 			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
 
 
@@ -371,7 +372,7 @@ class NexOverlay extends Overlay
 
 	private void drawBloodSacrificeDangerZone(Graphics2D graphics)
 	{
-		Area dangerTiles = new Area();
+		Area safeTiles = new Area();
 
 		var local = client.getLocalPlayer();
 		if (local == null)
@@ -382,20 +383,20 @@ class NexOverlay extends Overlay
 		WorldPoint localWorldLocation = local.getWorldLocation();
 
 		plugin
-			.getBloodSacrificeDangerTiles()
+			.getBloodSacrificeSafeTiles()
 			.forEach(p -> {
 				Polygon poly = getCanvasTileAreaPoly(client, p, 1);
 				if (poly != null)
 				{
-					dangerTiles.add(new Area(poly));
+					safeTiles.add(new Area(poly));
 				}
 			});
 
 		graphics.setPaintMode();
 		graphics.setColor(config.indicateSacrificeAOEColor());
-		graphics.draw(dangerTiles);
+		graphics.draw(safeTiles);
 		graphics.setColor(getFillColor(config.indicateSacrificeAOEColor()));
-		graphics.fill(dangerTiles);
+		graphics.fill(safeTiles);
 	}
 
 

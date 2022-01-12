@@ -502,8 +502,8 @@ public interface NexConfig extends Config
 	@ConfigItem(
 		position = 401,
 		keyName = "indicateSacrificeAOE",
-		name = "Indicate Sacrifice Danger Area",
-		description = "Highlight the tiles where you gunna get smacked",
+		name = "Indicate Sacrifice Safe Line",
+		description = "Highlight the tiles where you not gunna get smacked",
 		section = bloodSection
 	)
 	default boolean indicateSacrificeAOE()
@@ -515,7 +515,7 @@ public interface NexConfig extends Config
 	@ConfigItem(
 		position = 402,
 		keyName = "indicateSacrificeAOEColor",
-		name = "Danger Color",
+		name = "Safe Color",
 		description = "Area where sacrafice will heal nex",
 		hidden = true,
 		unhide = "indicateSacrificeAOE",
@@ -523,7 +523,7 @@ public interface NexConfig extends Config
 	)
 	default Color indicateSacrificeAOEColor()
 	{
-		return new Color(255, 0, 98, 100);
+		return new Color(0, 255, 119, 100);
 	}
 
 	@ConfigSection(
@@ -558,33 +558,6 @@ public interface NexConfig extends Config
 		return true;
 	}
 
-	@ConfigItem(
-		position = 503,
-		keyName = "indicateContainAOE",
-		name = "Indicate Contain This!",
-		description = "Highlight the tiles where you gunna get smacked",
-		section = iceSection
-	)
-	default boolean indicateContainAOE()
-	{
-		return true;
-	}
-
-	@Alpha
-	@ConfigItem(
-		position = 504,
-		keyName = "indicateContainAOEColor",
-		name = "Contain AOE Color",
-		description = "Stop reading these",
-		hidden = true,
-		unhide = "indicateContainAOE",
-		section = iceSection
-	)
-	default Color indicateContainAOEColor()
-	{
-		return new Color(255, 0, 98, 100);
-	}
-
 	@Alpha
 	@ConfigItem(
 		keyName = "iceColorBase",
@@ -597,6 +570,47 @@ public interface NexConfig extends Config
 	{
 		return new Color(255, 0, 98, 100);
 	}
+
+
+	@ConfigItem(
+		position = 504,
+		keyName = "indicateContainAOE",
+		name = "Indicate Contain This!",
+		description = "Highlight the tiles where you gunna get smacked",
+		section = iceSection
+	)
+	default boolean indicateContainAOE()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "drawTicksOnContain",
+		name = "Contain Trap Ticks",
+		description = "Draw ticks on ice trap",
+		position = 505,
+		section = iceSection
+	)
+	default boolean drawTicksOnContain()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 506,
+		keyName = "indicateContainAOEColor",
+		name = "Contain AOE Color",
+		description = "Stop reading these",
+		hidden = true,
+		unhide = "indicateContainAOE",
+		section = iceSection
+	)
+	default Color indicateContainAOEColor()
+	{
+		return new Color(255, 0, 98, 100);
+	}
+
 
 	@ConfigSection(
 		name = "Zaros Phase",

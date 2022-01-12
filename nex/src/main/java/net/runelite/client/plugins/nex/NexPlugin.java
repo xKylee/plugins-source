@@ -24,6 +24,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
@@ -36,8 +37,11 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.nex.movement.Util;
 import net.runelite.client.plugins.nex.timer.TickTimer;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import org.pf4j.Extension;
 
 @Extension
@@ -82,6 +86,7 @@ public class NexPlugin extends Plugin
 	private static final int BLOOD_SACRIFICE_DISTANCE = 7;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
+	private static final int CONTAIN_THIS_DISTANCE = 3;
 	private static final int NEX_PHASE_DELAY = 6;
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
@@ -110,7 +115,7 @@ public class NexPlugin extends Plugin
 	private NPC lastActive = null;
 
 	@Getter
-	private final Set<GameObject> shadows = new HashSet<>();
+	private final List<LocalPoint> shadows = new ArrayList<>();
 
 	@Getter
 	private final Set<NexCoughingPlayer> coughingPlayers = new HashSet<>();
@@ -119,13 +124,16 @@ public class NexPlugin extends Plugin
 	private final Set<String> healthyPlayers = new HashSet<>();
 
 	@Getter
-	private final Set<GameObject> iceTraps = new HashSet<>();
+	private final List<LocalPoint> iceTraps = new ArrayList<>();
+
+	@Getter
+	private final List<LocalPoint> containThisSpawns = new ArrayList<>();
 
 	@Getter
 	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
 
 	@Getter
-	private List<LocalPoint> bloodSacrificeDangerTiles = new ArrayList<>();
+	private List<LocalPoint> bloodSacrificeSafeTiles = new ArrayList<>();
 
 	@Getter
 	private NexSpecial currentSpecial;
@@ -150,7 +158,7 @@ public class NexPlugin extends Plugin
 	private final TickTimer shadowsTicks = new TickTimer(shadows::clear);
 
 	@Getter
-	private final TickTimer bloodSacrificeTicks = new TickTimer(() -> bloodSacrificeDangerTiles.clear());
+	private final TickTimer bloodSacrificeTicks = new TickTimer(bloodSacrificeSafeTiles::clear);
 
 	@Getter
 	private final TickTimer nexTicksUntilClick = new TickTimer();
@@ -162,7 +170,7 @@ public class NexPlugin extends Plugin
 	private final TickTimer iceTrapTicks = new TickTimer(this::clearIceTrap);
 
 	@Getter
-	private final TickTimer containTrapTicks = new TickTimer();
+	private final TickTimer containTrapTicks = new TickTimer(containThisSpawns::clear);
 
 	private void clearIceTrap()
 	{
@@ -223,6 +231,7 @@ public class NexPlugin extends Plugin
 		lastActive = null;
 		isTrappedInIce = false;
 		coughingPlayers.clear();
+		containThisSpawns.clear();
 		nexTicksUntilClick.reset();
 		iceTraps.clear();
 		iceTrapTicks.reset();
@@ -299,7 +308,7 @@ public class NexPlugin extends Plugin
 			return;
 		}
 
-		var nearbyIceTraps = iceTraps.stream().filter(trap -> trap.getWorldLocation().distanceTo(player.getWorldLocation()) == 1).count();
+		var nearbyIceTraps = iceTraps.stream().filter(trap -> WorldPoint.fromLocal(client, trap).distanceTo(player.getWorldLocation()) == 1).count();
 		var possibleIceTraps = iceTraps.size();
 
 		isTrappedInIce = nearbyIceTraps == possibleIceTraps;
@@ -395,22 +404,19 @@ public class NexPlugin extends Plugin
 
 		if (object.getId() == SHADOW_ID)
 		{
-			if (shadows.add(object))
-			{
-				if (client.getLocalPlayer() != null && object.getWorldLocation().equals(client.getLocalPlayer().getWorldLocation()))
-				{
-					setShadowFlash(true);
-				}
+			shadows.add(object.getLocalLocation());
 
-				shadowsTicks.setTicksIfExpired(SHADOW_TICK_LEN);
+			if (client.getLocalPlayer() != null && object.getWorldLocation().equals(client.getLocalPlayer().getWorldLocation()))
+			{
+				setShadowFlash(true);
 			}
+
+			shadowsTicks.setTicksIfExpired(SHADOW_TICK_LEN);
 		}
 		else if (object.getId() == ICE_TRAP_ID)
 		{
-			if (iceTraps.add(object))
-			{
-				iceTrapTicks.setTicksIfExpired(ICE_TRAP_TICK_LEN);
-			}
+			iceTraps.add(object.getLocalLocation());
+			iceTrapTicks.setTicksIfExpired(ICE_TRAP_TICK_LEN);
 		}
 	}
 
@@ -482,6 +488,7 @@ public class NexPlugin extends Plugin
 		}
 		String message = event.getMessage().toLowerCase().replaceFirst("nex:", "").replaceAll("<[^>]+>", "").strip();
 
+		System.out.println("got messaged -> " + message);
 		if (setPhase(message))
 		{
 			if (currentPhase == NexPhase.NONE)
@@ -519,10 +526,15 @@ public class NexPlugin extends Plugin
 			if (currentSpecial == NexSpecial.BLOOD_SIPHON)
 			{
 				nexTicksUntilClick.setTicks(NEX_SIPHON_DELAY);
-			} else if (currentSpecial == NexSpecial.CONTAIN) {
+			}
+			else if (currentSpecial == NexSpecial.CONTAIN)
+			{
 				containTrapTicks.setTicksIfExpired(CONTAIN_THIS_TICK_LEN);
-			} else if (currentSpecial == NexSpecial.BLOOD_SACRIFICE_PERSONAL) {
-				updateRadiusTiles();
+				containThisSpawns.addAll(Util.getWalkableLocalTiles(client, nex.getWorldLocation(), CONTAIN_THIS_DISTANCE));
+			}
+			else if (currentSpecial == NexSpecial.BLOOD_SACRIFICE_PERSONAL)
+			{
+				updateSafeZone();
 				bloodSacrificeTicks.setTicksIfExpired(BLOOD_SACRIFICE_LEN);
 			}
 			return;
@@ -584,21 +596,17 @@ public class NexPlugin extends Plugin
 		return nexPhaseMinionCoolDown.isExpired();
 	}
 
-	private void updateRadiusTiles() {
-		if (nex != null)
+	private void updateSafeZone()
+	{
+		if (nex == null)
 		{
-			for (int x = -10; x <= 10; x++)
-			{
-				for (int y = -10; y <= 10; y++)
-				{
-					var loc =  nex.getWorldLocation().dx(x).dy(y);
-					if (loc.distanceTo(nex.getWorldLocation()) <= BLOOD_SACRIFICE_DISTANCE) {
-						bloodSacrificeDangerTiles.add(LocalPoint.fromWorld(client, loc));
-					}
-				}
-			}
+			return;
 		}
+
+		bloodSacrificeSafeTiles.clear();
+		bloodSacrificeSafeTiles.addAll(Util.getWalkableLocalTiles(client, nex.getWorldLocation(), BLOOD_SACRIFICE_DISTANCE));
 	}
+
 
 	private void resetEntityHiderCache()
 	{
