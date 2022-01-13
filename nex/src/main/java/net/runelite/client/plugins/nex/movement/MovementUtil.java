@@ -20,7 +20,7 @@ public class MovementUtil
 
 			Set<MovementFlag> movementFlags = MovementFlag.getSetFlags(data);
 
-			return Collections.disjoint(movementFlags, MovementFlag.getUnwalkables());
+			return Collections.disjoint(movementFlags, MovementFlag.getNotWalkable());
 		}
 
 		return true;

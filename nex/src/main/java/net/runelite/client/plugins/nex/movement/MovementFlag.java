@@ -25,7 +25,7 @@ enum MovementFlag
 	BLOCK_MOVEMENT_FULL(CollisionDataFlag.BLOCK_MOVEMENT_FULL);
 
 	@Getter
-	private static final Set<MovementFlag> unwalkables = Set.of(BLOCK_MOVEMENT_OBJECT, BLOCK_MOVEMENT_FLOOR_DECORATION, BLOCK_MOVEMENT_FLOOR, BLOCK_MOVEMENT_FULL);
+	private static final Set<MovementFlag> notWalkable = Set.of(BLOCK_MOVEMENT_OBJECT, BLOCK_MOVEMENT_FLOOR_DECORATION, BLOCK_MOVEMENT_FLOOR, BLOCK_MOVEMENT_FULL);
 
 	@Getter
 	private int flag;
