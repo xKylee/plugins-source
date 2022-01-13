@@ -37,11 +37,9 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.nex.movement.Util;
+import net.runelite.client.plugins.nex.movement.MovementUtil;
 import net.runelite.client.plugins.nex.timer.TickTimer;
 import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.ui.overlay.OverlayUtil;
-import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import org.pf4j.Extension;
 
 @Extension
@@ -530,7 +528,7 @@ public class NexPlugin extends Plugin
 			else if (currentSpecial == NexSpecial.CONTAIN)
 			{
 				containTrapTicks.setTicksIfExpired(CONTAIN_THIS_TICK_LEN);
-				containThisSpawns.addAll(Util.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), CONTAIN_THIS_DISTANCE));
+				containThisSpawns.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), CONTAIN_THIS_DISTANCE));
 			}
 			else if (currentSpecial == NexSpecial.BLOOD_SACRIFICE_PERSONAL)
 			{
@@ -604,7 +602,7 @@ public class NexPlugin extends Plugin
 		}
 
 		bloodSacrificeSafeTiles.clear();
-		bloodSacrificeSafeTiles.addAll(Util.getWalkableLocalTiles(client, nex.getWorldLocation(), BLOOD_SACRIFICE_DISTANCE));
+		bloodSacrificeSafeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation(), BLOOD_SACRIFICE_DISTANCE));
 	}
 
 

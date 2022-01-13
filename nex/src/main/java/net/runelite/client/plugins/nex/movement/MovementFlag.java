@@ -8,7 +8,7 @@ import lombok.Getter;
 import net.runelite.api.CollisionDataFlag;
 
 @AllArgsConstructor
-enum MovementFlags
+enum MovementFlag
 {
 	BLOCK_MOVEMENT_NORTH_WEST(CollisionDataFlag.BLOCK_MOVEMENT_NORTH_WEST),
 	BLOCK_MOVEMENT_NORTH(CollisionDataFlag.BLOCK_MOVEMENT_NORTH),
@@ -25,12 +25,12 @@ enum MovementFlags
 	BLOCK_MOVEMENT_FULL(CollisionDataFlag.BLOCK_MOVEMENT_FULL);
 
 	@Getter
-	private static final Set<MovementFlags> unwalkables = Set.of(BLOCK_MOVEMENT_OBJECT, BLOCK_MOVEMENT_FLOOR_DECORATION, BLOCK_MOVEMENT_FLOOR, BLOCK_MOVEMENT_FULL);
+	private static final Set<MovementFlag> unwalkables = Set.of(BLOCK_MOVEMENT_OBJECT, BLOCK_MOVEMENT_FLOOR_DECORATION, BLOCK_MOVEMENT_FLOOR, BLOCK_MOVEMENT_FULL);
 
 	@Getter
 	private int flag;
 
-	public static Set<MovementFlags> getSetFlags(int collisionData)
+	public static Set<MovementFlag> getSetFlags(int collisionData)
 	{
 		return Arrays.stream(values())
 			.filter(movementFlag -> (movementFlag.flag & collisionData) != 0)

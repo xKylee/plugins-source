@@ -9,7 +9,7 @@ import net.runelite.api.Client;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 
-public class Util
+public class MovementUtil
 {
 	public static boolean isWalkable(Client client, LocalPoint tile)
 	{
@@ -18,9 +18,9 @@ public class Util
 			int[][] flags = client.getCollisionMaps()[client.getPlane()].getFlags();
 			int data = flags[tile.getSceneX()][tile.getSceneY()];
 
-			Set<MovementFlags> movementFlags = MovementFlags.getSetFlags(data);
+			Set<MovementFlag> movementFlags = MovementFlag.getSetFlags(data);
 
-			return Collections.disjoint(movementFlags, MovementFlags.getUnwalkables());
+			return Collections.disjoint(movementFlags, MovementFlag.getUnwalkables());
 		}
 
 		return true;
@@ -45,18 +45,18 @@ public class Util
 
 	public static List<LocalPoint> getWalkableLocalTiles(Client client, WorldPoint center, int radius)
 	{
-		return Util.getRadiusTiles(center, radius)
+		return MovementUtil.getRadiusTiles(center, radius)
 			.stream()
 			.map(tile -> LocalPoint.fromWorld(client, tile))
-			.filter(tile -> Util.isWalkable(client, tile))
+			.filter(tile -> MovementUtil.isWalkable(client, tile))
 			.collect(Collectors.toList());
 	}
 
 	public static List<WorldPoint> getWalkableWorldTiles(Client client, WorldPoint center, int radius)
 	{
-		return Util.getRadiusTiles(center, radius)
+		return MovementUtil.getRadiusTiles(center, radius)
 			.stream()
-			.filter(tile -> Util.isWalkable(client, LocalPoint.fromWorld(client, tile)))
+			.filter(tile -> MovementUtil.isWalkable(client, LocalPoint.fromWorld(client, tile)))
 			.collect(Collectors.toList());
 	}
 }
