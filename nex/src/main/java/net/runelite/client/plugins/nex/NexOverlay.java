@@ -9,12 +9,11 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.text.DecimalFormat;
-import java.util.Set;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.GameObject;
 import net.runelite.api.Perspective;
 import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
 import net.runelite.api.Player;
@@ -27,6 +26,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
+
 
 @Singleton
 @Slf4j
@@ -69,12 +69,31 @@ class NexOverlay extends Overlay
 		// handle render death blob before we break because dead
 		if (config.indicateDeathAOE() && plugin.getNexDeathTile() != null)
 		{
-			drawNexDeathTile(graphics);
+			drawTileAOE(
+				graphics,
+				plugin.getNexDeathTile(),
+				7,
+				config.indicateDeathAOEColor(),
+				plugin.getNexDeathTileTicks().getTicks(),
+				true
+			);
 		}
 
 		if (plugin.getNex().isDead())
 		{
 			return null;
+		}
+
+		if (config.indicateContainAOE() && plugin.getContainTrapTicks().isActive())
+		{
+			drawObjectTickable(
+				graphics,
+				plugin.getContainTrapTicks().getTicks(),
+				plugin.getContainThisSpawns(),
+				10000,
+				config.indicateContainAOEColor(),
+				config.drawTicksOnContain()
+			);
 		}
 
 		if (config.shadowsIndicator())
@@ -111,6 +130,11 @@ class NexOverlay extends Overlay
 			drawHealthyPlayers(graphics);
 		}
 
+		if (config.indicateSacrificeAOE() && plugin.getBloodSacrificeTicks().isActive())
+		{
+			drawBloodSacrificeSafeZone(graphics);
+		}
+
 		if (plugin.nexDisable())
 		{
 			if (config.indicateNexVulnerability().showInvulnerable())
@@ -118,7 +142,7 @@ class NexOverlay extends Overlay
 				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
 			}
 
-			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
+			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
 			{
 				graphics.setFont(new Font("Arial", Font.BOLD, config.indicateInvulnerableNexTicksFontSize()));
 				var text = String.valueOf(plugin.getNexTicksUntilClick());
@@ -160,30 +184,41 @@ class NexOverlay extends Overlay
 			drawTank(graphics);
 		}
 
-		if (plugin.isFlash() && config.flash())
+		if (config.flash() && plugin.isFlash())
 		{
-			final Color flash = graphics.getColor();
-			graphics.setColor(new Color(255, 0, 0, TIMEOUT_FLASH_START - Math.min(TIMEOUT_FLASH_START, ((TIMEOUT_FLASH_START - TIMEOUT_FLASH_FINISH) * timeout / TIMEOUT_MAX))));
-			graphics.fill(new Rectangle(client.getCanvas().getSize()));
-			graphics.setColor(flash);
-			timeout++;
-			if (timeout >= TIMEOUT_MAX)
-			{
-				timeout = 0;
-				plugin.setFlash(false);
-			}
+			drawFlash(graphics, Color.RED, plugin::setFlash);
+		}
+
+		if (config.shadowStandingFlash() && plugin.isShadowFlash())
+		{
+			drawFlash(graphics, config.shadowsColorBase(), plugin::setShadowFlash);
 		}
 
 		return null;
 	}
 
+	private void drawFlash(Graphics2D graphics, Color color, NexOverlayAction setter)
+	{
+		final Color flash = graphics.getColor();
+		graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), TIMEOUT_FLASH_START - Math.min(TIMEOUT_FLASH_START, ((TIMEOUT_FLASH_START - TIMEOUT_FLASH_FINISH) * timeout / TIMEOUT_MAX))));
+		graphics.fill(new Rectangle(client.getCanvas().getSize()));
+		graphics.setColor(flash);
+		timeout++;
+		if (timeout >= TIMEOUT_MAX)
+		{
+			timeout = 0;
+			setter.method(false);
+		}
+	}
+
 	private void drawObjectTickable(Graphics2D graphics,
-									int ticks, Set<GameObject> gameObjectSet,
+									int ticks,
+									List<LocalPoint> tiles,
 									int renderDistance,
 									Color baseColor,
 									boolean renderTicks)
 	{
-		if (gameObjectSet.isEmpty())
+		if (tiles.isEmpty())
 		{
 			return;
 		}
@@ -198,9 +233,8 @@ class NexOverlay extends Overlay
 			return;
 		}
 
-		for (GameObject gameObject : gameObjectSet)
+		for (LocalPoint lp : tiles)
 		{
-			LocalPoint lp = gameObject.getLocalLocation();
 			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
 
 
@@ -334,40 +368,67 @@ class NexOverlay extends Overlay
 		graphics.fill(infecetedTiles);
 	}
 
-
-	private void drawNexDeathTile(Graphics2D graphics)
+	private void drawBloodSacrificeSafeZone(Graphics2D graphics)
 	{
-		var tile = plugin.getNexDeathTile();
+		if (plugin.getBloodSacrificeSafeTiles().isEmpty())
+		{
+			return;
+		}
 
+		Area safeTiles = new Area();
+
+		plugin
+			.getBloodSacrificeSafeTiles()
+			.forEach(p -> {
+				Polygon poly = getCanvasTileAreaPoly(client, p, 1);
+				if (poly != null)
+				{
+					safeTiles.add(new Area(poly));
+				}
+			});
+
+		graphics.setPaintMode();
+		graphics.setColor(config.indicateSacrificeAOEColor());
+		graphics.draw(safeTiles);
+		graphics.setColor(getFillColor(config.indicateSacrificeAOEColor()));
+		graphics.fill(safeTiles);
+	}
+
+
+	private void drawTileAOE(Graphics2D graphics, LocalPoint tile, int size, Color color, int ticksRemaining, boolean drawTicks)
+	{
 		if (tile == null)
 		{
 			return;
 		}
 
-		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, 6);
+		Polygon area = Perspective.getCanvasTileAreaPoly(client, tile, size);
 
 		OverlayUtil.renderPolygon(
 			graphics,
 			area,
-			config.indicateDeathAOEColor(),
-			getFillColor(config.indicateDeathAOEColor()),
+			color,
+			getFillColor(color),
 			new BasicStroke(2)
 		);
 
-		graphics.setFont(new Font("Arial", Font.BOLD, 16));
-		String ticks = String.valueOf(plugin.getNexDeathTileTicks());
+		if (drawTicks)
+		{
+			graphics.setFont(new Font("Arial", Font.BOLD, 16));
+			String ticks = String.valueOf(ticksRemaining);
 
-		OverlayUtil.renderTextLocation(
-			graphics,
-			Perspective.getCanvasTextLocation(client, graphics, tile, ticks, 0),
-			ticks,
-			Color.WHITE
-		);
+			OverlayUtil.renderTextLocation(
+				graphics,
+				Perspective.getCanvasTextLocation(client, graphics, tile, ticks, 0),
+				ticks,
+				Color.WHITE
+			);
+		}
 	}
 
 	private void drawNexHpOverlay(Graphics2D graphics)
 	{
-		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().getTicks() > 0)
+		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
 		{
 			return;
 		}

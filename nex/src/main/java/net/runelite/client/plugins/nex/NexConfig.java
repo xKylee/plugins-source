@@ -478,6 +478,54 @@ public interface NexConfig extends Config
 		return new Color(0, 255, 255, 100);
 	}
 
+
+	@ConfigItem(
+		keyName = "shadowStandingFlash",
+		name = "Flash if danger",
+		description = "will flash with shadow color if they spawn and you are in danger",
+		position = 305,
+		section = shadowSection
+	)
+	default boolean shadowStandingFlash()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+		name = "Blood Phase",
+		description = "Configure Blood Phase settings.",
+		position = 400,
+		keyName = "iceSection"
+	)
+	String bloodSection = "Blood Phase";
+
+	@ConfigItem(
+		position = 401,
+		keyName = "indicateSacrificeAOE",
+		name = "BETA: Sacrifice Safe Line",
+		description = "Highlight the tiles where you wont heal nex. please report back any bugs",
+		section = bloodSection
+	)
+	default boolean indicateSacrificeAOE()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 402,
+		keyName = "indicateSacrificeAOEColor",
+		name = "Safe Color",
+		description = "Area where sacrafice will heal nex",
+		hidden = true,
+		unhide = "indicateSacrificeAOE",
+		section = bloodSection
+	)
+	default Color indicateSacrificeAOEColor()
+	{
+		return new Color(0, 255, 119, 100);
+	}
+
 	@ConfigSection(
 		name = "Ice Phase",
 		description = "Configure Ice Phase settings.",
@@ -522,6 +570,47 @@ public interface NexConfig extends Config
 	{
 		return new Color(255, 0, 98, 100);
 	}
+
+
+	@ConfigItem(
+		position = 504,
+		keyName = "indicateContainAOE",
+		name = "Indicate Contain This!",
+		description = "Highlight the tiles where you gunna get smacked",
+		section = iceSection
+	)
+	default boolean indicateContainAOE()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "drawTicksOnContain",
+		name = "Contain Trap Ticks",
+		description = "Draw ticks on ice trap",
+		position = 505,
+		section = iceSection
+	)
+	default boolean drawTicksOnContain()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 506,
+		keyName = "indicateContainAOEColor",
+		name = "Contain AOE Color",
+		description = "Stop reading these",
+		hidden = true,
+		unhide = "indicateContainAOE",
+		section = iceSection
+	)
+	default Color indicateContainAOEColor()
+	{
+		return new Color(255, 0, 98, 100);
+	}
+
 
 	@ConfigSection(
 		name = "Zaros Phase",

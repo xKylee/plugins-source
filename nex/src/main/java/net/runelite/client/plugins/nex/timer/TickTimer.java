@@ -26,6 +26,14 @@ public class TickTimer
 		this.ticks = Math.max(0, ticks);
 	}
 
+	public void setTicksIfExpired(int ticks)
+	{
+		if (isExpired())
+		{
+			setTicks(ticks);
+		}
+	}
+
 	public void tick()
 	{
 		if (ticks > 0)
