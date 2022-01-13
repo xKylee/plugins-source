@@ -602,7 +602,7 @@ public class NexPlugin extends Plugin
 		}
 
 		bloodSacrificeSafeTiles.clear();
-		bloodSacrificeSafeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation(), BLOOD_SACRIFICE_DISTANCE));
+		bloodSacrificeSafeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), BLOOD_SACRIFICE_DISTANCE));
 	}
 
 
