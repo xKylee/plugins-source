@@ -86,7 +86,7 @@ public class NexPlugin extends Plugin
 	private static final int BLOOD_SACRIFICE_DISTANCE = 7;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
-	private static final int CONTAIN_THIS_DISTANCE = 3;
+	private static final int CONTAIN_THIS_DISTANCE = 2;
 	private static final int NEX_PHASE_DELAY = 6;
 	private static final int NEX_PHASE_MINION_DELAY = 10;
 	private static final int NEX_STARTUP_DELAY = 27;
@@ -530,7 +530,7 @@ public class NexPlugin extends Plugin
 			else if (currentSpecial == NexSpecial.CONTAIN)
 			{
 				containTrapTicks.setTicksIfExpired(CONTAIN_THIS_TICK_LEN);
-				containThisSpawns.addAll(Util.getWalkableLocalTiles(client, nex.getWorldLocation(), CONTAIN_THIS_DISTANCE));
+				containThisSpawns.addAll(Util.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), CONTAIN_THIS_DISTANCE));
 			}
 			else if (currentSpecial == NexSpecial.BLOOD_SACRIFICE_PERSONAL)
 			{
