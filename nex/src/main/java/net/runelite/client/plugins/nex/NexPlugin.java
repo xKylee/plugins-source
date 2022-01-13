@@ -81,7 +81,7 @@ public class NexPlugin extends Plugin
 
 	private static final int SHADOW_TICK_LEN = 5;
 	private static final int BLOOD_SACRIFICE_LEN = 7;
-	private static final int BLOOD_SACRIFICE_DISTANCE = 7;
+	private static final int BLOOD_SACRIFICE_DISTANCE = 8;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
 	private static final int CONTAIN_THIS_DISTANCE = 2;
@@ -311,8 +311,10 @@ public class NexPlugin extends Plugin
 			return;
 		}
 
-		var nearbyIceTraps = iceTraps.stream().filter(trap -> WorldPoint.fromLocal(client, trap).distanceTo(player.getWorldLocation()) == 1).count();
-		var possibleIceTraps = iceTraps.size();
+		Set<LocalPoint> traps = new HashSet<>(iceTraps);
+
+		var nearbyIceTraps = traps.stream().filter(trap -> WorldPoint.fromLocal(client, trap).distanceTo(player.getWorldLocation()) == 1).count();
+		var possibleIceTraps = traps.size();
 
 		isTrappedInIce = nearbyIceTraps == possibleIceTraps;
 	}
