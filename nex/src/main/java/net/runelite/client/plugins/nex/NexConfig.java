@@ -502,8 +502,8 @@ public interface NexConfig extends Config
 	@ConfigItem(
 		position = 401,
 		keyName = "indicateSacrificeAOE",
-		name = "Indicate Sacrifice Safe Line",
-		description = "Highlight the tiles where you not gunna get smacked",
+		name = "BETA: Sacrifice Safe Line",
+		description = "Highlight the tiles where you wont heal nex. please report back any bugs",
 		section = bloodSection
 	)
 	default boolean indicateSacrificeAOE()

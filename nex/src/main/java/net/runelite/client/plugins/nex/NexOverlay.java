@@ -10,12 +10,10 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.GameObject;
 import net.runelite.api.Perspective;
 import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
 import net.runelite.api.Player;
@@ -134,7 +132,7 @@ class NexOverlay extends Overlay
 
 		if (config.indicateSacrificeAOE() && plugin.getBloodSacrificeTicks().isActive())
 		{
-			drawBloodSacrificeDangerZone(graphics);
+			drawBloodSacrificeSafeZone(graphics);
 		}
 
 		if (plugin.nexDisable())
@@ -215,12 +213,12 @@ class NexOverlay extends Overlay
 
 	private void drawObjectTickable(Graphics2D graphics,
 									int ticks,
-									List<LocalPoint> gameObjectSet,
+									List<LocalPoint> tiles,
 									int renderDistance,
 									Color baseColor,
 									boolean renderTicks)
 	{
-		if (gameObjectSet.isEmpty())
+		if (tiles.isEmpty())
 		{
 			return;
 		}
@@ -235,7 +233,7 @@ class NexOverlay extends Overlay
 			return;
 		}
 
-		for (LocalPoint lp : gameObjectSet)
+		for (LocalPoint lp : tiles)
 		{
 			Polygon poly = Perspective.getCanvasTilePoly(client, lp);
 
@@ -370,17 +368,14 @@ class NexOverlay extends Overlay
 		graphics.fill(infecetedTiles);
 	}
 
-	private void drawBloodSacrificeDangerZone(Graphics2D graphics)
+	private void drawBloodSacrificeSafeZone(Graphics2D graphics)
 	{
-		Area safeTiles = new Area();
-
-		var local = client.getLocalPlayer();
-		if (local == null)
+		if (plugin.getBloodSacrificeSafeTiles().isEmpty())
 		{
 			return;
 		}
 
-		WorldPoint localWorldLocation = local.getWorldLocation();
+		Area safeTiles = new Area();
 
 		plugin
 			.getBloodSacrificeSafeTiles()
