@@ -540,7 +540,9 @@ public class NexPlugin extends Plugin
 			{
 				updateSafeZone();
 				bloodSacrificeTicks.setTicksIfExpired(BLOOD_SACRIFICE_LEN);
-			} else if (currentSpecial == NexSpecial.DASH) {
+			}
+			else if (currentSpecial == NexSpecial.DASH)
+			{
 //				nexTicksUntilClick.setTicks(NEX_DASH_DELAY);
 			}
 			return;
