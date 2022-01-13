@@ -5,6 +5,7 @@ import java.util.Map;
 public enum NexSpecial
 {
 	CHOKE,
+	DASH,
 	EMBRACE_DARKNESS,
 	BLOOD_SIPHON,
 	BLOOD_SACRIFICE,
@@ -14,6 +15,7 @@ public enum NexSpecial
 
 	private static final Map<String, NexSpecial> specialMap = Map.of(
 		NexText.NEX_SPECIAL_CONTAIN, CONTAIN,
+		NexText.NEX_SPECIAL_DASH, DASH,
 		NexText.NEX_SPECIAL_BLOOD_SACRIFICE, BLOOD_SACRIFICE,
 		NexText.NEX_SPECIAL_CHOKE, CHOKE,
 		NexText.NEX_SPECIAL_BLOOD_SIPHON, BLOOD_SIPHON,
@@ -21,7 +23,6 @@ public enum NexSpecial
 		NexText.NEX_SPECIAL_EMBRACE_DARKNESS, EMBRACE_DARKNESS,
 		NexText.NEX_SPECIAL_BLOOD_SACRIFICE_PERSONAL, BLOOD_SACRIFICE_PERSONAL
 	);
-
 
 	public static NexSpecial mapSpecial(String message)
 	{

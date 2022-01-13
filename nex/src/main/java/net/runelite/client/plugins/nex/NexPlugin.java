@@ -90,6 +90,7 @@ public class NexPlugin extends Plugin
 	private static final int NEX_STARTUP_DELAY = 27;
 	private static final int NEX_WRATH_TICK_DELAY = 5;
 	private static final int NEX_SIPHON_DELAY = 9;
+	private static final int NEX_DASH_DELAY = 3;
 
 	@Getter
 	private boolean inFight;
@@ -104,6 +105,9 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private NPC nex;
+
+	@Getter
+	private WorldPoint centerTile;
 
 	@Getter
 	private NexPhase currentPhase = NexPhase.NONE;
@@ -253,6 +257,7 @@ public class NexPlugin extends Plugin
 		if (nex == null && npc.getName() != null && npc.getName().equalsIgnoreCase("Nex"))
 		{
 			nex = npc;
+			centerTile = WorldPoint.fromLocal(client, nex.getLocalLocation()).dx(1).dy(1);
 			inFight = true;
 
 			// first discover nex, oh wow, fun boss.
@@ -486,7 +491,6 @@ public class NexPlugin extends Plugin
 		}
 		String message = event.getMessage().toLowerCase().replaceFirst("nex:", "").replaceAll("<[^>]+>", "").strip();
 
-		System.out.println("got messaged -> " + message);
 		if (setPhase(message))
 		{
 			if (currentPhase == NexPhase.NONE)
@@ -534,6 +538,8 @@ public class NexPlugin extends Plugin
 			{
 				updateSafeZone();
 				bloodSacrificeTicks.setTicksIfExpired(BLOOD_SACRIFICE_LEN);
+			} else if (currentSpecial == NexSpecial.DASH) {
+//				nexTicksUntilClick.setTicks(NEX_DASH_DELAY);
 			}
 			return;
 		}
