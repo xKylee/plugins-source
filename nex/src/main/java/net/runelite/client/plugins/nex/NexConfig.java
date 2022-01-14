@@ -452,7 +452,6 @@ public interface NexConfig extends Config
 		return 6;
 	}
 
-
 	@ConfigItem(
 		keyName = "shadowsTickCounter",
 		name = "Shadows Tick Counter",
@@ -477,7 +476,6 @@ public interface NexConfig extends Config
 	{
 		return new Color(0, 255, 255, 100);
 	}
-
 
 	@ConfigItem(
 		keyName = "shadowStandingFlash",
