@@ -81,7 +81,7 @@ public class NexPlugin extends Plugin
 
 	private static final int SHADOW_TICK_LEN = 5;
 	private static final int BLOOD_SACRIFICE_LEN = 7;
-	private static final int BLOOD_SACRIFICE_DISTANCE = 8;
+	private static final int BLOOD_SACRIFICE_DISTANCE = 9;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
 	private static final int CONTAIN_THIS_DISTANCE = 2;
