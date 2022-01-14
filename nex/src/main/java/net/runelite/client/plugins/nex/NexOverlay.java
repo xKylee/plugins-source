@@ -84,6 +84,11 @@ class NexOverlay extends Overlay
 			return null;
 		}
 
+		if (config.indicateTank())
+		{
+			drawTank(graphics);
+		}
+
 		if (config.indicateContainAOE() && plugin.getContainTrapTicks().isActive())
 		{
 			drawObjectTickable(
@@ -177,11 +182,6 @@ class NexOverlay extends Overlay
 		if (config.drawMinionHP() && plugin.isMinionActive())
 		{
 			drawMinionHP(graphics);
-		}
-
-		if (config.indicateTank())
-		{
-			drawTank(graphics);
 		}
 
 		if (config.flash() && plugin.isFlash())
