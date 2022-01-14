@@ -502,7 +502,7 @@ public interface NexConfig extends Config
 	@ConfigItem(
 		position = 401,
 		keyName = "indicateSacrificeAOE",
-		name = "BETA: Sacrifice Safe Line",
+		name = "Sacrifice Safe Line",
 		description = "Highlight the tiles where you wont heal nex. please report back any bugs",
 		section = bloodSection
 	)
