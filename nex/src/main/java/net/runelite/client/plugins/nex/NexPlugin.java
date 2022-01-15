@@ -96,7 +96,7 @@ public class NexPlugin extends Plugin
 	private static final int NEX_WRATH_TICK_DELAY = 5;
 	private static final int NEX_SIPHON_DELAY = 9;
 	private static final int NEX_DASH_TICK_LEN = 5;
-	private static final int NEX_DASH_CLICK_DELAY = 10;
+	private static final int NEX_DASH_CLICK_DELAY = 8;
 
 	// two ticks after but chat messages happen before onTick
 	private static final int NEX_WING_READ_DELAY = 3;
