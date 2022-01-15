@@ -180,10 +180,11 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigItem(
+		position = 111,
 		keyName = "outlineFeather",
 		name = "Outline feather",
 		description = "Specify between 0-4 how much of the model outline should be faded",
-		position = 111
+		section = generalSection
 	)
 	@Range(
 		max = 4
