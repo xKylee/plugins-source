@@ -293,6 +293,33 @@ public interface NexConfig extends Config
 		return new Color(48, 164, 255, 200);
 	}
 
+	@ConfigItem(
+		position = 119,
+		keyName = "indicateNexRange",
+		name = "Indicate Nex Range",
+		description = "Highlight the tiles where standing on or inside will allow next to deal damage to you.",
+		section = generalSection
+	)
+	default boolean indicateNexRange()
+	{
+		return false;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 120,
+		keyName = "indicateNexRangeColor",
+		name = "Range Color",
+		description = "Color for the tiles",
+		hidden = true,
+		unhide = "indicateNexRange",
+		section = generalSection
+	)
+	default Color indicateNexRangeColor()
+	{
+		return new Color(28, 0, 0, 50);
+	}
+
 	@ConfigSection(
 		name = "Smoke Settings",
 		description = "Configure settings for the virus",

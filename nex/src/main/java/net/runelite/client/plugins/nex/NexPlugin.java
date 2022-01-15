@@ -82,6 +82,7 @@ public class NexPlugin extends Plugin
 	private static final int SHADOW_TICK_LEN = 5;
 	private static final int BLOOD_SACRIFICE_LEN = 7;
 	private static final int BLOOD_SACRIFICE_DISTANCE = 8;
+	private static final int NEX_RANGE_DISTANCE = 8;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
 	private static final int CONTAIN_THIS_DISTANCE = 2;
@@ -91,6 +92,11 @@ public class NexPlugin extends Plugin
 	private static final int NEX_WRATH_TICK_DELAY = 5;
 	private static final int NEX_SIPHON_DELAY = 9;
 	private static final int NEX_DASH_DELAY = 3;
+
+	// two ticks after but chat messages happen before onTick
+	private static final int NEX_WING_READ_DELAY = 3;
+
+	private static final int NEX_WING_DISTANCE = 8;
 
 	@Getter
 	private boolean inFight;
@@ -108,6 +114,9 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private WorldPoint centerTile;
+
+	@Getter
+	private final List<WorldPoint> wingTiles = new ArrayList<>(4);
 
 	@Getter
 	private NexPhase currentPhase = NexPhase.NONE;
@@ -135,7 +144,10 @@ public class NexPlugin extends Plugin
 	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
 
 	@Getter
-	private List<LocalPoint> bloodSacrificeSafeTiles = new ArrayList<>();
+	private final List<LocalPoint> bloodSacrificeSafeTiles = new ArrayList<>();
+
+	@Getter
+	private final List<LocalPoint> nexRangeTiles = new ArrayList<>();
 
 	@Getter
 	private NexSpecial currentSpecial;
@@ -173,6 +185,14 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private final TickTimer containTrapTicks = new TickTimer(containThisSpawns::clear);
+
+	@Getter
+	private final TickTimer orientationReadDelay = new TickTimer(() -> {
+		System.out.println("Expired on " + getTick() + " orientation is " + nex.getOrientation());
+	});
+
+	@Getter
+	int tick = 0;
 
 	private void clearIceTrap()
 	{
@@ -257,7 +277,10 @@ public class NexPlugin extends Plugin
 		if (nex == null && npc.getName() != null && npc.getName().equalsIgnoreCase("Nex"))
 		{
 			nex = npc;
-			centerTile = WorldPoint.fromLocal(client, nex.getLocalLocation()).dx(1).dy(1);
+
+			centerTile = WorldPoint.fromLocal(client, nex.getLocalLocation());
+			updateWingTiles(centerTile);
+
 			inFight = true;
 
 			// first discover nex, oh wow, fun boss.
@@ -274,10 +297,10 @@ public class NexPlugin extends Plugin
 		{
 			return;
 		}
-
 		handleCoughers();
 		handleTimers();
 		updateTrappedStatus();
+		updateRangeZone();
 	}
 
 	private void handleTimers()
@@ -289,6 +312,7 @@ public class NexPlugin extends Plugin
 		iceTrapTicks.tick();
 		bloodSacrificeTicks.tick();
 		containTrapTicks.tick();
+		orientationReadDelay.tick();
 	}
 
 	private void updateTrappedStatus()
@@ -525,8 +549,10 @@ public class NexPlugin extends Plugin
 			return;
 		}
 
+		System.out.println(message);
 		if (setSpecial(message))
 		{
+			System.out.println("special");
 			if (currentSpecial == NexSpecial.BLOOD_SIPHON)
 			{
 				nexTicksUntilClick.setTicks(NEX_SIPHON_DELAY);
@@ -543,7 +569,11 @@ public class NexPlugin extends Plugin
 			}
 			else if (currentSpecial == NexSpecial.DASH)
 			{
+				System.out.println("got dash");
 //				nexTicksUntilClick.setTicks(NEX_DASH_DELAY);
+				var dir = nex.getOrientation();
+				orientationReadDelay.setTicksIfExpired(NEX_WING_READ_DELAY);
+
 			}
 			return;
 		}
@@ -615,6 +645,17 @@ public class NexPlugin extends Plugin
 		bloodSacrificeSafeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), BLOOD_SACRIFICE_DISTANCE));
 	}
 
+	private void updateRangeZone()
+	{
+		if (nex == null)
+		{
+			nexRangeTiles.clear();
+			return;
+		}
+
+		nexRangeTiles.clear();
+		nexRangeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), NEX_RANGE_DISTANCE));
+	}
 
 	private void resetEntityHiderCache()
 	{
@@ -625,5 +666,15 @@ public class NexPlugin extends Plugin
 	private void clearHiddenEntities()
 	{
 		client.setHideSpecificPlayers(new ArrayList<>());
+	}
+
+	private void updateWingTiles(WorldPoint centerTile)
+	{
+		wingTiles.clear();
+
+		wingTiles.add(centerTile.dy(NEX_WING_DISTANCE));
+		wingTiles.add(centerTile.dy(-NEX_WING_DISTANCE));
+		wingTiles.add(centerTile.dx(NEX_WING_DISTANCE));
+		wingTiles.add(centerTile.dx(-NEX_WING_DISTANCE));
 	}
 }

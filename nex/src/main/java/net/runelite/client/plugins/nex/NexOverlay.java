@@ -137,7 +137,12 @@ class NexOverlay extends Overlay
 
 		if (config.indicateSacrificeAOE() && plugin.getBloodSacrificeTicks().isActive())
 		{
-			drawBloodSacrificeSafeZone(graphics);
+			drawAreaTiles(graphics, plugin.getBloodSacrificeSafeTiles(), config.indicateSacrificeAOEColor(), 1);
+		}
+
+		if (config.indicateNexRange())
+		{
+			drawAreaTiles(graphics, plugin.getNexRangeTiles(), config.indicateNexRangeColor(), 1);
 		}
 
 		if (plugin.nexDisable())
@@ -368,30 +373,29 @@ class NexOverlay extends Overlay
 		graphics.fill(infecetedTiles);
 	}
 
-	private void drawBloodSacrificeSafeZone(Graphics2D graphics)
+	private void drawAreaTiles(Graphics2D graphics, List<LocalPoint> tiles, Color color, int size)
 	{
-		if (plugin.getBloodSacrificeSafeTiles().isEmpty())
+		if (tiles.isEmpty())
 		{
 			return;
 		}
 
-		Area safeTiles = new Area();
+		Area area = new Area();
 
-		plugin
-			.getBloodSacrificeSafeTiles()
-			.forEach(p -> {
-				Polygon poly = getCanvasTileAreaPoly(client, p, 1);
-				if (poly != null)
-				{
-					safeTiles.add(new Area(poly));
-				}
-			});
+		tiles.forEach(p -> {
+			Polygon poly = getCanvasTileAreaPoly(client, p, size);
+
+			if (poly != null)
+			{
+				area.add(new Area(poly));
+			}
+		});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.indicateSacrificeAOEColor());
-		graphics.draw(safeTiles);
-		graphics.setColor(getFillColor(config.indicateSacrificeAOEColor()));
-		graphics.fill(safeTiles);
+		graphics.setColor(color);
+		graphics.draw(area);
+		graphics.setColor(getFillColor(color));
+		graphics.fill(area);
 	}
 
 
