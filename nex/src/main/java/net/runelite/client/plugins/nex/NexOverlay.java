@@ -188,7 +188,7 @@ class NexOverlay extends Overlay
 			drawNexHpOverlay(graphics);
 		}
 
-		if (plugin.getCurrentPhase() == NexPhase.ZAROS && (config.indicateTankSwitchTicks() || config.indicatePraySwitchTicks()))
+		if (plugin.getCurrentPhase() == NexPhase.ZAROS && (config.indicateTankSwitchTicks() /* || config.indicatePraySwitchTicks() */))
 		{
 			drawTankAndPrayTicks(graphics);
 		}
@@ -497,8 +497,10 @@ class NexOverlay extends Overlay
 
 		if (config.indicateTankSwitchTicks())
 		{
-			text.append(4 - (plugin.getNexAttacks() % 4));
+			text.append(4 - (plugin.getNexTankAttacks() % 4));
 		}
+
+		/* disabled until we know how this works
 
 		if (config.indicatePraySwitchTicks())
 		{
@@ -508,6 +510,8 @@ class NexOverlay extends Overlay
 			}
 			text.append(5 - (plugin.getNexAttacks() % 5));
 		}
+
+		*/
 
 		var finalText = text.toString();
 		graphics.setFont(new Font("Arial", Font.BOLD, 12));

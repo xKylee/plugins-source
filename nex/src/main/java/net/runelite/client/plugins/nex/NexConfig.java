@@ -739,6 +739,8 @@ public interface NexConfig extends Config
 		return true;
 	}
 
+	/* disabled until we know how it works
+	
 	@ConfigItem(
 		position = 604,
 		keyName = "indicatePraySwitchTicks",
@@ -750,6 +752,8 @@ public interface NexConfig extends Config
 	{
 		return true;
 	}
+
+	 */
 
 	@Range(
 		min = 4,
