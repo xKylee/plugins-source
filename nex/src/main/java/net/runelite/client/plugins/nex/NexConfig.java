@@ -740,7 +740,7 @@ public interface NexConfig extends Config
 	}
 
 	/* disabled until we know how it works
-	
+
 	@ConfigItem(
 		position = 604,
 		keyName = "indicatePraySwitchTicks",
