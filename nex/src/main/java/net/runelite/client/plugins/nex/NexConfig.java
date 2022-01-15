@@ -737,7 +737,7 @@ public interface NexConfig extends Config
 	}
 
 	@Range(
-		min = 0,
+		min = 4,
 		max = 100
 	)
 	@ConfigItem(
