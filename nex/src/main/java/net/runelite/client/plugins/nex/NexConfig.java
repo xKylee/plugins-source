@@ -297,7 +297,7 @@ public interface NexConfig extends Config
 		position = 119,
 		keyName = "indicateNexRange",
 		name = "Indicate Nex Range",
-		description = "Highlight the tiles where standing on or inside will allow next to deal damage to you.",
+		description = "Highlight the tiles where standing on or inside will allow nex to deal damage to you.",
 		section = generalSection
 	)
 	default boolean indicateNexRange()
@@ -317,7 +317,48 @@ public interface NexConfig extends Config
 	)
 	default Color indicateNexRangeColor()
 	{
-		return new Color(28, 0, 0, 50);
+		return new Color(0, 0, 0, 50);
+	}
+
+	@ConfigItem(
+		keyName = "drawDashLane",
+		name = "Dash Lane Highlight",
+		description = "Draw dash lane aoe",
+		position = 121,
+		section = generalSection
+	)
+	default boolean drawDashLane()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "drawTicksOnDash",
+		name = "Dash Ticks",
+		description = "Draw ticks on ice trap",
+		position = 122,
+		hidden = true,
+		unhide = "drawDashLane",
+		section = generalSection
+	)
+	default boolean drawTicksOnDash()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "drawDashLaneColor",
+		name = "Dash Color",
+		description = "Color ya idiot",
+		position = 123,
+		hidden = true,
+		unhide = "drawDashLane",
+		section = generalSection
+	)
+	default Color drawDashLaneColor()
+	{
+		return new Color(255, 0, 98, 100);
 	}
 
 	@ConfigSection(
@@ -595,7 +636,6 @@ public interface NexConfig extends Config
 	{
 		return new Color(255, 0, 98, 100);
 	}
-
 
 	@ConfigItem(
 		position = 504,

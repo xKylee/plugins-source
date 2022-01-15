@@ -137,12 +137,17 @@ class NexOverlay extends Overlay
 
 		if (config.indicateSacrificeAOE() && plugin.getBloodSacrificeTicks().isActive())
 		{
-			drawAreaTiles(graphics, plugin.getBloodSacrificeSafeTiles(), config.indicateSacrificeAOEColor(), 1);
+			drawAreaTiles(graphics, plugin.getBloodSacrificeSafeTiles(), config.indicateSacrificeAOEColor(), 1, false, 0);
 		}
 
 		if (config.indicateNexRange())
 		{
-			drawAreaTiles(graphics, plugin.getNexRangeTiles(), config.indicateNexRangeColor(), 1);
+			drawAreaTiles(graphics, plugin.getNexRangeTiles(), config.indicateNexRangeColor(), 1, false, 0);
+		}
+
+		if (config.drawDashLane() && plugin.getAirplaneCoolDown().isActive())
+		{
+			drawAreaTiles(graphics, plugin.getDashLaneTiles(), config.drawDashLaneColor(), 3, true, plugin.getAirplaneCoolDown().getTicks());
 		}
 
 		if (plugin.nexDisable())
@@ -373,7 +378,7 @@ class NexOverlay extends Overlay
 		graphics.fill(infecetedTiles);
 	}
 
-	private void drawAreaTiles(Graphics2D graphics, List<LocalPoint> tiles, Color color, int size)
+	private void drawAreaTiles(Graphics2D graphics, List<LocalPoint> tiles, Color color, int size, boolean drawTicks, int ticksRemaining)
 	{
 		if (tiles.isEmpty())
 		{
@@ -396,6 +401,19 @@ class NexOverlay extends Overlay
 		graphics.draw(area);
 		graphics.setColor(getFillColor(color));
 		graphics.fill(area);
+
+		if (drawTicks)
+		{
+			graphics.setFont(new Font("Arial", Font.BOLD, 16));
+			String ticks = String.valueOf(ticksRemaining);
+
+			OverlayUtil.renderTextLocation(
+				graphics,
+				Perspective.getCanvasTextLocation(client, graphics, tiles.get(tiles.size() / 2), ticks, 0),
+				ticks,
+				Color.WHITE
+			);
+		}
 	}
 
 
