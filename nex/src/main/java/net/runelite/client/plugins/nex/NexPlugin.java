@@ -204,6 +204,7 @@ public class NexPlugin extends Plugin
 	@Getter
 	private int nexAttacks = 0;
 	private int nexPreviousAnimation = -1;
+	Set<Integer> nexAttackAnimations = Set.of(9189, 9180);
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -285,6 +286,7 @@ public class NexPlugin extends Plugin
 			centerTile = getNexCenterTile(nex);
 			updateWingTiles(centerTile);
 
+			//9180
 			inFight = true;
 
 			// first discover nex, oh wow, fun boss.
@@ -297,7 +299,7 @@ public class NexPlugin extends Plugin
 		{
 			if (nex.getAnimation() != nexPreviousAnimation)
 			{
-				if (nex.getAnimation() != -1)
+				if (nexAttackAnimations.contains(nex.getAnimation()))
 				{
 					nexAttacks += 1;
 				}
