@@ -11,9 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
@@ -37,6 +39,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.nex.maths.MathUtil;
 import net.runelite.client.plugins.nex.movement.MovementUtil;
 import net.runelite.client.plugins.nex.timer.TickTimer;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -82,6 +85,7 @@ public class NexPlugin extends Plugin
 	private static final int SHADOW_TICK_LEN = 5;
 	private static final int BLOOD_SACRIFICE_LEN = 7;
 	private static final int BLOOD_SACRIFICE_DISTANCE = 8;
+	private static final int NEX_RANGE_DISTANCE = 11;
 	private static final int ICE_TRAP_TICK_LEN = 9;
 	private static final int CONTAIN_THIS_TICK_LEN = 6;
 	private static final int CONTAIN_THIS_DISTANCE = 2;
@@ -90,7 +94,12 @@ public class NexPlugin extends Plugin
 	private static final int NEX_STARTUP_DELAY = 27;
 	private static final int NEX_WRATH_TICK_DELAY = 5;
 	private static final int NEX_SIPHON_DELAY = 9;
-	private static final int NEX_DASH_DELAY = 3;
+	private static final int NEX_DASH_TICK_LEN = 5;
+	private static final int NEX_DASH_CLICK_DELAY = 10;
+
+	// two ticks after but chat messages happen before onTick
+	private static final int NEX_WING_READ_DELAY = 3;
+	private static final int NEX_WING_DISTANCE = 10;
 
 	@Getter
 	private boolean inFight;
@@ -108,6 +117,12 @@ public class NexPlugin extends Plugin
 
 	@Getter
 	private WorldPoint centerTile;
+
+	@Getter
+	private final List<LocalPoint> dashLaneTiles = new ArrayList<>();
+
+	@Getter
+	private final List<WorldPoint> wingTiles = new ArrayList<>(4);
 
 	@Getter
 	private NexPhase currentPhase = NexPhase.NONE;
@@ -135,7 +150,10 @@ public class NexPlugin extends Plugin
 	private List<LocalPoint> healthyPlayersLocations = new ArrayList<>();
 
 	@Getter
-	private List<LocalPoint> bloodSacrificeSafeTiles = new ArrayList<>();
+	private final List<LocalPoint> bloodSacrificeSafeTiles = new ArrayList<>();
+
+	@Getter
+	private final List<LocalPoint> nexRangeTiles = new ArrayList<>();
 
 	@Getter
 	private NexSpecial currentSpecial;
@@ -174,14 +192,19 @@ public class NexPlugin extends Plugin
 	@Getter
 	private final TickTimer containTrapTicks = new TickTimer(containThisSpawns::clear);
 
-	private void clearIceTrap()
-	{
-		iceTraps.clear();
-		isTrappedInIce = false;
-	}
+	@Getter
+	private final TickTimer orientationReadDelay = new TickTimer(this::handleStartDash);
+
+	@Getter
+	private final TickTimer airplaneCoolDown = new TickTimer(dashLaneTiles::clear);
 
 	@Getter
 	private final TickTimer nexDeathTileTicks = new TickTimer(() -> nexDeathTile = null);
+
+	@Getter
+	private int nexAttacks = 0;
+	private int nexPreviousAnimation = -1;
+	Set<Integer> nexAttackAnimations = Set.of(9189, 9180);
 
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
@@ -236,6 +259,8 @@ public class NexPlugin extends Plugin
 		containThisSpawns.clear();
 		nexTicksUntilClick.reset();
 		iceTraps.clear();
+		nexAttacks = 0;
+		nexPreviousAnimation = -1;
 		iceTrapTicks.reset();
 		teamSize = 0;
 		coughingPlayersChanged = false;
@@ -257,13 +282,30 @@ public class NexPlugin extends Plugin
 		if (nex == null && npc.getName() != null && npc.getName().equalsIgnoreCase("Nex"))
 		{
 			nex = npc;
-			centerTile = WorldPoint.fromLocal(client, nex.getLocalLocation()).dx(1).dy(1);
+
+			centerTile = getNexCenterTile(nex);
+			updateWingTiles(centerTile);
+
+			//9180
 			inFight = true;
 
 			// first discover nex, oh wow, fun boss.
 			// Handle edge case where because we arent in fight yet
 			// we wont see her spawning text
 			nexTicksUntilClick.setTicks(NEX_STARTUP_DELAY);
+		}
+
+		if (nex != null && currentPhase == NexPhase.ZAROS)
+		{
+			if (nex.getAnimation() != nexPreviousAnimation)
+			{
+				if (nexAttackAnimations.contains(nex.getAnimation()))
+				{
+					nexAttacks += 1;
+				}
+
+				nexPreviousAnimation = nex.getAnimation();
+			}
 		}
 	}
 
@@ -278,6 +320,7 @@ public class NexPlugin extends Plugin
 		handleCoughers();
 		handleTimers();
 		updateTrappedStatus();
+		updateRangeZone();
 	}
 
 	private void handleTimers()
@@ -289,6 +332,8 @@ public class NexPlugin extends Plugin
 		iceTrapTicks.tick();
 		bloodSacrificeTicks.tick();
 		containTrapTicks.tick();
+		orientationReadDelay.tick();
+		airplaneCoolDown.tick();
 	}
 
 	private void updateTrappedStatus()
@@ -495,6 +540,12 @@ public class NexPlugin extends Plugin
 
 		if (setPhase(message))
 		{
+			if (currentPhase == NexPhase.ZAROS)
+			{
+				nexAttacks = 0;
+				nexPreviousAnimation = -1;
+			}
+
 			if (currentPhase == NexPhase.NONE)
 			{
 				// TASTE MY WRATH!
@@ -543,7 +594,8 @@ public class NexPlugin extends Plugin
 			}
 			else if (currentSpecial == NexSpecial.DASH)
 			{
-//				nexTicksUntilClick.setTicks(NEX_DASH_DELAY);
+				orientationReadDelay.setTicksIfExpired(NEX_WING_READ_DELAY);
+
 			}
 			return;
 		}
@@ -612,9 +664,20 @@ public class NexPlugin extends Plugin
 		}
 
 		bloodSacrificeSafeTiles.clear();
-		bloodSacrificeSafeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, nex.getWorldLocation().dx(1).dy(1), BLOOD_SACRIFICE_DISTANCE));
+		bloodSacrificeSafeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, getNexCenterTile(nex), BLOOD_SACRIFICE_DISTANCE));
 	}
 
+	private void updateRangeZone()
+	{
+		if (nex == null)
+		{
+			nexRangeTiles.clear();
+			return;
+		}
+
+		nexRangeTiles.clear();
+		nexRangeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, getNexCenterTile(nex), NEX_RANGE_DISTANCE));
+	}
 
 	private void resetEntityHiderCache()
 	{
@@ -625,5 +688,83 @@ public class NexPlugin extends Plugin
 	private void clearHiddenEntities()
 	{
 		client.setHideSpecificPlayers(new ArrayList<>());
+	}
+
+	private void updateWingTiles(WorldPoint centerTile)
+	{
+		wingTiles.clear();
+
+		wingTiles.add(centerTile.dy(NEX_WING_DISTANCE));
+		wingTiles.add(centerTile.dy(-NEX_WING_DISTANCE));
+		wingTiles.add(centerTile.dx(NEX_WING_DISTANCE));
+		wingTiles.add(centerTile.dx(-NEX_WING_DISTANCE));
+	}
+
+	private WorldPoint getNexCenterTile(@NonNull NPC nex)
+	{
+		return nex.getWorldLocation().dx(1).dy(1);
+	}
+
+	private void selectWingTile()
+	{
+		if (nex == null || wingTiles.isEmpty())
+		{
+			return;
+		}
+
+		dashLaneTiles.clear();
+
+		double angle = (2 * Math.PI * nex.getOrientation()) / 2047.0;
+		double[] orientationVec = {-Math.sin(angle), -Math.cos(angle)};
+
+		var nexCenterTile = getNexCenterTile(nex);
+
+		var sims = wingTiles
+			.stream()
+			.map(wingTile -> MathUtil.cosineSimilarity(orientationVec, MathUtil.unitVec(nexCenterTile, wingTile)))
+			.collect(Collectors.toList());
+
+		int maxIndex = IntStream.range(0, sims.size())
+			.reduce((acc, val) -> sims.get(acc) < sims.get(val) ? val : acc)
+			.orElse(-1);
+
+		if (maxIndex == -1)
+		{
+			return;
+		}
+
+		var selectedWingTile = wingTiles.get(maxIndex);
+
+		int dx = Integer.signum(selectedWingTile.getX() - centerTile.getX());
+		int dy = Integer.signum(selectedWingTile.getY() - centerTile.getY());
+
+		if (dy == 0 && dx == 0)
+		{
+			return;
+		}
+
+		var currentTile = centerTile.dx(0).dy(0);
+
+		dashLaneTiles.add(LocalPoint.fromWorld(client, centerTile));
+
+		while (currentTile.getX() != selectedWingTile.getX() || currentTile.getY() != selectedWingTile.getY())
+		{
+			var newTile = currentTile.dx(dx).dy(dy);
+			dashLaneTiles.add(LocalPoint.fromWorld(client, newTile));
+			currentTile = newTile;
+		}
+	}
+
+	private void clearIceTrap()
+	{
+		iceTraps.clear();
+		isTrappedInIce = false;
+	}
+
+	private void handleStartDash()
+	{
+		selectWingTile();
+		airplaneCoolDown.setTicksIfExpired(NEX_DASH_TICK_LEN);
+		nexTicksUntilClick.setTicks(NEX_DASH_CLICK_DELAY);
 	}
 }

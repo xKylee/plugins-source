@@ -84,6 +84,11 @@ class NexOverlay extends Overlay
 			return null;
 		}
 
+		if (config.indicateTank())
+		{
+			drawTank(graphics);
+		}
+
 		if (config.indicateContainAOE() && plugin.getContainTrapTicks().isActive())
 		{
 			drawObjectTickable(
@@ -132,7 +137,17 @@ class NexOverlay extends Overlay
 
 		if (config.indicateSacrificeAOE() && plugin.getBloodSacrificeTicks().isActive())
 		{
-			drawBloodSacrificeSafeZone(graphics);
+			drawAreaTiles(graphics, plugin.getBloodSacrificeSafeTiles(), config.indicateSacrificeAOEColor(), 1, false, 0);
+		}
+
+		if (config.indicateNexRange())
+		{
+			drawAreaTiles(graphics, plugin.getNexRangeTiles(), config.indicateNexRangeColor(), 1, false, 0);
+		}
+
+		if (config.drawDashLane() && plugin.getAirplaneCoolDown().isActive())
+		{
+			drawAreaTiles(graphics, plugin.getDashLaneTiles(), config.drawDashLaneColor(), 3, true, plugin.getAirplaneCoolDown().getTicks());
 		}
 
 		if (plugin.nexDisable())
@@ -174,14 +189,14 @@ class NexOverlay extends Overlay
 			drawNexHpOverlay(graphics);
 		}
 
+		if (plugin.getCurrentPhase() == NexPhase.ZAROS && (config.indicateTankSwitchTicks() || config.indicatePraySwitchTicks()))
+		{
+			drawTankAndPrayTicks(graphics);
+		}
+
 		if (config.drawMinionHP() && plugin.isMinionActive())
 		{
 			drawMinionHP(graphics);
-		}
-
-		if (config.indicateTank())
-		{
-			drawTank(graphics);
 		}
 
 		if (config.flash() && plugin.isFlash())
@@ -368,30 +383,42 @@ class NexOverlay extends Overlay
 		graphics.fill(infecetedTiles);
 	}
 
-	private void drawBloodSacrificeSafeZone(Graphics2D graphics)
+	private void drawAreaTiles(Graphics2D graphics, List<LocalPoint> tiles, Color color, int size, boolean drawTicks, int ticksRemaining)
 	{
-		if (plugin.getBloodSacrificeSafeTiles().isEmpty())
+		if (tiles.isEmpty())
 		{
 			return;
 		}
 
-		Area safeTiles = new Area();
+		Area area = new Area();
 
-		plugin
-			.getBloodSacrificeSafeTiles()
-			.forEach(p -> {
-				Polygon poly = getCanvasTileAreaPoly(client, p, 1);
-				if (poly != null)
-				{
-					safeTiles.add(new Area(poly));
-				}
-			});
+		tiles.forEach(p -> {
+			Polygon poly = getCanvasTileAreaPoly(client, p, size);
+
+			if (poly != null)
+			{
+				area.add(new Area(poly));
+			}
+		});
 
 		graphics.setPaintMode();
-		graphics.setColor(config.indicateSacrificeAOEColor());
-		graphics.draw(safeTiles);
-		graphics.setColor(getFillColor(config.indicateSacrificeAOEColor()));
-		graphics.fill(safeTiles);
+		graphics.setColor(color);
+		graphics.draw(area);
+		graphics.setColor(getFillColor(color));
+		graphics.fill(area);
+
+		if (drawTicks)
+		{
+			graphics.setFont(new Font("Arial", Font.BOLD, 16));
+			String ticks = String.valueOf(ticksRemaining);
+
+			OverlayUtil.renderTextLocation(
+				graphics,
+				Perspective.getCanvasTextLocation(client, graphics, tiles.get(tiles.size() / 2), ticks, 0),
+				ticks,
+				Color.WHITE
+			);
+		}
 	}
 
 
@@ -449,6 +476,47 @@ class NexOverlay extends Overlay
 		{
 			Color color = percentageToColor(relativeHP);
 			OverlayUtil.renderTextLocation(graphics, textLocation, text, color);
+		}
+	}
+
+	private void drawTankAndPrayTicks(Graphics2D graphics)
+	{
+		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
+		{
+			return;
+		}
+
+		var zOffset = 0;
+		if (config.drawNexHp())
+		{
+			zOffset = config.counterZOffset();
+		}
+		// SAFETY: not null checked before call
+		var nex = plugin.getNex();
+
+		StringBuilder text = new StringBuilder();
+
+		if (config.indicateTankSwitchTicks())
+		{
+			text.append(4 - (plugin.getNexAttacks() % 4));
+		}
+
+		if (config.indicatePraySwitchTicks())
+		{
+			if (text.length() != 0)
+			{
+				text.append(" | ");
+			}
+			text.append(5 - (plugin.getNexAttacks() % 5));
+		}
+
+		var finalText = text.toString();
+		graphics.setFont(new Font("Arial", Font.BOLD, 12));
+		Point textLocation = nex.getCanvasTextLocation(graphics, finalText, 0);
+
+		if (!nex.isDead() && textLocation != null)
+		{
+			OverlayUtil.renderTextLocation(graphics, new Point(textLocation.getX(), textLocation.getY() + zOffset), finalText, Color.WHITE);
 		}
 	}
 
