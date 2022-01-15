@@ -201,6 +201,10 @@ public class NexPlugin extends Plugin
 	@Getter
 	private final TickTimer nexDeathTileTicks = new TickTimer(() -> nexDeathTile = null);
 
+	@Getter
+	private int nexAttacks = 0;
+	private int nexPreviousAnimation = -1;
+
 	@Provides
 	NexConfig provideConfig(ConfigManager configManager)
 	{
@@ -254,6 +258,8 @@ public class NexPlugin extends Plugin
 		containThisSpawns.clear();
 		nexTicksUntilClick.reset();
 		iceTraps.clear();
+		nexAttacks = 0;
+		nexPreviousAnimation = -1;
 		iceTrapTicks.reset();
 		teamSize = 0;
 		coughingPlayersChanged = false;
@@ -285,6 +291,19 @@ public class NexPlugin extends Plugin
 			// Handle edge case where because we arent in fight yet
 			// we wont see her spawning text
 			nexTicksUntilClick.setTicks(NEX_STARTUP_DELAY);
+		}
+
+		if (nex != null && currentPhase == NexPhase.ZAROS)
+		{
+			if (nex.getAnimation() != nexPreviousAnimation)
+			{
+				if (nex.getAnimation() != -1)
+				{
+					nexAttacks += 1;
+				}
+
+				nexPreviousAnimation = nex.getAnimation();
+			}
 		}
 	}
 
@@ -519,6 +538,12 @@ public class NexPlugin extends Plugin
 
 		if (setPhase(message))
 		{
+			if (currentPhase == NexPhase.ZAROS)
+			{
+				nexAttacks = 0;
+				nexPreviousAnimation = -1;
+			}
+
 			if (currentPhase == NexPhase.NONE)
 			{
 				// TASTE MY WRATH!

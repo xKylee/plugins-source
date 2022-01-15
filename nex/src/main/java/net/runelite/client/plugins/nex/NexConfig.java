@@ -712,6 +712,46 @@ public interface NexConfig extends Config
 		return new Color(255, 0, 98, 100);
 	}
 
+	@ConfigItem(
+		position = 603,
+		keyName = "indicateTankSwitchTicks",
+		name = "Ticks: Tank Switch",
+		description = "countdown until tank switches",
+		section = zarosSection
+	)
+	default boolean indicateTankSwitchTicks()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 604,
+		keyName = "indicatePraySwitchTicks",
+		name = "Ticks: Prayer Switch",
+		description = "countdown until nex's prayer switches",
+		section = zarosSection
+	)
+	default boolean indicatePraySwitchTicks()
+	{
+		return true;
+	}
+
+	@Range(
+		min = 0,
+		max = 100
+	)
+	@ConfigItem(
+		position = 605,
+		keyName = "counterZOffset",
+		name = "Z offset",
+		description = "how far down to render below hp (if hp is present)",
+		section = zarosSection
+	)
+	default int counterZOffset()
+	{
+		return 16;
+	}
+
 	enum PrayerDisplay
 	{
 		PRAYER_TAB,

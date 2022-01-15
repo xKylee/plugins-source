@@ -189,6 +189,11 @@ class NexOverlay extends Overlay
 			drawNexHpOverlay(graphics);
 		}
 
+		if (plugin.getCurrentPhase() == NexPhase.ZAROS && (config.indicateTankSwitchTicks() || config.indicatePraySwitchTicks()))
+		{
+			drawTankAndPrayTicks(graphics);
+		}
+
 		if (config.drawMinionHP() && plugin.isMinionActive())
 		{
 			drawMinionHP(graphics);
@@ -471,6 +476,47 @@ class NexOverlay extends Overlay
 		{
 			Color color = percentageToColor(relativeHP);
 			OverlayUtil.renderTextLocation(graphics, textLocation, text, color);
+		}
+	}
+
+	private void drawTankAndPrayTicks(Graphics2D graphics)
+	{
+		if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
+		{
+			return;
+		}
+
+		var zOffset = 0;
+		if (config.drawNexHp())
+		{
+			zOffset = config.counterZOffset();
+		}
+		// SAFETY: not null checked before call
+		var nex = plugin.getNex();
+
+		StringBuilder text = new StringBuilder();
+
+		if (config.indicateTankSwitchTicks())
+		{
+			text.append(4 - (plugin.getNexAttacks() % 4));
+		}
+
+		if (config.indicatePraySwitchTicks())
+		{
+			if (text.length() != 0)
+			{
+				text.append(" | ");
+			}
+			text.append(5 - (plugin.getNexAttacks() % 5));
+		}
+
+		var finalText = text.toString();
+		graphics.setFont(new Font("Arial", Font.BOLD, 12));
+		Point textLocation = nex.getCanvasTextLocation(graphics, finalText, 0);
+
+		if (!nex.isDead() && textLocation != null)
+		{
+			OverlayUtil.renderTextLocation(graphics, new Point(textLocation.getX(), textLocation.getY() + zOffset), finalText, Color.WHITE);
 		}
 	}
 
