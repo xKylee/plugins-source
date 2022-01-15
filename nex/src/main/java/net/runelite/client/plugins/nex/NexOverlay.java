@@ -154,7 +154,7 @@ class NexOverlay extends Overlay
 		{
 			if (config.indicateNexVulnerability().showInvulnerable())
 			{
-				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
+				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), config.outlineFeather());
 			}
 
 			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
@@ -171,8 +171,7 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateNexVulnerability().showVulnerable() && !plugin.nexDisable())
 		{
-			// TODO: Handle late join showing vulnerable while startup
-			outliner.drawOutline(plugin.getNex(), config.vulnerableWidth(), config.vulnerableColor(), 0);
+			outliner.drawOutline(plugin.getNex(), config.vulnerableWidth(), config.vulnerableColor(), config.outlineFeather());
 		}
 
 		if (config.indicateMinionVulnerability().showInvulnerable() && !plugin.nexDisable())
@@ -307,7 +306,7 @@ class NexOverlay extends Overlay
 		}
 		var color = vulnerable ? config.vulnerableColor() : config.invulnerableColor();
 		var width = vulnerable ? config.vulnerableWidth() : config.invulnerableWidth();
-		outliner.drawOutline(minion, width, color, 0);
+		outliner.drawOutline(minion, width, color, config.outlineFeather());
 	}
 
 
