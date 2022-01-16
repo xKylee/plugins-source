@@ -200,6 +200,9 @@ public class NexPlugin extends Plugin
 	private final TickTimer airplaneCoolDown = new TickTimer(dashLaneTiles::clear);
 
 	@Getter
+	private final TickTimer drawRangeCoolDown = new TickTimer();
+
+	@Getter
 	private final TickTimer nexDeathTileTicks = new TickTimer(() -> nexDeathTile = null);
 
 	@Getter
@@ -367,6 +370,7 @@ public class NexPlugin extends Plugin
 		containTrapTicks.tick();
 		orientationReadDelay.tick();
 		airplaneCoolDown.tick();
+		drawRangeCoolDown.tick();
 	}
 
 	private void updateTrappedStatus()
@@ -798,6 +802,7 @@ public class NexPlugin extends Plugin
 	{
 		selectWingTile();
 		airplaneCoolDown.setTicksIfExpired(NEX_DASH_TICK_LEN);
+		drawRangeCoolDown.setTicksIfExpired(NEX_DASH_CLICK_DELAY - 1);
 		nexTicksUntilClick.setTicks(NEX_DASH_CLICK_DELAY);
 	}
 }

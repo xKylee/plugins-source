@@ -140,7 +140,7 @@ class NexOverlay extends Overlay
 			drawAreaTiles(graphics, plugin.getBloodSacrificeSafeTiles(), config.indicateSacrificeAOEColor(), 1, false, 0);
 		}
 
-		if (config.indicateNexRange())
+		if (config.indicateNexRange() && plugin.getDrawRangeCoolDown().isExpired())
 		{
 			drawAreaTiles(graphics, plugin.getNexRangeTiles(), config.indicateNexRangeColor(), 1, false, 0);
 		}
