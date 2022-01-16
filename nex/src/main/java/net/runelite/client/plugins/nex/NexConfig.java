@@ -181,6 +181,21 @@ public interface NexConfig extends Config
 
 	@ConfigItem(
 		position = 111,
+		keyName = "outlineFeather",
+		name = "Outline feather",
+		description = "Specify between 0-4 how much of the model outline should be faded",
+		section = generalSection
+	)
+	@Range(
+		max = 4
+	)
+	default int outlineFeather()
+	{
+		return 4;
+	}
+
+	@ConfigItem(
+		position = 112,
 		keyName = "indicateInvulnerableNexTicks",
 		name = "Invulnerable Nex Ticks",
 		description = "if we know how many ticks before shes clickable",
@@ -196,7 +211,7 @@ public interface NexConfig extends Config
 		max = 72
 	)
 	@ConfigItem(
-		position = 112,
+		position = 113,
 		keyName = "indicateInvulnerableNexTicksFontSize",
 		name = "Ticks Font Size",
 		description = "size of le font",
@@ -210,7 +225,7 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 113,
+		position = 114,
 		keyName = "drawNexHp",
 		name = "Nex HP %",
 		description = "Draw nex HP per phase",
@@ -222,7 +237,7 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 114,
+		position = 115,
 		keyName = "drawMinionHP",
 		name = "Minion HP %",
 		description = "Draw minion HP",
@@ -238,7 +253,7 @@ public interface NexConfig extends Config
 		max = 72
 	)
 	@ConfigItem(
-		position = 115,
+		position = 116,
 		keyName = "drawNexHpFontSize",
 		name = "HP Font Size",
 		description = "size of next hp",
@@ -252,7 +267,7 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 116,
+		position = 117,
 		keyName = "indicateTank",
 		name = "Indicate Tank",
 		description = "Highlight the tile of the current tank",
@@ -265,7 +280,7 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 117,
+		position = 118,
 		keyName = "tankOtherColor",
 		name = "Tank Color",
 		description = "Color for tank tile when it is not you",
@@ -280,7 +295,7 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 118,
+		position = 119,
 		keyName = "tankOtherColorMe",
 		name = "Tank Color Personal",
 		description = "Color for tank tile when it is you",
@@ -294,7 +309,7 @@ public interface NexConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 119,
+		position = 120,
 		keyName = "indicateNexRange",
 		name = "Indicate Nex Range",
 		description = "Highlight the tiles where standing on or inside will allow nex to deal damage to you.",
@@ -307,7 +322,7 @@ public interface NexConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 120,
+		position = 121,
 		keyName = "indicateNexRangeColor",
 		name = "Range Color",
 		description = "Color for the tiles",
@@ -324,7 +339,7 @@ public interface NexConfig extends Config
 		keyName = "drawDashLane",
 		name = "Dash Lane Highlight",
 		description = "Draw dash lane aoe",
-		position = 121,
+		position = 122,
 		section = generalSection
 	)
 	default boolean drawDashLane()
@@ -336,7 +351,7 @@ public interface NexConfig extends Config
 		keyName = "drawTicksOnDash",
 		name = "Dash Ticks",
 		description = "Draw ticks on ice trap",
-		position = 122,
+		position = 123,
 		hidden = true,
 		unhide = "drawDashLane",
 		section = generalSection
@@ -351,7 +366,7 @@ public interface NexConfig extends Config
 		keyName = "drawDashLaneColor",
 		name = "Dash Color",
 		description = "Color ya idiot",
-		position = 123,
+		position = 124,
 		hidden = true,
 		unhide = "drawDashLane",
 		section = generalSection
@@ -724,6 +739,8 @@ public interface NexConfig extends Config
 		return true;
 	}
 
+	/* disabled until we know how it works
+
 	@ConfigItem(
 		position = 604,
 		keyName = "indicatePraySwitchTicks",
@@ -735,6 +752,8 @@ public interface NexConfig extends Config
 	{
 		return true;
 	}
+
+	 */
 
 	@Range(
 		min = 4,

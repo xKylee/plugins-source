@@ -140,7 +140,7 @@ class NexOverlay extends Overlay
 			drawAreaTiles(graphics, plugin.getBloodSacrificeSafeTiles(), config.indicateSacrificeAOEColor(), 1, false, 0);
 		}
 
-		if (config.indicateNexRange())
+		if (config.indicateNexRange() && plugin.getDrawRangeCoolDown().isExpired())
 		{
 			drawAreaTiles(graphics, plugin.getNexRangeTiles(), config.indicateNexRangeColor(), 1, false, 0);
 		}
@@ -154,7 +154,7 @@ class NexOverlay extends Overlay
 		{
 			if (config.indicateNexVulnerability().showInvulnerable())
 			{
-				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), 0);
+				outliner.drawOutline(plugin.getNex(), config.invulnerableWidth(), config.invulnerableColor(), config.outlineFeather());
 			}
 
 			if (config.indicateInvulnerableNexTicks() && plugin.getNexTicksUntilClick().isActive())
@@ -171,8 +171,7 @@ class NexOverlay extends Overlay
 		}
 		else if (config.indicateNexVulnerability().showVulnerable() && !plugin.nexDisable())
 		{
-			// TODO: Handle late join showing vulnerable while startup
-			outliner.drawOutline(plugin.getNex(), config.vulnerableWidth(), config.vulnerableColor(), 0);
+			outliner.drawOutline(plugin.getNex(), config.vulnerableWidth(), config.vulnerableColor(), config.outlineFeather());
 		}
 
 		if (config.indicateMinionVulnerability().showInvulnerable() && !plugin.nexDisable())
@@ -189,7 +188,7 @@ class NexOverlay extends Overlay
 			drawNexHpOverlay(graphics);
 		}
 
-		if (plugin.getCurrentPhase() == NexPhase.ZAROS && (config.indicateTankSwitchTicks() || config.indicatePraySwitchTicks()))
+		if (plugin.getCurrentPhase() == NexPhase.ZAROS && (config.indicateTankSwitchTicks() /* || config.indicatePraySwitchTicks() */))
 		{
 			drawTankAndPrayTicks(graphics);
 		}
@@ -307,7 +306,7 @@ class NexOverlay extends Overlay
 		}
 		var color = vulnerable ? config.vulnerableColor() : config.invulnerableColor();
 		var width = vulnerable ? config.vulnerableWidth() : config.invulnerableWidth();
-		outliner.drawOutline(minion, width, color, 0);
+		outliner.drawOutline(minion, width, color, config.outlineFeather());
 	}
 
 
@@ -498,8 +497,10 @@ class NexOverlay extends Overlay
 
 		if (config.indicateTankSwitchTicks())
 		{
-			text.append(4 - (plugin.getNexAttacks() % 4));
+			text.append(4 - (plugin.getNexTankAttacks() % 4));
 		}
+
+		/* disabled until we know how this works
 
 		if (config.indicatePraySwitchTicks())
 		{
@@ -509,6 +510,8 @@ class NexOverlay extends Overlay
 			}
 			text.append(5 - (plugin.getNexAttacks() % 5));
 		}
+
+		*/
 
 		var finalText = text.toString();
 		graphics.setFont(new Font("Arial", Font.BOLD, 12));

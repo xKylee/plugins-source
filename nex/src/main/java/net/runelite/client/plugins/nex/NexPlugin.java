@@ -34,6 +34,7 @@ import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicChanged;
+import net.runelite.api.events.InteractingChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -95,7 +96,7 @@ public class NexPlugin extends Plugin
 	private static final int NEX_WRATH_TICK_DELAY = 5;
 	private static final int NEX_SIPHON_DELAY = 9;
 	private static final int NEX_DASH_TICK_LEN = 5;
-	private static final int NEX_DASH_CLICK_DELAY = 10;
+	private static final int NEX_DASH_CLICK_DELAY = 8;
 
 	// two ticks after but chat messages happen before onTick
 	private static final int NEX_WING_READ_DELAY = 3;
@@ -199,10 +200,13 @@ public class NexPlugin extends Plugin
 	private final TickTimer airplaneCoolDown = new TickTimer(dashLaneTiles::clear);
 
 	@Getter
+	private final TickTimer drawRangeCoolDown = new TickTimer();
+
+	@Getter
 	private final TickTimer nexDeathTileTicks = new TickTimer(() -> nexDeathTile = null);
 
 	@Getter
-	private int nexAttacks = 0;
+	private int nexTankAttacks = 0;
 	private int nexPreviousAnimation = -1;
 	Set<Integer> nexAttackAnimations = Set.of(9189, 9180);
 
@@ -259,7 +263,7 @@ public class NexPlugin extends Plugin
 		containThisSpawns.clear();
 		nexTicksUntilClick.reset();
 		iceTraps.clear();
-		nexAttacks = 0;
+		nexTankAttacks = 0;
 		nexPreviousAnimation = -1;
 		iceTrapTicks.reset();
 		teamSize = 0;
@@ -286,7 +290,6 @@ public class NexPlugin extends Plugin
 			centerTile = getNexCenterTile(nex);
 			updateWingTiles(centerTile);
 
-			//9180
 			inFight = true;
 
 			// first discover nex, oh wow, fun boss.
@@ -301,11 +304,44 @@ public class NexPlugin extends Plugin
 			{
 				if (nexAttackAnimations.contains(nex.getAnimation()))
 				{
-					nexAttacks += 1;
+					nexTankAttacks += 1;
 				}
 
 				nexPreviousAnimation = nex.getAnimation();
 			}
+		}
+	}
+
+	/**
+	 * Detect nex changing tank in final phase for tank counter
+	 */
+	@Subscribe
+	public void onInteractingChanged(InteractingChanged event)
+	{
+		if (!inFight || currentPhase != NexPhase.ZAROS)
+		{
+			return;
+		}
+
+		Actor source = event.getSource();
+		Actor target = event.getTarget();
+
+		if (!(source instanceof NPC))
+		{
+			return;
+		}
+
+		if (!(target instanceof Player))
+		{
+			return;
+		}
+
+		NPC npc = (NPC) source;
+
+		if (npc.getName() != null && npc.getName().equalsIgnoreCase("Nex"))
+		{
+			log.debug("got nex tank switch, resetting ticks");
+			nexTankAttacks = 0;
 		}
 	}
 
@@ -334,6 +370,7 @@ public class NexPlugin extends Plugin
 		containTrapTicks.tick();
 		orientationReadDelay.tick();
 		airplaneCoolDown.tick();
+		drawRangeCoolDown.tick();
 	}
 
 	private void updateTrappedStatus()
@@ -542,7 +579,7 @@ public class NexPlugin extends Plugin
 		{
 			if (currentPhase == NexPhase.ZAROS)
 			{
-				nexAttacks = 0;
+				nexTankAttacks = 0;
 				nexPreviousAnimation = -1;
 			}
 
@@ -765,6 +802,7 @@ public class NexPlugin extends Plugin
 	{
 		selectWingTile();
 		airplaneCoolDown.setTicksIfExpired(NEX_DASH_TICK_LEN);
+		drawRangeCoolDown.setTicksIfExpired(NEX_DASH_CLICK_DELAY - 1);
 		nexTicksUntilClick.setTicks(NEX_DASH_CLICK_DELAY);
 	}
 }
