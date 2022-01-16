@@ -340,7 +340,6 @@ public class NexPlugin extends Plugin
 
 		if (npc.getName() != null && npc.getName().equalsIgnoreCase("Nex"))
 		{
-			log.debug("got nex tank switch, resetting ticks");
 			nexTankAttacks = 0;
 		}
 	}
