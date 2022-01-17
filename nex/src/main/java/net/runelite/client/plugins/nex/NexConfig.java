@@ -105,7 +105,7 @@ public interface NexConfig extends Config
 	)
 	default VulnerabilityDisplay indicateNexVulnerability()
 	{
-		return VulnerabilityDisplay.INVULNERABLE;
+		return VulnerabilityDisplay.BOTH;
 	}
 
 	@ConfigItem(
@@ -118,7 +118,7 @@ public interface NexConfig extends Config
 	)
 	default VulnerabilityDisplay indicateMinionVulnerability()
 	{
-		return VulnerabilityDisplay.VULNERABLE;
+		return VulnerabilityDisplay.BOTH;
 	}
 
 	@Alpha
