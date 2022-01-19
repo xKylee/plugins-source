@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import lombok.Getter;
 import net.runelite.api.Client;
+import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.coords.WorldPoint;
@@ -189,8 +190,16 @@ public class Maiden extends Room
 		}
 
 		maidenBloodSplatters.clear();
-		client.getGraphicsObjects().stream().filter(o -> o.getId() == GRAPHICSOBJECT_ID_MAIDEN).
-			forEach(o -> maidenBloodSplatters.add(WorldPoint.fromLocal(client, o.getLocation())));
+
+		for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+		{
+			if (graphicsObject.getId() != GRAPHICSOBJECT_ID_MAIDEN)
+			{
+				continue;
+			}
+
+			maidenBloodSplatters.add(WorldPoint.fromLocal(client, graphicsObject.getLocation()));
+		}
 
 		maidenBloodSpawnTrailingLocations.clear();
 		maidenBloodSpawnTrailingLocations.addAll(maidenBloodSpawnLocations);

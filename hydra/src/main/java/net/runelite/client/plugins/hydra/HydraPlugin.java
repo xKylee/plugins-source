@@ -316,7 +316,7 @@ public class HydraPlugin extends Plugin
 	@Subscribe
 	private void onProjectileMoved(final ProjectileMoved event)
 	{
-		if (interactingNpc == null || client.getGameCycle() >= event.getProjectile().getStartMovementCycle())
+		if (interactingNpc == null || client.getGameCycle() >= event.getProjectile().getStartCycle())
 		{
 			return;
 		}

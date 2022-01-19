@@ -340,7 +340,7 @@ public class AlchemicalHydraPlugin extends Plugin
 	{
 		final Projectile projectile = event.getProjectile();
 
-		if (hydra == null || client.getGameCycle() >= projectile.getStartMovementCycle())
+		if (hydra == null || client.getGameCycle() >= projectile.getStartCycle())
 		{
 			return;
 		}
