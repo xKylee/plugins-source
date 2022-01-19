@@ -34,11 +34,11 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Area;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
+import net.runelite.api.Deque;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
@@ -143,9 +143,9 @@ public class SceneOverlay extends Overlay
 
 	private void renderLightning(final Graphics2D graphics2D)
 	{
-		final List<GraphicsObject> graphicsObjects = client.getGraphicsObjects();
+		final Deque<GraphicsObject> graphicsObjects = client.getGraphicsObjects();
 
-		if (!config.lightningOutline() || hydra.getPhase() != HydraPhase.LIGHTNING || graphicsObjects.isEmpty())
+		if (!config.lightningOutline() || hydra.getPhase() != HydraPhase.LIGHTNING)
 		{
 			return;
 		}
