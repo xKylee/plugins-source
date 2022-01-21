@@ -805,6 +805,18 @@ public interface TheatreConfig extends Config
 
 	@ConfigItem(
 		position = 504,
+		keyName = "sotetsegAttackCounter",
+		name = "Sotetseg Attack Counter",
+		description = "Countdown until death ball.",
+		section = sotetsegSection
+	)
+	default boolean sotetsegAttackCounter()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 505,
 		keyName = "sotetsegBigOrbTicks",
 		name = "Sotetseg Big Ball Tick Overlay",
 		description = "Displays how many ticks until the ball will explode (eat when you see 0).",
@@ -817,7 +829,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 505,
+		position = 506,
 		keyName = "sotetsegBigOrbTickColor",
 		name = "Sotetseg Big Ball Tick Color",
 		description = "Select a color for the Sotetseg Big Ball tick countdown text.",
@@ -830,7 +842,7 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
-		position = 506,
+		position = 507,
 		keyName = "sotetsegBigOrbTileColor",
 		name = "Sotetseg Big Ball Tile Color",
 		description = "Select a color for the Sotetseg Big Ball tile color.",

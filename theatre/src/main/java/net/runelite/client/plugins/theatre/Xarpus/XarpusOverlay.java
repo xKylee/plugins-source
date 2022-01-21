@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.BasicStroke;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class XarpusOverlay extends RoomOverlay
 {
@@ -79,20 +81,28 @@ public class XarpusOverlay extends RoomOverlay
 				renderTextLocation(graphics, ticksLeftStr, Color.WHITE, canvasPoint);
 			}
 
-			if (config.xarpusExhumed() && (boss.getId() == NpcID.XARPUS_8339 || boss.getId() == 10767 || boss.getId() == 10771))
+			if ((config.xarpusExhumed() || config.xarpusExhumedTick()) && (boss.getId() == NpcID.XARPUS_8339 || boss.getId() == 10767 || boss.getId() == 10771))
 			{
-				for (GroundObject o : xarpus.getXarpusExhumeds().keySet())
+				if (!xarpus.getXarpusExhumeds().isEmpty())
 				{
-					Polygon poly = o.getCanvasTilePoly();
-					if (poly != null)
-					{
-						graphics.setColor(new Color(0, 255, 0, 130));
-						graphics.setStroke(new BasicStroke(1));
-						graphics.draw(poly);
+					Collection<Pair<GroundObject, Integer>> exhumeds = xarpus.getXarpusExhumeds().values();
+					exhumeds.forEach((p) -> {
+						GroundObject o = p.getLeft();
+						int ticks = p.getRight();
 
+						if (config.xarpusExhumed())
+						{
+							Polygon poly = o.getCanvasTilePoly();
+							if (poly != null)
+							{
+								graphics.setColor(new Color(0, 255, 0, 130));
+								graphics.setStroke(new BasicStroke(1));
+								graphics.draw(poly);
+							}
+						}
 						if (config.xarpusExhumedTick())
 						{
-							String count = Integer.toString(xarpus.getXarpusExhumeds().get(o) + 1);
+							String count = Integer.toString(ticks);
 							LocalPoint lp = o.getLocalLocation();
 							Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
 							if (point != null)
@@ -100,7 +110,7 @@ public class XarpusOverlay extends RoomOverlay
 								renderTextLocation(graphics, count, Color.WHITE, point);
 							}
 						}
-					}
+					});
 				}
 			}
 

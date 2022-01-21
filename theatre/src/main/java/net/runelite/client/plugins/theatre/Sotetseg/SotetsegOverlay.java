@@ -19,6 +19,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPriority;
 
 public class SotetsegOverlay extends RoomOverlay
 {
@@ -30,6 +31,7 @@ public class SotetsegOverlay extends RoomOverlay
 	{
 		super(config);
 		setLayer(OverlayLayer.ABOVE_SCENE);
+		setPriority(OverlayPriority.MED);
 	}
 
 	@Override
@@ -46,6 +48,18 @@ public class SotetsegOverlay extends RoomOverlay
 					final String ticksCounted = String.valueOf(tick);
 					Point canvasPoint = boss.getCanvasTextLocation(graphics, ticksCounted, 50);
 					renderTextLocation(graphics, ticksCounted, Color.WHITE, canvasPoint);
+				}
+			}
+
+			if (config.sotetsegAttackCounter())
+			{
+				int attack = sotetseg.getAttacksLeft();
+				if (attack >= 0)
+				{
+					NPC boss = sotetseg.getSotetsegNPC();
+					final String attacksCounted = String.valueOf(sotetseg.getAttacksLeft());
+					Point canvasPoint = boss.getCanvasTextLocation(graphics, attacksCounted, 250);
+					renderTextLocation(graphics, attacksCounted, Color.YELLOW, canvasPoint);
 				}
 			}
 

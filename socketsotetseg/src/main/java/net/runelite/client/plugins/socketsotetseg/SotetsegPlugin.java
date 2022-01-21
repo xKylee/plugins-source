@@ -67,6 +67,8 @@ import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
+import net.runelite.client.plugins.tileindicators.TileIndicatorsConfig;
+import net.runelite.client.plugins.tileindicators.TileIndicatorsPlugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
 import org.pf4j.Extension;
@@ -79,6 +81,7 @@ import org.pf4j.Extension;
 	enabledByDefault = false
 )
 @PluginDependency(SocketPlugin.class)
+@PluginDependency(TileIndicatorsPlugin.class)
 public class SotetsegPlugin extends Plugin
 {
 
@@ -111,7 +114,11 @@ public class SotetsegPlugin extends Plugin
 	private SotetsegOverlay overlay;
 
 	@Inject
-	private MazeTrueTileOverlay mazeOverlay;
+	private SotetsegTileIndicatorsOverlay tileIndicatorsOverlay;
+
+	@Getter
+	@Inject
+	private TileIndicatorsConfig TileIndicatorsConfig;
 
 	// This boolean states whether or not the room is currently active.
 	@Getter(AccessLevel.PUBLIC)
@@ -197,14 +204,14 @@ public class SotetsegPlugin extends Plugin
 		flashFlag = true;
 
 		overlayManager.add(overlay);
-		overlayManager.add(mazeOverlay);
+		overlayManager.add(tileIndicatorsOverlay);
 	}
 
 	@Override
 	protected void shutDown()
 	{
 		overlayManager.remove(overlay);
-		overlayManager.remove(mazeOverlay);
+		overlayManager.remove(tileIndicatorsOverlay);
 	}
 
 	@Subscribe // Boss has entered the scene. Played has entered the room.
@@ -223,7 +230,6 @@ public class SotetsegPlugin extends Plugin
 			case 10867:
 				mazePoints.clear();
 				mazeSolved.clear();
-				mazeActive = false;
 				sotetsegActive = true;
 				sotetsegNPC = npc;
 				break;
@@ -259,6 +265,10 @@ public class SotetsegPlugin extends Plugin
 						splitMessage = splitMessage + "'Sotetseg Phase 3' completed! - Duration: <col=ff0000>" + String.format("%.1f", (double) splitTime * 0.6D) + "s";
 						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", splitMessage, null);
 						soteEntryTick = -1;
+					}
+					if (client.getWidget(28, 1) != null)
+					{
+						hideWidget(client.getWidget(28, 1), false);
 					}
 				}
 
@@ -447,10 +457,8 @@ public class SotetsegPlugin extends Plugin
 
 	private void mazeEnds()
 	{
-		if (this.client.getWidget(28, 1) != null)
+		if (client.getWidget(28, 1) != null)
 		{
-			this.hideWidget(this.client.getWidget(28, 1), false);
-
 			// Clear widget text to prevent chosen set incorrectly sometimes on maze start
 			Widget[] widgetsOfSotetseg = client.getWidget(28, 1).getChildren();
 			for (Widget widget : widgetsOfSotetseg)

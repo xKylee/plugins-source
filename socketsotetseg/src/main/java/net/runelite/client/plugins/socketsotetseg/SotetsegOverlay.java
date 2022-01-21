@@ -38,6 +38,7 @@ import java.util.stream.IntStream;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
+import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
@@ -116,7 +117,29 @@ public class SotetsegOverlay extends Overlay
 					int width = graphics.getFontMetrics().stringWidth(text);
 					Point base = Perspective.localToCanvas(client, plugin.getSotetsegNPC().getLocalLocation(), client.getPlane(), plugin.getSotetsegNPC().getLogicalHeight());
 					Point actual = new Point(base.getX() - width / 2, base.getY() + 100);
+					graphics.setFont(new Font("Arial", Font.BOLD, config.getFontSizeInstanceTimer()));
 					OverlayUtil.renderTextLocation(graphics, actual, text, Color.GREEN);
+				}
+				catch (NullPointerException ignored)
+				{
+				}
+			}
+
+			if (plugin.isMazeActive() && config.showSotetsegInstanceTimerPlayer())
+			{
+				try
+				{
+					String text = String.valueOf(plugin.getInstanceTime());
+					Player player = client.getLocalPlayer();
+					if (player != null)
+					{
+						Point point = player.getCanvasTextLocation(graphics, "#", player.getLogicalHeight() + 250);
+						if (point != null)
+						{
+							graphics.setFont(new Font("Arial", Font.BOLD, config.getFontSizeInstanceTimer()));
+							OverlayUtil.renderTextLocation(graphics, point, text, Color.CYAN);
+						}
+					}
 				}
 				catch (NullPointerException ignored)
 				{
@@ -136,10 +159,10 @@ public class SotetsegOverlay extends Overlay
 					plugin.setFlashScreen(false);
 				}
 			}
-			if (plugin.isFlashScreen() && config.isChosenText())
+			if (plugin.isFlashScreen() && config.isChosenText() && config.hideScreenFlash())
 			{
 				String text = config.customChosenText();
-				graphics.setFont(new Font("Arial", Font.BOLD, 24));
+				graphics.setFont(new Font("Arial", Font.BOLD, 20));
 				int width = graphics.getFontMetrics().stringWidth(text);
 				int drawX = this.client.getViewportWidth() / 2 - width / 2;
 				int drawY = this.client.getViewportHeight() - this.client.getViewportHeight() / 2 - 12;
