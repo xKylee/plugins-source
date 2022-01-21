@@ -30,8 +30,9 @@
 package net.runelite.client.plugins.socketdeathindicator;
 
 
-import com.google.common.base.Strings;
 import com.google.inject.Provides;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.Hitsplat.HitsplatType;
@@ -58,15 +60,16 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.util.Text;
 import org.pf4j.Extension;
 
+@Slf4j
 @Extension
 @PluginDescriptor(
 		name = "Socket Death Indicators",
@@ -96,9 +99,12 @@ public class SocketDeathIndicatorPlugin extends Plugin
 	private NyloQ maidenNPC;
 
 	private ArrayList<Integer> hiddenIndices;
+	private int partySize;
 
-	private ArrayList<String> playerList;
-	private int partySize = -1;
+	@Inject
+	PluginManager pluginManager;
+	private ArrayList<Method> reflectedMethods;
+	private ArrayList<Plugin> reflectedPlugins;
 
 	@Provides
 	SocketDeathIndicatorsConfig getConfig(ConfigManager configManager)
@@ -112,8 +118,26 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		deadNylos = new ArrayList<>();
 		nylos = new ArrayList<>();
 		hiddenIndices = new ArrayList<>();
-		playerList = new ArrayList<>();
 		overlayManager.add(overlay);
+		reflectedMethods = new ArrayList<>();
+		reflectedPlugins = new ArrayList<>();
+
+		for (Plugin p : pluginManager.getPlugins())
+		{
+			Method m;
+
+			try
+			{
+				m = p.getClass().getDeclaredMethod("SocketDeathIntegration", Integer.TYPE);
+			}
+			catch (NoSuchMethodException var5)
+			{
+				continue;
+			}
+
+			reflectedMethods.add(m);
+			reflectedPlugins.add(p);
+		}
 	}
 
 	@Override
@@ -122,7 +146,6 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		deadNylos = null;
 		nylos = null;
 		hiddenIndices = null;
-		playerList = null;
 		overlayManager.remove(overlay);
 	}
 
@@ -158,25 +181,36 @@ public class SocketDeathIndicatorPlugin extends Plugin
 			switch (id)
 			{
 				case 8342:
-				case 10791:
 				case 8343:
-				case 10792:
 				case 8344:
+				case 10791:
+				case 10792:
 				case 10793:
+				case 10797:
+				case 10798:
+				case 10799:
 					nylos.add(new NyloQ(event.getNpc(), 0, smallHP));
 					break;
 				case 8345:
-				case 10794:
 				case 8346:
-				case 10795:
 				case 8347:
+				case 8351:
+				case 8352:
+				case 8353:
+				case 10794:
+				case 10795:
 				case 10796:
+				case 10800:
+				case 10801:
+				case 10802:
 					nylos.add(new NyloQ(event.getNpc(), 0, bigHP));
 					break;
 				case 8360:
+				case 10822:
 					NyloQ maidenTemp = new NyloQ(event.getNpc(), 0, maidenHP);
 					nylos.add(maidenTemp);
 					maidenNPC = maidenTemp;
+					break;
 			}
 
 		}
@@ -292,7 +326,8 @@ public class SocketDeathIndicatorPlugin extends Plugin
 					NyloQ finalQ = q;
 					deadNylos.removeIf((o) -> o.equals(finalQ.npc));
 				}
-				else if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363)
+				else if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363
+						|| q.npc.getId() == 10822 || q.npc.getId() == 10823 || q.npc.getId() == 10824 || q.npc.getId() == 10825)
 				{
 					double percent = (double) q.hp / (double) q.maxHP;
 					if (percent < 0.7D && q.phase == 0)
@@ -345,23 +380,26 @@ public class SocketDeathIndicatorPlugin extends Plugin
 
 						q.queuedDamage += damage;
 						NyloQ finalQ = q;
-
-						if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363)
+						if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363
+								|| q.npc.getId() == 10822 || q.npc.getId() == 10823 || q.npc.getId() == 10824 || q.npc.getId() == 10825)
 						{
-							double percent = ((double) q.hp - (double) q.queuedDamage) / (double) q.maxHP;
-							if (percent < 0.7D && q.phase == 0)
+							if (q.queuedDamage > 0)
 							{
-								q.phase = 1;
-							}
+								double percent = ((double) q.hp - (double) q.queuedDamage) / (double) q.maxHP;
+								if (percent < 0.7D && q.phase == 0)
+								{
+									q.phase = 1;
+								}
 
-							if (percent < 0.5D && q.phase == 1)
-							{
-								q.phase = 2;
-							}
+								if (percent < 0.5D && q.phase == 1)
+								{
+									q.phase = 2;
+								}
 
-							if (percent < 0.3D && q.phase == 2)
-							{
-								q.phase = 3;
+								if (percent < 0.3D && q.phase == 2)
+								{
+									q.phase = 3;
+								}
 							}
 						}
 						else if (q.hp - q.queuedDamage <= 0 && deadNylos.stream().noneMatch((o) -> o.getIndex() == finalQ.npc.getIndex()))
@@ -371,6 +409,22 @@ public class SocketDeathIndicatorPlugin extends Plugin
 							{
 								setHiddenNpc(q.npc, true);
 								q.hidden = true;
+								if (reflectedPlugins.size() == reflectedMethods.size())
+								{
+									for (int i = 0; i < reflectedPlugins.size(); ++i)
+									{
+										try
+										{
+											Method tm = reflectedMethods.get(i);
+											tm.setAccessible(true);
+											tm.invoke(reflectedPlugins.get(i), q.npc.getIndex());
+										}
+										catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError | NullPointerException var11)
+										{
+											log.debug("Failed on plugin: " + reflectedPlugins.get(i).getName());
+										}
+									}
+								}
 							}
 						}
 					}
@@ -463,7 +517,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				// att, str, def sprite
 				else if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 197 || id == 198 || id == 199))
 				{
-					if (weaponUsed == 22325)
+					if (weaponUsed == 22325 || weaponUsed == 25739 || weaponUsed == 25736) //Don't apply if weapon is scythe
 					{
 						return;
 					}
@@ -471,7 +525,7 @@ public class SocketDeathIndicatorPlugin extends Plugin
 					if (client.getVarbitValue(4696) == 0)
 					{
 						// checking if casting on long range
-						if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292 && weaponUsed != 25731)
+						if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292 && weaponUsed != 25731) //Powered Staves
 						{
 							if (weaponUsed == 12006)
 							{
@@ -562,14 +616,12 @@ public class SocketDeathIndicatorPlugin extends Plugin
 		if (inRegion(13122, 12613))
 		{
 			inNylo = true;
-
-			for (int v = 330; v < 335; ++v)
+			partySize = 0;
+			for (int i = 330; i < 335; i++)
 			{
-				String name = Text.standardize(client.getVarcStrValue(v));
-				if (!Strings.isNullOrEmpty(name) && !playerList.contains(name))
+				if (client.getVarcStrValue(i) != null && !client.getVarcStrValue(i).equals(""))
 				{
-					playerList.add(name);
-					partySize = playerList.size();
+					partySize++;
 				}
 			}
 
@@ -599,14 +651,11 @@ public class SocketDeathIndicatorPlugin extends Plugin
 				client.setHiddenNpcIndices(newHiddenNpcIndicesList);
 				hiddenIndices.clear();
 			}
-			if (!nylos.isEmpty() || !deadNylos.isEmpty() || !playerList.isEmpty())
+			if (!nylos.isEmpty() || !deadNylos.isEmpty())
 			{
-				partySize = -1;
 				nylos.clear();
 				deadNylos.clear();
-				playerList.clear();
 			}
 		}
 	}
-
 }

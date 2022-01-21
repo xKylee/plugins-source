@@ -8,6 +8,17 @@ import net.runelite.client.config.ConfigItem;
 public interface SocketDeathIndicatorsConfig extends Config
 {
 	@ConfigItem(
+			position = 0,
+			keyName = "showOutline",
+			name = "Show outline",
+			description = "Shows outline when killed"
+	)
+	default boolean showOutline()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 			position = 1,
 			keyName = "hideNylo",
 			name = "Hide Nylo",
@@ -28,6 +39,5 @@ public interface SocketDeathIndicatorsConfig extends Config
 	{
 		return false;
 	}
-
 
 }

@@ -1,10 +1,13 @@
 package net.runelite.client.plugins.socketdeathindicator;
 
+import net.runelite.api.NPC;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import javax.inject.Inject;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -24,11 +27,20 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
+		setLayer(OverlayLayer.ABOVE_SCENE);
 
 	}
 
 	public Dimension render(Graphics2D graphics)
 	{
+		if (config.showOutline())
+		{
+			for (NPC n : plugin.getDeadNylos())
+			{
+				Shape objectClickbox = n.getConvexHull();
+				renderPoly(graphics, Color.red, objectClickbox);
+			}
+		}
 
 		if (plugin.getMaidenNPC() != null && config.maidenMarkers())
 		{
@@ -58,5 +70,17 @@ public class SocketDeathIndicatorsOverlay extends Overlay
 		}
 
 		return null;
+	}
+
+	private void renderPoly(Graphics2D graphics, Color color, Shape polygon)
+	{
+		if (polygon != null)
+		{
+			graphics.setColor(color);
+			graphics.setStroke(new BasicStroke(2));
+			graphics.draw(polygon);
+			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
+			graphics.fill(polygon);
+		}
 	}
 }
