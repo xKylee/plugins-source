@@ -9,12 +9,11 @@ package net.runelite.client.plugins.theatre.Xarpus;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -30,7 +29,6 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
@@ -42,6 +40,7 @@ import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ImageUtil;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Xarpus extends Room
 {
@@ -81,9 +80,7 @@ public class Xarpus extends Room
 	private boolean exhumedSpawned = false;
 
 	@Getter
-	private final Map<GroundObject, Integer> xarpusExhumeds = new HashMap<>();
-
-	private final Set<WorldPoint> xarpusExhumedsLocation = new HashSet<>();
+	private final Map<Long, Pair<GroundObject, Integer>> xarpusExhumeds = new HashMap<>();
 
 	@Getter
 	private Counter exhumedCounter;
@@ -100,6 +97,10 @@ public class Xarpus extends Room
 
 	private static BufferedImage EXHUMED_COUNT_ICON;
 	private static final int GROUNDOBJECT_ID_EXHUMED = 32743;
+
+	@Getter
+	private boolean isHM;
+	private static final Set<Integer> XARPUS_HM_ID = ImmutableSet.of(10770, 10771, 10772, 10773);
 
 	@Override
 	public void init()
@@ -141,6 +142,7 @@ public class Xarpus extends Room
 			case 10771:
 			case 10772:
 			case 10773:
+				isHM = XARPUS_HM_ID.contains(npc.getId());
 				xarpusActive = true;
 				xarpusNPC = npc;
 				xarpusStare = false;
@@ -169,6 +171,7 @@ public class Xarpus extends Room
 			case 10771:
 			case 10772:
 			case 10773:
+				isHM = false;
 				xarpusActive = false;
 				xarpusNPC = null;
 				xarpusStare = false;
@@ -180,7 +183,6 @@ public class Xarpus extends Room
 				exhumedSpawned = false;
 				postScreech = false;
 				exhumedCount = -1;
-				xarpusExhumedsLocation.clear();
 				break;
 		}
 	}
@@ -191,42 +193,45 @@ public class Xarpus extends Room
 		if (xarpusActive)
 		{
 			GroundObject o = event.getGroundObject();
-			if (o.getId() == 32743)
+			if (o.getId() == GROUNDOBJECT_ID_EXHUMED)
 			{
-				if (xarpusExhumedsLocation.contains(o.getWorldLocation()))
+				long hash = o.getHash();
+				if (xarpusExhumeds.containsKey(hash))
 				{
 					return;
 				}
 				exhumedSpawned = true;
-				xarpusExhumedsLocation.add(o.getWorldLocation());
 
 				if (exhumedCounter == null)
 				{
+					switch (TheatrePlugin.partySize)
+					{
+						case 5:
+							exhumedCount = isHM ? 24 : 18;
+							break;
+						case 4:
+							exhumedCount = isHM ? 20 : 15;
+							break;
+						case 3:
+							exhumedCount = isHM ? 16 : 12;
+							break;
+						case 2:
+							exhumedCount = isHM ? 13 : 9;
+							break;
+						default:
+							exhumedCount = isHM ? 9 : 7;
+					}
 
-					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, 1);
+					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, exhumedCount - 1);
 					infoBoxManager.addInfoBox(exhumedCounter);
 				}
 				else
 				{
 
-					exhumedCounter.setCount(exhumedCounter.getCount() + 1);
+					exhumedCounter.setCount(exhumedCounter.getCount() - 1);
 				}
 
-				xarpusExhumeds.put(o, 11);
-			}
-		}
-	}
-
-	@Subscribe
-	public void onGroundObjectDespawned(GroundObjectDespawned event)
-	{
-		if (xarpusActive)
-		{
-			GroundObject o = event.getGroundObject();
-			if (o.getId() == GROUNDOBJECT_ID_EXHUMED)
-			{
-				xarpusExhumedsLocation.remove(o.getWorldLocation());
-				xarpusExhumeds.remove(o);
+				xarpusExhumeds.put(hash, Pair.of(o, isHM ? 9 : 11));
 			}
 		}
 	}
@@ -246,15 +251,10 @@ public class Xarpus extends Room
 	{
 		if (xarpusActive)
 		{
-			for (Iterator<GroundObject> it = xarpusExhumeds.keySet().iterator(); it.hasNext(); )
+			if (!xarpusExhumeds.isEmpty())
 			{
-				GroundObject key = it.next();
-				xarpusExhumeds.replace(key, xarpusExhumeds.get(key) - 1);
-				if (xarpusExhumeds.get(key) < 0)
-				{
-					xarpusExhumedsLocation.remove(key.getWorldLocation());
-					it.remove();
-				}
+				xarpusExhumeds.replaceAll((k, v) -> Pair.of(v.getLeft(), v.getRight() - 1));
+				xarpusExhumeds.values().removeIf((p) -> p.getRight() <= 0);
 			}
 
 			if (xarpusNPC.getOverheadText() != null && !xarpusStare)
