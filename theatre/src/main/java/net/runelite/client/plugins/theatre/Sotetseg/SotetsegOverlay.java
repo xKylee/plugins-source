@@ -19,6 +19,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPriority;
 
 public class SotetsegOverlay extends RoomOverlay
 {
@@ -30,6 +31,7 @@ public class SotetsegOverlay extends RoomOverlay
 	{
 		super(config);
 		setLayer(OverlayLayer.ABOVE_SCENE);
+		setPriority(OverlayPriority.MED);
 	}
 
 	@Override
