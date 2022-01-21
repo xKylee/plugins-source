@@ -49,6 +49,18 @@ public class SotetsegOverlay extends RoomOverlay
 				}
 			}
 
+			if (config.sotetsegAttackCounter())
+			{
+				int attack = sotetseg.getAttacksLeft();
+				if (attack >= 0)
+				{
+					NPC boss = sotetseg.getSotetsegNPC();
+					final String attacksCounted = String.valueOf(sotetseg.getAttacksLeft());
+					Point canvasPoint = boss.getCanvasTextLocation(graphics, attacksCounted, 250);
+					renderTextLocation(graphics, attacksCounted, Color.YELLOW, canvasPoint);
+				}
+			}
+
 			if (config.sotetsegOrbAttacksTicks() || config.sotetsegBigOrbTicks())
 			{
 				for (Projectile p : client.getProjectiles())

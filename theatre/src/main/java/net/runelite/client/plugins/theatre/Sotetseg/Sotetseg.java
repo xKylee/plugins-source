@@ -100,6 +100,9 @@ public class Sotetseg extends Room
 	@Getter(AccessLevel.PACKAGE)
 	Queue<TheatreUpcomingAttack> upcomingAttackQueue = new PriorityQueue<>();
 
+	@Getter
+	private int attacksLeft = 10;
+
 	@Override
 	public void load()
 	{
@@ -149,6 +152,7 @@ public class Sotetseg extends Room
 					sotetsegActive = false;
 					sotetsegNPC = null;
 					upcomingAttackQueue.clear();
+					attacksLeft = 10;
 				}
 				break;
 		}
@@ -181,8 +185,13 @@ public class Sotetseg extends Room
 	}
 
 	@Subscribe
-	public void onProjectileSpawn(ProjectileSpawned projectileSpawned)
+	public void onProjectileSpawned(ProjectileSpawned projectileSpawned)
 	{
+		if (!sotetsegActive)
+		{
+			return;
+		}
+
 		var p = projectileSpawned.getProjectile();
 		if (p == null)
 		{
@@ -195,6 +204,19 @@ public class Sotetseg extends Room
 				(p.getRemainingCycles() / 30),
 				(p.getId() == Sotetseg.SOTETSEG_MAGE_ORB ? Prayer.PROTECT_FROM_MAGIC : Prayer.PROTECT_FROM_MISSILES)
 			));
+		}
+
+		if (p.getId() == SOTETSEG_BIG_AOE_ORB)
+		{
+			sotetsegTickCount = 11;
+			attacksLeft = 10;
+		}
+
+		WorldPoint soteWp = WorldPoint.fromLocal(client, sotetsegNPC.getLocalLocation());
+		WorldPoint projWp = WorldPoint.fromLocal(client, p.getX1(), p.getY1(), client.getPlane());
+		if (p.getId() == SOTETSEG_MAGE_ORB && sotetsegNPC.getAnimation() == 8139 && projWp.equals(soteWp))
+		{
+			attacksLeft--;
 		}
 	}
 
