@@ -459,6 +459,7 @@ public class Verzik extends Room
 						if (projectile.getRemainingCycles() > 0 && (projectile.getId() == VERZIK_RANGE_BALL || projectile.getId() == VERZIK_LIGHTNING_BALL))
 						{
 							handleVerzikAttacks(projectile);
+							break;
 						}
 					}
 
