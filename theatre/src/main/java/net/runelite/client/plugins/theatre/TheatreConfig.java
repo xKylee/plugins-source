@@ -902,6 +902,18 @@ public interface TheatreConfig extends Config
 
 	@ConfigItem(
 		position = 604,
+		keyName = "xarpusExhumedCount",
+		name = "Xarpus Exhumed Count",
+		description = "Count the amount of exhumeds.",
+		section = xarpusSection
+	)
+	default XARPUS_EXHUMED_COUNT xarpusExhumedCount()
+	{
+		return XARPUS_EXHUMED_COUNT.DOWN;
+	}
+
+	@ConfigItem(
+		position = 605,
 		keyName = "xarpusTickP2",
 		name = "Xarpus Attack Tick - P2",
 		description = "Displays a tick counter for when Xarpus faces a new target to spit at.",
@@ -913,7 +925,7 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 605,
+		position = 606,
 		keyName = "xarpusTickP3",
 		name = "Xarpus Attack Tick - P3",
 		description = "Displays a tick counter for when Xarpus will rotate.",
@@ -925,10 +937,10 @@ public interface TheatreConfig extends Config
 	}
 
 	@ConfigItem(
+		position = 607,
 		name = "Line of Sight",
 		keyName = "xarpusLineOfSight",
 		description = "Displays Xarpus's Line of Sight on P3<br>Melee Tiles: Displays only the melee tiles that Xarpus can see<br>Square: Displays the whole region that Xarpus can see",
-		position = 606,
 		section = xarpusSection
 	)
 	default XARPUS_LINE_OF_SIGHT xarpusLineOfSight()
@@ -938,10 +950,10 @@ public interface TheatreConfig extends Config
 
 	@Alpha
 	@ConfigItem(
+		position = 608,
 		name = "Line of Sight Color",
 		keyName = "xarpusLineOfSightColor",
 		description = "Customize the color for Xarpus's Line of Sight",
-		position = 607,
 		section = xarpusSection
 	)
 	default Color xarpusLineOfSightColor()
@@ -1389,6 +1401,13 @@ public interface TheatreConfig extends Config
 	{
 		TILE,
 		HULL
+	}
+
+	enum XARPUS_EXHUMED_COUNT
+	{
+		OFF,
+		DOWN,
+		UP;
 	}
 
 	enum XARPUS_LINE_OF_SIGHT

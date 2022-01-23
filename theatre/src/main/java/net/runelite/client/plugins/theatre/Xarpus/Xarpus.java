@@ -222,13 +222,16 @@ public class Xarpus extends Room
 							exhumedCount = isHM ? 9 : 7;
 					}
 
-					exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, exhumedCount - 1);
-					infoBoxManager.addInfoBox(exhumedCounter);
+					if (config.xarpusExhumedCount() != TheatreConfig.XARPUS_EXHUMED_COUNT.OFF)
+					{
+						exhumedCounter = new Counter(EXHUMED_COUNT_ICON, p, config.xarpusExhumedCount() == TheatreConfig.XARPUS_EXHUMED_COUNT.DOWN ? exhumedCount - 1 : 1);
+						infoBoxManager.addInfoBox(exhumedCounter);
+					}
 				}
 				else
 				{
 
-					exhumedCounter.setCount(exhumedCounter.getCount() - 1);
+					exhumedCounter.setCount(config.xarpusExhumedCount() == TheatreConfig.XARPUS_EXHUMED_COUNT.DOWN ? exhumedCounter.getCount() - 1 : exhumedCounter.getCount() + 1);
 				}
 
 				xarpusExhumeds.put(hash, Pair.of(o, isHM ? 9 : 11));
