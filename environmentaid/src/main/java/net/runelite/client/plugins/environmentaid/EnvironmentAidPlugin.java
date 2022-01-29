@@ -160,7 +160,7 @@ public class EnvironmentAidPlugin extends Plugin
 		{
 			client.getWidget(404, 0).setHidden(config.scryPool());
 		}
-        if (client.getWidget(313, 1) != null)
+		if (client.getWidget(313, 1) != null)
 		{
 			client.getWidget(313, 1).setHidden(config.smokeEffect());
 		}
@@ -233,7 +233,7 @@ public class EnvironmentAidPlugin extends Plugin
 			client.getWidget(404, 0).setHidden(config.scryPool());
 		}
 
-        if (isInSmokeRegions() && client.getWidget(313, 1) != null)
+		if (isInSmokeRegions() && client.getWidget(313, 1) != null)
 		{
 			client.getWidget(313, 1).setHidden(config.smokeEffect());
 		}
@@ -269,7 +269,7 @@ public class EnvironmentAidPlugin extends Plugin
 			hideWidget(event, true);
 		}
 
-        if (config.smokeEffect() && isInSmokeRegions() && client.getWidget(313, 1) != null && event.getId() == client.getWidget(313, 1).getId())
+		if (config.smokeEffect() && isInSmokeRegions() && client.getWidget(313, 1) != null && event.getId() == client.getWidget(313, 1).getId())
 		{
 			hideWidget(event, true);
 		}
@@ -379,7 +379,7 @@ public class EnvironmentAidPlugin extends Plugin
 		return localPlayer != null && SNOW_REGIONS.contains(localPlayer.getWorldLocation().getRegionID());
 	}
 
-    private boolean isInSmokeRegions()
+	private boolean isInSmokeRegions()
 	{
 		Player localPlayer = client.getLocalPlayer();
 		return localPlayer != null && SMOKE_REGIONS.contains(localPlayer.getWorldLocation().getRegionID());
