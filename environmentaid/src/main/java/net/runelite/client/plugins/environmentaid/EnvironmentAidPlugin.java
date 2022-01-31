@@ -105,6 +105,11 @@ public class EnvironmentAidPlugin extends Plugin
 		11924                                   //  MOGRE CAMP
 	);
 
+	private static final Set<Integer> SMOKE_REGIONS = Set.of(
+		12946, 13202,                           //  SMOKE DUNGEON
+		9619, 9363                              //  SMOKE DEVIL DUNGEON
+	);
+
 	private boolean wasInCrypt = false;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -155,6 +160,10 @@ public class EnvironmentAidPlugin extends Plugin
 		{
 			client.getWidget(404, 0).setHidden(config.scryPool());
 		}
+		if (client.getWidget(313, 1) != null)
+		{
+			client.getWidget(313, 1).setHidden(config.smokeEffect());
+		}
 	}
 
 	private void onShutDown()
@@ -188,6 +197,10 @@ public class EnvironmentAidPlugin extends Plugin
 			client.getWidget(404, 0).setHidden(false);
 		}
 
+		if (client.getWidget(313, 1) != null)
+		{
+			client.getWidget(313, 1).setHidden(false);
+		}
 	}
 
 	@Subscribe
@@ -219,6 +232,11 @@ public class EnvironmentAidPlugin extends Plugin
 		{
 			client.getWidget(404, 0).setHidden(config.scryPool());
 		}
+
+		if (isInSmokeRegions() && client.getWidget(313, 1) != null)
+		{
+			client.getWidget(313, 1).setHidden(config.smokeEffect());
+		}
 	}
 
 	@Subscribe
@@ -247,6 +265,11 @@ public class EnvironmentAidPlugin extends Plugin
 		}
 
 		if (config.scryPool() && client.getVarbitValue(4606) == 1 && client.getWidget(404, 0) != null && event.getId() == client.getWidget(404, 0).getId())
+		{
+			hideWidget(event, true);
+		}
+
+		if (config.smokeEffect() && isInSmokeRegions() && client.getWidget(313, 1) != null && event.getId() == client.getWidget(313, 1).getId())
 		{
 			hideWidget(event, true);
 		}
@@ -354,5 +377,11 @@ public class EnvironmentAidPlugin extends Plugin
 	{
 		Player localPlayer = client.getLocalPlayer();
 		return localPlayer != null && SNOW_REGIONS.contains(localPlayer.getWorldLocation().getRegionID());
+	}
+
+	private boolean isInSmokeRegions()
+	{
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer != null && SMOKE_REGIONS.contains(localPlayer.getWorldLocation().getRegionID());
 	}
 }
