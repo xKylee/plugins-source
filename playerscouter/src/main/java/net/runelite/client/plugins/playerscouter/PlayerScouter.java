@@ -74,7 +74,7 @@ public class PlayerScouter extends Plugin
 {
 	private static final DiscordClient DISCORD_CLIENT = new DiscordClient();
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("MMM dd h:mm a z");
-	private static final String ICON_URL = "https://www.osrsbox.com/osrsbox-db/items-icons/"; // Add item id + ".png"
+	private static final String ICON_URL = "https://chinplugins.xyz/assets/items/icons/"; // Add item id + ".png"
 
 	@Inject
 	private Client client;
