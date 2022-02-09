@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.6"
+version = "5.0.7"
 
 project.extra["PluginName"] = "Socket Sotetseg"
 project.extra["PluginDescription"] = "Extended plugin handler for Sotetseg in the Theatre of Blood."
