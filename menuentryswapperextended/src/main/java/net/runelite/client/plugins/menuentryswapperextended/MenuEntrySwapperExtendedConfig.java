@@ -167,6 +167,18 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		keyName = "swapEmptyPouch",
+		name = "Essence Pouch",
+		description = "Swap 'Fill' with 'Empty' on rune essence pouches.<br>Only activates near altars.",
+		position = 3,
+		section = skillingSection
+	)
+	default boolean swapEmptyPouch()
+	{
+		return false;
+	}
+
 	//------------------------------------------------------------//
 	// Teleportation
 	//------------------------------------------------------------//
