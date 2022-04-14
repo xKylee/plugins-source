@@ -36,12 +36,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.inject.Inject;
+import lombok.RequiredArgsConstructor;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
@@ -53,6 +55,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.VarClientInt;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.util.Text;
 import net.runelite.api.widgets.Widget;
@@ -156,6 +159,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private List<String> hideAttackIgnoredNPCs = new ArrayList<>();
 	private List<String> hideCastIgnoredSpells = new ArrayList<>();
 
+	private boolean atRunecraftingAltar;
+
 	@Provides
 	MenuEntrySwapperExtendedConfig provideConfig(ConfigManager configManager)
 	{
@@ -218,22 +223,40 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onMenuEntryAdded(MenuEntryAdded menuEntryAdded)
+	public void onMenuEntryAdded(final MenuEntryAdded menuEntryAdded)
 	{
-		if (!config.getEasyConstruction())
+		if (config.getEasyConstruction() &&
+			(client.getVarbitValue(2176) == 1 ||
+			menuEntryAdded.getOpcode() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
 		{
+			final MenuEntry[] menuEntries = client.getMenuEntries();
+			swapConstructionMenu(menuEntries);
 			return;
 		}
 
-		if ((client.getVarbitValue(2176) != 1)
-		&& menuEntryAdded.getOpcode() != MenuAction.GAME_OBJECT_FIFTH_OPTION.getId())
+		if (config.swapEmptyPouch() &&
+			atRunecraftingAltar &&
+			menuEntryAdded.getType() == MenuAction.ITEM_FIRST_OPTION.getId() &&
+			menuEntryAdded.getTarget().endsWith("pouch"))
 		{
-			return;
+			final MenuEntry[] menuEntries = client.getMenuEntries();
+
+			final MenuEntry firstEntry = menuEntries[menuEntries.length - 1];
+
+			menuEntries[menuEntries.length - 1] = menuEntries[menuEntries.length - 2];
+			menuEntries[menuEntries.length - 2] = firstEntry;
+
+			client.setMenuEntries(menuEntries);
 		}
+	}
 
-		MenuEntry[] menuEntries = client.getMenuEntries();
-		swapConstructionMenu(menuEntries);
-
+	@Subscribe
+	public void onGameStateChanged(final GameStateChanged gameStateChanged)
+	{
+		if (config.swapEmptyPouch() && gameStateChanged.getGameState() == GameState.LOADING)
+		{
+			atRunecraftingAltar = AltarRegion.IDS.contains(client.getMapRegions()[0]);
+		}
 	}
 
 	private void swapMenuEntry(int index, MenuEntry menuEntry)
@@ -815,5 +838,31 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		{
 			configManager.setConfiguration("menuentryswapperextended", "customSwaps", newFormatString);
 		}
+	}
+
+	@RequiredArgsConstructor
+	private enum AltarRegion
+	{
+		AIR(11082),
+		COSMIC(8266),
+		WATER(10570),
+		EARTH(10314),
+		NATURE(9290),
+		FIRE(10059),
+		BLOOD(12618),
+		LAW(9546),
+		DEATH(8522),
+		CHAOS(8778),
+		BODY(9802),
+		MIND(10826);
+
+		private static final Set<Integer> IDS = new HashSet<>(12 + 1, 1.0f);
+
+		static
+		{
+			Arrays.stream(AltarRegion.values()).mapToInt(r -> r.id).forEach(IDS::add);
+		}
+
+		private final int id;
 	}
 }
