@@ -100,7 +100,7 @@ public class ClanManModePlugin extends Plugin
 		int underLevel = ((a.getY() - 9920) / 8) + 1;
 		int upperLevel = ((a.getY() - 3520) / 8) + 1;
 		wildernessLevel = a.getY() > 6400 ? underLevel : upperLevel;
-		inwildy = client.getVar(Varbits.IN_WILDERNESS);
+		inwildy = client.getVarbitValue(Varbits.IN_WILDERNESS);
 		if (clan.size() > 0)
 		{
 			clanmin = Collections.min(clan.values());

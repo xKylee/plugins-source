@@ -54,7 +54,7 @@ public class PlayerCountOverlay extends Overlay
 	public Dimension render(Graphics2D graphics)
 	{
 		if (config.countPlayers() &&
-			(client.getVar(Varbits.IN_WILDERNESS) == 1 || WorldType.isPvpWorld(client.getWorldType())
+			(client.getVarbitValue(Varbits.IN_WILDERNESS) == 1 || WorldType.isPvpWorld(client.getWorldType())
 				|| ArrayUtils.contains(CLAN_WARS_REGIONS, client.getMapRegions()[0]) ||
 				WorldType.isDeadmanWorld(client.getWorldType())))
 		{

@@ -103,7 +103,7 @@ public class AoeWarningOverlay extends Overlay
 
 			if (proj.getProjectile().getId() == ProjectileID.ICE_DEMON_ICE_BARRAGE_AOE || proj.getProjectile().getId() == ProjectileID.TEKTON_METEOR_AOE)
 			{
-				if (client.getVar(Varbits.IN_RAID) == 0)
+				if (client.getVarbitValue(Varbits.IN_RAID) == 0)
 				{
 					return;
 				}

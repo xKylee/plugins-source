@@ -98,7 +98,7 @@ public class PileIndicatorsPlugin extends Plugin
 			}
 		}
 
-		if (config.enablePlayers() && (client.getVar(Varbits.IN_WILDERNESS) > 0 && config.wildyOnlyPlayer()) ^ (!config.wildyOnlyPlayer()))
+		if (config.enablePlayers() && (client.getVarbitValue(Varbits.IN_WILDERNESS) > 0 && config.wildyOnlyPlayer()) ^ (!config.wildyOnlyPlayer()))
 		{
 			for (Player player : client.getPlayers())
 			{

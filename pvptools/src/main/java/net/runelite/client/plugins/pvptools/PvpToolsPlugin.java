@@ -613,8 +613,8 @@ public class PvpToolsPlugin extends Plugin
 	{
 		clientThread.invoke(() ->
 		{
-			if ((client.getVar(Varbits.IN_RAID) == 1 || client.getVar(Varbits.THEATRE_OF_BLOOD) == 2)
-				|| (client.getVar(Varbits.IN_WILDERNESS) != 1 && !WorldType.isAllPvpWorld(client.getWorldType())))
+			if ((client.getVarbitValue(Varbits.IN_RAID) == 1 || client.getVarbitValue(Varbits.THEATRE_OF_BLOOD) == 2)
+				|| (client.getVarbitValue(Varbits.IN_WILDERNESS) != 1 && !WorldType.isAllPvpWorld(client.getWorldType())))
 			{
 				return;
 			}
@@ -649,7 +649,7 @@ public class PvpToolsPlugin extends Plugin
 	{
 		clientThread.invoke(() ->
 		{
-			if (client.getVar(Varbits.IN_RAID) == 1 || client.getVar(Varbits.THEATRE_OF_BLOOD) == 2)
+			if (client.getVarbitValue(Varbits.IN_RAID) == 1 || client.getVarbitValue(Varbits.THEATRE_OF_BLOOD) == 2)
 			{
 				return;
 			}

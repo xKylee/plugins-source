@@ -242,7 +242,7 @@ public class Xarpus extends Room
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (!xarpusStarted && inRoomRegion(TheatrePlugin.XARPUS_REGION) && client.getVarbitValue(client.getVarps(), 6447) == 2 && (client.getVar(Varbits.MULTICOMBAT_AREA) == 1))
+		if (!xarpusStarted && inRoomRegion(TheatrePlugin.XARPUS_REGION) && client.getVarbitValue(client.getVarps(), 6447) == 2 && (client.getVarbitValue(Varbits.MULTICOMBAT_AREA) == 1))
 		{
 			xarpusStarted = true;
 			isInstanceTimerRunning = false;

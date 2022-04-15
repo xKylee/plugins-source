@@ -434,7 +434,7 @@ public class CoxPlugin extends Plugin
 
 	boolean inRaid()
 	{
-		return this.client.getVar(Varbits.IN_RAID) == 1;
+		return this.client.getVarbitValue(Varbits.IN_RAID) == 1;
 	}
 
 	@Subscribe

@@ -178,9 +178,9 @@ public class PlayerStatusPlugin extends Plugin
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		int raidVarb = client.getVar(Varbits.IN_RAID);
-		int vengCooldownVarb = client.getVar(Varbits.VENGEANCE_COOLDOWN);
-		int isVengeancedVarb = client.getVar(Varbits.VENGEANCE_ACTIVE);
+		int raidVarb = client.getVarbitValue(Varbits.IN_RAID);
+		int vengCooldownVarb = client.getVarbitValue(Varbits.VENGEANCE_COOLDOWN);
+		int isVengeancedVarb = client.getVarbitValue(Varbits.VENGEANCE_ACTIVE);
 
 		if (lastRaidVarb != raidVarb)
 		{
@@ -258,7 +258,7 @@ public class PlayerStatusPlugin extends Plugin
 		if (event.getMessage().startsWith("You drink some of your") &&
 			event.getMessage().contains("overload"))
 		{
-			if (client.getVar(Varbits.IN_RAID) == 1)
+			if (client.getVarbitValue(Varbits.IN_RAID) == 1)
 			{
 				createGameTimer(OVERLOAD_RAID);
 			}
