@@ -187,7 +187,7 @@ public class TheatrePlugin extends Plugin
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		tobActive = client.getVar(Varbits.THEATRE_OF_BLOOD) > 1;
+		tobActive = client.getVarbitValue(Varbits.THEATRE_OF_BLOOD) > 1;
 
 		bloat.onVarbitChanged(event);
 		nylocas.onVarbitChanged(event);

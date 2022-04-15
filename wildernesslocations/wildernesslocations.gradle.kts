@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.0.5"
+version = "1.0.6"
 
 project.extra["PluginName"] = "Wilderness Locations"
 project.extra["PluginDescription"] = "Indicates the players current location in the wild"

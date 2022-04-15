@@ -131,7 +131,7 @@ public class WildernessLocationsPlugin extends Plugin
 			currentCooldown--;
 		}
 
-		renderLocation = (client.getVar(Varbits.IN_WILDERNESS) == 1 || (config.pvpWorld() && WorldType.isAllPvpWorld(client.getWorldType())));
+		renderLocation = (client.getVarbitValue(Varbits.IN_WILDERNESS) == 1 || (config.pvpWorld() && WorldType.isAllPvpWorld(client.getWorldType())));
 
 		if (renderLocation)
 		{

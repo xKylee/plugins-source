@@ -235,7 +235,7 @@ public class PlayerScouter extends Plugin
 			return true;
 		}
 
-		return client.getVar(Varbits.IN_WILDERNESS) == 1 || WorldType.isPvpWorld(client.getWorldType());
+		return client.getVarbitValue(Varbits.IN_WILDERNESS) == 1 || WorldType.isPvpWorld(client.getWorldType());
 	}
 
 	private void scoutMini(List<PlayerContainer> players)
@@ -352,7 +352,7 @@ public class PlayerScouter extends Plugin
 			.inline(true)
 			.build());
 
-		if (client.getVar(Varbits.IN_WILDERNESS) == 1)
+		if (client.getVarbitValue(Varbits.IN_WILDERNESS) == 1)
 		{
 			fieldList.add(FieldEmbed.builder()
 				.name("Wildy Level")

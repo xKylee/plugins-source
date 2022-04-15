@@ -796,7 +796,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			}
 		}
 
-		if (config.hideCastRaids() && (client.getVar(Varbits.IN_RAID) == 1 || client.getVar(Varbits.THEATRE_OF_BLOOD) == 2))
+		if (config.hideCastRaids() && (client.getVarbitValue(Varbits.IN_RAID) == 1 || client.getVarbitValue(Varbits.THEATRE_OF_BLOOD) == 2))
 		{
 			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(Text.standardize(client.getSelectedSpellName())) && entry.getType().getId() == MenuAction.SPELL_CAST_ON_PLAYER.getId())
 			{

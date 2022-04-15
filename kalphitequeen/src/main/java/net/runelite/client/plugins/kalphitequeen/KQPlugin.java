@@ -122,8 +122,8 @@ public class KQPlugin extends Plugin
 	@Subscribe
 	private void onVarbitChanged(final VarbitChanged event)
 	{
-		final int vengCoolDown = client.getVar(Varbits.VENGEANCE_COOLDOWN);
-		final int vengActive = client.getVar(Varbits.VENGEANCE_ACTIVE);
+		final int vengCoolDown = client.getVarbitValue(Varbits.VENGEANCE_COOLDOWN);
+		final int vengActive = client.getVarbitValue(Varbits.VENGEANCE_ACTIVE);
 
 		if (lastVengCooldown != vengCoolDown)
 		{
