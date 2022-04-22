@@ -798,13 +798,13 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 		if (config.hideCastRaids() && (client.getVarbitValue(Varbits.IN_RAID) == 1 || client.getVarbitValue(Varbits.THEATRE_OF_BLOOD) == 2))
 		{
-			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(Text.standardize(client.getSelectedSpellName())) && entry.getType().getId() == MenuAction.SPELL_CAST_ON_PLAYER.getId())
+			if (client.getSpellSelected() && !hideCastIgnoredSpells.contains(Text.standardize(client.getSelectedSpellName())) && entry.getType().getId() == MenuAction.WIDGET_TARGET_ON_PLAYER.getId())
 			{
 				return false;
 			}
 		}
 
-		if (config.hideCastThralls() && target.contains("thrall") && entry.getType().getId() == MenuAction.SPELL_CAST_ON_NPC.getId())
+		if (config.hideCastThralls() && target.contains("thrall") && entry.getType().getId() == MenuAction.WIDGET_TARGET_ON_NPC.getId())
 		{
 			return false;
 		}
