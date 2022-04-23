@@ -227,7 +227,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		if (config.getEasyConstruction() &&
 			(client.getVarbitValue(2176) == 1 ||
-			menuEntryAdded.getOpcode() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
+			menuEntryAdded.getType() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
 		{
 			final MenuEntry[] menuEntries = client.getMenuEntries();
 			swapConstructionMenu(menuEntries);
