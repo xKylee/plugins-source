@@ -773,11 +773,11 @@ public class Nylocas extends Room
 	}
 
 	@Subscribe
-	public void onMenuOptionClicked(MenuOptionClicked option)
+	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
-		if (option.getMenuAction() == MenuAction.ITEM_SECOND_OPTION)
+		if (event.isItemOp() && event.getItemOp() == 2)
 		{
-			WeaponStyle newStyle = WeaponMap.StyleMap.get(option.getId());
+			WeaponStyle newStyle = WeaponMap.StyleMap.get(event.getItemId());
 			if (newStyle != null)
 			{
 				skipTickCheck = true;

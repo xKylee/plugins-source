@@ -227,7 +227,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		if (config.getEasyConstruction() &&
 			(client.getVarbitValue(2176) == 1 ||
-			menuEntryAdded.getOpcode() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
+			menuEntryAdded.getType() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
 		{
 			final MenuEntry[] menuEntries = client.getMenuEntries();
 			swapConstructionMenu(menuEntries);
@@ -274,13 +274,12 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			return;
 		}
 
-		if (shiftModifier() && (menuAction == MenuAction.ITEM_FIRST_OPTION
-				|| menuAction == MenuAction.ITEM_SECOND_OPTION
-				|| menuAction == MenuAction.ITEM_THIRD_OPTION
-				|| menuAction == MenuAction.ITEM_FOURTH_OPTION
-				|| menuAction == MenuAction.ITEM_FIFTH_OPTION
-				|| menuAction == MenuAction.ITEM_USE))
+		final boolean itemOp = menuEntry.isItemOp();
+		// Custom shift-click item swap
+		if (shiftModifier() && itemOp)
 		{
+			// don't perform swaps on items when shift is held; instead prefer the client menu swap, which
+			// we may have overwrote
 			return;
 		}
 
@@ -344,8 +343,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		return false;
 	}
 
-	private int findIndex(MenuEntry[] entries, int limit, String option, String target,
-			boolean strict)
+	private int findIndex(MenuEntry[] entries, int limit, String option, String target, boolean strict)
 	{
 		if (strict)
 		{
@@ -388,6 +386,11 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 	private void swap(ArrayListMultimap<String, Integer> optionIndexes, MenuEntry[] entries, int index1, int index2)
 	{
+		if (index1 == index2)
+		{
+			return;
+		}
+
 		Widget eq = client.getWidget(WidgetInfo.EQUIPMENT);
 		if (client.getVar(VarClientInt.INVENTORY_TAB) == 4 && eq != null)
 		{
@@ -425,6 +428,18 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 			entries[index1] = entry2;
 			entries[index2] = entry1;
+
+			// Item op4 and op5 are CC_OP_LOW_PRIORITY so they get added underneath Use,
+			// but this also causes them to get sorted after client tick. Change them to
+			// CC_OP to avoid this.
+			if (entry1.isItemOp() && entry1.getType() == MenuAction.CC_OP_LOW_PRIORITY)
+			{
+				entry1.setType(MenuAction.CC_OP);
+			}
+			if (entry2.isItemOp() && entry2.getType() == MenuAction.CC_OP_LOW_PRIORITY)
+			{
+				entry2.setType(MenuAction.CC_OP);
+			}
 
 			client.setMenuEntries(entries);
 
@@ -673,7 +688,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private final Predicate<MenuEntry> filterMenuEntries = entry ->
 	{
 		String option = Text.removeTags(entry.getOption()).toLowerCase();
-		String target = Text.removeTags(entry.getTarget()).toLowerCase();
+		//String target = Text.removeTags(entry.getTarget()).toLowerCase();
+		String target = Text.standardize(entry.getTarget(), true);
 
 		if (config.hideTradeWith() && option.contains("trade with"))
 		{
