@@ -386,19 +386,22 @@ public class CustomSwaps implements KeyListener
 			return;
 		}
 		MenuEntry target = menuEntries[entryIndex];
-		int targetId = target.getIdentifier();
-		int targetType = target.getType().getId();
-		for (MenuEntry menuEntry : menuEntries)
-		{
-			if (menuEntry.getType().getId() < target.getType().getId())
-			{
-				menuEntry.setDeprioritized(true);
-			}
-		}
-		if (targetId >= 6 && targetId <= 9 && targetType == MenuAction.CC_OP_LOW_PRIORITY.getId())
+
+		if (target.isItemOp() && target.getType() == MenuAction.CC_OP_LOW_PRIORITY)
 		{
 			target.setType(MenuAction.CC_OP);
 		}
+		else
+		{
+			for (MenuEntry menuEntry : menuEntries)
+			{
+				if (menuEntry.getType().getId() < target.getType().getId())
+				{
+					menuEntry.setDeprioritized(true);
+				}
+			}
+		}
+
 		MenuEntry first = menuEntries[menuEntries.length - 1];
 		menuEntries[menuEntries.length - 1] = menuEntries[entryIndex];
 		menuEntries[entryIndex] = first;
