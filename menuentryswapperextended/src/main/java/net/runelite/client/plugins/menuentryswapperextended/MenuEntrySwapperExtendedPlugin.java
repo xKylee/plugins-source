@@ -870,6 +870,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		DEATH(8522),
 		CHAOS(8778),
 		BODY(9802),
+		ASTRAL(8508),
 		MIND(10826);
 
 		private static final Set<Integer> IDS = new HashSet<>(12 + 1, 1.0f);
