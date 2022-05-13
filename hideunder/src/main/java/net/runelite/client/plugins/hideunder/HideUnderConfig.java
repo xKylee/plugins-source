@@ -1,5 +1,7 @@
 package net.runelite.client.plugins.hideunder;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -10,25 +12,28 @@ public interface HideUnderConfig extends Config
 
 	@ConfigItem(
 		position = 0,
-		keyName = "useRenderself",
-		name = "Use Render Self",
-		description = "This will use Renderself.",
-		disabledBy = "useEntityHider"
+		keyName = "renderMethod",
+		name = "Render Method",
+		description = "choose between Render Self and Entity Hider."
 	)
-	default boolean useRenderself()
+	default hideUnderEnum renderMethod()
 	{
-		return false;
+		return hideUnderEnum.RENDER_SELF;
 	}
 
-	@ConfigItem(
-		position = 1,
-		keyName = "useEntityHider",
-		name = "Use Entity Hider",
-		description = "This will use Entity Hider.",
-		disabledBy = "useRenderself"
-	)
-	default boolean useEntityHider()
+	@Getter
+	@AllArgsConstructor
+	enum hideUnderEnum
 	{
-		return true;
+		RENDER_SELF("Render Self"),
+		ENTITY_HIDER("Entity Hider");
+
+		private final String name;
+
+		@Override
+		public String toString()
+		{
+			return getName();
+		}
 	}
 }

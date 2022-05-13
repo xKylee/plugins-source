@@ -65,14 +65,13 @@ class FightCaveContainer
 	@Setter(AccessLevel.PACKAGE)
 	private AttackStyle attackStyle;
 
-	FightCaveContainer(NPC npc, int attackSpeed)
+	FightCaveContainer(NPC npc)
 	{
 		this.npc = npc;
 		this.npcName = npc.getName();
 		this.npcIndex = npc.getIndex();
 		this.npcInteracting = npc.getInteracting();
 		this.attackStyle = AttackStyle.UNKNOWN;
-		this.attackSpeed = attackSpeed;
 		this.ticksUntilAttack = -1;
 		final NPCComposition composition = npc.getTransformedComposition();
 
@@ -86,6 +85,7 @@ class FightCaveContainer
 		this.animations = monster.animations;
 		this.attackStyle = monster.attackStyle;
 		this.priority = monster.priority;
+		this.attackSpeed = monster.attackSpeed;
 
 		if (composition != null)
 		{
@@ -96,14 +96,14 @@ class FightCaveContainer
 	@RequiredArgsConstructor
 	enum BossMonsters
 	{
-		TOK_XIL1(NpcID.TOKXIL_3121, AttackStyle.RANGE, ImmutableSet.of(TOK_XIL_RANGE_ATTACK, TOK_XIL_MELEE_ATTACK), 1),
-		TOK_XIL2(NpcID.TOKXIL_3122, AttackStyle.RANGE, ImmutableSet.of(TOK_XIL_RANGE_ATTACK, TOK_XIL_MELEE_ATTACK), 1),
-		KETZEK1(NpcID.KETZEK, AttackStyle.MAGE, ImmutableSet.of(KET_ZEK_MAGE_ATTACK, KET_ZEK_MELEE_ATTACK), 0),
-		KETZEK2(NpcID.KETZEK_3126, AttackStyle.MAGE, ImmutableSet.of(KET_ZEK_MAGE_ATTACK, KET_ZEK_MELEE_ATTACK), 0),
-		YTMEJKOT1(NpcID.YTMEJKOT, AttackStyle.MELEE, ImmutableSet.of(MEJ_KOT_HEAL_ATTACK, MEJ_KOT_MELEE_ATTACK), 2),
-		YTMEJKOT2(NpcID.YTMEJKOT_3124, AttackStyle.MELEE, ImmutableSet.of(MEJ_KOT_HEAL_ATTACK, MEJ_KOT_MELEE_ATTACK), 2),
-		TZTOKJAD1(NpcID.TZTOKJAD, AttackStyle.UNKNOWN, ImmutableSet.of(TZTOK_JAD_MAGIC_ATTACK, TZTOK_JAD_RANGE_ATTACK, TZTOK_JAD_MELEE_ATTACK), 0),
-		TZTOKJAD2(NpcID.TZTOKJAD_6506, AttackStyle.UNKNOWN, ImmutableSet.of(TZTOK_JAD_MAGIC_ATTACK, TZTOK_JAD_RANGE_ATTACK, TZTOK_JAD_MELEE_ATTACK), 0);
+		TOK_XIL1(NpcID.TOKXIL_3121, AttackStyle.RANGE, ImmutableSet.of(TOK_XIL_RANGE_ATTACK, TOK_XIL_MELEE_ATTACK), 1, 4),
+		TOK_XIL2(NpcID.TOKXIL_3122, AttackStyle.RANGE, ImmutableSet.of(TOK_XIL_RANGE_ATTACK, TOK_XIL_MELEE_ATTACK), 1, 4),
+		KETZEK1(NpcID.KETZEK, AttackStyle.MAGE, ImmutableSet.of(KET_ZEK_MAGE_ATTACK, KET_ZEK_MELEE_ATTACK), 0, 4),
+		KETZEK2(NpcID.KETZEK_3126, AttackStyle.MAGE, ImmutableSet.of(KET_ZEK_MAGE_ATTACK, KET_ZEK_MELEE_ATTACK), 0, 4),
+		YTMEJKOT1(NpcID.YTMEJKOT, AttackStyle.MELEE, ImmutableSet.of(MEJ_KOT_HEAL_ATTACK, MEJ_KOT_MELEE_ATTACK), 2, 4),
+		YTMEJKOT2(NpcID.YTMEJKOT_3124, AttackStyle.MELEE, ImmutableSet.of(MEJ_KOT_HEAL_ATTACK, MEJ_KOT_MELEE_ATTACK), 2, 4),
+		TZTOKJAD1(NpcID.TZTOKJAD, AttackStyle.UNKNOWN, ImmutableSet.of(TZTOK_JAD_MAGIC_ATTACK, TZTOK_JAD_RANGE_ATTACK, TZTOK_JAD_MELEE_ATTACK), 0, 4),
+		TZTOKJAD2(NpcID.TZTOKJAD_6506, AttackStyle.UNKNOWN, ImmutableSet.of(TZTOK_JAD_MAGIC_ATTACK, TZTOK_JAD_RANGE_ATTACK, TZTOK_JAD_MELEE_ATTACK), 0, 8);
 
 		private static final ImmutableMap<Integer, BossMonsters> idMap;
 
@@ -123,6 +123,7 @@ class FightCaveContainer
 		private final AttackStyle attackStyle;
 		private final ImmutableSet<Integer> animations;
 		private final int priority;
+		private final int attackSpeed;
 
 		static BossMonsters of(int npcID)
 		{

@@ -105,11 +105,11 @@ public class HideUnderPlugin extends Plugin
 				hide = true;
 			}
 		}
-		if (config.useRenderself())
+		if (config.renderMethod() == HideUnderConfig.hideUnderEnum.RENDER_SELF)
 		{
 			client.setRenderSelf(!hide);
 		}
-		else if (config.useEntityHider())
+		else if (config.renderMethod() == HideUnderConfig.hideUnderEnum.ENTITY_HIDER)
 		{
 			client.setLocalPlayerHidden(hide);
 		}
