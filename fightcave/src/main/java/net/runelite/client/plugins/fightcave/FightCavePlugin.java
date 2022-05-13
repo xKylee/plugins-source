@@ -26,7 +26,6 @@
 package net.runelite.client.plugins.fightcave;
 
 import com.google.inject.Provides;
-import com.openosrs.client.game.NPCManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -114,9 +113,6 @@ public class FightCavePlugin extends Plugin
 
 	@Inject
 	private Client client;
-
-	@Inject
-	private NPCManager npcManager;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -242,7 +238,7 @@ public class FightCavePlugin extends Plugin
 			case NpcID.KETZEK_3126:
 			case NpcID.TZTOKJAD:
 			case NpcID.TZTOKJAD_6506:
-				fightCaveContainer.add(new FightCaveContainer(npc, npcManager.getAttackSpeed(npc.getId())));
+				fightCaveContainer.add(new FightCaveContainer(npc));
 				break;
 		}
 	}

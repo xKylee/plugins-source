@@ -24,7 +24,6 @@
 package net.runelite.client.plugins.ticktimers;
 
 import com.google.inject.Provides;
-import com.openosrs.client.game.NPCManager;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -94,9 +93,6 @@ public class TickTimersPlugin extends Plugin
 
 	@Inject
 	private TickTimersConfig config;
-
-	@Inject
-	private NPCManager npcManager;
 
 	@Getter(AccessLevel.PACKAGE)
 	private Set<NPCContainer> npcContainers = new HashSet<>();
@@ -260,7 +256,7 @@ public class TickTimersPlugin extends Plugin
 			case NpcID.KREEARRA:
 				if (config.gwd())
 				{
-					npcContainers.add(new NPCContainer(npc, npcManager.getAttackSpeed(npc.getId())));
+					npcContainers.add(new NPCContainer(npc));
 				}
 				break;
 		}
