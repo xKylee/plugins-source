@@ -134,7 +134,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private CustomSwaps customSwaps;
 
 	private static <T extends Comparable<? super T>> void sortedInsert(List<T> list,
-			T value) // NOPMD: UnusedPrivateMethod: false positive
+																	   T value) // NOPMD: UnusedPrivateMethod: false positive
 	{
 		int idx = Collections.binarySearch(list, value);
 		list.add(idx < 0 ? -idx - 1 : idx, value);
@@ -144,15 +144,15 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	List<String> optionsList;
 
 	private static final Set<MenuAction> NPC_MENU_TYPES = ImmutableSet.of(
-			MenuAction.NPC_FIRST_OPTION,
-			MenuAction.NPC_SECOND_OPTION,
-			MenuAction.NPC_THIRD_OPTION,
-			MenuAction.NPC_FOURTH_OPTION,
-			MenuAction.NPC_FIFTH_OPTION,
-			MenuAction.EXAMINE_NPC);
+		MenuAction.NPC_FIRST_OPTION,
+		MenuAction.NPC_SECOND_OPTION,
+		MenuAction.NPC_THIRD_OPTION,
+		MenuAction.NPC_FOURTH_OPTION,
+		MenuAction.NPC_FIFTH_OPTION,
+		MenuAction.EXAMINE_NPC);
 
 	private final Multimap<String, Swap> swaps = Multimaps
-			.synchronizedSetMultimap(LinkedHashMultimap.create());
+		.synchronizedSetMultimap(LinkedHashMultimap.create());
 	private final ArrayListMultimap<String, Integer> optionIndexes = ArrayListMultimap.create();
 
 	private List<String> bankItemNames = new ArrayList<>();
@@ -196,7 +196,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	}
 
 	public Swap swap(String option, Predicate<String> targetPredicate, String swappedOption,
-			Supplier<Boolean> enabled)
+					 Supplier<Boolean> enabled)
 	{
 		Swap swap = new Swap(alwaysTrue(), targetPredicate, swappedOption, enabled, true);
 		swaps.put(option, swap);
@@ -204,7 +204,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	}
 
 	public Swap swapContains(String option, Predicate<String> targetPredicate, String swappedOption,
-			Supplier<Boolean> enabled)
+							 Supplier<Boolean> enabled)
 	{
 		Swap swap = new Swap(alwaysTrue(), targetPredicate, swappedOption, enabled, false);
 		swaps.put(option, swap);
@@ -227,7 +227,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	{
 		if (config.getEasyConstruction() &&
 			(client.getVarbitValue(2176) == 1 ||
-			menuEntryAdded.getType() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
+				menuEntryAdded.getType() == MenuAction.GAME_OBJECT_FIFTH_OPTION.getId()))
 		{
 			final MenuEntry[] menuEntries = client.getMenuEntries();
 			swapConstructionMenu(menuEntries);
@@ -268,8 +268,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		final NPC hintArrowNpc = client.getHintArrowNpc();
 
 		if (hintArrowNpc != null
-				&& hintArrowNpc.getIndex() == eventId
-				&& NPC_MENU_TYPES.contains(menuAction))
+			&& hintArrowNpc.getIndex() == eventId
+			&& NPC_MENU_TYPES.contains(menuAction))
 		{
 			return;
 		}
@@ -296,7 +296,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 	}
 
-	@Subscribe (priority = -1)
+	@Subscribe(priority = -1)
 	public void onClientTick(ClientTick clientTick)
 	{
 		// The menu is not rebuilt when it is open, so don't swap or else it will
@@ -410,10 +410,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 			client.setMenuEntries(clonedEntries);
 
 			String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
-					option2 = Text.removeTags(entry2.getOption()).toLowerCase();
+				option2 = Text.removeTags(entry2.getOption()).toLowerCase();
 
 			List<Integer> list1 = optionIndexes.get(option1),
-					list2 = optionIndexes.get(option2);
+				list2 = optionIndexes.get(option2);
 
 			list1.remove((Integer) index1);
 			list2.remove((Integer) index2);
@@ -424,7 +424,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		else
 		{
 			MenuEntry entry1 = entries[index1],
-					entry2 = entries[index2];
+				entry2 = entries[index2];
 
 			entries[index1] = entry2;
 			entries[index2] = entry1;
@@ -445,10 +445,10 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 
 			// Update optionIndexes
 			String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
-					option2 = Text.removeTags(entry2.getOption()).toLowerCase();
+				option2 = Text.removeTags(entry2.getOption()).toLowerCase();
 
 			List<Integer> list1 = optionIndexes.get(option1),
-					list2 = optionIndexes.get(option2);
+				list2 = optionIndexes.get(option2);
 
 			// call remove(Object) instead of remove(int)
 			list1.remove((Integer) index1);
@@ -477,149 +477,149 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		}
 
 		swap("remove", targetSwap("burning amulet"), "chaos temple", () ->
-				config.getBurningAmulet() && config.getBurningAmuletMode() == BurningAmuletMode.CHAOS_TEMPLE);
+			config.getBurningAmulet() && config.getBurningAmuletMode() == BurningAmuletMode.CHAOS_TEMPLE);
 		swap("remove", targetSwap("burning amulet"), "bandit camp", () ->
-				config.getBurningAmulet() && config.getBurningAmuletMode() == BurningAmuletMode.BANDIT_CAMP);
+			config.getBurningAmulet() && config.getBurningAmuletMode() == BurningAmuletMode.BANDIT_CAMP);
 		swap("remove", targetSwap("burning amulet"), "lava maze", () ->
-				config.getBurningAmulet() && config.getBurningAmuletMode() == BurningAmuletMode.LAVA_MAZE);
+			config.getBurningAmulet() && config.getBurningAmuletMode() == BurningAmuletMode.LAVA_MAZE);
 
 		swap("remove", targetSwap("combat bracelet"), "warriors' guild", () ->
-				config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.WARRIORS_GUILD);
+			config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.WARRIORS_GUILD);
 		swap("remove", targetSwap("combat bracelet"), "champions' guild", () ->
-				config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.CHAMPIONS_GUILD);
+			config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.CHAMPIONS_GUILD);
 		swap("remove", targetSwap("combat bracelet"), "edgeville monastery", () ->
-				config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.EDGEVILLE_MONASTERY);
+			config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.EDGEVILLE_MONASTERY);
 		swap("remove", targetSwap("combat bracelet"), "ranging guild", () ->
-				config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.RANGING_GUILD);
+			config.getCombatBracelet() && config.getCombatBraceletMode() == CombatBraceletMode.RANGING_GUILD);
 
 		swap("remove", targetSwap("games necklace"), "burthorpe", () ->
-				config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.BURTHORPE);
+			config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.BURTHORPE);
 		swap("remove", targetSwap("games necklace"), "barbarian outpost", () ->
-				config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.BARBARIAN_OUTPOST);
+			config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.BARBARIAN_OUTPOST);
 		swap("remove", targetSwap("games necklace"), "corporeal beast", () ->
-				config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.CORPOREAL_BEAST);
+			config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.CORPOREAL_BEAST);
 		swap("remove", targetSwap("games necklace"), "tears of guthix", () ->
-				config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.TEARS_OF_GUTHIX);
+			config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.TEARS_OF_GUTHIX);
 		swap("remove", targetSwap("games necklace"), "wintertodt camp", () ->
-				config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.WINTER);
+			config.getGamesNecklace() && config.getGamesNecklaceMode() == GamesNecklaceMode.WINTER);
 
 		swap("remove", targetSwap("ring of dueling"), "duel arena", () ->
-				config.getDuelingRing() && config.getDuelingRingMode() == DuelingRingMode.DUEL_ARENA);
+			config.getDuelingRing() && config.getDuelingRingMode() == DuelingRingMode.DUEL_ARENA);
 		swap("remove", targetSwap("ring of dueling"), "castle wars", () ->
-				config.getDuelingRing() && config.getDuelingRingMode() == DuelingRingMode.CASTLE_WARS);
+			config.getDuelingRing() && config.getDuelingRingMode() == DuelingRingMode.CASTLE_WARS);
 		swap("remove", targetSwap("ring of dueling"), "ferox enclave", () ->
-				config.getDuelingRing() && config.getDuelingRingMode() == DuelingRingMode.FEROX_ENCLAVE);
+			config.getDuelingRing() && config.getDuelingRingMode() == DuelingRingMode.FEROX_ENCLAVE);
 
 		swap("remove", targetSwap("amulet of glory"), "edgeville", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.EDGEVILLE);
+			config.getGlory() && config.getGloryMode() == GloryMode.EDGEVILLE);
 		swap("remove", targetSwap("amulet of glory"), "karamja", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.KARAMJA);
+			config.getGlory() && config.getGloryMode() == GloryMode.KARAMJA);
 		swap("remove", targetSwap("amulet of glory"), "al kharid", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.AL_KHARID);
+			config.getGlory() && config.getGloryMode() == GloryMode.AL_KHARID);
 		swap("remove", targetSwap("amulet of glory"), "draynor village", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.DRAYNOR_VILLAGE);
+			config.getGlory() && config.getGloryMode() == GloryMode.DRAYNOR_VILLAGE);
 		swap("remove", targetSwap("amulet of eternal glory"), "edgeville", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.EDGEVILLE);
+			config.getGlory() && config.getGloryMode() == GloryMode.EDGEVILLE);
 		swap("remove", targetSwap("amulet of eternal glory"), "karamja", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.KARAMJA);
+			config.getGlory() && config.getGloryMode() == GloryMode.KARAMJA);
 		swap("remove", targetSwap("amulet of eternal glory"), "al kharid", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.AL_KHARID);
+			config.getGlory() && config.getGloryMode() == GloryMode.AL_KHARID);
 		swap("remove", targetSwap("amulet of eternal glory"), "draynor village", () ->
-				config.getGlory() && config.getGloryMode() == GloryMode.DRAYNOR_VILLAGE);
+			config.getGlory() && config.getGloryMode() == GloryMode.DRAYNOR_VILLAGE);
 
 		swap("remove", targetSwap("skills necklace"), "fishing guild", () ->
-				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FISHING_GUILD);
+			config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FISHING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "mining guild", () ->
-				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.MINING_GUILD);
+			config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.MINING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "farming guild", () ->
-				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FARMING_GUILD);
+			config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.FARMING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "cooking guild", () ->
-				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.COOKING_GUILD);
+			config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.COOKING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "woodcutting guild", () ->
-				config.getSkillsNecklace() & config.getSkillsNecklaceMode() == SkillsNecklaceMode.WOODCUTTING_GUILD);
+			config.getSkillsNecklace() & config.getSkillsNecklaceMode() == SkillsNecklaceMode.WOODCUTTING_GUILD);
 		swap("remove", targetSwap("skills necklace"), "crafting guild", () ->
-				config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.CRAFTING_GUILD);
+			config.getSkillsNecklace() && config.getSkillsNecklaceMode() == SkillsNecklaceMode.CRAFTING_GUILD);
 
 		swap("remove", targetSwap("necklace of passage"), "wizards' tower", () ->
-				config.getNecklaceofPassage() && config.getNecklaceofPassageMode() == NecklaceOfPassageMode.WIZARDS_TOWER);
+			config.getNecklaceofPassage() && config.getNecklaceofPassageMode() == NecklaceOfPassageMode.WIZARDS_TOWER);
 		swap("remove", targetSwap("necklace of passage"), "the outpost", () ->
-				config.getNecklaceofPassage() && config.getNecklaceofPassageMode() == NecklaceOfPassageMode.THE_OUTPOST);
+			config.getNecklaceofPassage() && config.getNecklaceofPassageMode() == NecklaceOfPassageMode.THE_OUTPOST);
 		swap("remove", targetSwap("necklace of passage"), "eagles' eyrie", () ->
-				config.getNecklaceofPassage() && config.getNecklaceofPassageMode() == NecklaceOfPassageMode.EAGLES_EYRIE);
+			config.getNecklaceofPassage() && config.getNecklaceofPassageMode() == NecklaceOfPassageMode.EAGLES_EYRIE);
 
 		swap("remove", targetSwap("digsite pendant"), "digsite", () ->
-				config.getDigsitePendant() && config.getDigsitePendantMode() == DigsitePendantMode.DIGSITE);
+			config.getDigsitePendant() && config.getDigsitePendantMode() == DigsitePendantMode.DIGSITE);
 		swap("remove", targetSwap("digsite pendant"), "fossil island", () ->
-				config.getDigsitePendant() && config.getDigsitePendantMode() == DigsitePendantMode.FOSSIL_ISLAND);
+			config.getDigsitePendant() && config.getDigsitePendantMode() == DigsitePendantMode.FOSSIL_ISLAND);
 		swap("remove", targetSwap("digsite pendant"), "lithkren dungeon", () ->
-				config.getDigsitePendant() && config.getDigsitePendantMode() == DigsitePendantMode.LITHKREN);
+			config.getDigsitePendant() && config.getDigsitePendantMode() == DigsitePendantMode.LITHKREN);
 
 		swap("remove", targetSwap("ring of wealth"), "miscellania", () ->
-				config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.MISCELLANIA);
+			config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.MISCELLANIA);
 		swap("remove", targetSwap("ring of wealth"), "grand exchange", () ->
-				config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.GRAND_EXCHANGE);
+			config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.GRAND_EXCHANGE);
 		swap("remove", targetSwap("ring of wealth"), "falador", () ->
-				config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.FALADOR);
+			config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.FALADOR);
 		swap("remove", targetSwap("ring of wealth"), "dondakan", () ->
-				config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.DONDAKAN);
+			config.getRingofWealth() && config.getRingofWealthMode() == RingOfWealthMode.DONDAKAN);
 
 		swap("remove", targetSwap("talisman"), "xeric's glade", () ->
-				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_GLADE);
+			config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_GLADE);
 		swap("remove", targetSwap("talisman"), "xeric's lookout", () ->
-				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_LOOKOUT);
+			config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_LOOKOUT);
 		swap("remove", targetSwap("talisman"), "xeric's inferno", () ->
-				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_INFERNO);
+			config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_INFERNO);
 		swap("remove", targetSwap("talisman"), "xeric's heart", () ->
-				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HEART);
+			config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HEART);
 		swap("remove", targetSwap("talisman"), "xeric's honour", () ->
-				config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
+			config.getXericsTalisman() && config.getXericsTalismanMode() == XericsTalismanMode.XERICS_HONOUR);
 
 		swap("wear", targetSwap("crafting cape"), "teleport", () ->
-				config.getCraftingCapeMode() == CraftingCapeMode.INVENTORY || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
+			config.getCraftingCapeMode() == CraftingCapeMode.INVENTORY || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
 		swap("remove", targetSwap("crafting cape"), "teleport", () ->
-				config.getCraftingCapeMode() == CraftingCapeMode.EQUIPPED || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
+			config.getCraftingCapeMode() == CraftingCapeMode.EQUIPPED || config.getCraftingCapeMode() == CraftingCapeMode.ALWAYS);
 
 		swap("wear", targetSwap("construct."), "tele to poh", () ->
-				config.getConstructionCapeMode() == ConstructionCapeMode.INVENTORY || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
+			config.getConstructionCapeMode() == ConstructionCapeMode.INVENTORY || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
 		swap("remove", targetSwap("construct."), "tele to poh", () ->
-				config.getConstructionCapeMode() == ConstructionCapeMode.EQUIPPED || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
+			config.getConstructionCapeMode() == ConstructionCapeMode.EQUIPPED || config.getConstructionCapeMode() == ConstructionCapeMode.ALWAYS);
 
 		swap("wear", targetSwap("quest point cape"), "teleport", () ->
-				config.getQuestCapeMode() == QuestCapeMode.INVENTORY || config.getQuestCapeMode() == QuestCapeMode.ALWAYS);
+			config.getQuestCapeMode() == QuestCapeMode.INVENTORY || config.getQuestCapeMode() == QuestCapeMode.ALWAYS);
 		swap("remove", targetSwap("quest point cape"), "teleport", () ->
-				config.getQuestCapeMode() == QuestCapeMode.EQUIPPED || config.getQuestCapeMode() == QuestCapeMode.ALWAYS);
+			config.getQuestCapeMode() == QuestCapeMode.EQUIPPED || config.getQuestCapeMode() == QuestCapeMode.ALWAYS);
 
 		swap("wear", targetSwap("achievement diary cape"), "teleport", () ->
-				config.getDiaryCapeMode() == DiaryCapeMode.INVENTORY || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
+			config.getDiaryCapeMode() == DiaryCapeMode.INVENTORY || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
 		swap("remove", targetSwap("achievement diary cape"), "teleport", () ->
-				config.getDiaryCapeMode() == DiaryCapeMode.EQUIPPED || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
+			config.getDiaryCapeMode() == DiaryCapeMode.EQUIPPED || config.getDiaryCapeMode() == DiaryCapeMode.ALWAYS);
 
 		swap("wear", targetSwap("farming cape"), "teleport", () ->
-				config.getFarmingCapeMode() == FarmCapeMode.INVENTORY || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
+			config.getFarmingCapeMode() == FarmCapeMode.INVENTORY || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
 		swap("remove", targetSwap("farming cape"), "teleport", () ->
-				config.getFarmingCapeMode() == FarmCapeMode.EQUIPPED || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
-				
+			config.getFarmingCapeMode() == FarmCapeMode.EQUIPPED || config.getFarmingCapeMode() == FarmCapeMode.ALWAYS);
+
 		swap("wear", targetSwap("magic cape"), "spellbook", () ->
-				config.getMagicCapeMode() == MagicCapeMode.INVENTORY || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
+			config.getMagicCapeMode() == MagicCapeMode.INVENTORY || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
 		swap("remove", targetSwap("magic cape"), "spellbook", () ->
-				config.getMagicCapeMode() == MagicCapeMode.EQUIPPED || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
+			config.getMagicCapeMode() == MagicCapeMode.EQUIPPED || config.getMagicCapeMode() == MagicCapeMode.ALWAYS);
 
 		swap("remove", targetSwap("max cape"), "tele to poh", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.TELE_TO_POH);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.TELE_TO_POH);
 		swap("remove", targetSwap("max cape"), "crafting guild", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.CRAFTING_GUILD);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.CRAFTING_GUILD);
 		swap("remove", targetSwap("max cape"), "warriors' guild", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.WARRIORS_GUILD);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.WARRIORS_GUILD);
 		swap("remove", targetSwap("max cape"), "fishing teleports", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FISHING_TELEPORTS);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FISHING_TELEPORTS);
 		swap("remove", targetSwap("max cape"), "poh portals", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.POH_PORTRALS);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.POH_PORTRALS);
 		swap("remove", targetSwap("max cape"), "other teleports", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.OTHER_TELEPORTS);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.OTHER_TELEPORTS);
 		swap("remove", targetSwap("max cape"), "spellbook", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.SPELLBOOK);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.SPELLBOOK);
 		swap("remove", targetSwap("max cape"), "features", () ->
-				config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FEATURES);
+			config.getMaxCapeEquippedMode() == MaxCapeEquippedMode.FEATURES);
 
 		swap("value", "buy 1", () -> config.shopBuy() == BuyMode.BUY_1);
 		swap("value", "buy 5", () -> config.shopBuy() == BuyMode.BUY_5);
@@ -667,13 +667,13 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	public boolean matchesConstructionOption(MenuEntry menuEntry)
 	{
 		return config.getConstructionMode().getOptionsList().stream()
-				.anyMatch(Text.standardize(menuEntry.getOption())::contains);
+			.anyMatch(Text.standardize(menuEntry.getOption())::contains);
 	}
 
 	public boolean matchesConstructionTarget(MenuEntry menuEntry)
 	{
 		return config.getConstructionMode().getTargetList().stream()
-				.anyMatch(Text.standardize(menuEntry.getTarget())::contains);
+			.anyMatch(Text.standardize(menuEntry.getTarget())::contains);
 	}
 
 	private void createConstructionMenu(MenuEntry menuEntry)
@@ -699,13 +699,13 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		if (config.hideEmpty() && option.contains("empty"))
 		{
 			return !entry.getTarget().contains("potion") && !entry.getTarget().contains("Antidote")
-					&& !entry.getTarget().contains("venom") && !entry.getTarget().contains("antifire")
-					&& !entry.getTarget().contains("Antipoison") && !entry.getTarget()
-					.contains("Superantipoison")
-					&& !entry.getTarget().contains("Saradomin brew") && !entry.getTarget()
-					.contains("Super restore")
-					&& !entry.getTarget().contains("Zamorak brew") && !entry.getTarget()
-					.contains("Guthix rest");
+				&& !entry.getTarget().contains("venom") && !entry.getTarget().contains("antifire")
+				&& !entry.getTarget().contains("Antipoison") && !entry.getTarget()
+				.contains("Superantipoison")
+				&& !entry.getTarget().contains("Saradomin brew") && !entry.getTarget()
+				.contains("Super restore")
+				&& !entry.getTarget().contains("Zamorak brew") && !entry.getTarget()
+				.contains("Guthix rest");
 		}
 
 		if (config.hideDestroy() && option.contains("destroy") && target.contains("rune pouch"))
@@ -831,8 +831,8 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	private MenuEntry[] updateMenuEntries(MenuEntry[] menuEntries)
 	{
 		return Arrays.stream(menuEntries)
-				.filter(filterMenuEntries).sorted((o1, o2) -> 0)
-				.toArray(MenuEntry[]::new);
+			.filter(filterMenuEntries).sorted((o1, o2) -> 0)
+			.toArray(MenuEntry[]::new);
 	}
 
 	private void parseOldFormatConfig()
