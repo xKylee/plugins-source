@@ -48,7 +48,8 @@ public class HideUnderPlugin extends Plugin
 {
 	@Inject
 	private Client client;
-	@Inject HideUnderConfig config;
+	@Inject
+	HideUnderConfig config;
 
 	@Provides
 	HideUnderConfig provideConfig(ConfigManager configManager)
