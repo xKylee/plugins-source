@@ -133,8 +133,7 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 	@Inject
 	private CustomSwaps customSwaps;
 
-	private static <T extends Comparable<? super T>> void sortedInsert(List<T> list,
-																	   T value) // NOPMD: UnusedPrivateMethod: false positive
+	private static <T extends Comparable<? super T>> void sortedInsert(List<T> list, T value) // NOPMD: UnusedPrivateMethod: false positive
 	{
 		int idx = Collections.binarySearch(list, value);
 		list.add(idx < 0 ? -idx - 1 : idx, value);
@@ -195,16 +194,14 @@ public class MenuEntrySwapperExtendedPlugin extends Plugin
 		return swap(option, equalTo(target), swappedOption, enabled);
 	}
 
-	public Swap swap(String option, Predicate<String> targetPredicate, String swappedOption,
-					 Supplier<Boolean> enabled)
+	public Swap swap(String option, Predicate<String> targetPredicate, String swappedOption, Supplier<Boolean> enabled)
 	{
 		Swap swap = new Swap(alwaysTrue(), targetPredicate, swappedOption, enabled, true);
 		swaps.put(option, swap);
 		return swap;
 	}
 
-	public Swap swapContains(String option, Predicate<String> targetPredicate, String swappedOption,
-							 Supplier<Boolean> enabled)
+	public Swap swapContains(String option, Predicate<String> targetPredicate, String swappedOption, Supplier<Boolean> enabled)
 	{
 		Swap swap = new Swap(alwaysTrue(), targetPredicate, swappedOption, enabled, false);
 		swaps.put(option, swap);
