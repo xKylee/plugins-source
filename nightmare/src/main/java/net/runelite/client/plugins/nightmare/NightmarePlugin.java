@@ -267,7 +267,7 @@ public class NightmarePlugin extends Plugin
 		{
 			case 1770:
 				targetPlayer = (Player) projectile.getInteracting();
-				parasiteTargets.putIfAbsent(targetPlayer.getPlayerId(), targetPlayer);
+				parasiteTargets.putIfAbsent(targetPlayer.getId(), targetPlayer);
 				break;
 			case 1781:
 				targetPlayer = (Player) projectile.getInteracting();
@@ -434,7 +434,7 @@ public class NightmarePlugin extends Plugin
 			Player localPlayer = client.getLocalPlayer();
 			if (localPlayer != null)
 			{
-				parasiteTargets.putIfAbsent(localPlayer.getPlayerId(), localPlayer);
+				parasiteTargets.putIfAbsent(localPlayer.getId(), localPlayer);
 			}
 
 			flash = true;

@@ -35,7 +35,7 @@ public class EntityFocusPilePlugin extends Plugin
 
 			if (client.getVar(VarPlayer.ATTACKING_PLAYER) == -1)
 			{
-				((RSClient) client).setLocalInteractingIndex(player.getPlayerId() & 2047);
+				((RSClient) client).setLocalInteractingIndex(player.getId() & 2047);
 			}
 		});
 	}
