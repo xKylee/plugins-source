@@ -100,11 +100,11 @@ public class EntityHiderExtendedPlugin extends Plugin
 			NPC npc = (NPC) renderable;
 
 			if ((npc.getName() != null && matchWildCards(hideNPCsName, Text.standardize(npc.getName())))
-					|| (hideNPCsID.contains(npc.getId()))
-					|| (hideNPCsOnAnimationID.contains(npc.getAnimation()))
-					|| (config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
-					|| (npc.getHealthRatio() == 0 && npc.getName() != null && matchWildCards(hideNPCsOnDeathName, Text.standardize(npc.getName())))
-					|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId())))
+				|| (hideNPCsID.contains(npc.getId()))
+				|| (hideNPCsOnAnimationID.contains(npc.getAnimation()))
+				|| (config.hideDeadNPCs() && npc.getHealthRatio() == 0 && npc.getName() != null && !matchWildCards(blacklistName, Text.standardize(npc.getName())) && !blacklistID.contains(npc.getId()))
+				|| (npc.getHealthRatio() == 0 && npc.getName() != null && matchWildCards(hideNPCsOnDeathName, Text.standardize(npc.getName())))
+				|| (npc.getHealthRatio() == 0 && hideNPCsOnDeathID.contains(npc.getId())))
 			{
 				return false;
 			}
