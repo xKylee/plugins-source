@@ -70,6 +70,7 @@ include(":pvptools")
 include(":reorderprayers")
 include(":smithing")
 include(":socket")
+include(":socketchat")
 include(":socketdeathindicator")
 include(":socketplayerstatus")
 include(":socketplayerstatusextended")
@@ -99,3 +100,4 @@ for (project in rootProject.children) {
         require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
     }
 }
+include("socketchat")
