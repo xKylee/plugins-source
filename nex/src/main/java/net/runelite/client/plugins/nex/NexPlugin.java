@@ -423,8 +423,15 @@ public class NexPlugin extends Plugin
 
 			teamSize = players.size();
 
-			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
-			var coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
+			var team = players
+				.stream()
+				.filter(player -> client.getLocalPlayer() != player)
+				.map(Actor::getName).
+				collect(Collectors.toSet());
+			var coughers = coughingPlayers
+				.stream()
+				.map(NexCoughingPlayer::getName)
+				.collect(Collectors.toSet());
 			healthyPlayers.clear();
 			healthyPlayers.addAll(Sets.difference(team, coughers));
 		}
@@ -434,7 +441,7 @@ public class NexPlugin extends Plugin
 		{
 			healthyPlayersLocations = players
 				.stream()
-				.filter(player -> client.getLocalPlayer() != player && healthyPlayers.contains(player.getName()))
+				.filter(player -> healthyPlayers.contains(player.getName()))
 				.map(Actor::getLocalLocation)
 				.collect(Collectors.toList());
 		}
@@ -760,7 +767,6 @@ public class NexPlugin extends Plugin
 		if (renderable instanceof Player)
 		{
 			Player player = (Player) renderable;
-			Player local = client.getLocalPlayer();
 
 			if (player.getName() == null)
 			{
@@ -768,7 +774,7 @@ public class NexPlugin extends Plugin
 				return true;
 			}
 
-			if (config.hideHealthyPlayers() && teamSize >= config.hideAboveNumber() && player != local && healthyPlayers.contains(player.getName()))
+			if (config.hideHealthyPlayers() && teamSize >= config.hideAboveNumber() && healthyPlayers.contains(player.getName()))
 			{
 				return false;
 			}
