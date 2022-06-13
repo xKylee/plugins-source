@@ -4,6 +4,7 @@ package net.runelite.client.plugins.nex;
  * Chris
  */
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
+import net.runelite.api.Renderable;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
@@ -35,9 +37,9 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.InteractingChanged;
+import net.runelite.client.callback.Hooks;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.nex.maths.MathUtil;
@@ -78,6 +80,10 @@ public class NexPlugin extends Plugin
 
 	@Inject
 	private NexPrayerInfoBox prayerInfoBox;
+
+	@Inject
+	private Hooks hooks;
+	private final Hooks.RenderableDrawListener drawListener = this::shouldDraw;
 
 	private static final int SHADOW_ID = 42942;
 	private static final int ICE_TRAP_ID = 42944;
@@ -170,8 +176,6 @@ public class NexPlugin extends Plugin
 
 	private int teamSize;
 	private boolean coughingPlayersChanged = false;
-	private boolean hasDisabledEntityHiderRecently = false;
-	private boolean hasEnabledEntityHiderRecently = false;
 
 	// Tick timers
 
@@ -222,8 +226,8 @@ public class NexPlugin extends Plugin
 		overlayManager.add(overlay);
 		overlayManager.add(prayerOverlay);
 		overlayManager.add(prayerInfoBox);
-		client.setIsHidingEntities(true);
 		reset();
+		hooks.registerRenderableDrawListener(drawListener);
 	}
 
 	@Override
@@ -232,21 +236,7 @@ public class NexPlugin extends Plugin
 		overlayManager.remove(overlay);
 		overlayManager.remove(prayerOverlay);
 		overlayManager.remove(prayerInfoBox);
-		client.setIsHidingEntities(false);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged e)
-	{
-		if (e.getGroup().equals(NexConfig.GROUP))
-		{
-			// if you disable entity hider you will clobber this plugin,
-			// so we should have this to have a way to easily get it back
-			if (config.hideHealthyPlayers())
-			{
-				client.setIsHidingEntities(true);
-			}
-		}
+		hooks.unregisterRenderableDrawListener(drawListener);
 	}
 
 	private void reset()
@@ -268,8 +258,6 @@ public class NexPlugin extends Plugin
 		iceTrapTicks.reset();
 		teamSize = 0;
 		coughingPlayersChanged = false;
-		hasDisabledEntityHiderRecently = false;
-		hasEnabledEntityHiderRecently = false;
 	}
 
 	@Subscribe
@@ -433,38 +421,12 @@ public class NexPlugin extends Plugin
 		{
 			coughingPlayersChanged = false;
 
-			// trigger a reload of the hidden players
-			resetEntityHiderCache();
 			teamSize = players.size();
 
 			var team = players.stream().map(Actor::getName).collect(Collectors.toSet());
 			var coughers = coughingPlayers.stream().map(NexCoughingPlayer::getName).collect(Collectors.toSet());
 			healthyPlayers.clear();
 			healthyPlayers.addAll(Sets.difference(team, coughers));
-		}
-
-		// HAS booleans prevent excess calls to client
-		if (config.hideHealthyPlayers() && players.size() >= config.hideAboveNumber())
-		{
-			if (!hasEnabledEntityHiderRecently)
-			{
-				client.setHideSpecificPlayers(new ArrayList<>(healthyPlayers));
-				// prevent us from running again right away
-				hasEnabledEntityHiderRecently = true;
-				// ensure disable will run if toggled again
-				hasDisabledEntityHiderRecently = false;
-			}
-		}
-		else
-		{
-			if (!hasDisabledEntityHiderRecently)
-			{
-				clearHiddenEntities();
-				// prevent us from running again right away
-				hasDisabledEntityHiderRecently = true;
-				// ensure enabled will run if toggled again
-				hasEnabledEntityHiderRecently = false;
-			}
 		}
 
 		// update healthy locations if we are sick
@@ -561,7 +523,6 @@ public class NexPlugin extends Plugin
 		{
 			reset();
 			inFight = false;
-			clearHiddenEntities();
 		}
 	}
 
@@ -594,7 +555,6 @@ public class NexPlugin extends Plugin
 			{
 				nex = null; // Just need to grab nex from the new spawn
 				nexTicksUntilClick.setTicks(NEX_STARTUP_DELAY);
-				resetEntityHiderCache();
 			}
 			else
 			{
@@ -715,17 +675,6 @@ public class NexPlugin extends Plugin
 		nexRangeTiles.addAll(MovementUtil.getWalkableLocalTiles(client, getNexCenterTile(nex), NEX_RANGE_DISTANCE));
 	}
 
-	private void resetEntityHiderCache()
-	{
-		hasEnabledEntityHiderRecently = false;
-		hasDisabledEntityHiderRecently = false;
-	}
-
-	private void clearHiddenEntities()
-	{
-		client.setHideSpecificPlayers(new ArrayList<>());
-	}
-
 	private void updateWingTiles(WorldPoint centerTile)
 	{
 		wingTiles.clear();
@@ -803,5 +752,21 @@ public class NexPlugin extends Plugin
 		airplaneCoolDown.setTicksIfExpired(NEX_DASH_TICK_LEN);
 		drawRangeCoolDown.setTicksIfExpired(NEX_DASH_CLICK_DELAY - 1);
 		nexTicksUntilClick.setTicks(NEX_DASH_CLICK_DELAY);
+	}
+
+	@VisibleForTesting
+	boolean shouldDraw(Renderable renderable, boolean drawingUI)
+	{
+		if (renderable instanceof Player)
+		{
+			Player player = (Player) renderable;
+
+			if (config.hideHealthyPlayers() && teamSize >= config.hideAboveNumber() && healthyPlayers.contains(player.getName()))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

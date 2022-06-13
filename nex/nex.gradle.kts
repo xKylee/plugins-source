@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.9"
+version = "5.1.0"
 
 project.extra["PluginName"] = "Nex Extended"
 project.extra["PluginDescription"] = "Helper for fighting Nex"
