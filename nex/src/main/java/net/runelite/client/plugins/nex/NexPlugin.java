@@ -760,8 +760,15 @@ public class NexPlugin extends Plugin
 		if (renderable instanceof Player)
 		{
 			Player player = (Player) renderable;
+			Player local = client.getLocalPlayer();
 
-			if (config.hideHealthyPlayers() && teamSize >= config.hideAboveNumber() && healthyPlayers.contains(player.getName()))
+			if (player.getName() == null)
+			{
+				// player.isFriend() and player.isFriendsChatMember() npe when the player has a null name
+				return true;
+			}
+
+			if (config.hideHealthyPlayers() && teamSize >= config.hideAboveNumber() && player != local && healthyPlayers.contains(player.getName()))
 			{
 				return false;
 			}
