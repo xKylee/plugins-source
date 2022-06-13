@@ -9,7 +9,6 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("hideunder")
 public interface HideUnderConfig extends Config
 {
-
 	@ConfigItem(
 		position = 0,
 		keyName = "renderMethod",
@@ -19,6 +18,20 @@ public interface HideUnderConfig extends Config
 	default hideUnderEnum renderMethod()
 	{
 		return hideUnderEnum.RENDER_SELF;
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "hideLocalPlayer2D",
+		name = "Hide Local Player 2D",
+		description = "Configures whether or not the local player's 2D elements are hidden",
+		hidden = true,
+		unhide = "renderMethod",
+		unhideValue = "Entity Hider"
+	)
+	default boolean hideLocalPlayer2D()
+	{
+		return false;
 	}
 
 	@Getter

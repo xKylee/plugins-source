@@ -24,7 +24,7 @@
  */
 
 object ProjectVersions {
-    const val rlVersion = "4.28.0"
+    const val rlVersion = "4.29.0"
     const val apiVersion = "^1.0.0"
     const val kotlinVersion = "1.3.72"
 }
@@ -36,7 +36,7 @@ object Libraries {
         const val gson = "2.8.6"
         const val guice = "4.2.3"
         const val junit = "4.13.1"
-        const val lombok = "1.18.16"
+        const val lombok = "1.18.22"
         const val mockito = "3.6.0"
         const val okhttp3 = "4.9.0"
         const val pf4j = "3.5.0"
