@@ -145,7 +145,7 @@ public class SocketChatPlugin extends Plugin implements KeyListener
 
 	private void removeHotkey() throws InterruptedException
 	{
-		String typedText = client.getVar(VarClientStr.CHATBOX_TYPED_TEXT);
+		String typedText = client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT);
 		if (typedText.length() > 0)
 		{
 			String subTypedText = typedText.substring(0, typedText.length() - 1);
@@ -155,7 +155,7 @@ public class SocketChatPlugin extends Plugin implements KeyListener
 			typedText.substring(typedText.length() - 1);
 			if (a == b)
 			{
-				client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, subTypedText);
+				client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, subTypedText);
 			}
 		}
 	}
@@ -212,7 +212,7 @@ public class SocketChatPlugin extends Plugin implements KeyListener
 
 		if (e.getKeyCode() == 10)
 		{
-			String typedText = client.getVar(VarClientStr.CHATBOX_TYPED_TEXT);
+			String typedText = client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT);
 			if (typing)
 			{
 				if (typedText.startsWith("/"))
@@ -220,13 +220,13 @@ public class SocketChatPlugin extends Plugin implements KeyListener
 					if (!config.overrideSlash())
 					{
 						sendMessage(typedText);
-						client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, "");
+						client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 					}
 				}
 				else
 				{
 					sendMessage(typedText);
-					client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, "");
+					client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 				}
 			}
 		}

@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.3"
+version = "6.0.0"
 
 project.extra["PluginName"] = "Smithing"
 project.extra["PluginDescription"] = "Helps with smithing at anvils"

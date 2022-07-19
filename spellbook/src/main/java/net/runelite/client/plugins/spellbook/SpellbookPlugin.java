@@ -187,7 +187,7 @@ public class SpellbookPlugin extends Plugin
 	@Subscribe
 	private void onVarCIntChanged(final VarClientIntChanged event)
 	{
-		if (event.getIndex() != VarClientInt.INVENTORY_TAB.getIndex())
+		if (event.getIndex() != VarClientInt.INVENTORY_TAB)
 		{
 			return;
 		}

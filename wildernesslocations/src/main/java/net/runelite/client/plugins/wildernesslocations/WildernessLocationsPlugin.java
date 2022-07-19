@@ -152,8 +152,8 @@ public class WildernessLocationsPlugin extends Plugin
 	@Subscribe
 	private void onVarClientStrChanged(VarClientStrChanged varClient)
 	{
-		String newChat = client.getVar(VarClientStr.CHATBOX_TYPED_TEXT);
-		if (varClient.getIndex() == VarClientStr.CHATBOX_TYPED_TEXT.getIndex() && !newChat.equals(oldChat))
+		String newChat = client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT);
+		if (varClient.getIndex() == VarClientStr.CHATBOX_TYPED_TEXT && !newChat.equals(oldChat))
 		{
 			oldChat = newChat;
 		}
@@ -175,10 +175,10 @@ public class WildernessLocationsPlugin extends Plugin
 		Runnable r = () ->
 		{
 			String cached = oldChat;
-			client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, text);
+			client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, text);
 			client.runScript(ScriptID.CHAT_SEND, text, finalMode, 0, 0, -1);
 			oldChat = cached;
-			client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, oldChat);
+			client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, oldChat);
 		};
 		clientThread.invoke(r);
 	}

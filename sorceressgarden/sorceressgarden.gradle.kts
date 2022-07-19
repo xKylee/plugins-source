@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "6.0.0"
 
 project.extra["PluginName"] = "Sorceress' Garden"
 project.extra["PluginDescription"] = "Provides various utilities for the Sorceress' Garden minigame"

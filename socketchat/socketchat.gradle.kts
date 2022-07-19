@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.0"
+version = "6.0.0"
 
 project.extra["PluginName"] = "Socket Chat"
 project.extra["PluginDescription"] = "Send chat messages through socket."

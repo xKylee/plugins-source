@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.0.1"
+version = "6.0.0"
 
 project.extra["PluginName"] = "Godbook"
 project.extra["PluginDescription"] = "Tracks the ticks since someone preached from their godbook"

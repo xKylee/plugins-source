@@ -25,7 +25,7 @@ import ProjectVersions.rlVersion
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "5.1.1"
+version = "6.0.0"
 
 project.extra["PluginName"] = "Dynamic Max Hit"
 project.extra["PluginDescription"] = "Dynamic Max Hit Calculations"
